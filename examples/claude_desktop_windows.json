@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "sinan-mcp": {
+      "command": "C:\\CAMINHO\\PARA\\sinan-mcp\\.venv\\Scripts\\python.exe",
+      "args": ["-m", "sinan_mcp", "--db", "C:\\CAMINHO\\PARA\\sinan-mcp\\data\\sinan.sqlite3", "servir"]
+    }
+  }
+}

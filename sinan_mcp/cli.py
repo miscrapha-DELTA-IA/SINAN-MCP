@@ -1,0 +1,53 @@
+"""CLI: importação explícita pelo administrador e servidor de consulta read-only."""
+from __future__ import annotations
+import argparse
+import os
+from pathlib import Path
+from .core import ingest_csv, ingest_pysus
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="SINAN MCP (dados públicos, agregações)")
+    parser.add_argument("--db", default=os.getenv("SINAN_DB_PATH", "./data/sinan.sqlite3"),
+                        help="Caminho do SQLite local")
+    cmd = parser.add_subparsers(dest="comando", required=True)
+    csvp = cmd.add_parser("importar-csv", help="Importar CSV local preparado do SINAN")
+    csvp.add_argument("arquivo", type=Path)
+    csvp.add_argument("--agravo", required=True)
+    csvp.add_argument("--ano", required=True, type=int)
+    csvp.add_argument("--status", choices=["final", "preliminar", "desconhecido"], default="desconhecido")
+    csvp.add_argument("--encoding", default="utf-8-sig")
+    csvp.add_argument("--delimiter", default="auto")
+    py = cmd.add_parser("importar-pysus", help="Baixar base pública via PySUS e importar")
+    py.add_argument("--agravo", required=True)
+    py.add_argument("--ano", required=True, type=int)
+    py.add_argument("--source", choices=["catalog", "origin"], default="catalog")
+    py.add_argument("--status", choices=["final", "preliminar", "desconhecido"], default="desconhecido")
+    serve = cmd.add_parser("servir", help="Servidor MCP (stdio ou HTTP local)")
+    serve.add_argument("--http", action="store_true", help="MCP Streamable HTTP somente em localhost")
+    serve.add_argument("--rest", action="store_true", help="REST JSON somente em localhost (adaptador não-MCP)")
+    serve.add_argument("--port", type=int, default=8000)
+    args = parser.parse_args()
+    os.environ["SINAN_DB_PATH"] = str(Path(args.db).expanduser().resolve())
+    if args.comando == "importar-csv":
+        r = ingest_csv(args.db, args.arquivo, agravo=args.agravo, ano=args.ano,
+                       status=args.status, encoding=args.encoding, delimiter=args.delimiter)
+        print(r)
+    elif args.comando == "importar-pysus":
+        r = ingest_pysus(args.db, agravo=args.agravo, ano=args.ano,
+                         status=args.status, source=args.source)
+        print(r)
+    else:
+        if args.http and args.rest:
+            parser.error("Use apenas --http ou --rest")
+        if args.rest:
+            from .rest import run_rest
+            run_rest(args.port)
+            return
+        from .server import mcp
+        if args.http:
+            if not 1024 <= args.port <= 65535:
+                parser.error("porta fora do intervalo 1024-65535")
+            mcp.run(transport="streamable-http", host="127.0.0.1", port=args.port)
+        else:
+            mcp.run()

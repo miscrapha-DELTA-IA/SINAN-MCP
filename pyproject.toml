@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sinan-mcp"
+version = "0.1.0"
+description = "Servidor MCP local para consultas agregadas aos dados públicos do SINAN/DATASUS"
+requires-python = ">=3.11"
+license = "MIT"
+readme = "README.md"
+dependencies = ["mcp>=2,<3"]
+
+[project.optional-dependencies]
+ingest = ["pysus>=2.11,<3", "pandas>=2,<3"]
+dev = ["pytest>=8", "mcp[cli]>=2,<3"]
+
+[project.scripts]
+sinan-mcp = "sinan_mcp.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["sinan_mcp*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

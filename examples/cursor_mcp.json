@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "sinan-mcp": {
+      "command": "python",
+      "args": ["-m", "sinan_mcp", "--db", "/caminho/absoluto/data/sinan.sqlite3", "servir"]
+    }
+  }
+}
