@@ -47,3 +47,15 @@ O importador opcional com `.[ingest]` baixa arquivos e processa CSV/Parquet em l
 ```
 
 O relatório inclui contagens exatas e não é disponibilizado ao LLM.
+
+
+## Diagnóstico da descoberta PySUS no Windows
+
+Se a instalação terminou, mas `descobrir-pysus` encontrou zero arquivos de TUBE/DENG, **não reinstale todas as dependências**. Reproduzimos esta diferença entre Windows e Linux nas ações do GitHub com PySUS 2.11.7. Execute:
+
+```powershell
+python -m sinan_mcp diagnosticar-pysus --agravo TUBE --ano 2024
+python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --cache-dir .\\data\\pysus-recovery
+```
+
+O segundo comando escolhe uma pasta nova de cache sem apagar `$HOME\\pysus`. Se funcionar, use a mesma opção `--cache-dir` na importação. O diagnóstico **não baixa microdados** e informa a disponibilidade nos modos catalog/origin, a versão PySUS e metadados dos arquivos do cache. Um retorno vazio não significa ausência de dados no DATASUS.

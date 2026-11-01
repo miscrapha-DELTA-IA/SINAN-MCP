@@ -91,7 +91,7 @@ def test_refuse_unexpected_download_format(tmp_path, monkeypatch):
 
 def test_missing_filebag_or_wrong_year(monkeypatch):
     monkeypatch.setattr(g, '_pysus', lambda: SimpleNamespace(sinan=lambda **_: FileBag([])))
-    with pytest.raises(ValueError, match='Nenhum arquivo'):
+    with pytest.raises(ValueError, match='Catálogo PySUS vazio'):
         g.descobrir('TUBE', 2024)
     with pytest.raises(ValueError, match='Ano deve ser inteiro'):
         g.descobrir('TUBE', True)

@@ -2,7 +2,7 @@
 
 **Epidemiological data from Brazil, exposed through auditable Model Context Protocol tools.**
 
-> v0.3.0-alpha.1 · Local-first research prototype · Unaffiliated with the Ministry of Health · Not for clinical decisions or patient inference.
+> v0.3.1-alpha.1 · Local-first research prototype · Unaffiliated with the Ministry of Health · Not for clinical decisions or patient inference.
 
 The LLM interprets the question; the server calculates the answer from locally imported public surveillance data. No real SINAN data ships with the project.
 
@@ -46,6 +46,22 @@ See [scientific interpretation](docs/EPIDEMIOLOGY.md).
 For numeric tools, provide `ano_inicio=ano_fim=2024`, `uf="PI"`, `por="raca_cor"` (or `sexo`). Public tools intentionally deny municipality filters, totals, date ranges and other cross-cutting groupings. Responses include `resultado`, `proveniencia`, `politica` and `limitacoes`. Small cells are suppressed. These restrictions **reduce but do not eliminate** statistical disclosure risk; *no formal anonymization guarantee exists.* No row-level or arbitrary SQL tools are exposed.
 
 **Scientific caveats:** `ano` is the **imported file-year**, not necessarily the notification, diagnosis or closure year. Counts are records, not incidence or unique patients. The exploratory TB abandonment ratio computes `(SITUA_ENCE=2 or 10)/(SITUA_ENCE=1,2,10)`; without a formally validated case cohort and longitudinal deduplication it **must not be described as the Ministry's official treatment abandonment indicator**.
+
+## Windows PySUS catalog diagnostics
+
+On Windows, PySUS 2.11.7 can return an **empty catalog FileBag** for a known file even when the same query works on Linux. This has been reproduced in GitHub Actions, so do not assume the file is missing or reinstall the entire package. First inspect the catalog without downloading microdata:
+
+```powershell
+python -m sinan_mcp diagnosticar-pysus --agravo TUBE --ano 2024
+```
+
+Test a **separate new cache** without deleting your PySUS files:
+
+```powershell
+python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --cache-dir .\\data\\pysus-recovery
+```
+
+Use the same `--cache-dir` for later import if discovery succeeds. Changing cache may not resolve a Windows-specific PySUS implementation defect; diagnosis reports catalog file presence and source differences. See [Portuguese instructions](docs/pt-BR.md).
 
 ## Local ingestion (administrative operation, not an MCP tool)
 
