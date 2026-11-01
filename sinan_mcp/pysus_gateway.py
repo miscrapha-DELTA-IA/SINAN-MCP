@@ -79,9 +79,14 @@ def diagnosticar(agravo: str, ano: int) -> dict:
     import pysus
     ftp = _pysus()
     cache = Path(pysus.CACHEPATH).expanduser()
-    # The upstream adapter binds this path at module import time.
-    from pysus.api.ducklake.catalog.adapters import BaseAdapter
-    adapter_cache = Path(BaseAdapter.cache_dir).expanduser()
+    # PySUS 2.11.7 binds this path at import time. Keep a safe fallback
+    # when tests or compatible upstream variants lack the internal module.
+    try:
+        from pysus.api.ducklake.catalog.adapters import BaseAdapter
+    except ImportError:
+        adapter_cache = cache / "ducklake"
+    else:
+        adapter_cache = Path(BaseAdapter.cache_dir).expanduser()
     db_files = ("catalog.duckdb", "catalog_sinan.duckdb", "catalog_columns.duckdb")
     results = {}
     for source in ("catalog", "origin"):
