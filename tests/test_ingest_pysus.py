@@ -90,6 +90,7 @@ def test_refuse_unexpected_download_format(tmp_path, monkeypatch):
 
 
 def test_missing_filebag_or_wrong_year(monkeypatch):
+    monkeypatch.setattr(g, '_catalog_paths', lambda *_: [])
     monkeypatch.setattr(g, '_pysus', lambda: SimpleNamespace(sinan=lambda **_: FileBag([])))
     result = g.descobrir('TUBE', 2024)
     assert result['status'] == 'nao_confirmado'
@@ -123,6 +124,7 @@ def test_download_streamed_parquet(tmp_path, monkeypatch):
 
 
 def test_discovery_auto_fallback_to_origin(monkeypatch):
+    monkeypatch.setattr(g, '_catalog_paths', lambda *_: [])
     sources = []
     def fake_sinan(**kw):
         sources.append(kw['source'])
@@ -137,6 +139,7 @@ def test_discovery_auto_fallback_to_origin(monkeypatch):
 
 
 def test_discovery_empty_origin_not_misreported_as_missing_dataset(monkeypatch):
+    monkeypatch.setattr(g, '_catalog_paths', lambda *_: [])
     monkeypatch.setattr(g, '_pysus', lambda: SimpleNamespace(sinan=lambda **kw: FileBag([])))
     result = g.descobrir('DENG', 2024, source='origin')
     assert result['status'] == 'nao_confirmado'
@@ -145,6 +148,7 @@ def test_discovery_empty_origin_not_misreported_as_missing_dataset(monkeypatch):
 
 
 def test_discovery_source_error_then_fallback(monkeypatch):
+    monkeypatch.setattr(g, '_catalog_paths', lambda *_: [])
     def fake_sinan(**kwargs):
         if kwargs['source'] == 'catalog':
             raise TimeoutError('private connection details must not leak')
@@ -154,3 +158,64 @@ def test_discovery_source_error_then_fallback(monkeypatch):
     assert result['status'] == 'encontrado'
     assert result['tentativas'][0]['erro_tipo'] == 'TimeoutError'
     assert 'private connection details' not in str(result)
+
+
+def test_diagnosticar_pysus_handles_empty_and_source_error(monkeypatch, tmp_path):
+    import sys
+    def fake_sinan(**kwargs):
+        if kwargs['source'] == 'origin':
+            raise ConnectionError('FTP indisponível')
+        return FileBag([])
+    monkeypatch.setattr(sys.modules['pysus'] if 'pysus' in sys.modules else g, '_pysus_test', True, raising=False)
+    class FakePysus:
+        CACHEPATH = tmp_path
+        __version__ = '2.11.7'
+    monkeypatch.setattr(g, '_pysus', lambda: SimpleNamespace(sinan=fake_sinan))
+    real_import = g.importlib.import_module
+    monkeypatch.setattr(g.importlib, 'import_module', lambda name: FakePysus if name == 'pysus' else real_import(name))
+    # The diagnostic directly imports 'pysus'; ensure it does not access network in this test
+    monkeypatch.setitem(sys.modules, 'pysus', FakePysus)
+    d = g.diagnosticar('TUBE', 2024)
+    assert not d['fontes']['catalog']['disponivel']
+    assert d['fontes']['origin']['erro'] == 'ConnectionError'
+    assert d['download_realizado'] is False
+
+def test_windows_filebag_empty_uses_cached_duckdb_metadata(tmp_path, monkeypatch):
+    duckdb = pytest.importorskip("duckdb")
+    cachedir = tmp_path / "catalog"
+    cachedir.mkdir()
+    path = cachedir / "catalog_sinan.duckdb"
+    with duckdb.connect(str(path)) as db:
+        db.execute("CREATE SCHEMA pysus")
+        db.execute("CREATE TABLE pysus.files (path VARCHAR, year INTEGER)")
+        db.executemany("INSERT INTO pysus.files VALUES (?, ?)", [
+            ("public/data/ftp/sinan/TUBE/2024/_/BR/TUBEBR24.parquet", 2024),
+            ("public/data/ftp/sinan/DENG/2024/_/BR/DENGBR24.parquet", 2024),
+            ("public/data/dadosgov/sinan/TUBE/2024/_/BR/TUBEBR24.parquet", 2024),
+        ])
+    assert g._catalog_paths("TUBE", 2024, path) == [
+        "public/data/ftp/sinan/TUBE/2024/_/BR/TUBEBR24.parquet"
+    ]
+    monkeypatch.setattr(g, "_pysus", lambda: SimpleNamespace(sinan=lambda **_: FileBag([])))
+    monkeypatch.setattr(g, "_catalog_paths", lambda agravo, ano: [
+        "public/data/ftp/sinan/TUBE/2024/_/BR/TUBEBR24.parquet"
+    ])
+    r = g.descobrir("TUBE", 2024, source="catalog")
+    assert r["modo_descoberta"] == "duckdb_local_metadados"
+    assert r["nomes_arquivos"] == ["TUBEBR24.parquet"]
+    assert r["download_realizado"] is False
+
+def test_auto_source_uses_readonly_metadata_after_empty_sources(monkeypatch):
+    used = []
+    def fake(**kw):
+        used.append(kw["source"])
+        return FileBag([])
+    monkeypatch.setattr(g, "_pysus", lambda: SimpleNamespace(sinan=fake))
+    monkeypatch.setattr(g, "_catalog_paths", lambda *_: [
+        "public/data/ftp/sinan/TUBE/2024/_/BR/TUBEBR24.parquet"
+    ])
+    result = g.descobrir("TUBE", 2024)
+    assert result["status"] == "encontrado"
+    assert result["modo_descoberta"] == "duckdb_local_metadados"
+    assert result["download_realizado"] is False
+    assert used == ["catalog", "origin"]
