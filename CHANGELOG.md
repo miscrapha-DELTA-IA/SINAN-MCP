@@ -7,7 +7,8 @@
 - Local administrator-only quality diagnostic and pilot catalogue (TUBE/DENG).
 - Public methodology tool explaining why the TB abandonment ratio is not official.
 - Synthetic PySUS-adapter tests and optional GitHub Actions ingestion-dependency workflow.
-- **Unverified:** real DATASUS/PySUS network download and official epidemiological indicator equivalence.
+- Verified live PySUS file discovery (no microdata download): TUBEBR24.parquet and DENGBR24.parquet via GitHub Actions.
+- **Unverified:** complete DATASUS/PySUS network download and official epidemiological indicator equivalence.
 
 
 ## 0.2.0-alpha.1 (2026-11-01)
