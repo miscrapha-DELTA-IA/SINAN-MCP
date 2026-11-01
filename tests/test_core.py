@@ -98,11 +98,12 @@ def test_rest_adapter_local(tmp_path, monkeypatch):
         with urlopen(base + "/health", timeout=2) as r:
             assert json.load(r)["status"] == "ok"
         req = Request(base + "/v1/contagens",
-                      data=json.dumps({"agravo": "TUBE", "uf": "PI", "por": "raca_cor"}).encode(),
+                      data=json.dumps({"agravo": "TUBE", "ano_inicio": 2024, "ano_fim": 2024, "uf": "PI", "por": "raca_cor"}).encode(),
                       headers={"Content-Type": "application/json"}, method="POST")
         with urlopen(req, timeout=2) as r:
             body = json.load(r)
-        assert body["dados"][1]["notificacoes"] == 50
+        assert body["resultado"]["dados"][1]["notificacoes"] == 50
+        assert body["proveniencia"]["ano_do_arquivo"] == 2024
         assert "SEGREDO" not in json.dumps(body)
     finally:
         srv.shutdown()

@@ -1,128 +1,75 @@
-# SINAN MCP — protótipo de pesquisa (v0.1.0)
+# SINAN MCP
 
-**Servidor MCP de código aberto para consultas epidemiológicas agregadas sobre microdados públicos do SINAN/DATASUS**, independente do fornecedor do LLM. O MCP permite conectar a clientes compatíveis, como Claude Desktop, Cursor e outros hosts. Para LLMs sem cliente MCP, será necessário desenvolver um adaptador.
+**Epidemiological data from Brazil, exposed through auditable Model Context Protocol tools.**
 
-> **Estado:** protótipo local. Código fornecido com testes unitários usando dados *sintéticos*. Não acompanha microdados do SINAN nem acesso a sistemas internos. NÃO é uma integração em tempo real, serviço homologado pelo Ministério da Saúde, mecanismo completo de anonimização nem indicador epidemiológico validado.
+> v0.2.0-alpha.1 · Local-first research prototype · Unaffiliated with the Ministry of Health · Not for clinical decisions or patient inference.
 
-## Ferramentas
+The LLM interprets the question; the server calculates the answer from locally imported public surveillance data. No real SINAN data ships with the project.
 
-- `listar_bases`: fonte, status final/preliminar, ano do arquivo, data de importação.
-- `descrever_campos`: mini-dicionário, links e advertências.
-- `contar_notificacoes`: registros agregados por ano, UF, município, sexo ou raça/cor, com supressão de células pequenas.
-- `proporcao_abandono_tuberculose`: indicador exploratório explicitamente definido, com proteção adicional para numerador/complemento.
+## 1-minute synthetic demo
 
-**Sem SQL arbitrário, consultas individuais, identificadores diretos ou ferramentas de escrita disponibilizadas ao LLM.** Os arquivos originais ficam fora da biblioteca de dados exposta; o SQLite guarda apenas projeções aprovadas. Mesmo assim combinações de atributos podem representar informação sensível: não publicar externamente sem análise de risco, controles contra inferência e revisão institucional.
+Python 3.11+ (Windows, macOS or Linux):
 
-## Instalação (Python 3.11 ou superior)
-
-No Windows PowerShell, na pasta do projeto:
-
-```powershell
-py -3.11 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -e "."
+```sh
+python -m venv .venv
+# Windows: .\.venv\Scripts\Activate.ps1
+# macOS/Linux: source .venv/bin/activate
+python -m pip install -e '.[dev]'
+python -m sinan_mcp demo
+python -m sinan_mcp --db ./data/sinan-demo.sqlite3 servir
 ```
 
-Para habilitar downloads com PySUS:
+The example creates **fictional records only** in a separate `sinan-demo.sqlite3` file. The server waits on stdin for an MCP host. Use an absolute Python interpreter path and absolute `--db` path in your client. Examples are provided under [`examples/`](examples/). Claude Desktop, Cursor and other clients require their own supported MCP configuration; **Cowork/gateway support has not been verified**.
 
-```powershell
-pip install -e ".[ingest]"
+Try asking: *"On the synthetic TUBE dataset, show the race/color distribution in PI for the 2024 file and explain the provenance and limitations."*
+
+## Tools
+
+| MCP tool | Function |
+|---|---|
+| `listar_bases` | Dataset snapshots (no local filenames or record totals) |
+| `descrever_campos` | Variable definitions and caveats |
+| `contar_notificacoes` | Counts for one UF + one file-year, by `sexo` or `raca_cor` |
+| `proporcao_abandono_tuberculose` | Exploratory outcome ratio, **not** an official indicator |
+
+For numeric tools, provide `ano_inicio=ano_fim=2024`, `uf="PI"`, `por="raca_cor"` (or `sexo`). Public tools intentionally deny municipality filters, totals, date ranges and other cross-cutting groupings. Responses include `resultado`, `proveniencia`, `politica` and `limitacoes`. Small cells are suppressed. These restrictions **reduce but do not eliminate** statistical disclosure risk; *no formal anonymization guarantee exists.* No row-level or arbitrary SQL tools are exposed.
+
+**Scientific caveats:** `ano` is the **imported file-year**, not necessarily the notification, diagnosis or closure year. Counts are records, not incidence or unique patients. The exploratory TB abandonment ratio computes `(SITUA_ENCE=2 or 10)/(SITUA_ENCE=1,2,10)`; without a formally validated case cohort and longitudinal deduplication it **must not be described as the Ministry's official treatment abandonment indicator**.
+
+## Local ingestion (administrative operation, not an MCP tool)
+
+```sh
+python -m sinan_mcp importar-csv ./dataset.csv --agravo TUBE --ano 2024 --status desconhecido
+python -m pip install -e '.[ingest]'
+python -m sinan_mcp importar-pysus --agravo TUBE --ano 2024 --source catalog --status desconhecido
 ```
 
-## Teste rápido com dados simulados
+`--source catalog` may use a PySUS mirror; `--source origin` selects the upstream origin. Verify actual availability, codebooks, year, source and preliminary/final status independently. The SQLite projection excludes direct identifiers but retains quasi-identifiers; keep it private. One imported snapshot per agravo/file-year is retained; reimport replaces the former snapshot. The optional PySUS component has separate copyleft license obligations; assess them before redistributing combined distributions.
 
-```powershell
-python .\examples\gerar_demo.py
-python -m sinan_mcp importar-csv .\examples\sinan_tube_SINTETICO.csv --agravo TUBE --ano 2024 --status desconhecido
-python -m sinan_mcp servir --rest --port 8001
+## Local REST adapter
+
+```sh
+python -m sinan_mcp --db ./data/sinan-demo.sqlite3 servir --rest --port 8001
 ```
 
-Essa base é **inteiramente sintética**. Não use seus valores em pesquisa, artigo ou relatório epidemiológico. Antes de carregar uma base real, remova o SQLite de demonstração em `data/sinan.sqlite3` ou use outro caminho `--db`.
-
-## Carregar dados públicos
-
-Baixe os dados **somente de fontes oficiais ou de espelhos identificados**, documentando o estado final/preliminar e o ano. O Ministério da Saúde disponibiliza microdados por agravo/ano; os dicionários são essenciais.
-
-**Método A — PySUS (rede, opção recomendada):**
-
-```powershell
-python -m sinan_mcp importar-pysus --agravo TUBE --ano 2024 --source catalog --status preliminar
-```
-
-`--source catalog` usa a via de catálogo/espelho padrão do PySUS e pode não ser idêntica à origem em determinado instante. Com `--source origin`, solicita à fonte original. O rótulo `--status` deve ser definido após checar a classificação no portal, pois não é detectado automaticamente. Disponibilidade, versões e campos variam por ano e agravo.
-
-**Método B — CSV local** (convertido previamente de DBC/DBF ou obtido do portal):
-
-```powershell
-python -m sinan_mcp importar-csv .\dados_publicos\TUBEBR24.csv --agravo TUBE --ano 2024 --status preliminar
-```
-
-Aceita CSV com cabeçalhos do SINAN, separados por vírgula ou `;`, em UTF-8 por padrão. Para Latin-1, use `--encoding latin-1`. A importação substitui qualquer snapshot anterior do **mesmo agravo e ano**, mesmo que a origem seja outra (por exemplo, CSV seguido de PySUS), evitando somar a mesma base duas vezes. A coluna `ano` no banco é **ano do arquivo importado** e não deve ser interpretada automaticamente como ano de notificação/diagnóstico.
-
-A ingestão preserva somente: agravo, ano do arquivo, UF e município de residência quando presentes, sexo, raça/cor, situação de encerramento da TB. Qualquer nome, endereço, documento, identificador de notificação etc. **é descartado na projeção**. Ausência de município de residência não é substituída por município de notificação.
-
-## Iniciar o MCP
-
-**Local/stdio** (Claude Desktop, Cursor e outros hosts compatíveis):
-
-```powershell
-python -m sinan_mcp servir
-```
-
-A aparência de terminal parado é normal: o processo está aguardando a comunicação MCP. Configure seu host conforme [`examples/claude_desktop_windows.json`](examples/claude_desktop_windows.json), com caminho absoluto do Python do venv e do SQLite (cada host tem seu formato).
-
-**Streamable HTTP MCP local**:
-
-```powershell
-python -m sinan_mcp servir --http --port 8000
-```
-
-Endpoint: `http://127.0.0.1:8000/mcp`.
-
-**REST local (para sistemas que não suportam MCP):**
-
-```powershell
-python -m sinan_mcp servir --rest --port 8001
-```
-
-Endpoints JSON: `GET /health`, `GET /v1/bases`, `GET /v1/campos`, `POST /v1/contagens`, `POST /v1/tb/abandono`. Exemplo de corpo para `POST /v1/contagens`:
+Routes: `GET /health`, `GET /v1/bases`, `GET /v1/campos`, `POST /v1/contagens`, `POST /v1/tb/abandono`.
 
 ```json
 {"agravo":"TUBE","ano_inicio":2024,"ano_fim":2024,"uf":"PI","por":"raca_cor"}
 ```
 
-O adaptador REST permite a criação de *function tools* para LLMs sem cliente MCP. **Isso não significa conexão automática a qualquer plataforma**: o aplicativo/host precisa configurar uma integração com o endpoint. Não encaminhe dados pessoais ou privados.
+MCP over local Streamable HTTP: `python -m sinan_mcp servir --http --port 8000` (`/mcp`). **Do not expose local REST/MCP endpoints publicly.** Remote use requires auth, transport security and formal statistical disclosure controls.
 
-Para implantação pública, use autenticação OAuth/controle de identidade, gateway, TLS, auditoria, isolamento de banco, rate limits e revisão de segurança. Este projeto **deliberadamente não permite bind em 0.0.0.0** pela CLI, pois ainda não implementa autenticação MCP remota.
+## Validation and documentation
 
-## Exemplo de interação
+```sh
+python -m pip install -e '.[dev]'
+python -m pytest -q
+```
 
-> **Pergunta:** Qual a distribuição por raça/cor das notificações de tuberculose no Piauí em 2024?
->
-> **Tool:** `contar_notificacoes(agravo="TUBE", ano_inicio=2024, ano_fim=2024, uf="PI", por="raca_cor")`
->
-> **Saída:** valores da base local carregada, com grupos pequenos suprimidos. **O projeto não contém dados reais pré-carregados.**
+Includes synthetic core/REST/privacy tests and an **in-memory real MCP client** integration test when the v2 SDK is installed. Live PySUS downloads and desktop-client operation are not verified in this offline environment. CI checks supported Python/OS combinations after installation.
 
-> **Pergunta:** Qual a proporção exploratória de abandono entre encerramentos selecionados?
->
-> **Tool:** `proporcao_abandono_tuberculose(ano_inicio=2024, ano_fim=2024, uf="PI", por="raca_cor")`
+- [Guia em português](docs/pt-BR.md) · [Security](SECURITY.md) · [Contributing](CONTRIBUTING.md)
+- [Official SINAN portal](https://portalsinan.saude.gov.br/) · [PySUS docs](https://pysus.readthedocs.io/en/stable/quickstart.html) · [MCP Python SDK](https://py.sdk.modelcontextprotocol.io/)
 
-Fórmula exploratória: abandono `(SITUA_ENCE 2 + 10) / (SITUA_ENCE 1 + 2 + 10)`, apenas nas bases importadas. **Não corresponde necessariamente ao indicador oficial do MS**; verifique critérios de inclusão, descarte de duplicatas, mudanças de códigos, definição de coorte e maturação dos encerramentos. `10` representa abandono primário em versões documentadas do dicionário, mas deve ser confirmado no período analisado.
-
-## Limitações / plano para produção
-
-1. Verificar dicionários e harmonizar versões do SINAN por agravo/ano; automatizar esquemas aprovados de mapeamento.
-2. Distinguir séries por ano de notificação, diagnóstico e encerramento, de acordo com a pergunta.
-3. Desduplicação apropriada por agravo e construção de coortes; metodologias epidemiológicas homologadas.
-4. Implementar controle formal de privacidade (ataques por diferença, limitação de consultas, agregações aprovadas; eventual privacidade diferencial) antes de acesso público.
-5. Evoluir o REST local para OpenAPI documentado, autenticação e observabilidade; criar adaptadores próprios dos provedores sem MCP nativo.
-6. Expansão controlada a outros agravos e séries espaciais/temporais com códigos IBGE validados.
-
-## Fontes
-
-- Ministério da Saúde — [Dados sobre agravos de notificações](https://www.gov.br/saude/pt-br/acesso-a-informacao/sic/dados-em-transparencia-ativa/svsa/agravos-de-notificacoes/agravos-de-notificacoes)
-- SINAN — [Página de tuberculose, fichas e dicionários](https://portalsinan.saude.gov.br/tuberculose)
-- PySUS — [Documentação](https://pysus.readthedocs.io/en/latest/)
-- MCP SDK Python v2 — [Documentação](https://py.sdk.modelcontextprotocol.io/)
-
-Licença do código: MIT. **Não há redistribuição de microdados neste pacote.**
+MIT-licensed original code; not an official DATASUS/SINAN service.

@@ -4,7 +4,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 from mcp.server import MCPServer
-from .core import catalogo, contar, abandono_tb, dicionario
+from .tool_api import listar_bases_publicas, contagens_publicas, abandono_publico, descrever_campos_publicos
 
 mcp = MCPServer("SINAN MCP", instructions=(
     "Ferramentas de epidemiologia sobre bases públicas do SINAN importadas localmente. "
@@ -22,21 +22,21 @@ def db_path() -> Path:
 @mcp.tool()
 def listar_bases() -> dict:
     """Lista datasets SINAN importados, anos, status final/preliminar, proveniência e data de carga."""
-    return catalogo(db_path())
+    return listar_bases_publicas(db_path())
 
 
 @mcp.tool()
 def descrever_campos() -> dict:
     """Explica campos e exemplos de agravos para interpretar os resultados corretamente."""
-    return dicionario()
+    return descrever_campos_publicos()
 
 
 @mcp.tool()
 def contar_notificacoes(agravo: str, ano_inicio: int | None = None,
                          ano_fim: int | None = None, uf: str | None = None,
-                         municipio: str | None = None, por: str = "ano") -> dict:
-    """Conta registros por ano, UF, município, sexo ou raça/cor. Aplica limiar de supressão 10."""
-    return contar(db_path(), agravo=agravo, ano_inicio=ano_inicio, ano_fim=ano_fim,
+                         municipio: str | None = None, por: str = "raca_cor") -> dict:
+    """Consulta agregada de um único ano de arquivo e UF por sexo ou raça/cor. Suprime células pequenas."""
+    return contagens_publicas(db_path(), agravo=agravo, ano_inicio=ano_inicio, ano_fim=ano_fim,
                   uf=uf, municipio=municipio, por=por)
 
 
@@ -44,8 +44,8 @@ def contar_notificacoes(agravo: str, ano_inicio: int | None = None,
 def proporcao_abandono_tuberculose(ano_inicio: int | None = None,
                                   ano_fim: int | None = None, uf: str | None = None,
                                   municipio: str | None = None, por: str = "raca_cor") -> dict:
-    """Proporção exploratória TB de SITUA_ENCE 2 ou 10 entre encerramentos 1, 2 ou 10, por grupo. NÃO é taxa oficial."""
-    return abandono_tb(db_path(), ano_inicio=ano_inicio, ano_fim=ano_fim,
+    """Proporção exploratória TB de SITUA_ENCE 2 ou 10 entre 1,2,10, por um ano e uma UF. NÃO é indicador oficial."""
+    return abandono_publico(db_path(), ano_inicio=ano_inicio, ano_fim=ano_fim,
                        uf=uf, municipio=municipio, por=por)
 
 

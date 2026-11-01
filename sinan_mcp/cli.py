@@ -23,6 +23,8 @@ def main() -> None:
     py.add_argument("--ano", required=True, type=int)
     py.add_argument("--source", choices=["catalog", "origin"], default="catalog")
     py.add_argument("--status", choices=["final", "preliminar", "desconhecido"], default="desconhecido")
+    demo = cmd.add_parser("demo", help="Criar base sintética separada e mostrar próximo passo")
+    demo.add_argument("--demo-db", default="./data/sinan-demo.sqlite3")
     serve = cmd.add_parser("servir", help="Servidor MCP (stdio ou HTTP local)")
     serve.add_argument("--http", action="store_true", help="MCP Streamable HTTP somente em localhost")
     serve.add_argument("--rest", action="store_true", help="REST JSON somente em localhost (adaptador não-MCP)")
@@ -37,6 +39,15 @@ def main() -> None:
         r = ingest_pysus(args.db, agravo=args.agravo, ano=args.ano,
                          status=args.status, source=args.source)
         print(r)
+    elif args.comando == "demo":
+        from .demo import build_demo
+        demo_db = Path(args.demo_db).expanduser().resolve()
+        if demo_db == Path(args.db).expanduser().resolve():
+            parser.error("A base demo não pode sobrescrever a base principal")
+        print(build_demo(demo_db))
+        print("DADOS 100% SINTÉTICOS; nunca utilizar em análises epidemiológicas.")
+        print(f"Inicie: python -m sinan_mcp --db {str(demo_db)!r} servir")
+        print("Experimente: contagens TUBE, ano 2024, UF PI, por raca_cor")
     else:
         if args.http and args.rest:
             parser.error("Use apenas --http ou --rest")

@@ -9,7 +9,7 @@ import os
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
-from .core import catalogo, contar, abandono_tb, dicionario
+from .tool_api import listar_bases_publicas, contagens_publicas, abandono_publico, descrever_campos_publicos
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -35,9 +35,9 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/health":
             return self._answer(200, {"status": "ok", "tipo": "adaptador-local"})
         if path == "/v1/bases":
-            return self._answer(200, catalogo(os.getenv("SINAN_DB_PATH", "./data/sinan.sqlite3")))
+            return self._answer(200, listar_bases_publicas(os.getenv("SINAN_DB_PATH", "./data/sinan.sqlite3")))
         if path == "/v1/campos":
-            return self._answer(200, dicionario())
+            return self._answer(200, descrever_campos_publicos())
         return self._answer(404, {"erro": "Endpoint não encontrado"})
 
     def do_POST(self):
@@ -57,11 +57,11 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/v1/contagens":
                 if any(k not in {"agravo", "ano_inicio", "ano_fim", "uf", "municipio", "por"} for k in body):
                     raise ValueError("Argumento desconhecido")
-                return self._answer(200, contar(db, **body))
+                return self._answer(200, contagens_publicas(db, **body))
             if path == "/v1/tb/abandono":
                 if any(k not in {"ano_inicio", "ano_fim", "uf", "municipio", "por"} for k in body):
                     raise ValueError("Argumento desconhecido")
-                return self._answer(200, abandono_tb(db, **body))
+                return self._answer(200, abandono_publico(db, **body))
             return self._answer(404, {"erro": "Endpoint não encontrado"})
         except (ValueError, TypeError, json.JSONDecodeError) as e:
             return self._answer(400, {"erro": str(e)})
