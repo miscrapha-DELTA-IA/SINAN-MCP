@@ -13,7 +13,7 @@
 Open a PowerShell terminal in the repository:
 
 ```powershell
-cd C:\Users\rapha\Downloads\SINAN-MCP-GitHub
+cd "$HOME\Downloads\SINAN-MCP-GitHub"
 py -3.11 -m sinan_mcp demo
 
 $tc = Get-ChildItem "$HOME\Downloads\tunnel-client" -Filter tunnel-client.exe -Recurse -File |
