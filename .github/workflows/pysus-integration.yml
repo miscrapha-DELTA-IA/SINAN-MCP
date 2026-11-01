@@ -28,14 +28,11 @@ jobs:
         run: python scripts/inspect_catalog.py
       - name: Test discovery with a separate empty cache (Windows isolated)
         if: runner.os == 'Windows'
-        continue-on-error: true
         run: python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --source catalog --cache-dir ./data/ci-pysus-fresh
       - name: Discover public SINAN TUBE 2024 file names (no microdata download)
-        continue-on-error: ${{ runner.os == 'Windows' }} # upstream 2.11.7 returns empty on Windows
         timeout-minutes: 3
         run: python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --source catalog
       - name: Discover public SINAN DENG 2024 file names (no microdata download)
-        continue-on-error: ${{ runner.os == 'Windows' }} # log remains visible; NOT proof of Windows support
         timeout-minutes: 3
         run: python -m sinan_mcp descobrir-pysus --agravo DENG --ano 2024 --source catalog
       # No real records are downloaded or uploaded to CI artifacts.

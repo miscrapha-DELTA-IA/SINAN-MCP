@@ -47,21 +47,19 @@ For numeric tools, provide `ano_inicio=ano_fim=2024`, `uf="PI"`, `por="raca_cor"
 
 **Scientific caveats:** `ano` is the **imported file-year**, not necessarily the notification, diagnosis or closure year. Counts are records, not incidence or unique patients. The exploratory TB abandonment ratio computes `(SITUA_ENCE=2 or 10)/(SITUA_ENCE=1,2,10)`; without a formally validated case cohort and longitudinal deduplication it **must not be described as the Ministry's official treatment abandonment indicator**.
 
-## Windows PySUS catalog diagnostics
+## Windows-compatible PySUS catalogue discovery (v0.3.1 alpha)
 
-On Windows, PySUS 2.11.7 can return an **empty catalog FileBag** for a known file even when the same query works on Linux. This has been reproduced in GitHub Actions, so do not assume the file is missing or reinstall the entire package. First inspect the catalog without downloading microdata:
+PySUS 2.11.7's normal FileBag discovery can return zero results on Windows even though the actual DuckDB metadata catalogue contains the correct files. **SINAN MCP now automatically falls back to a read-only query using PySUS's existing local metadata connection.** This fallback was verified on Windows GitHub Actions with the real TUBE/DENG 2024 catalogue; **no epidemiological records were downloaded**.
 
 ```powershell
+python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024
+python -m sinan_mcp descobrir-pysus --agravo DENG --ano 2024
 python -m sinan_mcp diagnosticar-pysus --agravo TUBE --ano 2024
 ```
 
-Test a **separate new cache** without deleting your PySUS files:
+The JSON will report `modo_descoberta: "duckdb_local_metadados"` when it used this recovery path. It returns **metadata filenames**, not downloaded datasets. Upstream PySUS ingestion via `importar-pysus` is not yet verified on Windows because it still uses the upstream FileBag download path. For real ingestion on Windows, obtain a public Parquet file from a verified source and use `importar-parquet` below, or download on Linux/WSL and then import locally. Do not publish original files or the SQLite database.
 
-```powershell
-python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --cache-dir .\\data\\pysus-recovery
-```
-
-Use the same `--cache-dir` for later import if discovery succeeds. **Confirmed limitation:** using an isolated cache did not recover Windows GitHub Actions. Both `catalog` and `origin` returned zero files, despite the Linux jobs succeeding. Diagnose the upstream behavior without assuming absent SINAN files. **Workaround:** import a public, verified Parquet file that you obtained separately, or run PySUS discovery on a supported Linux/WSL environment. See [Portuguese instructions](docs/pt-BR.md).
+A new `--cache-dir` remains available for diagnostics, but changing the cache alone was not the solution. See [Portuguese instructions](docs/pt-BR.md).
 
 ## Local Parquet workaround for Windows (no catalog discovery)
 

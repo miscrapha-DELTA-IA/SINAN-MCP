@@ -49,25 +49,33 @@ O importador opcional com `.[ingest]` baixa arquivos e processa CSV/Parquet em l
 O relatório inclui contagens exatas e não é disponibilizado ao LLM.
 
 
-## Diagnóstico da descoberta PySUS no Windows
+## Descoberta PySUS corrigida no Windows — v0.3.1 alpha
 
-Se a instalação terminou, mas `descobrir-pysus` encontrou zero arquivos de TUBE/DENG, **não reinstale todas as dependências**. Reproduzimos esta diferença entre Windows e Linux nas ações do GitHub com PySUS 2.11.7. Execute:
+O PySUS 2.11.7 pode retornar `FileBag` vazio no Windows apesar de o arquivo de catálogo DuckDB conter metadados válidos. O SINAN MCP agora **consulta esses metadados locais diretamente, em modo somente leitura**, quando a descoberta normal vem vazia. A recuperação de `TUBEBR24.parquet` e `DENGBR24.parquet` foi confirmada no Windows do GitHub Actions.
+
+Após atualizar o projeto, execute:
+
+```powershell
+git pull origin main
+python -m pip install -e ".[ingest,dev]"
+python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024
+python -m sinan_mcp descobrir-pysus --agravo DENG --ano 2024
+```
+
+Quando usada a recuperação, o campo `modo_descoberta` deve mostrar `duckdb_local_metadados`. **Isso confirma apenas a descoberta dos nomes dos arquivos, não baixa microdados.**
+
+Para inspecionar versão, cache e os resultados das duas consultas ao PySUS:
 
 ```powershell
 python -m sinan_mcp diagnosticar-pysus --agravo TUBE --ano 2024
-python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --cache-dir .\\data\\pysus-recovery
 ```
 
-O segundo comando escolhe uma pasta nova de cache sem apagar `$HOME\\pysus`. Se funcionar, use a mesma opção `--cache-dir` na importação. O diagnóstico **não baixa microdados** e informa a disponibilidade nos modos catalog/origin, a versão PySUS e metadados dos arquivos do cache. Um retorno vazio não significa ausência de dados no DATASUS.
-
-
-### Alternativa que não depende da descoberta do PySUS no Windows
-
-Reproduzimos a falha no Windows do GitHub, inclusive com **cache novo**: `catalog` e `origin` não localizaram os arquivos. Isso não comprova ausência dos dados e uma troca de cache não é correção confirmada. Para continuar trabalhando, obtenha um arquivo **Parquet público, de origem verificável**, e execute:
+Ainda não validamos a importação remota nativa do PySUS no Windows; ela pode continuar falhando. Para importar arquivos Parquet **públicos e obtidos de fonte verificada** já presentes no computador:
 
 ```powershell
 python -m sinan_mcp importar-parquet .\\TUBEBR24.parquet --agravo TUBE --ano 2024 --status desconhecido
 python -m sinan_mcp diagnosticar-base --agravo TUBE --ano 2024
 ```
 
-O arquivo deve existir localmente. Essa operação não depende de catálogo remoto e faz projeção limitada de atributos. Mantenha originais e banco SQLite fora do GitHub; o conjunto de atributos projetado ainda pode conter quase-identificadores de saúde e não está formalmente anonimizado. Alternativamente, use Linux/WSL2 para executar a descoberta e obter os arquivos antes de importá-los no Windows.
+O Parquet original e o SQLite contêm informações potencialmente sensíveis. **Não os envie ao GitHub**, nem apresente a medida exploratória de abandono como um indicador oficial do Ministério da Saúde.
+

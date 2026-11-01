@@ -177,8 +177,15 @@ def diagnosticar(agravo: str, ano: int) -> dict:
             "presente": path.is_file(),
             "bytes": path.stat().st_size if path.is_file() else None,
         }
+    recovered = _catalog_paths(a, ano) if not results.get("catalog", {}).get("disponivel") else []
     return {
         "agravo": a, "ano_do_arquivo": ano,
+        "fallback_metadados": {
+            "arquivos": [path.replace("\\", "/").rsplit("/", 1)[-1] for path in recovered],
+            "quantidade": len(recovered),
+            "disponivel": bool(recovered),
+            "metodo": "duckdb_local_metadados",
+        },
         "ambiente": {"plataforma": platform.system(),
                      "python": sys.version.split()[0],
                      "pysus": str(getattr(pysus, "__version__", "desconhecido")),
@@ -188,10 +195,11 @@ def diagnosticar(agravo: str, ano: int) -> dict:
         "fontes": results,
         "download_realizado": False,
         "proximo_passo": (
-            "Se ambas as fontes estiverem vazias, teste o comando descobrir-pysus "
-            "com --cache-dir em uma pasta NOVA para isolar um catálogo local antigo. "
-            "Verifique conectividade HTTPS ao catálogo PySUS. "
-            "Não apague o cache existente ou baixe bases indiscriminadamente."
+            "Se o FileBag vier vazio no Windows, o SINAN MCP tentará recuperar "
+            "apenas nomes de arquivos pelo catálogo DuckDB local. "
+            "Isso não comprova a importação nem baixa microdados. "
+            "Use importar-parquet com arquivo público verificado para ingestão local. "
+            "Não apague o cache ou baixe bases indiscriminadamente."
         ),
     }
 

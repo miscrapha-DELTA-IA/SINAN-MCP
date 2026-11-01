@@ -2,14 +2,12 @@
 
 ## 0.3.1-alpha.1 (2026-11-01)
 
-- Windows PySUS empty-catalog incident reproduced in Windows GitHub Actions, unlike Linux.
-- Introduced administrator-only `diagnosticar-pysus` and optional isolated `--cache-dir` for discovery/import, preserving existing local caches.
-- Catalog-empty failures now provide actionable guidance instead of unhandled tracebacks.
-- Extended optional PySUS CI coverage to Windows.
-- **Confirmed upstream limitation:** live Windows PySUS catalogue discovery returned zero files even with a brand-new isolated cache; Linux returned public TUBE/DENG filenames.
-- Added `importar-parquet` for local Parquet ingestion without PySUS catalogue discovery (synthetic CI coverage on Windows/Linux).
-- An isolated cache is diagnostic only, not a proven fix.
-
+- Reproduced PySUS 2.11.7 Windows FileBag-empty problem against real TUBE/DENG metadata catalogue.
+- Added **Windows-tested read-only metadata fallback** using PySUS's already-open shared SQLAlchemy/DuckDB engine. Restored discovery of public TUBEBR24 and DENGBR24 names without downloading microdata.
+- Added `diagnosticar-pysus` and isolated `--cache-dir` options. Changing cache alone is **not** considered a fix.
+- Added direct administrative `importar-parquet` for verified locally obtained public files, bypassing PySUS's problematic Windows remote ingest.
+- Verified synthetic import tests and real remote metadata discovery through Linux and Windows GitHub Actions.
+- **Not yet validated:** direct PySUS remote download/import on Windows, and clinical/official indicator equivalence.
 
 ## 0.3.0-alpha.1 (2026-11-01)
 
