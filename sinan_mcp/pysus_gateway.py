@@ -75,15 +75,24 @@ def _catalog_paths(agravo: str, ano: int, catalog_path: Path | None = None) -> l
     prefix = f"public/data/ftp/sinan/{agravo}/{ano}/"
     # Explicit year filter + fixed path prefix, not a raw SQL or user path.
     try:
-        conn = duckdb.connect(str(catalog_path), read_only=True)
-        try:
-            rows = conn.execute(
-                "SELECT path FROM pysus.files WHERE year = ? "
-                "AND starts_with(path, ?) ORDER BY path LIMIT ?",
-                [ano, prefix, MAX_FILES + 1],
-            ).fetchall()
-        finally:
-            conn.close()
+        # PySUS keeps a process-wide DuckDB engine attached to this file.
+        # A second read_only=True connection to the same file may fail on
+        # Windows due to incompatible open options. Copy only the small
+        # catalog metadata DB and query the copy read-only.
+        import shutil
+        from tempfile import TemporaryDirectory
+        with TemporaryDirectory(prefix="sinan-catalog-read-") as tmp:
+            metadata_copy = Path(tmp) / "catalog_sinan.duckdb"
+            shutil.copyfile(catalog_path, metadata_copy)
+            conn = duckdb.connect(str(metadata_copy), read_only=True)
+            try:
+                rows = conn.execute(
+                    "SELECT path FROM pysus.files WHERE year = ? "
+                    "AND starts_with(path, ?) ORDER BY path LIMIT ?",
+                    [ano, prefix, MAX_FILES + 1],
+                ).fetchall()
+            finally:
+                conn.close()
     except Exception:
         # An incompatible or incomplete cached catalog is not evidence
         # that the source is absent; let the normal actionable error explain.
