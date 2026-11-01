@@ -83,3 +83,37 @@ def test_mcp_in_memory_client(db, monkeypatch):
             assert result is not None
             assert result.get('proveniencia', {}).get('ano_do_arquivo') == 2024
     asyncio.run(probe())
+
+
+def test_demo_refuses_existing_real_database(tmp_path):
+    from sinan_mcp.core import ingest_csv
+    import csv
+    path = tmp_path / 'research.db'
+    csv_path = tmp_path / 'data.csv'
+    with csv_path.open('w', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames=['ID_MN_RESI', 'CS_RACA'])
+        writer.writeheader()
+        writer.writerow({'ID_MN_RESI': '221100', 'CS_RACA': '4'})
+    ingest_csv(path, csv_path, agravo='TUBE', ano=2024)
+    with pytest.raises(ValueError, match='dados não sintéticos'):
+        build_demo(path)
+
+
+def test_mcp_stdio_subprocess(db):
+    pytest.importorskip('mcp')
+    from mcp import Client, StdioServerParameters
+    import asyncio
+    import sys
+    params = StdioServerParameters(command=sys.executable,
+                                   args=['-m', 'sinan_mcp', '--db', str(db), 'servir'])
+
+    async def probe():
+        async with Client(params) as client:
+            names = {t.name for t in (await client.list_tools()).tools}
+            assert 'contar_notificacoes' in names
+            result = await client.call_tool('contar_notificacoes', {
+                'agravo': 'TUBE', 'ano_inicio': 2024, 'ano_fim': 2024,
+                'uf': 'PI', 'por': 'sexo'})
+            assert not result.is_error
+            assert result.structured_content['proveniencia']['tipo_de_fonte'] == 'synthetic'
+    asyncio.run(probe())
