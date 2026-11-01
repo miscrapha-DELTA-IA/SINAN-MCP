@@ -1,6 +1,8 @@
 name: PySUS optional integration
 on:
   workflow_dispatch:
+  push:
+    branches: [feat/v0.3-pysus-quality-pilots]
 permissions:
   contents: read
 jobs:
@@ -14,5 +16,8 @@ jobs:
           python-version: '3.11'
       - run: python -m pip install -e '.[dev,ingest]'
       - run: python -m pytest -q tests/test_ingest_pysus.py
-      - run: python -c "import pysus, pyarrow; print('PySUS/PyArrow dependencies imported')"
+      - run: python -c "import pysus, pyarrow; assert callable(pysus.ftp.sinan); print('PySUS/PyArrow API loaded')"
+      - name: Discover public SINAN TUBE 2024 file names (no microdata download)
+        timeout-minutes: 3
+        run: python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --source catalog
       # No real records are downloaded or uploaded to CI artifacts.
