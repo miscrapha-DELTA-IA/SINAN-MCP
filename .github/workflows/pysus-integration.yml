@@ -21,6 +21,12 @@ jobs:
       - run: python -m pip install -e '.[dev,ingest]'
       - run: python -m pytest -q tests/test_ingest_pysus.py
       - run: python -c "import pysus, pyarrow; assert callable(pysus.ftp.sinan); print('PySUS/PyArrow API loaded')"
+      - name: Inspect PySUS catalog and source diagnostics (no downloads)
+        run: python -m sinan_mcp diagnosticar-pysus --agravo TUBE --ano 2024
+      - name: Test discovery with a separate empty cache (Windows isolated)
+        if: runner.os == 'Windows'
+        continue-on-error: true
+        run: python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --source catalog --cache-dir ./data/ci-pysus-fresh
       - name: Discover public SINAN TUBE 2024 file names (no microdata download)
         timeout-minutes: 3
         run: python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --source catalog
