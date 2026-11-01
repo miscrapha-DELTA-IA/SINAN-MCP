@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - fix/diagnose-pysus-windows-cache
+      - feat/secure-windows-pysus-import
 permissions:
   contents: read
 jobs:
