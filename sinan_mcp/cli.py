@@ -18,15 +18,26 @@ def main() -> None:
     csvp.add_argument("--status", choices=["final", "preliminar", "desconhecido"], default="desconhecido")
     csvp.add_argument("--encoding", default="utf-8-sig")
     csvp.add_argument("--delimiter", default="auto")
+    parquet = cmd.add_parser("importar-parquet", help="Importar Parquet local sem depender de descoberta PySUS")
+    parquet.add_argument("arquivo", type=Path)
+    parquet.add_argument("--agravo", required=True)
+    parquet.add_argument("--ano", required=True, type=int)
+    parquet.add_argument("--status", choices=["final", "preliminar", "desconhecido"], default="desconhecido")
     py = cmd.add_parser("importar-pysus", help="Baixar base pública via PySUS e importar")
     py.add_argument("--agravo", required=True)
     py.add_argument("--ano", required=True, type=int)
     py.add_argument("--source", choices=["catalog", "origin"], default="catalog")
+    py.add_argument("--cache-dir", type=Path, help="Usar cache PySUS alternativo")
     py.add_argument("--status", choices=["final", "preliminar", "desconhecido"], default="desconhecido")
     discovery = cmd.add_parser("descobrir-pysus", help="Descobrir arquivos remotos SINAN sem baixar microdados")
     discovery.add_argument("--agravo", required=True)
     discovery.add_argument("--ano", required=True, type=int)
     discovery.add_argument("--source", choices=["auto", "catalog", "origin"], default="auto")
+    discovery.add_argument("--cache-dir", type=Path, help="Cache PySUS alternativo para diagnóstico")
+    inspector = cmd.add_parser("diagnosticar-pysus", help="Diagnosticar catálogo PySUS, sem baixar microdados")
+    inspector.add_argument("--agravo", required=True)
+    inspector.add_argument("--ano", required=True, type=int)
+    inspector.add_argument("--cache-dir", type=Path)
     diagnostic = cmd.add_parser("diagnosticar-base", help="Relatório LOCAL de completude (administrativo)")
     diagnostic.add_argument("--agravo", required=True)
     diagnostic.add_argument("--ano", required=True, type=int)
@@ -38,18 +49,44 @@ def main() -> None:
     serve.add_argument("--port", type=int, default=8000)
     args = parser.parse_args()
     os.environ["SINAN_DB_PATH"] = str(Path(args.db).expanduser().resolve())
+    if getattr(args, "cache_dir", None) is not None:
+        # Before importing PySUS: its cache path is bound at import time.
+        os.environ["PYSUS_CACHEPATH"] = str(args.cache_dir.expanduser().resolve())
     if args.comando == "importar-csv":
         r = ingest_csv(args.db, args.arquivo, agravo=args.agravo, ano=args.ano,
                        status=args.status, encoding=args.encoding, delimiter=args.delimiter)
         print(r)
+    elif args.comando == "importar-parquet":
+        from .local_files import importar_parquet
+        try:
+            result = importar_parquet(args.db, args.arquivo, agravo=args.agravo,
+                                     ano=args.ano, status=args.status)
+        except (RuntimeError, ValueError, OSError) as exc:
+            parser.exit(2, f"Falha na importação Parquet: {exc}\n")
+        print(result)
     elif args.comando == "importar-pysus":
-        r = ingest_pysus(args.db, agravo=args.agravo, ano=args.ano,
-                         status=args.status, source=args.source)
-        print(r)
+        try:
+            result = ingest_pysus(args.db, agravo=args.agravo, ano=args.ano,
+                                  status=args.status, source=args.source)
+        except (RuntimeError, ValueError, OSError) as exc:
+            parser.exit(2, f"Falha na importação: {exc}\n")
+        print(result)
     elif args.comando == "descobrir-pysus":
         import json
         from .pysus_gateway import descobrir
-        print(json.dumps(descobrir(args.agravo, args.ano, args.source), ensure_ascii=False, indent=2))
+        try:
+            result = descobrir(args.agravo, args.ano, args.source)
+        except (RuntimeError, ValueError, OSError) as exc:
+            parser.exit(2, f"Falha na descoberta: {exc}\n")
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+    elif args.comando == "diagnosticar-pysus":
+        import json
+        from .pysus_gateway import diagnosticar
+        try:
+            result = diagnosticar(args.agravo, args.ano)
+        except (RuntimeError, ValueError, OSError) as exc:
+            parser.exit(2, f"Falha no diagnóstico: {exc}\n")
+        print(json.dumps(result, ensure_ascii=False, indent=2))
     elif args.comando == "diagnosticar-base":
         import json
         print(json.dumps(diagnosticar_base(args.db, args.agravo, args.ano), ensure_ascii=False, indent=2))
