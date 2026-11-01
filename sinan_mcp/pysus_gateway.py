@@ -74,23 +74,25 @@ def _catalog_paths(agravo: str, ano: int, catalog_path: Path | None = None) -> l
         return []
     prefix = f"public/data/ftp/sinan/{agravo}/{ano}/"
     # Explicit year filter + fixed path prefix, not a raw SQL or user path.
+    sql = ("SELECT path FROM pysus.files WHERE year = ? "
+           "AND starts_with(path, ?) ORDER BY path LIMIT ?")
     try:
-        # PySUS keeps a process-wide DuckDB engine attached to this file.
-        # A second read_only=True connection to the same file may fail on
-        # Windows due to incompatible open options. Copy only the small
-        # catalog metadata DB and query the copy read-only.
-        import shutil
-        from tempfile import TemporaryDirectory
-        with TemporaryDirectory(prefix="sinan-catalog-read-") as tmp:
-            metadata_copy = Path(tmp) / "catalog_sinan.duckdb"
-            shutil.copyfile(catalog_path, metadata_copy)
-            conn = duckdb.connect(str(metadata_copy), read_only=True)
-            try:
-                rows = conn.execute(
-                    "SELECT path FROM pysus.files WHERE year = ? "
-                    "AND starts_with(path, ?) ORDER BY path LIMIT ?",
-                    [ano, prefix, MAX_FILES + 1],
+        from pysus.api.ducklake.catalog import adapters
+        # PySUS keeps one DuckDB engine per catalog file for the lifetime
+        # of the Python process. Reusing that engine avoids a Windows file
+        # lock/read-only configuration conflict.
+        engines = getattr(adapters, "_SHARED_ENGINES", {})
+        engine = engines.get(str(catalog_path.resolve()))
+        if engine is not None:
+            with engine.connect() as connection:
+                rows = connection.exec_driver_sql(
+                    sql, (ano, prefix, MAX_FILES + 1)
                 ).fetchall()
+        else:
+            # Safe fallback for an already-closed PySUS engine.
+            conn = duckdb.connect(str(catalog_path), read_only=True)
+            try:
+                rows = conn.execute(sql, [ano, prefix, MAX_FILES + 1]).fetchall()
             finally:
                 conn.close()
     except Exception:

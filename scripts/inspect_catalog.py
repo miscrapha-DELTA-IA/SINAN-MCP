@@ -21,6 +21,14 @@ if path.is_file():
                 result["year_2024_count"] = conn.execute(
                     "SELECT COUNT(*) FROM pysus.files WHERE year=2024"
                 ).fetchone()[0]
+                result["tb_2024_ftp_paths"] = conn.execute(
+                    "SELECT path FROM pysus.files WHERE year=2024 "
+                    "AND starts_with(path, 'public/data/ftp/sinan/TUBE/2024/')"
+                ).fetchall()
+                result["deng_2024_ftp_paths"] = conn.execute(
+                    "SELECT path FROM pysus.files WHERE year=2024 "
+                    "AND starts_with(path, 'public/data/ftp/sinan/DENG/2024/')"
+                ).fetchall()
                 result["samples_2024"] = conn.execute(
                     "SELECT path FROM pysus.files WHERE year=2024 ORDER BY path LIMIT 8"
                 ).fetchall()
