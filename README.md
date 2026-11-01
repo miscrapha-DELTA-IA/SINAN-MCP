@@ -90,3 +90,15 @@ Includes synthetic core/REST/privacy tests and an **in-memory real MCP client** 
 - [Official SINAN portal](https://portalsinan.saude.gov.br/) · [PySUS docs](https://pysus.readthedocs.io/en/stable/quickstart.html) · [MCP Python SDK](https://py.sdk.modelcontextprotocol.io/)
 
 MIT-licensed original code; not an official DATASUS/SINAN service.
+
+## Windows / empty PySUS catalogs
+
+If both catalog and origin return `nao_confirmado`, the public PySUS 2.11.x implementation does **not** provide two independent backend checks: both use DuckLake catalog metadata. Test with a new isolated **metadata-only** cache and an HTTPS HEAD diagnostic:
+
+```powershell
+py -3.11 -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --cache-novo --diagnostico
+```
+
+`--cache-novo` changes `PYSUS_CACHEPATH` **only for this process**, creates a new cache under the project's ignored `data/` folder, and leaves the original PySUS cache untouched. The PySUS library may download public **catalog databases** for discovery; it does not download SINAN patient records because `download=False` is passed to the file fetcher. The HTTPS HEAD checks the public metadata index and reports status codes without printing credentials or local paths.
+
+If the fresh catalog is empty but HTTPS responds, keep the diagnostic output for investigation (a connection to the catalog file does **not** prove that the dataset index is correctly populated). If HTTPS fails, check local DNS, corporate proxies or firewall restrictions; avoid disabling TLS certificate verification. Do not import real health records as a debugging step.

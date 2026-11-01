@@ -1,0 +1,30 @@
+name: PySUS Windows catalog diagnostic
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - fix/diagnose-pysus-windows-cache
+permissions:
+  contents: read
+jobs:
+  catalog-diagnostic:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install optional PySUS and test dependencies
+        run: python -m pip install -e ".[dev,ingest]"
+      - name: Offline adapter unit tests
+        run: python -m pytest -q tests/test_ingest_pysus.py
+      - name: Discover TUBE 2024 in isolated cache and inspect HTTPS
+        run: python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --cache-novo --diagnostico
+      - name: Discover DENG 2024 in isolated cache and inspect HTTPS
+        run: python -m sinan_mcp descobrir-pysus --agravo DENG --ano 2024 --cache-novo --diagnostico
+      # No patient-level downloads, no credentials and no uploaded data artifacts.

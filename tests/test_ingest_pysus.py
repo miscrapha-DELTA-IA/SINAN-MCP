@@ -154,3 +154,23 @@ def test_discovery_source_error_then_fallback(monkeypatch):
     assert result['status'] == 'encontrado'
     assert result['tentativas'][0]['erro_tipo'] == 'TimeoutError'
     assert 'private connection details' not in str(result)
+
+
+def test_create_isolated_cache_without_touching_existing(tmp_path, monkeypatch):
+    import os
+    from sinan_mcp.pysus_diagnostics import create_isolated_cache
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv('PYSUS_CACHEPATH', raising=False)
+    isolated = create_isolated_cache()
+    assert isolated.is_dir()
+    assert isolated.parent.name == 'data'
+    assert os.environ['PYSUS_CACHEPATH'] == str(isolated.resolve())
+    assert create_isolated_cache() != isolated
+
+
+def test_discovery_code_explains_common_catalog_index(monkeypatch):
+    monkeypatch.setattr(g, '_pysus', lambda: SimpleNamespace(sinan=lambda **_: FileBag([])))
+    out = g.descobrir('TUBE', 2024)
+    assert out['status'] == 'nao_confirmado'
+    assert out['download_realizado'] is False
+    assert 'NÃO significa ausência' in out['aviso']

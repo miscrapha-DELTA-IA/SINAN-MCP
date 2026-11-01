@@ -27,6 +27,10 @@ def main() -> None:
     discovery.add_argument("--agravo", required=True)
     discovery.add_argument("--ano", required=True, type=int)
     discovery.add_argument("--source", choices=["auto", "catalog", "origin"], default="auto")
+    discovery.add_argument("--cache-novo", action="store_true",
+                           help="Usa um cache PySUS isolado novo sem alterar o cache existente")
+    discovery.add_argument("--diagnostico", action="store_true",
+                           help="Mostra estado dos catálogos locais e testa HEAD HTTPS do catálogo público")
     diagnostic = cmd.add_parser("diagnosticar-base", help="Relatório LOCAL de completude (administrativo)")
     diagnostic.add_argument("--agravo", required=True)
     diagnostic.add_argument("--ano", required=True, type=int)
@@ -48,8 +52,23 @@ def main() -> None:
         print(r)
     elif args.comando == "descobrir-pysus":
         import json
+        from .pysus_diagnostics import create_isolated_cache, catalog_diagnostics
+        if args.cache_novo:
+            create_isolated_cache()
         from .pysus_gateway import descobrir
-        print(json.dumps(descobrir(args.agravo, args.ano, args.source), ensure_ascii=False, indent=2))
+        try:
+            result = descobrir(args.agravo, args.ano, args.source)
+        except (OSError, RuntimeError, ValueError) as exc:
+            if not args.diagnostico:
+                raise
+            result = {"status": "erro", "tipo_erro": type(exc).__name__,
+                      "aviso": "Descoberta falhou; consulte o diagnostico de catalogo/rede."}
+        if args.diagnostico:
+            result["diagnostico"] = catalog_diagnostics()
+        if args.cache_novo:
+            result["cache_isolado"] = True
+            result["nota_cache"] = "Cache de metadados novo salvo em data/; cache PySUS anterior preservado."
+        print(json.dumps(result, ensure_ascii=False, indent=2))
     elif args.comando == "diagnosticar-base":
         import json
         print(json.dumps(diagnosticar_base(args.db, args.agravo, args.ano), ensure_ascii=False, indent=2))
