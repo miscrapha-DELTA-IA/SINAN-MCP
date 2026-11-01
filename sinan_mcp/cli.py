@@ -23,6 +23,9 @@ def main() -> None:
     py.add_argument("--ano", required=True, type=int)
     py.add_argument("--source", choices=["catalog", "origin"], default="catalog")
     py.add_argument("--status", choices=["final", "preliminar", "desconhecido"], default="desconhecido")
+    preview = cmd.add_parser("planejar-pysus", help="Prévia de download: metadados, tamanho e checksum, sem microdados")
+    preview.add_argument("--agravo", required=True)
+    preview.add_argument("--ano", type=int, required=True)
     discovery = cmd.add_parser("descobrir-pysus", help="Descobrir arquivos remotos SINAN sem baixar microdados")
     discovery.add_argument("--agravo", required=True)
     discovery.add_argument("--ano", required=True, type=int)
@@ -50,6 +53,29 @@ def main() -> None:
         r = ingest_pysus(args.db, agravo=args.agravo, ano=args.ano,
                          status=args.status, source=args.source)
         print(r)
+    elif args.comando == "planejar-pysus":
+        import json
+        from .pysus_gateway import _pysus
+        from .catalog_import import manifest
+        from .core import validate_agravo
+        agravo = validate_agravo(args.agravo)
+        # Hydrate PySUS's metadata caches only; no clinical file downloads.
+        _pysus().sinan(disease=agravo, year=args.ano, source="catalog",
+                       download=False, as_dataframe=False)
+        entries = manifest(agravo, args.ano)
+        print(json.dumps({
+            "agravo": agravo, "ano_do_arquivo": args.ano,
+            "fonte": "pysus-ftp-mirror/ducklake",
+            "total_arquivos": len(entries),
+            "bytes_estimados": sum(x["size"] for x in entries),
+            "arquivos": [
+                {"nome": x["name"], "bytes": x["size"],
+                 "checksum_disponivel": bool(x["sha256"])}
+                for x in entries
+            ],
+            "download_realizado": False,
+            "aviso": "Prévia apenas. A importação precisa de comando separado e dados reais exigem controles de acesso.",
+        }, ensure_ascii=False, indent=2))
     elif args.comando == "descobrir-pysus":
         import json
         from .pysus_diagnostics import create_isolated_cache, catalog_diagnostics

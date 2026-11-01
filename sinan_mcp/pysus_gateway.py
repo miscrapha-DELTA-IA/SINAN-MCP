@@ -148,6 +148,15 @@ def importar(db_path: str | Path, agravo: str, ano: int,
     a = _validate(agravo, ano, source)
     remote = _pysus().sinan(disease=a, year=ano, source=source,
                             download=False, as_dataframe=False)
+    if remote is None or not list(remote):
+        # On PySUS 2.11.x Windows, FileBag discovery can be empty while the
+        # authoritative public metadata index has the relevant FTP mirror file.
+        # Only explicit --source catalog may use this path; never substitute
+        # for --source origin without user authorization.
+        if source != "catalog":
+            raise ValueError("PySUS não retornou arquivos da origem solicitada; nada foi importado")
+        from .catalog_import import importar_fallback
+        return importar_fallback(db_path, agravo=a, ano=ano, status=status)
     _files(remote)
     local = remote.download()
     paths = sorted((_file_path(item) for item in _files(local)), key=lambda p: p.name)

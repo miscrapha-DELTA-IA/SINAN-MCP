@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0-alpha.2 (2026-11-01)
+
+- Added administrator-only metadata import preview for public FTP-mirror Parquet snapshots.
+- Added conservative Windows fallback when the PySUS FileBag is empty: validated DuckLake catalog manifest, fixed-host HTTPS transfer with size/optional SHA256 checking, streamed SQLite projection and temporary raw-file cleanup.
+- No hidden source substitution: origin import still requires a working origin FileBag. No real clinical data downloaded during CI.
+- **Still pending:** Windows end-to-end real-file download validation and year-specific epidemiological dictionary validation.
+
+
 ## 0.3.0-alpha.1 (2026-11-01)
 
 - PySUS discovery without download, plus streamed Parquet/CSV ingestion and content fingerprint.

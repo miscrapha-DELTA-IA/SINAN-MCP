@@ -30,5 +30,9 @@ jobs:
       - name: Discover DENG 2024 in isolated cache and inspect HTTPS
         run: python -m sinan_mcp descobrir-pysus --agravo DENG --ano 2024 --diagnostico
       # No patient-level downloads, no credentials and no uploaded data artifacts.
+      - name: Preview import TUBE 2024 (metadata only)
+        run: python -m sinan_mcp planejar-pysus --agravo TUBE --ano 2024
+      - name: Preview import DENG 2024 (metadata only)
+        run: python -m sinan_mcp planejar-pysus --agravo DENG --ano 2024
       - name: Compare direct DuckDB file index against PySUS discovery
         run: python scripts/probe_pysus_catalog.py

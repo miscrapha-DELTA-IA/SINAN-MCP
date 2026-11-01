@@ -116,3 +116,22 @@ py -3.11 -m sinan_mcp descobrir-pysus --agravo DENG --ano 2024 --diagnostico
 ```
 
 Use `--cache-novo` only to isolate further cache problems. If the discovery reports `origem: "ducklake_sql_local/ftp-mirror"`, the **metadata-only** fallback was activated. The regular `importar-pysus` command still depends on the upstream PySUS download mechanism and may need a separate Windows compatibility fix.
+
+## v0.3.0a2 — Windows safe import (experimental)
+
+File discovery via DuckLake SQL has been tested on Windows, but discovery alone is **not** a downloaded or epidemiologically validated dataset. To preview the public FTP-mirror Parquet file size and expected checksum (no clinical data transferred):
+
+```powershell
+py -3.11 -m sinan_mcp planejar-pysus --agravo TUBE --ano 2024
+```
+
+Only if the file size, storage and access policies are appropriate, **explicitly** import into your own private database:
+
+```powershell
+py -3.11 -m sinan_mcp --db .\data\sinan.sqlite3 importar-pysus --agravo TUBE --ano 2024 --source catalog --status desconhecido
+py -3.11 -m sinan_mcp --db .\data\sinan.sqlite3 diagnosticar-base --agravo TUBE --ano 2024
+```
+
+When PySUS returns an empty `FileBag` on Windows, the importer now resolves **only** the selected FTP-mirror files from the local public DuckLake catalog, downloads them over certificate-verified HTTPS with a fixed host, checks reported byte lengths and available SHA-256 digests, and streams only selected records into a local SQLite projection. Temporary raw Parquet files are removed on normal completion, but backups, OS cache, unexpected interruptions and the SQLite quasi-identifiers can still carry privacy risk; follow applicable institutional safeguards. No patients or raw files are sent to GitHub/CI, and public MCP/REST tools cannot trigger ingestion.
+
+Do **not** infer that a catalog entry guarantees the file is available, that remote bytes match the recorded metadata, or that the TB exploratory proportion is a certified official metric. Full real-data import is **not yet verified**. `--source origin` refuses an empty PySUS result rather than silently switching to the catalog mirror. The importer enforces a 2 GiB limit per file and 3 GiB aggregate catalog size; large datasets may require a dedicated ingestion plan.
