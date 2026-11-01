@@ -79,10 +79,29 @@ def descobrir(agravo: str, ano: int, source: str = "auto") -> dict:
             attempts.append({"fonte": selected, "status": "falha_de_acesso",
                              "erro_tipo": type(exc).__name__})
         # Unexpected errors are raised rather than masked, to aid debugging.
+    # PySUS 2.11.x on Windows may return an empty FileBag even when its own
+    # DuckLake catalog includes matching public file metadata. A narrow SQL
+    # query on the already-open catalog engine avoids relying on broken ORM
+    # filtering. It MUST NOT be used for clinical data or for importing files.
+    try:
+        from .catalog_fallback import lookup_after_pysus
+        names = lookup_after_pysus(a, ano)
+        attempts.append({"fonte": "ducklake_sql_local",
+                         "status": "encontrado" if names else "catalogo_vazio",
+                         "total_arquivos": len(names)})
+        if names:
+            return {"agravo": a, "ano_do_arquivo": ano, "status": "encontrado",
+                    "origem": "ducklake_sql_local/ftp-mirror",
+                    "total_arquivos": len(names), "nomes_arquivos": names,
+                    "tentativas": attempts, "download_realizado": False,
+                    "aviso": "Descoberta por consulta SQL de metadados DuckLake. Não valida disponibilidade do conteúdo remoto nem permite importar diretamente; confirmar fonte e integridade."}
+    except (OSError, RuntimeError, ValueError, ImportError) as exc:
+        attempts.append({"fonte": "ducklake_sql_local",
+                         "status": "falha_consulta", "erro_tipo": type(exc).__name__})
     return {"agravo": a, "ano_do_arquivo": ano, "status": "nao_confirmado",
             "origem": None, "total_arquivos": 0, "nomes_arquivos": [],
             "tentativas": attempts, "download_realizado": False,
-            "aviso": "Nenhum resultado confirmado nas fontes consultadas. NÃO significa ausência de dados SINAN. Verifique rede, catálogo PySUS e tente --source origin."}
+            "aviso": "Catalogo nao confirmado. As fontes catalog e origin usam o mesmo indice DuckLake nesta versao; execute --diagnostico para diferenciar problema de rede e catalogo."}
 
 
 def _file_path(item) -> Path:

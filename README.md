@@ -102,3 +102,17 @@ py -3.11 -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --cache-novo --di
 `--cache-novo` changes `PYSUS_CACHEPATH` **only for this process**, creates a new cache under the project's ignored `data/` folder, and leaves the original PySUS cache untouched. The PySUS library may download public **catalog databases** for discovery; it does not download SINAN patient records because `download=False` is passed to the file fetcher. The HTTPS HEAD checks the public metadata index and reports status codes without printing credentials or local paths.
 
 If the fresh catalog is empty but HTTPS responds, keep the diagnostic output for investigation (a connection to the catalog file does **not** prove that the dataset index is correctly populated). If HTTPS fails, check local DNS, corporate proxies or firewall restrictions; avoid disabling TLS certificate verification. Do not import real health records as a debugging step.
+
+### Windows PySUS 2.11.x catalog-query compatibility
+
+A reproducible issue occurs on Windows: PySUS may return empty FileBags despite successfully downloading the DuckLake catalog, which contains the expected TUBE/DENG file records. Linux discovery succeeds with the same catalog. The project now uses a **metadata-only SQL fallback**, strictly parameterized and restricted to public SINAN FTP Parquet file names, when ordinary discovery returns empty. This is an experimental compatibility workaround, **not** direct FTP access or validation that the complete data file is reachable. It does not automatically change the source of any clinical data ingestion.
+
+Try after updating your git clone:
+
+```powershell
+git pull origin main
+py -3.11 -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --diagnostico
+py -3.11 -m sinan_mcp descobrir-pysus --agravo DENG --ano 2024 --diagnostico
+```
+
+Use `--cache-novo` only to isolate further cache problems. If the discovery reports `origem: "ducklake_sql_local/ftp-mirror"`, the **metadata-only** fallback was activated. The regular `importar-pysus` command still depends on the upstream PySUS download mechanism and may need a separate Windows compatibility fix.

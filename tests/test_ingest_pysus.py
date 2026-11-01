@@ -174,3 +174,44 @@ def test_discovery_code_explains_common_catalog_index(monkeypatch):
     assert out['status'] == 'nao_confirmado'
     assert out['download_realizado'] is False
     assert 'NÃO significa ausência' in out['aviso']
+
+
+def test_direct_catalog_query_returns_only_ftp_metadata(tmp_path, monkeypatch):
+    duckdb = pytest.importorskip("duckdb")
+    from sinan_mcp.catalog_fallback import lookup_local, lookup_after_pysus
+    cache = tmp_path / "ducklake"
+    cache.mkdir()
+    db = cache / "catalog_sinan.duckdb"
+    with duckdb.connect(str(db)) as con:
+        con.execute("CREATE SCHEMA pysus")
+        con.execute("CREATE TABLE pysus.dataset_groups (id INTEGER, name VARCHAR)")
+        con.execute("CREATE TABLE pysus.files (path VARCHAR, group_id INTEGER, year INTEGER)")
+        con.execute("INSERT INTO pysus.dataset_groups VALUES (1, 'TUBE'), (2, 'DENG')")
+        con.execute("""INSERT INTO pysus.files VALUES
+            ('public/data/ftp/sinan/TUBE/2024/_/BR/TUBEBR24.parquet', 1, 2024),
+            ('public/data/ftp/sinan/DENG/2024/_/BR/DENGBR24.parquet', 2, 2024),
+            ('public/data/dadosgov/sinan/TUBE/2024/TUBEOTHER.parquet', 1, 2024)""")
+    monkeypatch.setenv("PYSUS_CACHEPATH", str(tmp_path))
+    assert lookup_local("TUBE", 2024) == ["TUBEBR24.parquet"]
+    assert lookup_local("DENG", 2024) == ["DENGBR24.parquet"]
+    assert lookup_local("TUBE", 2023) == []
+    assert lookup_after_pysus("TUBE", 2024) == ["TUBEBR24.parquet"]
+
+
+def test_discovery_falls_back_to_catalog_sql(tmp_path, monkeypatch):
+    duckdb = pytest.importorskip("duckdb")
+    root = tmp_path / "ducklake"
+    root.mkdir()
+    with duckdb.connect(str(root / "catalog_sinan.duckdb")) as con:
+        con.execute("CREATE SCHEMA pysus")
+        con.execute("CREATE TABLE pysus.dataset_groups (id INTEGER, name VARCHAR)")
+        con.execute("CREATE TABLE pysus.files (path VARCHAR, group_id INTEGER, year INTEGER)")
+        con.execute("INSERT INTO pysus.dataset_groups VALUES (1,'TUBE')")
+        con.execute("INSERT INTO pysus.files VALUES ('public/data/ftp/sinan/TUBE/2024/_/BR/TUBEBR24.parquet',1,2024)")
+    monkeypatch.setenv("PYSUS_CACHEPATH", str(tmp_path))
+    monkeypatch.setattr(g, "_pysus", lambda: SimpleNamespace(sinan=lambda **kwargs: FileBag([])))
+    result = g.descobrir("TUBE", 2024)
+    assert result["status"] == "encontrado"
+    assert result["origem"] == "ducklake_sql_local/ftp-mirror"
+    assert result["nomes_arquivos"] == ["TUBEBR24.parquet"]
+    assert result["download_realizado"] is False
