@@ -73,7 +73,8 @@ def test_mcp_in_memory_client(db, monkeypatch):
             definitions = await client.list_tools()
             tools = {t.name for t in definitions.tools}
             assert {'listar_bases', 'descrever_campos', 'contar_notificacoes',
-                    'proporcao_abandono_tuberculose'} <= tools
+                    'proporcao_abandono_tuberculose', 'listar_agravos',
+                    'metodologia_abandono_tuberculose'} <= tools
             output = await client.call_tool('contar_notificacoes', {
                 'agravo': 'TUBE', 'ano_inicio': 2024, 'ano_fim': 2024,
                 'uf': 'PI', 'por': 'raca_cor'
@@ -82,6 +83,9 @@ def test_mcp_in_memory_client(db, monkeypatch):
             result = output.structured_content
             assert result is not None
             assert result.get('proveniencia', {}).get('ano_do_arquivo') == 2024
+            method = await client.call_tool('metodologia_abandono_tuberculose', {})
+            assert not method.is_error
+            assert method.structured_content['situacao'] == 'NAO_OFICIAL'
     asyncio.run(probe())
 
 

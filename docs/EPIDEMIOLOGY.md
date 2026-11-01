@@ -23,7 +23,8 @@ Sources:
 ## Status of validation
 
 - Verified by automated tests: projection excludes direct identifiers, synthetic TUBE/DENG demographic groupings, one-year/one-UF tool disclosure controls, atomic import rollback, administrative completeness diagnostics.
-- Supported by API documentation, but not verified against live sources in this runtime: PySUS 2.11+ FTP catalog discovery and streamable Parquet/CSV downloads.
+- Verified in GitHub Actions: actual PySUS 2.11.7 API discovery of the TUBE 2024 catalog file (no records downloaded).
+- Validated against synthetic fixtures only: streamable Parquet/CSV ingest; live data ingestion not yet verified.
 - Not established: official indicator equivalence, validity of all disease-year mappings, external privacy safety, remote server deployment.
 
 ## Quality assessment

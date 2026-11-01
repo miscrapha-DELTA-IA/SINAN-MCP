@@ -20,4 +20,7 @@ jobs:
       - name: Discover public SINAN TUBE 2024 file names (no microdata download)
         timeout-minutes: 3
         run: python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --source catalog
+      - name: Discover public SINAN DENG 2024 file names (no microdata download)
+        timeout-minutes: 3
+        run: python -m sinan_mcp descobrir-pysus --agravo DENG --ano 2024 --source catalog
       # No real records are downloaded or uploaded to CI artifacts.

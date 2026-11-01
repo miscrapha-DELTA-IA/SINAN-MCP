@@ -51,10 +51,6 @@ def proporcao_abandono_tuberculose(ano_inicio: int | None = None,
                        uf=uf, municipio=municipio, por=por)
 
 
-if __name__ == "__main__":
-    mcp.run()
-
-
 @mcp.tool()
 def listar_agravos() -> dict[str, Any]:
     """Mostra o catálogo de agravos-piloto e distingue análise experimental de indicador oficial."""
@@ -65,3 +61,6 @@ def listar_agravos() -> dict[str, Any]:
 def metodologia_abandono_tuberculose() -> dict[str, Any]:
     """Explica fórmula e limitações da medida EXPLORATÓRIA de abandono; não consulta microdados."""
     return metodologia_tuberculose()
+
+if __name__ == "__main__":
+    mcp.run()
