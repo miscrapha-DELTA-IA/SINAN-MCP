@@ -15,7 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 25
     env:
-      PYSUS_CACHEPATH: ${{ runner.temp }}/sinan-pysus-catalog-investigation
+      PYSUS_CACHEPATH: ${{ github.workspace }}/data/sinan-pysus-catalog-investigation
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
