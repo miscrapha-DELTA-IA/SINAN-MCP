@@ -5,6 +5,7 @@ on:
     branches:
       - fix/diagnose-pysus-windows-cache
       - feat/secure-windows-pysus-import
+      - feat/secure-chatgpt-fairness-audit
 permissions:
   contents: read
 jobs:
@@ -25,7 +26,7 @@ jobs:
       - name: Install optional PySUS and test dependencies
         run: python -m pip install -e ".[dev,ingest]"
       - name: Offline adapter unit tests
-        run: python -m pytest -q tests/test_ingest_pysus.py
+        run: python -m pytest -q tests/test_ingest_pysus.py tests/test_catalog_import.py tests/test_privacy_fairness.py
       - name: Discover TUBE 2024 in isolated cache and inspect HTTPS
         run: python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --diagnostico
       - name: Discover DENG 2024 in isolated cache and inspect HTTPS
