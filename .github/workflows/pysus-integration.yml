@@ -23,6 +23,9 @@ jobs:
       - run: python -c "import pysus, pyarrow; assert callable(pysus.ftp.sinan); print('PySUS/PyArrow API loaded')"
       - name: Inspect PySUS catalog and source diagnostics (no downloads)
         run: python -m sinan_mcp diagnosticar-pysus --agravo TUBE --ano 2024
+      - name: Inspect on-disk PySUS catalogue metadata on Windows (no microdata)
+        if: runner.os == 'Windows'
+        run: python scripts/inspect_catalog.py
       - name: Test discovery with a separate empty cache (Windows isolated)
         if: runner.os == 'Windows'
         continue-on-error: true
