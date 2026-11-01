@@ -19,7 +19,7 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m pip install -e '.[dev,ingest]'
-      - run: python -m pytest -q tests/test_ingest_pysus.py
+      - run: python -m pytest -q tests/test_ingest_pysus.py tests/test_local_parquet.py
       - run: python -c "import pysus, pyarrow; assert callable(pysus.ftp.sinan); print('PySUS/PyArrow API loaded')"
       - name: Inspect PySUS catalog and source diagnostics (no downloads)
         run: python -m sinan_mcp diagnosticar-pysus --agravo TUBE --ano 2024

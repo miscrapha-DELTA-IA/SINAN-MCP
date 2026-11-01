@@ -59,3 +59,15 @@ python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --cache-dir .\\data
 ```
 
 O segundo comando escolhe uma pasta nova de cache sem apagar `$HOME\\pysus`. Se funcionar, use a mesma opção `--cache-dir` na importação. O diagnóstico **não baixa microdados** e informa a disponibilidade nos modos catalog/origin, a versão PySUS e metadados dos arquivos do cache. Um retorno vazio não significa ausência de dados no DATASUS.
+
+
+### Alternativa que não depende da descoberta do PySUS no Windows
+
+Reproduzimos a falha no Windows do GitHub, inclusive com **cache novo**: `catalog` e `origin` não localizaram os arquivos. Isso não comprova ausência dos dados e uma troca de cache não é correção confirmada. Para continuar trabalhando, obtenha um arquivo **Parquet público, de origem verificável**, e execute:
+
+```powershell
+python -m sinan_mcp importar-parquet .\\TUBEBR24.parquet --agravo TUBE --ano 2024 --status desconhecido
+python -m sinan_mcp diagnosticar-base --agravo TUBE --ano 2024
+```
+
+O arquivo deve existir localmente. Essa operação não depende de catálogo remoto e faz projeção limitada de atributos. Mantenha originais e banco SQLite fora do GitHub; o conjunto de atributos projetado ainda pode conter quase-identificadores de saúde e não está formalmente anonimizado. Alternativamente, use Linux/WSL2 para executar a descoberta e obter os arquivos antes de importá-los no Windows.

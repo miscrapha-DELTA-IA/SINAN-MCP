@@ -61,7 +61,18 @@ Test a **separate new cache** without deleting your PySUS files:
 python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --cache-dir .\\data\\pysus-recovery
 ```
 
-Use the same `--cache-dir` for later import if discovery succeeds. Changing cache may not resolve a Windows-specific PySUS implementation defect; diagnosis reports catalog file presence and source differences. See [Portuguese instructions](docs/pt-BR.md).
+Use the same `--cache-dir` for later import if discovery succeeds. **Confirmed limitation:** using an isolated cache did not recover Windows GitHub Actions. Both `catalog` and `origin` returned zero files, despite the Linux jobs succeeding. Diagnose the upstream behavior without assuming absent SINAN files. **Workaround:** import a public, verified Parquet file that you obtained separately, or run PySUS discovery on a supported Linux/WSL environment. See [Portuguese instructions](docs/pt-BR.md).
+
+## Local Parquet workaround for Windows (no catalog discovery)
+
+Obtain a SINAN **public** Parquet file from a legitimate and documented source, verify its file-year and origin, then import it without using the PySUS network catalogue:
+
+```powershell
+python -m sinan_mcp importar-parquet .\\TUBEBR24.parquet --agravo TUBE --ano 2024 --status desconhecido
+python -m sinan_mcp diagnosticar-base --agravo TUBE --ano 2024
+```
+
+The import runs locally in Arrow batches and discards direct identifiers from the SQLite projection. **Do not commit Parquet, CSV, DBC, SQLite or any records to GitHub.** Keep a SHA-256 manifest and official dictionary when writing scientific work.
 
 ## Local ingestion (administrative operation, not an MCP tool)
 

@@ -6,7 +6,9 @@
 - Introduced administrator-only `diagnosticar-pysus` and optional isolated `--cache-dir` for discovery/import, preserving existing local caches.
 - Catalog-empty failures now provide actionable guidance instead of unhandled tracebacks.
 - Extended optional PySUS CI coverage to Windows.
-- **Open issue:** discovery on Windows remains dependent on upstream PySUS catalog behavior. An isolated cache is diagnostic/recovery, not guaranteed fix.
+- **Confirmed upstream limitation:** live Windows PySUS catalogue discovery returned zero files even with a brand-new isolated cache; Linux returned public TUBE/DENG filenames.
+- Added `importar-parquet` for local Parquet ingestion without PySUS catalogue discovery (synthetic CI coverage on Windows/Linux).
+- An isolated cache is diagnostic only, not a proven fix.
 
 
 ## 0.3.0-alpha.1 (2026-11-01)
