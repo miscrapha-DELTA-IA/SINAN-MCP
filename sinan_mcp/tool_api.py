@@ -120,7 +120,7 @@ def listar_bases_publicas(db: str | Path) -> dict:
 
 
 def descrever_campos_publicos() -> dict:
-    return {"schema_version": "0.2", "dicionario": dicionario(),
+    return {"schema_version": "0.3", "dicionario": dicionario(),
             "politica": POLICY_VERSION,
             "limites": ["Suporte experimental, verificar dicionário por ano/agravo.",
                         "Nenhum valor desta ferramenta representa estimativa de incidência."]}
@@ -137,7 +137,7 @@ def contagens_publicas(db: str | Path, *, agravo: str,
         if _partition_releasable(db, agravo, ano, uf)
         else _blocked_result("count", agravo, ano, uf, por)
     )
-    return {"schema_version": "0.2", "tipo": "contagem_de_registros",
+    return {"schema_version": "0.3", "tipo": "contagem_de_registros",
             "resultado": result, "proveniencia": origem, "politica": POLICY_VERSION,
             "limitacoes": ["Partições com células pequenas não são divulgadas em nenhuma dimensão pública.",
                            "Supressão de células menores que 10 não equivale a anonimização.",
@@ -155,7 +155,7 @@ def abandono_publico(db: str | Path, *, ano_inicio: int | None = None,
         if _partition_releasable(db, "TUBE", ano, uf)
         else _blocked_result("tb", "TUBE", ano, uf, por)
     )
-    return {"schema_version": "0.2", "tipo": "proporcao_exploratoria_TB",
+    return {"schema_version": "0.3", "tipo": "proporcao_exploratoria_TB",
             "resultado": result, "proveniencia": origem, "politica": POLICY_VERSION,
             "limitacoes": ["Partições com células pequenas não são divulgadas em nenhuma dimensão pública.",
                            "Não é o indicador oficial de abandono do Ministério da Saúde.",
