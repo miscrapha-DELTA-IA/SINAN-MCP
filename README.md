@@ -2,7 +2,7 @@
 
 **Epidemiological data from Brazil, exposed through auditable Model Context Protocol tools.**
 
-> v0.3.0-alpha.1 · Local-first research prototype · Unaffiliated with the Ministry of Health · Not for clinical decisions or patient inference.
+> v0.3.1-alpha.1 · Local-first research prototype · Unaffiliated with the Ministry of Health · Not for clinical decisions or patient inference.
 
 The LLM interprets the question; the server calculates the answer from locally imported public surveillance data. No real SINAN data ships with the project.
 
@@ -49,7 +49,33 @@ For numeric tools, provide `ano_inicio=ano_fim=2024`, `uf="PI"`, `por="raca_cor"
 
 ### Windows: empty PySUS catalog
 
-If PySUS returns no files in your local environment, `descobrir-pysus` defaults to `--source auto`: it checks the PySUS mirror and, only when the mirror is empty/unreachable, requests discovery from the original DATASUS source. The result reports individual attempts and **never downloads health records**. A `nao_confirmado` result means the availability could not be established, **not** that the dataset does not exist. To troubleshoot independently use `--source catalog` and `--source origin`. The ingestion command deliberately retains a required, explicit source policy (`catalog` by default), so switching data providers cannot happen silently.
+If PySUS returns no files, `descobrir-pysus` defaults to `--source auto`: it checks catalog, then origin, and finally a **read-only local DuckDB catalogue metadata fallback** (validated on Windows). The result records its attempts and never downloads health records. `nao_confirmado` means that availability could not be established, **not** that the dataset does not exist. Ingestion remains explicit-source, so data providers cannot be switched silently.
+
+## Windows-compatible PySUS catalogue discovery (v0.3.1 alpha)
+
+PySUS 2.11.7's normal FileBag discovery can return zero results on Windows even though the actual DuckDB metadata catalogue contains the correct files. **SINAN MCP now automatically falls back to a read-only query using PySUS's existing local metadata connection.** This fallback was verified on Windows GitHub Actions with the real TUBE/DENG 2024 catalogue; **no epidemiological records were downloaded**.
+
+```powershell
+python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024
+python -m sinan_mcp descobrir-pysus --agravo DENG --ano 2024
+python -m sinan_mcp diagnosticar-pysus --agravo TUBE --ano 2024
+```
+
+The JSON will report `modo_descoberta: "duckdb_local_metadados"` when it used this recovery path. It returns **metadata filenames**, not downloaded datasets. Upstream PySUS ingestion via `importar-pysus` is not yet verified on Windows because it still uses the upstream FileBag download path. For real ingestion on Windows, obtain a public Parquet file from a verified source and use `importar-parquet` below, or download on Linux/WSL and then import locally. Do not publish original files or the SQLite database.
+
+A new `--cache-dir` remains available for diagnostics, but changing the cache alone was not the solution. See [Portuguese instructions](docs/pt-BR.md).
+
+## Local Parquet workaround for Windows (no catalog discovery)
+
+Obtain a SINAN **public** Parquet file from a legitimate and documented source, verify its file-year and origin, then import it without using the PySUS network catalogue:
+
+```powershell
+python -m sinan_mcp importar-parquet .\\TUBEBR24.parquet --agravo TUBE --ano 2024 --status desconhecido
+python -m sinan_mcp diagnosticar-base --agravo TUBE --ano 2024
+```
+
+The import runs locally in Arrow batches and discards direct identifiers from the SQLite projection. **Do not commit Parquet, CSV, DBC, SQLite or any records to GitHub.** Keep a SHA-256 manifest and official dictionary when writing scientific work.
+
 
 ## Local ingestion (administrative operation, not an MCP tool)
 
