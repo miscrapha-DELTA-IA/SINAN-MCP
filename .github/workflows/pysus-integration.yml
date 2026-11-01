@@ -2,13 +2,17 @@ name: PySUS optional integration
 on:
   workflow_dispatch:
   push:
-    branches: [feat/v0.3-pysus-quality-pilots]
+    branches: [fix/pysus-windows-empty-catalog]
 permissions:
   contents: read
 jobs:
   optional-ingest:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
