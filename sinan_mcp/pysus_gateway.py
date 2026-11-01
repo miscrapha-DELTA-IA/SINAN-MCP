@@ -101,7 +101,7 @@ def descobrir(agravo: str, ano: int, source: str = "auto") -> dict:
     return {"agravo": a, "ano_do_arquivo": ano, "status": "nao_confirmado",
             "origem": None, "total_arquivos": 0, "nomes_arquivos": [],
             "tentativas": attempts, "download_realizado": False,
-            "aviso": "Catalogo nao confirmado. As fontes catalog e origin usam o mesmo indice DuckLake nesta versao; execute --diagnostico para diferenciar problema de rede e catalogo."}
+            "aviso": "Catalogo nao confirmado. NÃO significa ausência de dados SINAN. As fontes catalog e origin usam o mesmo indice DuckLake nesta versao; execute --diagnostico para diferenciar problema de rede e catalogo."}
 
 
 def _file_path(item) -> Path:

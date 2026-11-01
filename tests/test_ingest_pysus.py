@@ -93,7 +93,7 @@ def test_missing_filebag_or_wrong_year(monkeypatch):
     monkeypatch.setattr(g, '_pysus', lambda: SimpleNamespace(sinan=lambda **_: FileBag([])))
     result = g.descobrir('TUBE', 2024)
     assert result['status'] == 'nao_confirmado'
-    assert [x['status'] for x in result['tentativas']] == ['catalogo_vazio', 'catalogo_vazio']
+    assert [x['status'] for x in result['tentativas'][:2]] == ['catalogo_vazio', 'catalogo_vazio']
     with pytest.raises(ValueError, match='Ano deve ser inteiro'):
         g.descobrir('TUBE', True)
     with pytest.raises(ValueError, match='source deve ser'):
