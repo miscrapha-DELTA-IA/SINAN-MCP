@@ -26,7 +26,7 @@ def main() -> None:
     discovery = cmd.add_parser("descobrir-pysus", help="Descobrir arquivos remotos SINAN sem baixar microdados")
     discovery.add_argument("--agravo", required=True)
     discovery.add_argument("--ano", required=True, type=int)
-    discovery.add_argument("--source", choices=["catalog", "origin"], default="catalog")
+    discovery.add_argument("--source", choices=["auto", "catalog", "origin"], default="auto")
     diagnostic = cmd.add_parser("diagnosticar-base", help="Relatório LOCAL de completude (administrativo)")
     diagnostic.add_argument("--agravo", required=True)
     diagnostic.add_argument("--ano", required=True, type=int)

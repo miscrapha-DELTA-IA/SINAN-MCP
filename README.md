@@ -47,12 +47,16 @@ For numeric tools, provide `ano_inicio=ano_fim=2024`, `uf="PI"`, `por="raca_cor"
 
 **Scientific caveats:** `ano` is the **imported file-year**, not necessarily the notification, diagnosis or closure year. Counts are records, not incidence or unique patients. The exploratory TB abandonment ratio computes `(SITUA_ENCE=2 or 10)/(SITUA_ENCE=1,2,10)`; without a formally validated case cohort and longitudinal deduplication it **must not be described as the Ministry's official treatment abandonment indicator**.
 
+### Windows: empty PySUS catalog
+
+If PySUS returns no files in your local environment, `descobrir-pysus` defaults to `--source auto`: it checks the PySUS mirror and, only when the mirror is empty/unreachable, requests discovery from the original DATASUS source. The result reports individual attempts and **never downloads health records**. A `nao_confirmado` result means the availability could not be established, **not** that the dataset does not exist. To troubleshoot independently use `--source catalog` and `--source origin`. The ingestion command deliberately retains a required, explicit source policy (`catalog` by default), so switching data providers cannot happen silently.
+
 ## Local ingestion (administrative operation, not an MCP tool)
 
 ```sh
 python -m sinan_mcp importar-csv ./dataset.csv --agravo TUBE --ano 2024 --status desconhecido
 python -m pip install -e '.[ingest]'
-python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --source catalog
+python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --source auto
 python -m sinan_mcp importar-pysus --agravo TUBE --ano 2024 --source catalog --status desconhecido
 python -m sinan_mcp diagnosticar-base --agravo TUBE --ano 2024
 ```

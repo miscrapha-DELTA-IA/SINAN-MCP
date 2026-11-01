@@ -47,17 +47,42 @@ def _files(bag) -> list:
     return items
 
 
-def descobrir(agravo: str, ano: int, source: str = "catalog") -> dict:
-    """Discover remote file names without downloading health records."""
-    a = _validate(agravo, ano, source)
-    bag = _pysus().sinan(disease=a, year=ano, source=source,
-                         download=False, as_dataframe=False)
-    items = _files(bag)
-    names = [Path(str(getattr(item, "path", item))).name for item in items]
-    return {"agravo": a, "ano_do_arquivo": ano, "origem": f"pysus.ftp/{source}",
-            "total_arquivos": len(items), "nomes_arquivos": names,
-            "download_realizado": False,
-            "aviso": "Catálogo remoto: não comprova integridade, dicionário ou status definitivo."}
+def descobrir(agravo: str, ano: int, source: str = "auto") -> dict:
+    """Read-only discovery, with diagnostic attempts instead of a misleading 404.
+
+    Auto uses catalog first, then explicitly origin only if catalog is empty/fails.
+    Neither origin is asserted to be authoritative when a source is unreachable.
+    Import/download remains explicit-source to prevent silent source substitution.
+    """
+    if source not in {"auto", "catalog", "origin"}:
+        raise ValueError("source deve ser auto, catalog ou origin para descoberta")
+    a = _validate(agravo, ano, "catalog" if source == "auto" else source)
+    ftp = _pysus()
+    attempts = []
+    for selected in (["catalog", "origin"] if source == "auto" else [source]):
+        try:
+            bag = ftp.sinan(disease=a, year=ano, source=selected,
+                            download=False, as_dataframe=False)
+            items = list(bag) if bag is not None else []
+            if len(items) > MAX_FILES:
+                raise ValueError(f"Mais de {MAX_FILES} arquivos retornados; consulta não suportada")
+            names = [Path(str(getattr(item, "path", item))).name for item in items]
+            attempts.append({"fonte": selected, "status": "encontrado" if names else "catalogo_vazio",
+                             "total_arquivos": len(names)})
+            if names:
+                return {"agravo": a, "ano_do_arquivo": ano, "status": "encontrado",
+                        "origem": f"pysus.ftp/{selected}",
+                        "total_arquivos": len(names), "nomes_arquivos": names,
+                        "tentativas": attempts, "download_realizado": False,
+                        "aviso": "Metadados de catálogo; não valida integridade, completude ou versão epidemiológica."}
+        except (OSError, ConnectionError, TimeoutError) as exc:
+            attempts.append({"fonte": selected, "status": "falha_de_acesso",
+                             "erro_tipo": type(exc).__name__})
+        # Unexpected errors are raised rather than masked, to aid debugging.
+    return {"agravo": a, "ano_do_arquivo": ano, "status": "nao_confirmado",
+            "origem": None, "total_arquivos": 0, "nomes_arquivos": [],
+            "tentativas": attempts, "download_realizado": False,
+            "aviso": "Nenhum resultado confirmado nas fontes consultadas. NÃO significa ausência de dados SINAN. Verifique rede, catálogo PySUS e tente --source origin."}
 
 
 def _file_path(item) -> Path:

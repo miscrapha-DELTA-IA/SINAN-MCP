@@ -91,8 +91,9 @@ def test_refuse_unexpected_download_format(tmp_path, monkeypatch):
 
 def test_missing_filebag_or_wrong_year(monkeypatch):
     monkeypatch.setattr(g, '_pysus', lambda: SimpleNamespace(sinan=lambda **_: FileBag([])))
-    with pytest.raises(ValueError, match='Nenhum arquivo'):
-        g.descobrir('TUBE', 2024)
+    result = g.descobrir('TUBE', 2024)
+    assert result['status'] == 'nao_confirmado'
+    assert [x['status'] for x in result['tentativas']] == ['catalogo_vazio', 'catalogo_vazio']
     with pytest.raises(ValueError, match='Ano deve ser inteiro'):
         g.descobrir('TUBE', True)
     with pytest.raises(ValueError, match='source deve ser'):
@@ -119,3 +120,37 @@ def test_download_streamed_parquet(tmp_path, monkeypatch):
     result = ingest_pysus(db, agravo='TUBE', ano=2024)
     assert result['registros_importados'] == 64
     assert b'FICTICIO' not in db.read_bytes()
+
+
+def test_discovery_auto_fallback_to_origin(monkeypatch):
+    sources = []
+    def fake_sinan(**kw):
+        sources.append(kw['source'])
+        return FileBag(['origin/TUBEBR24.parquet']) if kw['source'] == 'origin' else FileBag([])
+    monkeypatch.setattr(g, '_pysus', lambda: SimpleNamespace(sinan=fake_sinan))
+    result = g.descobrir('TUBE', 2024)
+    assert sources == ['catalog', 'origin']
+    assert result['status'] == 'encontrado'
+    assert result['origem'] == 'pysus.ftp/origin'
+    assert result['tentativas'][0]['status'] == 'catalogo_vazio'
+    assert result['download_realizado'] is False
+
+
+def test_discovery_empty_origin_not_misreported_as_missing_dataset(monkeypatch):
+    monkeypatch.setattr(g, '_pysus', lambda: SimpleNamespace(sinan=lambda **kw: FileBag([])))
+    result = g.descobrir('DENG', 2024, source='origin')
+    assert result['status'] == 'nao_confirmado'
+    assert result['tentativas'][0]['status'] == 'catalogo_vazio'
+    assert 'NÃO significa ausência' in result['aviso']
+
+
+def test_discovery_source_error_then_fallback(monkeypatch):
+    def fake_sinan(**kwargs):
+        if kwargs['source'] == 'catalog':
+            raise TimeoutError('private connection details must not leak')
+        return FileBag(['DENGBR24.parquet'])
+    monkeypatch.setattr(g, '_pysus', lambda: SimpleNamespace(sinan=fake_sinan))
+    result = g.descobrir('DENG', 2024)
+    assert result['status'] == 'encontrado'
+    assert result['tentativas'][0]['erro_tipo'] == 'TimeoutError'
+    assert 'private connection details' not in str(result)
