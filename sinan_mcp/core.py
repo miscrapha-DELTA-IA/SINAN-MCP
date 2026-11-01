@@ -135,6 +135,12 @@ def _import_rows(db_path: str | Path, rows: Iterable[Mapping[str, Any]], *,
             con.execute("DELETE FROM fontes WHERE agravo = ? AND ano = ?", (agravo, ano))
             batch = []
             for row in rows:
+                # Refuse unexpected schemas, preserving existing snapshots.
+                if n == 0 and not batch:
+                    fields = {str(key).strip().upper() for key in row}
+                    expected = {"ID_MN_RESI", "MUNIC_RES", "CS_SEXO", "CS_RACA", "SITUA_ENCE"}
+                    if not fields.intersection(expected):
+                        raise ValueError("Esquema do SINAN não reconhecido: faltam colunas básicas de residência ou demografia")
                 batch.append((chave, *project_record(row, agravo, ano)))
                 if len(batch) == 2000:
                     con.executemany("INSERT INTO registros VALUES (?,?,?,?,?,?,?,?)", batch)
@@ -143,6 +149,8 @@ def _import_rows(db_path: str | Path, rows: Iterable[Mapping[str, Any]], *,
             if batch:
                 con.executemany("INSERT INTO registros VALUES (?,?,?,?,?,?,?,?)", batch)
                 n += len(batch)
+            if n == 0:
+                raise ValueError("Fonte sem registros; snapshot anterior foi preservado")
             con.execute("INSERT INTO fontes VALUES (?,?,?,?,?,?,?,?,?)", (
                 chave, agravo, ano, tipo_fonte, identificador, status, sha256,
                 datetime.now(timezone.utc).isoformat(), n))
@@ -188,26 +196,43 @@ def ingest_csv(db_path: str | Path, arquivo: str | Path, *, agravo: str, ano: in
 
 def ingest_pysus(db_path: str | Path, *, agravo: str, ano: int,
                  status: str = "desconhecido", source: str = "catalog") -> dict:
-    """Operação EXCLUSIVA do administrador, nunca exposta ao protocolo MCP.
+    """Admin-only wrapper over the PySUS FileBag streaming importer.
 
-    A origem padrão do PySUS pode usar um espelho de dados, não o FTP diretamente.
+    The MCP tool surface cannot invoke this function. PySUS is optional.
+    """
+    from .pysus_gateway import importar
+    return importar(db_path, agravo=agravo, ano=ano, source=source, status=status)
+
+
+def diagnosticar_base(db_path: str | Path, agravo: str, ano: int) -> dict:
+    """LOCAL administrative diagnostic. Never exposed to an LLM or REST.
+
+    Counts and missingness can be disclosure-sensitive and must stay local.
     """
     agravo = validate_agravo(agravo)
-    if source not in {"catalog", "origin"}:
-        raise ValueError("source deve ser 'catalog' ou 'origin'")
+    con = db_connect(db_path)
     try:
-        import pysus
-    except ImportError as exc:
-        raise RuntimeError("Instale extras: pip install -e '.[ingest]'") from exc
-    frame = pysus.ftp.sinan(disease=agravo, year=ano, as_dataframe=True, source=source)
-    if frame is None or frame.empty:
-        raise ValueError("PySUS não retornou dados; verifique disponibilidade e ano")
-    # Conversão de amostras para dicionários sem persistir campos não aprovados
-    colunas = list(frame.columns)
-    registros = (dict(zip(colunas, linha)) for linha in frame.itertuples(index=False, name=None))
-    return _import_rows(db_path, registros,
-                        agravo=agravo, ano=ano, identificador=f"pysus-ftp:{source}:{agravo}:{ano}",
-                        tipo_fonte="pysus", status=status)
+        base = con.execute("SELECT tipo_fonte, status, atualizado_em FROM fontes WHERE agravo=? AND ano=?", (agravo, ano)).fetchone()
+        if base is None:
+            raise ValueError(f"Base {agravo}/{ano} não importada")
+        stats = con.execute("""SELECT COUNT(*) n,
+            SUM(CASE WHEN uf IS NULL THEN 1 ELSE 0 END) sem_uf,
+            SUM(CASE WHEN municipio IS NULL THEN 1 ELSE 0 END) sem_municipio,
+            SUM(CASE WHEN sexo IS NULL OR sexo = 'I' THEN 1 ELSE 0 END) sexo_ausente_ignorado,
+            SUM(CASE WHEN raca_cor IS NULL OR raca_cor = '9' THEN 1 ELSE 0 END) raca_ausente_ignorada,
+            SUM(CASE WHEN situacao_encerramento IS NULL THEN 1 ELSE 0 END) encerramento_ausente
+            FROM registros WHERE agravo=? AND ano=?""", (agravo, ano)).fetchone()
+        n = stats["n"]
+        def pct(value):
+            return round((value or 0) * 100.0 / n, 2) if n else None
+        return {"agravo": agravo, "ano_do_arquivo": ano,
+                "fonte": dict(base), "n_registros_administrativo": n,
+                "completude": {key: {"ausentes_ou_ignorados": stats[key], "percentual": pct(stats[key])}
+                               for key in ["sem_uf", "sem_municipio", "sexo_ausente_ignorado", "raca_ausente_ignorada", "encerramento_ausente"]
+                               if agravo == "TUBE" or key != "encerramento_ausente"},
+                "limites": "Relatório administrativo sensível; não publicar em API/LLM. O ano é do arquivo, não de notificação."}
+    finally:
+        con.close()
 
 
 def _filters(agravo: str, ano_inicio: int | None, ano_fim: int | None,

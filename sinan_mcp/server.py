@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 from mcp.server import MCPServer
 from .tool_api import listar_bases_publicas, contagens_publicas, abandono_publico, descrever_campos_publicos
+from .catalogue import listar_agravos as obter_agravos, metodologia_tuberculose
 
 mcp = MCPServer("SINAN MCP", instructions=(
     "Ferramentas de epidemiologia sobre bases públicas do SINAN importadas localmente. "
@@ -52,3 +53,15 @@ def proporcao_abandono_tuberculose(ano_inicio: int | None = None,
 
 if __name__ == "__main__":
     mcp.run()
+
+
+@mcp.tool()
+def listar_agravos() -> dict[str, Any]:
+    """Mostra o catálogo de agravos-piloto e distingue análise experimental de indicador oficial."""
+    return obter_agravos()
+
+
+@mcp.tool()
+def metodologia_abandono_tuberculose() -> dict[str, Any]:
+    """Explica fórmula e limitações da medida EXPLORATÓRIA de abandono; não consulta microdados."""
+    return metodologia_tuberculose()

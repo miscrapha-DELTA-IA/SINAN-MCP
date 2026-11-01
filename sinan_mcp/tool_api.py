@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from .core import abandono_tb, catalogo, contar, dicionario
+from .catalogue import CATALOGUE
 
 ALLOWED_GROUPS = frozenset({"sexo", "raca_cor"})
 POLICY_VERSION = "public-v1-single-uf-year"
@@ -29,6 +30,8 @@ def _request(ano_inicio: int | None, ano_fim: int | None,
 
 
 def _source(db: str | Path, agravo: str, ano: int) -> dict[str, Any]:
+    if agravo.upper() not in CATALOGUE:
+        raise ValueError("Agravo não habilitado na interface pública: apenas TUBE e DENG nesta etapa")
     matches = [x for x in catalogo(db)["bases_importadas"]
                if x["agravo"] == agravo.upper() and x["ano"] == ano]
     if not matches:
@@ -36,9 +39,11 @@ def _source(db: str | Path, agravo: str, ano: int) -> dict[str, Any]:
     row = matches[0]
     return {"agravo": row["agravo"], "ano_do_arquivo": row["ano"],
             "tipo_de_fonte": row["tipo_fonte"], "status": row["status"],
-            "sha256_csv": row["sha256"], "importado_em_utc": row["atualizado_em"],
+            "fingerprint_sha256": row["sha256"], "importado_em_utc": row["atualizado_em"],
             "origem_referencia": "https://pysus.readthedocs.io/en/stable/quickstart.html"
-                                 if row["tipo_fonte"] == "pysus" else None,
+                                 if row["tipo_fonte"].startswith("pysus") else None,
+            "fingerprint_tipo": "manifesto_hash_por_arquivo" if row["tipo_fonte"].startswith("pysus")
+                                else "sha256_arquivo" if row["tipo_fonte"] == "csv-local" else None,
             "observacao": "Ano do arquivo, não necessariamente ano de notificação."}
 
 

@@ -29,3 +29,21 @@ Importação real é administrativa e separada das ferramentas dos modelos:
 Consulte dicionários, cobertura e revisão da fonte antes de interpretar números. Não disponibilize esse serviço remotamente com microdados sem revisão especializada de segurança e sigilo.
 
 [README em inglês](../README.md) · [Segurança](../SECURITY.md)
+
+## Etapa 0.3 — descoberta e processamento em lotes
+
+A versão 0.3 adiciona **catálogo de agravos-piloto** (tuberculose e dengue), metodologia e diagnóstico administrativo de completude. O comando abaixo consulta arquivos do PySUS **sem baixar microdados**:
+
+```powershell
+.\.venv\Scripts\python.exe -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024
+```
+
+O importador opcional com `.[ingest]` baixa arquivos e processa CSV/Parquet em lotes, sem carregar todo o DataFrame nacional. A integração com fontes reais ainda não foi validada integralmente. Consulte os [critérios epidemiológicos](EPIDEMIOLOGY.md).
+
+**Somente no ambiente administrativo**, diagnostique uma base importada:
+
+```powershell
+.\.venv\Scripts\python.exe -m sinan_mcp diagnosticar-base --agravo TUBE --ano 2024
+```
+
+O relatório inclui contagens exatas e não é disponibilizado ao LLM.

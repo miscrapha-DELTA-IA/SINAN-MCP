@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import os
 from pathlib import Path
-from .core import ingest_csv, ingest_pysus
+from .core import ingest_csv, ingest_pysus, diagnosticar_base
 
 
 def main() -> None:
@@ -23,6 +23,13 @@ def main() -> None:
     py.add_argument("--ano", required=True, type=int)
     py.add_argument("--source", choices=["catalog", "origin"], default="catalog")
     py.add_argument("--status", choices=["final", "preliminar", "desconhecido"], default="desconhecido")
+    discovery = cmd.add_parser("descobrir-pysus", help="Descobrir arquivos remotos SINAN sem baixar microdados")
+    discovery.add_argument("--agravo", required=True)
+    discovery.add_argument("--ano", required=True, type=int)
+    discovery.add_argument("--source", choices=["catalog", "origin"], default="catalog")
+    diagnostic = cmd.add_parser("diagnosticar-base", help="Relatório LOCAL de completude (administrativo)")
+    diagnostic.add_argument("--agravo", required=True)
+    diagnostic.add_argument("--ano", required=True, type=int)
     demo = cmd.add_parser("demo", help="Criar base sintética separada e mostrar próximo passo")
     demo.add_argument("--demo-db", default="./data/sinan-demo.sqlite3")
     serve = cmd.add_parser("servir", help="Servidor MCP (stdio ou HTTP local)")
@@ -39,6 +46,13 @@ def main() -> None:
         r = ingest_pysus(args.db, agravo=args.agravo, ano=args.ano,
                          status=args.status, source=args.source)
         print(r)
+    elif args.comando == "descobrir-pysus":
+        import json
+        from .pysus_gateway import descobrir
+        print(json.dumps(descobrir(args.agravo, args.ano, args.source), ensure_ascii=False, indent=2))
+    elif args.comando == "diagnosticar-base":
+        import json
+        print(json.dumps(diagnosticar_base(args.db, args.agravo, args.ano), ensure_ascii=False, indent=2))
     elif args.comando == "demo":
         from .demo import build_demo
         demo_db = Path(args.demo_db).expanduser().resolve()

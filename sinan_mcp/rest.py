@@ -10,6 +10,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
 from .tool_api import listar_bases_publicas, contagens_publicas, abandono_publico, descrever_campos_publicos
+from .catalogue import listar_agravos, metodologia_tuberculose
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -38,6 +39,10 @@ class Handler(BaseHTTPRequestHandler):
             return self._answer(200, listar_bases_publicas(os.getenv("SINAN_DB_PATH", "./data/sinan.sqlite3")))
         if path == "/v1/campos":
             return self._answer(200, descrever_campos_publicos())
+        if path == "/v1/agravos":
+            return self._answer(200, listar_agravos())
+        if path == "/v1/metodologia/tb":
+            return self._answer(200, metodologia_tuberculose())
         return self._answer(404, {"erro": "Endpoint não encontrado"})
 
     def do_POST(self):
