@@ -21,13 +21,13 @@ def test_demo_and_provenance(db):
     assert 'identificador' not in str(bases)
     x = contagens_publicas(db, agravo='TUBE', ano_inicio=2024,
                           ano_fim=2024, uf='PI', por='raca_cor')
-    assert x['schema_version'] == '0.2'
+    assert x['schema_version'] == '0.3'
     assert x['proveniencia']['tipo_de_fonte'] == 'synthetic'
     assert {r['categoria'] for r in x['resultado']['dados']} == {'1', '4'}
     assert all(not r['suprimido'] for r in x['resultado']['dados'])
     tb = abandono_publico(db, ano_inicio=2024, ano_fim=2024, uf='PI')
     assert tb['tipo'] == 'proporcao_exploratoria_TB'
-    assert 'Não é o indicador oficial' in tb['limitacoes'][0]
+    assert any('Não é o indicador oficial' in x for x in tb['limitacoes'])
     assert descrever_campos_publicos()['politica'] == x['politica']
 
 

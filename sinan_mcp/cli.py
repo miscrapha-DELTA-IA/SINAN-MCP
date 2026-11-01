@@ -34,6 +34,14 @@ def main() -> None:
                            help="Usa um cache PySUS isolado novo sem alterar o cache existente")
     discovery.add_argument("--diagnostico", action="store_true",
                            help="Mostra estado dos catálogos locais e testa HEAD HTTPS do catálogo público")
+    fairness = cmd.add_parser("auditar-equidade", help="Auditoria LOCAL de previsões binárias fora da amostra; nunca expõe via MCP")
+    fairness.add_argument("arquivo", type=Path, help="CSV privado com y_true, y_score e grupo")
+    fairness.add_argument("--grupo", choices=["raca_cor", "sexo"], required=True)
+    fairness.add_argument("--coorte", required=True, help="Referência textual à coorte de avaliação")
+    fairness.add_argument("--limiar", type=float, default=0.5)
+    fairness.add_argument("--min-grupo", type=int, default=50)
+    fairness.add_argument("--bootstrap", type=int, default=0)
+    fairness.add_argument("--semente", type=int, default=42)
     diagnostic = cmd.add_parser("diagnosticar-base", help="Relatório LOCAL de completude (administrativo)")
     diagnostic.add_argument("--agravo", required=True)
     diagnostic.add_argument("--ano", required=True, type=int)
@@ -94,6 +102,15 @@ def main() -> None:
         if args.cache_novo:
             result["cache_isolado"] = True
             result["nota_cache"] = "Cache de metadados novo salvo em data/; cache PySUS anterior preservado."
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+    elif args.comando == "auditar-equidade":
+        import json
+        from .fairness import audit_predictions
+        result = audit_predictions(
+            args.arquivo, group=args.grupo, threshold=args.limiar,
+            min_group=args.min_grupo, bootstrap=args.bootstrap,
+            seed=args.semente, cohort=args.coorte,
+        )
         print(json.dumps(result, ensure_ascii=False, indent=2))
     elif args.comando == "diagnosticar-base":
         import json

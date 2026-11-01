@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.0-alpha.3 (2026-11-01)
+
+- Public MCP/REST numeric queries now open the SQLite database **read-only** and refuse to initialize missing databases.
+- **Breaking privacy safeguard:** imported real datasets are blocked from public numeric tools unless an administrator explicitly sets `SINAN_PUBLIC_REAL_DATA=1` on the server process. The synthetic demo needs no opt-in.
+- **Conservative complementary disclosure guard:** if any sex/race category or TB case/control subcell is too small, numeric tools deny the complete UF/file-year partition across dimensions; no suppressed residuals or category names are returned. A minimum partition size of 100 applies. This is not differential privacy or a formal anonymization guarantee.
+- Added `auditar-equidade`: **local administrator-only** assessment of held-out prediction CSVs (AUROC, AP, Brier, ECE, TPR/FPR, SPD/EOD/AAOD, optional IID bootstrap). No model training, clinical risk prediction, patient data exchange, or MCP exposure.
+- Added privacy and reproducibility regression tests, ChatGPT Tunnel instructions, and research protocol. Experimental deployment still requires independent security and epidemiological review.
+
+
 ## 0.3.0-alpha.2 (2026-11-01)
 
 - Added administrator-only metadata import preview for public FTP-mirror Parquet snapshots.

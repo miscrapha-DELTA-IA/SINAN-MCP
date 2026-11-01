@@ -24,7 +24,7 @@ Sources:
 
 - Verified by automated tests: projection excludes direct identifiers, synthetic TUBE/DENG demographic groupings, one-year/one-UF tool disclosure controls, atomic import rollback, administrative completeness diagnostics.
 - Verified in GitHub Actions: actual PySUS 2.11.7 API discovery of TUBE and DENG 2024 catalog files (no records downloaded).
-- Validated against synthetic fixtures only: streamable Parquet/CSV ingest; live data ingestion not yet verified.
+- Synthetic CI validates Parquet/CSV streaming, HTTP metadata and fallback. One operator-run Windows real-data TUBE 2024 import returned 113,012 projected records, no formal independent validation yet.
 - Not established: official indicator equivalence, validity of all disease-year mappings, external privacy safety, remote server deployment.
 
 ## Quality assessment

@@ -61,6 +61,22 @@ def db_connect(path: str | Path) -> sqlite3.Connection:
     return con
 
 
+def db_connect_readonly(path: str | Path) -> sqlite3.Connection:
+    """Never create, alter or initialize a database during a public query.
+
+    Unlike db_connect(), this connection is query-only and fails closed when
+    an administrator has not initialized a local SQLite database.
+    """
+    dbpath = Path(path).expanduser().resolve()
+    if not dbpath.is_file():
+        raise ValueError("Banco não inicializado. Importe uma base local pela CLI.")
+    con = sqlite3.connect(dbpath.as_uri() + "?mode=ro", uri=True, timeout=15)
+    con.row_factory = sqlite3.Row
+    con.execute("PRAGMA query_only=ON")
+    con.execute("PRAGMA busy_timeout=15000")
+    return con
+
+
 def _str(value: Any) -> str | None:
     if value is None:
         return None
@@ -270,7 +286,7 @@ def _filters(agravo: str, ano_inicio: int | None, ano_fim: int | None,
 
 
 def catalogo(db_path: str | Path) -> dict:
-    con = db_connect(db_path)
+    con = db_connect_readonly(db_path)
     try:
         rows = con.execute("SELECT agravo, ano, tipo_fonte, status, identificador, sha256, atualizado_em, n_registros FROM fontes ORDER BY agravo, ano DESC").fetchall()
         return {"bases_importadas": [dict(row) for row in rows], "total_bases": len(rows),
@@ -292,7 +308,7 @@ def contar(db_path: str | Path, *, agravo: str, ano_inicio: int | None = None,
         raise ValueError("limiar entre 10 e 100")
     where, params = _filters(agravo, ano_inicio, ano_fim, uf, municipio)
     col = GROUP_COLS[por]
-    con = db_connect(db_path)
+    con = db_connect_readonly(db_path)
     try:
         rows = con.execute(f"SELECT {col} AS categoria, COUNT(*) AS n FROM registros r WHERE {where} GROUP BY {col} ORDER BY categoria LIMIT 201", params).fetchall()
         if len(rows) > 200:
@@ -317,7 +333,7 @@ def abandono_tb(db_path: str | Path, *, ano_inicio: int | None = None,
         raise ValueError("limiar entre 10 e 100")
     where, params = _filters("TUBE", ano_inicio, ano_fim, uf, municipio)
     col = GROUP_COLS[por]
-    con = db_connect(db_path)
+    con = db_connect_readonly(db_path)
     try:
         rows = con.execute(f"""SELECT {col} AS categoria,
                    COUNT(*) AS n,

@@ -2,7 +2,7 @@
 
 **Epidemiological data from Brazil, exposed through auditable Model Context Protocol tools.**
 
-> v0.3.0-alpha.1 · Local-first research prototype · Unaffiliated with the Ministry of Health · Not for clinical decisions or patient inference.
+> v0.3.0-alpha.3 · Local-first research prototype · Unaffiliated with the Ministry of Health · Not for clinical decisions or patient inference.
 
 The LLM interprets the question; the server calculates the answer from locally imported public surveillance data. No real SINAN data ships with the project.
 
@@ -26,8 +26,10 @@ Try asking: *"On the synthetic TUBE dataset, show the race/color distribution in
 ## Scientific scope (pilot)
 
 - **Two pilot diseases:** TUBE and DENG. Disease-year codebooks still need validation.
-- **Remote discovery without download:** `python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024` lists PySUS files without loading records. Requires `.[ingest]`.
-- **Batch-wise ingestion:** PySUS now downloads a FileBag and streams Parquet or CSV records instead of assembling an entire national pandas DataFrame. Live DATASUS network retrieval remains unverified.
+- **Remote discovery without microdata download:** `python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024` lists PySUS files without loading records. Requires `.[ingest]`.
+- **Batch-wise ingestion:** PySUS downloads a FileBag or uses a bounded Windows SQL-catalog fallback and streams Parquet/CSV records, avoiding national dataframes in RAM. Local Windows ingestion of TUBE 2024 has been user-confirmed for 113,012 projected records; this does not validate epidemiologic definitions.
+- **Administrator-only fairness audit:** `auditar-equidade` evaluates a local held-out prediction CSV, entirely outside the MCP surface. See [fairness protocol](docs/FAIRNESS_PROTOCOL.md).
+- **Privacy-first MCP/REST:** Real-data numeric queries require explicit opt-in and pass a conservative cross-table small-cell guard; otherwise only the synthetic demo is queryable. See [security](SECURITY.md).
 - **Administrator-only quality audit:** `diagnosticar-base` measures missing or ignored fields locally; not available to LLM tools.
 
 See [scientific interpretation](docs/EPIDEMIOLOGY.md).
@@ -44,6 +46,8 @@ See [scientific interpretation](docs/EPIDEMIOLOGY.md).
 | `metodologia_abandono_tuberculose` | Formula and scientific limitations (not an official indicator) |
 
 For numeric tools, provide `ano_inicio=ano_fim=2024`, `uf="PI"`, `por="raca_cor"` (or `sexo`). Public tools intentionally deny municipality filters, totals, date ranges and other cross-cutting groupings. Responses include `resultado`, `proveniencia`, `politica` and `limitacoes`. Small cells are suppressed. These restrictions **reduce but do not eliminate** statistical disclosure risk; *no formal anonymization guarantee exists.* No row-level or arbitrary SQL tools are exposed.
+
+**Public release safeguard:** Since v0.3.0a3 the server refuses numeric MCP/REST queries against real imported snapshots unless an administrator deliberately sets `SINAN_PUBLIC_REAL_DATA=1` on the **server** process. This also affects previously functioning local REST real-data queries. Even with opt-in, an entire year/UF partition is withheld when too small or when cross-table comparison could reveal subcells of fewer than 10. Do **not** enable opt-in for remote use without an independent disclosure assessment. Synthetic demo remains enabled.
 
 **Scientific caveats:** `ano` is the **imported file-year**, not necessarily the notification, diagnosis or closure year. Counts are records, not incidence or unique patients. The exploratory TB abandonment ratio computes `(SITUA_ENCE=2 or 10)/(SITUA_ENCE=1,2,10)`; without a formally validated case cohort and longitudinal deduplication it **must not be described as the Ministry's official treatment abandonment indicator**.
 
@@ -135,3 +139,15 @@ py -3.11 -m sinan_mcp --db .\data\sinan.sqlite3 diagnosticar-base --agravo TUBE 
 When PySUS returns an empty `FileBag` on Windows, the importer now resolves **only** the selected FTP-mirror files from the local public DuckLake catalog, downloads them over certificate-verified HTTPS with a fixed host, checks reported byte lengths and available SHA-256 digests, and streams only selected records into a local SQLite projection. Temporary raw Parquet files are removed on normal completion, but backups, OS cache, unexpected interruptions and the SQLite quasi-identifiers can still carry privacy risk; follow applicable institutional safeguards. No patients or raw files are sent to GitHub/CI, and public MCP/REST tools cannot trigger ingestion.
 
 Do **not** infer that a catalog entry guarantees the file is available, that remote bytes match the recorded metadata, or that the TB exploratory proportion is a certified official metric. Full real-data import is **not yet verified**. `--source origin` refuses an empty PySUS result rather than silently switching to the catalog mirror. The importer enforces a 2 GiB limit per file and 3 GiB aggregate catalog size; large datasets may require a dedicated ingestion plan.
+
+## ChatGPT Secure MCP Tunnel (Windows)
+
+See [`docs/CHATGPT_TUNNEL_WINDOWS.md`](docs/CHATGPT_TUNNEL_WINDOWS.md). A private tunnel does not anonymize tool responses. Initial connector testing MUST use `sinan-demo.sqlite3`.
+
+## Offline predictive fairness assessment (experimental)
+
+```powershell
+py -3.11 -m sinan_mcp auditar-equidade .\predicoes_teste.csv --grupo raca_cor --coorte 2022-2023 --limiar 0.5 --bootstrap 200
+```
+
+The **locally held-out** CSV must include only `y_true` (0/1), `y_score` (predicted LTFU probability 0–1) and `raca_cor` or `sexo`; extra columns are ignored by the auditor but should not be exported unnecessarily. Never upload it to ChatGPT or Git. This command audits predictions **already created elsewhere**; it cannot train or validate a TB model on the current seven-field projection. See [research protocol](docs/FAIRNESS_PROTOCOL.md).

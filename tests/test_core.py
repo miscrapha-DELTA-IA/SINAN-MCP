@@ -90,6 +90,7 @@ def test_rest_adapter_local(tmp_path, monkeypatch):
     from sinan_mcp.rest import Handler
     db = prepare(tmp_path)
     monkeypatch.setenv("SINAN_DB_PATH", str(db))
+    monkeypatch.setenv("SINAN_PUBLIC_REAL_DATA", "1")
     srv = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
     thread = threading.Thread(target=srv.serve_forever, daemon=True)
     thread.start()
@@ -102,7 +103,8 @@ def test_rest_adapter_local(tmp_path, monkeypatch):
                       headers={"Content-Type": "application/json"}, method="POST")
         with urlopen(req, timeout=2) as r:
             body = json.load(r)
-        assert body["resultado"]["dados"][1]["notificacoes"] == 50
+        assert body["resultado"]["status"] == "nao_divulgavel"
+        assert body["resultado"]["dados"] == []
         assert body["proveniencia"]["ano_do_arquivo"] == 2024
         assert "SEGREDO" not in json.dumps(body)
     finally:
