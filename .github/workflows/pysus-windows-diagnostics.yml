@@ -14,6 +14,8 @@ jobs:
         os: [windows-latest, ubuntu-latest]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 25
+    env:
+      PYSUS_CACHEPATH: ${{ runner.temp }}/sinan-pysus-catalog-investigation
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -24,7 +26,9 @@ jobs:
       - name: Offline adapter unit tests
         run: python -m pytest -q tests/test_ingest_pysus.py
       - name: Discover TUBE 2024 in isolated cache and inspect HTTPS
-        run: python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --cache-novo --diagnostico
+        run: python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --diagnostico
       - name: Discover DENG 2024 in isolated cache and inspect HTTPS
-        run: python -m sinan_mcp descobrir-pysus --agravo DENG --ano 2024 --cache-novo --diagnostico
+        run: python -m sinan_mcp descobrir-pysus --agravo DENG --ano 2024 --diagnostico
       # No patient-level downloads, no credentials and no uploaded data artifacts.
+      - name: Compare direct DuckDB file index against PySUS discovery
+        run: python scripts/probe_pysus_catalog.py
