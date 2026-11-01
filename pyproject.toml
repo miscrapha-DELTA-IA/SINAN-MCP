@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sinan-mcp"
-version = "0.3.0a1"
+version = "0.3.1a1"
 description = "Servidor MCP local para consultas agregadas aos dados públicos do SINAN/DATASUS"
 requires-python = ">=3.11"
 license = "MIT"

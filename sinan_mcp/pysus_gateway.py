@@ -8,6 +8,8 @@ from __future__ import annotations
 import csv
 import hashlib
 import importlib
+import sys
+import platform
 from pathlib import Path
 from typing import Iterable, Mapping, Any
 
@@ -41,7 +43,12 @@ def _files(bag) -> list:
         raise RuntimeError("PySUS não retornou lista de arquivos")
     items = list(bag)
     if not items:
-        raise ValueError("Nenhum arquivo SINAN encontrado para o agravo/ano selecionados")
+        raise ValueError(
+            "Catálogo PySUS vazio para o agravo/ano selecionados. "
+            "A fonte pode estar indisponível, ou o catálogo local pode estar desatualizado. "
+            "Experimente diagnosticar-pysus e, se necessário, --cache-dir "
+            "apontando para uma pasta NOVA (sem apagar o cache original)."
+        )
     if len(items) > MAX_FILES:
         raise ValueError(f"PySUS retornou {len(items)} arquivos (limite {MAX_FILES}); restrinja a consulta")
     return items
@@ -53,11 +60,60 @@ def descobrir(agravo: str, ano: int, source: str = "catalog") -> dict:
     bag = _pysus().sinan(disease=a, year=ano, source=source,
                          download=False, as_dataframe=False)
     items = _files(bag)
-    names = [Path(str(getattr(item, "path", item))).name for item in items]
+    # Remote catalog paths use '/' even on Windows; pathlib.Path uses host rules.
+    names = [str(getattr(item, "path", item)).replace("\\", "/").rsplit("/", 1)[-1]
+             for item in items]
     return {"agravo": a, "ano_do_arquivo": ano, "origem": f"pysus.ftp/{source}",
             "total_arquivos": len(items), "nomes_arquivos": names,
             "download_realizado": False,
             "aviso": "Catálogo remoto: não comprova integridade, dicionário ou status definitivo."}
+
+
+
+def diagnosticar(agravo: str, ano: int) -> dict:
+    """Admin-only read-only diagnostics. No health records are downloaded.
+
+    Note: PySUS 'origin' also consults its catalog metadata in version 2.11.7.
+    """
+    a = _validate(agravo, ano, "catalog")
+    import pysus
+    ftp = _pysus()
+    cache = Path(pysus.CACHEPATH).expanduser()
+    db_files = ("catalog.duckdb", "sinan.duckdb")
+    cache_state = {}
+    for name in db_files:
+        p = cache / "ducklake" / name
+        cache_state[name] = {
+            "presente": p.is_file(),
+            "bytes": p.stat().st_size if p.is_file() else None,
+        }
+    results = {}
+    for source in ("catalog", "origin"):
+        try:
+            bag = ftp.sinan(disease=a, year=ano, source=source,
+                            download=False, as_dataframe=False)
+            names = [str(getattr(item, "path", item)).replace("\\", "/").rsplit("/", 1)[-1]
+                     for item in (list(bag) if bag is not None else [])]
+            results[source] = {"quantidade": len(names), "arquivos": names[:MAX_FILES],
+                               "disponivel": bool(names)}
+        except Exception as exc:
+            results[source] = {"erro": type(exc).__name__, "detalhe": str(exc)[:250]}
+    return {
+        "agravo": a, "ano_do_arquivo": ano,
+        "ambiente": {"plataforma": platform.system(),
+                     "python": sys.version.split()[0],
+                     "pysus": str(getattr(pysus, "__version__", "desconhecido")),
+                     "cache_pySUS": str(cache)},
+        "cache": cache_state,
+        "fontes": results,
+        "download_realizado": False,
+        "proximo_passo": (
+            "Se ambas as fontes estiverem vazias, teste o comando descobrir-pysus "
+            "com --cache-dir em uma pasta NOVA para isolar um catálogo local antigo. "
+            "Verifique conectividade HTTPS ao catálogo PySUS. "
+            "Não apague o cache existente ou baixe bases indiscriminadamente."
+        ),
+    }
 
 
 def _file_path(item) -> Path:

@@ -2,6 +2,7 @@
 from __future__ import annotations
 import argparse
 import os
+import sys
 from pathlib import Path
 from .core import ingest_csv, ingest_pysus, diagnosticar_base
 
@@ -22,11 +23,17 @@ def main() -> None:
     py.add_argument("--agravo", required=True)
     py.add_argument("--ano", required=True, type=int)
     py.add_argument("--source", choices=["catalog", "origin"], default="catalog")
+    py.add_argument("--cache-dir", type=Path, help="Cache PySUS alternativo (mesma pasta usada na descoberta)")
     py.add_argument("--status", choices=["final", "preliminar", "desconhecido"], default="desconhecido")
     discovery = cmd.add_parser("descobrir-pysus", help="Descobrir arquivos remotos SINAN sem baixar microdados")
     discovery.add_argument("--agravo", required=True)
     discovery.add_argument("--ano", required=True, type=int)
     discovery.add_argument("--source", choices=["catalog", "origin"], default="catalog")
+    discovery.add_argument("--cache-dir", type=Path, help="Cache PySUS alternativo (pasta nova, não apaga o existente)")
+    inspector = cmd.add_parser("diagnosticar-pysus", help="Diagnosticar catálogo PySUS sem baixar microdados")
+    inspector.add_argument("--agravo", required=True)
+    inspector.add_argument("--ano", required=True, type=int)
+    inspector.add_argument("--cache-dir", type=Path, help="Usar cache PySUS alternativo")
     diagnostic = cmd.add_parser("diagnosticar-base", help="Relatório LOCAL de completude (administrativo)")
     diagnostic.add_argument("--agravo", required=True)
     diagnostic.add_argument("--ano", required=True, type=int)
@@ -38,18 +45,37 @@ def main() -> None:
     serve.add_argument("--port", type=int, default=8000)
     args = parser.parse_args()
     os.environ["SINAN_DB_PATH"] = str(Path(args.db).expanduser().resolve())
+    if getattr(args, "cache_dir", None) is not None:
+        # Must be set BEFORE PySUS is imported: its DuckLake cache_dir is
+        # initialized at import time, so pysus.set_cache() here is too late.
+        os.environ["PYSUS_CACHEPATH"] = str(args.cache_dir.expanduser().resolve())
     if args.comando == "importar-csv":
         r = ingest_csv(args.db, args.arquivo, agravo=args.agravo, ano=args.ano,
                        status=args.status, encoding=args.encoding, delimiter=args.delimiter)
         print(r)
     elif args.comando == "importar-pysus":
-        r = ingest_pysus(args.db, agravo=args.agravo, ano=args.ano,
-                         status=args.status, source=args.source)
+        try:
+            r = ingest_pysus(args.db, agravo=args.agravo, ano=args.ano,
+                             status=args.status, source=args.source)
+        except (RuntimeError, ValueError, OSError) as exc:
+            parser.exit(2, f"Falha na importação: {exc}\n")
         print(r)
     elif args.comando == "descobrir-pysus":
         import json
         from .pysus_gateway import descobrir
-        print(json.dumps(descobrir(args.agravo, args.ano, args.source), ensure_ascii=False, indent=2))
+        try:
+            data = descobrir(args.agravo, args.ano, args.source)
+        except (RuntimeError, ValueError, OSError) as exc:
+            parser.exit(2, f"Falha na descoberta: {exc}\n")
+        print(json.dumps(data, ensure_ascii=False, indent=2))
+    elif args.comando == "diagnosticar-pysus":
+        import json
+        from .pysus_gateway import diagnosticar
+        try:
+            data = diagnosticar(args.agravo, args.ano)
+        except (RuntimeError, ValueError, OSError) as exc:
+            parser.exit(2, f"Falha no diagnóstico: {exc}\n")
+        print(json.dumps(data, ensure_ascii=False, indent=2))
     elif args.comando == "diagnosticar-base":
         import json
         print(json.dumps(diagnosticar_base(args.db, args.agravo, args.ano), ensure_ascii=False, indent=2))

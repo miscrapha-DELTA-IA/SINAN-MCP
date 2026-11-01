@@ -119,3 +119,29 @@ def test_download_streamed_parquet(tmp_path, monkeypatch):
     result = ingest_pysus(db, agravo='TUBE', ano=2024)
     assert result['registros_importados'] == 64
     assert b'FICTICIO' not in db.read_bytes()
+
+def test_empty_catalog_help_has_fresh_cache_hint(monkeypatch):
+    monkeypatch.setattr(g, '_pysus', lambda: SimpleNamespace(sinan=lambda **_: FileBag([])))
+    with pytest.raises(ValueError, match='cache-dir'):
+        g.descobrir('TUBE', 2024)
+
+
+def test_diagnosticar_pysus_handles_empty_and_source_error(monkeypatch, tmp_path):
+    import sys
+    def fake_sinan(**kwargs):
+        if kwargs['source'] == 'origin':
+            raise ConnectionError('FTP indisponível')
+        return FileBag([])
+    monkeypatch.setattr(sys.modules['pysus'] if 'pysus' in sys.modules else g, '_pysus_test', True, raising=False)
+    class FakePysus:
+        CACHEPATH = tmp_path
+        __version__ = '2.11.7'
+    monkeypatch.setattr(g, '_pysus', lambda: SimpleNamespace(sinan=fake_sinan))
+    real_import = g.importlib.import_module
+    monkeypatch.setattr(g.importlib, 'import_module', lambda name: FakePysus if name == 'pysus' else real_import(name))
+    # The diagnostic directly imports 'pysus'; ensure it does not access network in this test
+    monkeypatch.setitem(sys.modules, 'pysus', FakePysus)
+    d = g.diagnosticar('TUBE', 2024)
+    assert not d['fontes']['catalog']['disponivel']
+    assert d['fontes']['origin']['erro'] == 'ConnectionError'
+    assert d['download_realizado'] is False
