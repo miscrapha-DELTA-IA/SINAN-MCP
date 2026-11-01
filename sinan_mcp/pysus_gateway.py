@@ -79,14 +79,10 @@ def diagnosticar(agravo: str, ano: int) -> dict:
     import pysus
     ftp = _pysus()
     cache = Path(pysus.CACHEPATH).expanduser()
-    db_files = ("catalog.duckdb", "sinan.duckdb")
-    cache_state = {}
-    for name in db_files:
-        p = cache / "ducklake" / name
-        cache_state[name] = {
-            "presente": p.is_file(),
-            "bytes": p.stat().st_size if p.is_file() else None,
-        }
+    # The upstream adapter binds this path at module import time.
+    from pysus.api.ducklake.catalog.adapters import BaseAdapter
+    adapter_cache = Path(BaseAdapter.cache_dir).expanduser()
+    db_files = ("catalog.duckdb", "catalog_sinan.duckdb", "catalog_columns.duckdb")
     results = {}
     for source in ("catalog", "origin"):
         try:
@@ -98,12 +94,23 @@ def diagnosticar(agravo: str, ano: int) -> dict:
                                "disponivel": bool(names)}
         except Exception as exc:
             results[source] = {"erro": type(exc).__name__, "detalhe": str(exc)[:250]}
+    # Read cache state AFTER the API calls. Previously this diagnostic could
+    # falsely report files as missing, because PySUS downloads the catalogs
+    # on the first query.
+    cache_state = {}
+    for name in db_files:
+        path = adapter_cache / name
+        cache_state[name] = {
+            "presente": path.is_file(),
+            "bytes": path.stat().st_size if path.is_file() else None,
+        }
     return {
         "agravo": a, "ano_do_arquivo": ano,
         "ambiente": {"plataforma": platform.system(),
                      "python": sys.version.split()[0],
                      "pysus": str(getattr(pysus, "__version__", "desconhecido")),
-                     "cache_pySUS": str(cache)},
+                     "cache_pySUS": str(cache),
+                     "diretorio_catalogo": str(adapter_cache)},
         "cache": cache_state,
         "fontes": results,
         "download_realizado": False,
