@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
+from typing import Any
 from mcp.server import MCPServer
 from .tool_api import listar_bases_publicas, contagens_publicas, abandono_publico, descrever_campos_publicos
 
@@ -20,13 +21,13 @@ def db_path() -> Path:
 
 
 @mcp.tool()
-def listar_bases() -> dict:
+def listar_bases() -> dict[str, Any]:
     """Lista datasets SINAN importados, anos, status final/preliminar, proveniência e data de carga."""
     return listar_bases_publicas(db_path())
 
 
 @mcp.tool()
-def descrever_campos() -> dict:
+def descrever_campos() -> dict[str, Any]:
     """Explica campos e exemplos de agravos para interpretar os resultados corretamente."""
     return descrever_campos_publicos()
 
@@ -34,7 +35,7 @@ def descrever_campos() -> dict:
 @mcp.tool()
 def contar_notificacoes(agravo: str, ano_inicio: int | None = None,
                          ano_fim: int | None = None, uf: str | None = None,
-                         municipio: str | None = None, por: str = "raca_cor") -> dict:
+                         municipio: str | None = None, por: str = "raca_cor") -> dict[str, Any]:
     """Consulta agregada de um único ano de arquivo e UF por sexo ou raça/cor. Suprime células pequenas."""
     return contagens_publicas(db_path(), agravo=agravo, ano_inicio=ano_inicio, ano_fim=ano_fim,
                   uf=uf, municipio=municipio, por=por)
@@ -43,7 +44,7 @@ def contar_notificacoes(agravo: str, ano_inicio: int | None = None,
 @mcp.tool()
 def proporcao_abandono_tuberculose(ano_inicio: int | None = None,
                                   ano_fim: int | None = None, uf: str | None = None,
-                                  municipio: str | None = None, por: str = "raca_cor") -> dict:
+                                  municipio: str | None = None, por: str = "raca_cor") -> dict[str, Any]:
     """Proporção exploratória TB de SITUA_ENCE 2 ou 10 entre 1,2,10, por um ano e uma UF. NÃO é indicador oficial."""
     return abandono_publico(db_path(), ano_inicio=ano_inicio, ano_fim=ano_fim,
                        uf=uf, municipio=municipio, por=por)
