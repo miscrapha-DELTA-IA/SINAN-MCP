@@ -41,7 +41,7 @@ def _validate_manifest(rows) -> list[dict]:
         pieces = key.split("/")
         name = pieces[-1]
         if (not key.startswith(_PREFIX) or ".." in pieces
-                or not re.fullmatch(r"[A-Za-z0-9_.-]+\\.parquet", name)):
+                or not re.fullmatch(r"[A-Za-z0-9_.-]+[.]parquet", name)):
             raise ValueError("Caminho de arquivo inválido no catálogo PySUS")
         size = int(bytes_value) if bytes_value is not None else -1
         if size <= 0 or size > MAX_FILE_BYTES:
@@ -147,8 +147,8 @@ def importar_fallback(db_path, *, agravo: str, ano: int, status: str):
             dest = folder / f"{index:02d}_{entry['name']}"
             sha, count = _download(entry, dest)
             # The provenance hash is the ordered manifest of remote keys + verified content SHA.
-            digest_manifest.update(entry["key"].encode("utf-8") + b"\\0" +
-                                   sha.encode("ascii") + b"\\n")
+            digest_manifest.update(entry["key"].encode("utf-8") + bytes([0]) +
+                                   sha.encode("ascii") + bytes([10]))
             paths.append(dest)
 
         def rows():
