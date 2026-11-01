@@ -8,6 +8,8 @@ from __future__ import annotations
 import csv
 import hashlib
 import importlib
+import sys
+import platform
 from pathlib import Path
 from typing import Iterable, Mapping, Any
 
@@ -47,6 +49,56 @@ def _files(bag) -> list:
     return items
 
 
+def _catalog_paths(agravo: str, ano: int, catalog_path: Path | None = None) -> list[str]:
+    """Read-only fallback for upstream Windows FileBag discovery mismatch.
+
+    This reads only PySUS's cached *metadata database*. It never reads
+    Parquet/microdata, opens network connections, or creates catalog files.
+    """
+    if catalog_path is None:
+        try:
+            from pysus.api.ducklake.catalog.adapters import BaseAdapter
+        except ImportError:
+            return []
+        catalog_path = Path(BaseAdapter.cache_dir) / "catalog_sinan.duckdb"
+    if not catalog_path.is_file():
+        return []
+    try:
+        import duckdb
+    except ImportError:
+        return []
+    prefix = f"public/data/ftp/sinan/{agravo}/{ano}/"
+    # Explicit year filter + fixed path prefix, not a raw SQL or user path.
+    sql = ("SELECT path FROM pysus.files WHERE year = ? "
+           "AND starts_with(path, ?) ORDER BY path LIMIT ?")
+    try:
+        from pysus.api.ducklake.catalog import adapters
+        # PySUS keeps one DuckDB engine per catalog file for the lifetime
+        # of the Python process. Reusing that engine avoids a Windows file
+        # lock/read-only configuration conflict.
+        engines = getattr(adapters, "_SHARED_ENGINES", {})
+        engine = engines.get(str(catalog_path.resolve()))
+        if engine is not None:
+            with engine.connect() as connection:
+                rows = connection.exec_driver_sql(
+                    sql, (ano, prefix, MAX_FILES + 1)
+                ).fetchall()
+        else:
+            # Safe fallback for an already-closed PySUS engine.
+            conn = duckdb.connect(str(catalog_path), read_only=True)
+            try:
+                rows = conn.execute(sql, [ano, prefix, MAX_FILES + 1]).fetchall()
+            finally:
+                conn.close()
+    except Exception:
+        # An incompatible or incomplete cached catalog is not evidence
+        # that the source is absent; let the normal actionable error explain.
+        return []
+    if len(rows) > MAX_FILES:
+        raise ValueError(f"Mais de {MAX_FILES} arquivos no catálogo; restrinja a consulta")
+    return [r[0] for r in rows if isinstance(r[0], str)]
+
+
 def descobrir(agravo: str, ano: int, source: str = "auto") -> dict:
     """Read-only discovery, with diagnostic attempts instead of a misleading 404.
 
@@ -66,12 +118,12 @@ def descobrir(agravo: str, ano: int, source: str = "auto") -> dict:
             items = list(bag) if bag is not None else []
             if len(items) > MAX_FILES:
                 raise ValueError(f"Mais de {MAX_FILES} arquivos retornados; consulta não suportada")
-            names = [Path(str(getattr(item, "path", item))).name for item in items]
+            names = [str(getattr(item, "path", item)).replace("\\", "/").rsplit("/", 1)[-1] for item in items]
             attempts.append({"fonte": selected, "status": "encontrado" if names else "catalogo_vazio",
                              "total_arquivos": len(names)})
             if names:
                 return {"agravo": a, "ano_do_arquivo": ano, "status": "encontrado",
-                        "origem": f"pysus.ftp/{selected}",
+                        "origem": f"pysus.ftp/{selected}", "modo_descoberta": "filebag",
                         "total_arquivos": len(names), "nomes_arquivos": names,
                         "tentativas": attempts, "download_realizado": False,
                         "aviso": "Metadados de catálogo; não valida integridade, completude ou versão epidemiológica."}
@@ -79,10 +131,91 @@ def descobrir(agravo: str, ano: int, source: str = "auto") -> dict:
             attempts.append({"fonte": selected, "status": "falha_de_acesso",
                              "erro_tipo": type(exc).__name__})
         # Unexpected errors are raised rather than masked, to aid debugging.
+    if source in {"auto", "catalog"}:
+        # PySUS 2.11.7 can return empty FileBag on Windows while the
+        # cached metadata DB contains verified entries.
+        recovered = _catalog_paths(a, ano)
+        if recovered:
+            names = [item.replace("\\", "/").rsplit("/", 1)[-1] for item in recovered]
+            attempts.append({"fonte": "duckdb_local_metadados", "status": "encontrado",
+                             "total_arquivos": len(names)})
+            return {"agravo": a, "ano_do_arquivo": ano,
+                    "status": "encontrado", "origem": "pysus.ftp/catalog",
+                    "modo_descoberta": "duckdb_local_metadados",
+                    "total_arquivos": len(names), "nomes_arquivos": names,
+                    "tentativas": attempts, "download_realizado": False,
+                    "aviso": "Arquivos identificados no catálogo local; nenhum microdado baixado. "
+                             "A importação PySUS remota no Windows ainda requer validação."}
     return {"agravo": a, "ano_do_arquivo": ano, "status": "nao_confirmado",
             "origem": None, "total_arquivos": 0, "nomes_arquivos": [],
             "tentativas": attempts, "download_realizado": False,
             "aviso": "Nenhum resultado confirmado nas fontes consultadas. NÃO significa ausência de dados SINAN. Verifique rede, catálogo PySUS e tente --source origin."}
+
+
+def diagnosticar(agravo: str, ano: int) -> dict:
+    """Admin-only read-only diagnostics. No health records are downloaded.
+
+    Note: PySUS 'origin' also consults its catalog metadata in version 2.11.7.
+    """
+    a = _validate(agravo, ano, "catalog")
+    import pysus
+    ftp = _pysus()
+    cache = Path(pysus.CACHEPATH).expanduser()
+    # PySUS 2.11.7 binds this path at import time. Keep a safe fallback
+    # when tests or compatible upstream variants lack the internal module.
+    try:
+        from pysus.api.ducklake.catalog.adapters import BaseAdapter
+    except ImportError:
+        adapter_cache = cache / "ducklake"
+    else:
+        adapter_cache = Path(BaseAdapter.cache_dir).expanduser()
+    db_files = ("catalog.duckdb", "catalog_sinan.duckdb", "catalog_columns.duckdb")
+    results = {}
+    for source in ("catalog", "origin"):
+        try:
+            bag = ftp.sinan(disease=a, year=ano, source=source,
+                            download=False, as_dataframe=False)
+            names = [str(getattr(item, "path", item)).replace("\\", "/").rsplit("/", 1)[-1]
+                     for item in (list(bag) if bag is not None else [])]
+            results[source] = {"quantidade": len(names), "arquivos": names[:MAX_FILES],
+                               "disponivel": bool(names)}
+        except Exception as exc:
+            results[source] = {"erro": type(exc).__name__, "detalhe": str(exc)[:250]}
+    # Read cache state AFTER the API calls. Previously this diagnostic could
+    # falsely report files as missing, because PySUS downloads the catalogs
+    # on the first query.
+    cache_state = {}
+    for name in db_files:
+        path = adapter_cache / name
+        cache_state[name] = {
+            "presente": path.is_file(),
+            "bytes": path.stat().st_size if path.is_file() else None,
+        }
+    recovered = _catalog_paths(a, ano) if not results.get("catalog", {}).get("disponivel") else []
+    return {
+        "agravo": a, "ano_do_arquivo": ano,
+        "fallback_metadados": {
+            "arquivos": [path.replace("\\", "/").rsplit("/", 1)[-1] for path in recovered],
+            "quantidade": len(recovered),
+            "disponivel": bool(recovered),
+            "metodo": "duckdb_local_metadados",
+        },
+        "ambiente": {"plataforma": platform.system(),
+                     "python": sys.version.split()[0],
+                     "pysus": str(getattr(pysus, "__version__", "desconhecido")),
+                     "cache_pySUS": str(cache),
+                     "diretorio_catalogo": str(adapter_cache)},
+        "cache": cache_state,
+        "fontes": results,
+        "download_realizado": False,
+        "proximo_passo": (
+            "Se o FileBag vier vazio no Windows, o SINAN MCP tentará recuperar "
+            "apenas nomes de arquivos pelo catálogo DuckDB local. "
+            "Isso não comprova a importação nem baixa microdados. "
+            "Use importar-parquet com arquivo público verificado para ingestão local. "
+            "Não apague o cache ou baixe bases indiscriminadamente."
+        ),
+    }
 
 
 def _file_path(item) -> Path:

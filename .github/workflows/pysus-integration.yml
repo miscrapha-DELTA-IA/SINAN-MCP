@@ -2,21 +2,33 @@ name: PySUS optional integration
 on:
   workflow_dispatch:
   push:
-    branches: [feat/v0.3-pysus-quality-pilots]
+    branches: [fix/pysus-windows-empty-catalog]
 permissions:
   contents: read
 jobs:
   optional-ingest:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - run: python -m pip install -e '.[dev,ingest]'
-      - run: python -m pytest -q tests/test_ingest_pysus.py
+      - run: python -m pytest -q tests/test_ingest_pysus.py tests/test_local_parquet.py
       - run: python -c "import pysus, pyarrow; assert callable(pysus.ftp.sinan); print('PySUS/PyArrow API loaded')"
+      - name: Inspect PySUS catalog and source diagnostics (no downloads)
+        run: python -m sinan_mcp diagnosticar-pysus --agravo TUBE --ano 2024
+      - name: Inspect on-disk PySUS catalogue metadata on Windows (no microdata)
+        if: runner.os == 'Windows'
+        run: python scripts/inspect_catalog.py
+      - name: Test discovery with a separate empty cache (Windows isolated)
+        if: runner.os == 'Windows'
+        run: python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --source catalog --cache-dir ./data/ci-pysus-fresh
       - name: Discover public SINAN TUBE 2024 file names (no microdata download)
         timeout-minutes: 3
         run: python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --source catalog

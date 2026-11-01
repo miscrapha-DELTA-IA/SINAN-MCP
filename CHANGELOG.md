@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.1-alpha.1 (2026-11-01)
+
+- Reproduced PySUS 2.11.7 Windows FileBag-empty problem against real TUBE/DENG metadata catalogue.
+- Added **Windows-tested read-only metadata fallback** using PySUS's already-open shared SQLAlchemy/DuckDB engine. Restored discovery of public TUBEBR24 and DENGBR24 names without downloading microdata.
+- Added `diagnosticar-pysus` and isolated `--cache-dir` options. Changing cache alone is **not** considered a fix.
+- Added direct administrative `importar-parquet` for verified locally obtained public files, bypassing PySUS's problematic Windows remote ingest.
+- Verified synthetic import tests and real remote metadata discovery through Linux and Windows GitHub Actions.
+- **Not yet validated:** direct PySUS remote download/import on Windows, and clinical/official indicator equivalence.
+
 ## 0.3.0-alpha.1 (2026-11-01)
 
 - PySUS discovery without download, plus streamed Parquet/CSV ingestion and content fingerprint.
