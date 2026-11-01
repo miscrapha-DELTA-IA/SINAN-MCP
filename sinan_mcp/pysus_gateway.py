@@ -54,16 +54,73 @@ def _files(bag) -> list:
     return items
 
 
+def _catalog_paths(agravo: str, ano: int, catalog_path: Path | None = None) -> list[str]:
+    """Read-only fallback for upstream Windows FileBag discovery mismatch.
+
+    This reads only PySUS's cached *metadata database*. It never reads
+    Parquet/microdata, opens network connections, or creates catalog files.
+    """
+    if catalog_path is None:
+        try:
+            from pysus.api.ducklake.catalog.adapters import BaseAdapter
+        except ImportError:
+            return []
+        catalog_path = Path(BaseAdapter.cache_dir) / "catalog_sinan.duckdb"
+    if not catalog_path.is_file():
+        return []
+    try:
+        import duckdb
+    except ImportError:
+        return []
+    prefix = f"public/data/ftp/sinan/{agravo}/{ano}/"
+    # Explicit year filter + fixed path prefix, not a raw SQL or user path.
+    try:
+        conn = duckdb.connect(str(catalog_path), read_only=True)
+        try:
+            rows = conn.execute(
+                "SELECT path FROM pysus.files WHERE year = ? "
+                "AND starts_with(path, ?) ORDER BY path LIMIT ?",
+                [ano, prefix, MAX_FILES + 1],
+            ).fetchall()
+        finally:
+            conn.close()
+    except Exception:
+        # An incompatible or incomplete cached catalog is not evidence
+        # that the source is absent; let the normal actionable error explain.
+        return []
+    if len(rows) > MAX_FILES:
+        raise ValueError(f"Mais de {MAX_FILES} arquivos no catálogo; restrinja a consulta")
+    return [r[0] for r in rows if isinstance(r[0], str)]
+
+
 def descobrir(agravo: str, ano: int, source: str = "catalog") -> dict:
     """Discover remote file names without downloading health records."""
     a = _validate(agravo, ano, source)
     bag = _pysus().sinan(disease=a, year=ano, source=source,
                          download=False, as_dataframe=False)
-    items = _files(bag)
-    # Remote catalog paths use '/' even on Windows; pathlib.Path uses host rules.
+    items = list(bag) if bag is not None else []
+    resolution = "filebag"
+    if not items and source == "catalog":
+        # PySUS 2.11.7 can return FileBag([]) on Windows despite a complete
+        # cached SINAN metadata database; verified on GitHub Actions.
+        paths = _catalog_paths(a, ano)
+        if paths:
+            return {
+                "agravo": a, "ano_do_arquivo": ano,
+                "origem": "pysus.ftp/catalog",
+                "modo_descoberta": "duckdb_local_metadados",
+                "total_arquivos": len(paths),
+                "nomes_arquivos": [p.replace("\\", "/").rsplit("/", 1)[-1] for p in paths],
+                "download_realizado": False,
+                "aviso": "Fallback de metadados locais; arquivo remoto não baixado. "
+                         "A importação direta com PySUS pode continuar incompatível no Windows; "
+                         "use importar-parquet com arquivo público local verificado.",
+            }
+    items = _files(items)
     names = [str(getattr(item, "path", item)).replace("\\", "/").rsplit("/", 1)[-1]
              for item in items]
     return {"agravo": a, "ano_do_arquivo": ano, "origem": f"pysus.ftp/{source}",
+            "modo_descoberta": resolution,
             "total_arquivos": len(items), "nomes_arquivos": names,
             "download_realizado": False,
             "aviso": "Catálogo remoto: não comprova integridade, dicionário ou status definitivo."}

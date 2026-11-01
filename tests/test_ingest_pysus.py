@@ -145,3 +145,29 @@ def test_diagnosticar_pysus_handles_empty_and_source_error(monkeypatch, tmp_path
     assert not d['fontes']['catalog']['disponivel']
     assert d['fontes']['origin']['erro'] == 'ConnectionError'
     assert d['download_realizado'] is False
+
+
+def test_windows_filebag_empty_uses_cached_duckdb_metadata(tmp_path, monkeypatch):
+    duckdb = pytest.importorskip("duckdb")
+    cachedir = tmp_path / "catalog"
+    cachedir.mkdir()
+    path = cachedir / "catalog_sinan.duckdb"
+    with duckdb.connect(str(path)) as db:
+        db.execute("CREATE SCHEMA pysus")
+        db.execute("CREATE TABLE pysus.files (path VARCHAR, year INTEGER)")
+        db.executemany("INSERT INTO pysus.files VALUES (?, ?)", [
+            ("public/data/ftp/sinan/TUBE/2024/_/BR/TUBEBR24.parquet", 2024),
+            ("public/data/ftp/sinan/DENG/2024/_/BR/DENGBR24.parquet", 2024),
+            ("public/data/dadosgov/sinan/TUBE/2024/_/BR/TUBEBR24.parquet", 2024),
+        ])
+    assert g._catalog_paths("TUBE", 2024, path) == [
+        "public/data/ftp/sinan/TUBE/2024/_/BR/TUBEBR24.parquet"
+    ]
+    monkeypatch.setattr(g, "_pysus", lambda: SimpleNamespace(sinan=lambda **_: FileBag([])))
+    monkeypatch.setattr(g, "_catalog_paths", lambda agravo, ano: [
+        "public/data/ftp/sinan/TUBE/2024/_/BR/TUBEBR24.parquet"
+    ])
+    r = g.descobrir("TUBE", 2024)
+    assert r["modo_descoberta"] == "duckdb_local_metadados"
+    assert r["nomes_arquivos"] == ["TUBEBR24.parquet"]
+    assert r["download_realizado"] is False
