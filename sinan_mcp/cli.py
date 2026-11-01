@@ -19,6 +19,11 @@ def main() -> None:
     csvp.add_argument("--status", choices=["final", "preliminar", "desconhecido"], default="desconhecido")
     csvp.add_argument("--encoding", default="utf-8-sig")
     csvp.add_argument("--delimiter", default="auto")
+    parquet = cmd.add_parser("importar-parquet", help="Importar Parquet local já obtido (sem depender do catálogo PySUS)")
+    parquet.add_argument("arquivo", type=Path)
+    parquet.add_argument("--agravo", required=True)
+    parquet.add_argument("--ano", required=True, type=int)
+    parquet.add_argument("--status", choices=["final", "preliminar", "desconhecido"], default="desconhecido")
     py = cmd.add_parser("importar-pysus", help="Baixar base pública via PySUS e importar")
     py.add_argument("--agravo", required=True)
     py.add_argument("--ano", required=True, type=int)
@@ -53,6 +58,13 @@ def main() -> None:
         r = ingest_csv(args.db, args.arquivo, agravo=args.agravo, ano=args.ano,
                        status=args.status, encoding=args.encoding, delimiter=args.delimiter)
         print(r)
+    elif args.comando == "importar-parquet":
+        from .local_files import importar_parquet
+        try:
+            print(importar_parquet(args.db, args.arquivo, agravo=args.agravo,
+                                  ano=args.ano, status=args.status))
+        except (RuntimeError, ValueError, OSError) as exc:
+            parser.exit(2, f"Falha na importação Parquet: {exc}\\n")
     elif args.comando == "importar-pysus":
         try:
             r = ingest_pysus(args.db, agravo=args.agravo, ano=args.ano,
