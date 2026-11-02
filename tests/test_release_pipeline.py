@@ -141,7 +141,7 @@ def test_preliminary_source_must_not_be_approved(tmp_path):
 def test_unknown_extra_columns_and_lower_k_rejected(tmp_path):
     candidate = prepare_candidate(fake_db(tmp_path), agravo="TUBE",
                                   ano=2024, uf="PI", por="raca_cor")
-    with pytest.raises(ValueError, match="célula"):
+    with pytest.raises(ValueError, match="Contagem menor"):
         candidate["cells"][0]["registros"] = 1
         validate_candidate(candidate)
     candidate["cells"][0]["registros"] = 110
