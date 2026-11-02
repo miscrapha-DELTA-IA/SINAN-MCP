@@ -1,0 +1,23 @@
+name: Public HTTPS MCP smoke
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/public-live-smoke.yml
+      - scripts/probe_public_https.py
+permissions:
+  contents: read
+jobs:
+  public-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Probe Render health and seven public MCP tools, no real records
+        env:
+          SINAN_PUBLIC_SMOKE_URL: https://sinan-mcp-public-preview.onrender.com
+        run: python scripts/probe_public_https.py
