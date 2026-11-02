@@ -12,6 +12,7 @@ from __future__ import annotations
 import os
 import re
 from collections import Counter
+from typing import Any
 
 from mcp.server import MCPServer
 from mcp.server.transport_security import TransportSecuritySettings
@@ -72,7 +73,7 @@ def _result_meta():
 
 
 @mcp.tool()
-def sobre_o_servidor() -> dict:
+def sobre_o_servidor() -> dict[str, Any]:
     """Identificação, licença, limitações e segurança da instância pública."""
     return {
         "produto": "SINAN MCP — Demonstração pública",
@@ -88,7 +89,7 @@ def sobre_o_servidor() -> dict:
 
 
 @mcp.tool()
-def listar_bases() -> dict:
+def listar_bases() -> dict[str, Any]:
     """Lista exclusivamente a base FICTÍCIA de demonstração; nenhuma base SINAN real."""
     return {
         "schema_version": "0.4",
@@ -102,7 +103,7 @@ def listar_bases() -> dict:
 
 
 @mcp.tool()
-def listar_agravos() -> dict:
+def listar_agravos() -> dict[str, Any]:
     """Lista agravos documentados; não implica disponibilização de bases reais."""
     data = _catalogue()
     data["disponibilidade_neste_servidor"] = (
@@ -114,7 +115,7 @@ def listar_agravos() -> dict:
 
 
 @mcp.tool()
-def descrever_campos() -> dict:
+def descrever_campos() -> dict[str, Any]:
     """Explica variáveis do protótipo e a necessidade de validação científica."""
     return {
         "variaveis_da_demo": {
@@ -128,7 +129,7 @@ def descrever_campos() -> dict:
 
 
 @mcp.tool()
-def metodologia_abandono_tuberculose() -> dict:
+def metodologia_abandono_tuberculose() -> dict[str, Any]:
     """Documenta uma proporção exploratória, NÃO o indicador oficial do MS."""
     data = _method()
     data["aviso_publico"] = WARNING
@@ -138,7 +139,7 @@ def metodologia_abandono_tuberculose() -> dict:
 @mcp.tool()
 def contar_notificacoes(agravo: str, ano_inicio: int | None = None,
                         ano_fim: int | None = None, uf: str | None = None,
-                        municipio: str | None = None, por: str = "raca_cor") -> dict:
+                        municipio: str | None = None, por: str = "raca_cor") -> dict[str, Any]:
     """Retorna SOMENTE contagens FICTÍCIAS para testar a ferramenta, nunca notificações reais."""
     _check(agravo, ano_inicio, ano_fim, uf, municipio, por)
     pos = 0 if por == "raca_cor" else 1
