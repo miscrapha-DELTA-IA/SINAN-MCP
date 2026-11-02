@@ -165,7 +165,7 @@ def proporcao_abandono_tuberculose(ano_inicio: int | None = None,
                                  ano_fim: int | None = None,
                                  uf: str | None = None,
                                  municipio: str | None = None,
-                                 por: str = "raca_cor") -> dict:
+                                 por: str = "raca_cor") -> dict[str, Any]:
     """Exemplo FICTÍCIO de proporção de abandono; NÃO é indicador epidemiológico oficial."""
     _check("TUBE", ano_inicio, ano_fim, uf, municipio, por)
     pos = 0 if por == "raca_cor" else 1
