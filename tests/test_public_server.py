@@ -104,6 +104,7 @@ def test_public_mcp_tools_no_private_admin_routes():
                 "descrever_campos", "metodologia_abandono_tuberculose",
                 "contar_notificacoes", "proporcao_abandono_tuberculose",
                 "listar_fontes_oficiais", "pesquisar_agravos", "descrever_agravo",
+            "matriz_capacidades", "planejar_consulta_agravo",
             }
             assert all(not n.startswith(("importar", "diagnosticar",
                                         "auditar", "query_sql")) for n in names)
