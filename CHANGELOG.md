@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.0-alpha.3 (2026-11-02): cache-independent PySUS regression tests
+
+- Fixed three mocked discovery tests that unexpectedly consulted the operator's installed PySUS DuckLake metadata cache after reporting intentionally empty FileBags. Fakes now pin the fallback to an empty result without modifying actual discovery behavior.
+- Tested cache isolation using a fresh child interpreter; retained the guard that refuses a cache-path switch after PySUS import. No existing user cache is deleted or rewritten.
+- `preparar-agregado` now reports small-cell block and existing-candidate errors concisely without a traceback. No count details, groups, raw rows or files are released.
+- Added offline full-suite PySUS-installed CI in Windows and Linux to reproduce users' optional-dependency setups. Both environments passed 69 tests on the development branch.
+- No changes to the public synthetic Render service, real-data access gates, or manual review requirements.
+
+
+
 ## 0.4.0-alpha.2 (2026-11-02): REAL-DATA RELEASE ENGINEERING, NOT PUBLICATION
 
 - Added offline `preparar-agregado` to generate a **private unapproved** fixed demographic count candidate from local SINAN SQLite (one file-year, one UF, one dimension; no outcomes/municipalities or row-level data).

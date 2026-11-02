@@ -2,7 +2,7 @@
 
 **Uma interface de ferramentas MCP para educação epidemiológica e estudos exploratórios sobre a estrutura do SINAN.**
 
-> v0.4.0-alpha.2 · Independente, não afiliado ao Ministério da Saúde/DATASUS · Não indicado para decisões clínicas.
+> v0.4.0-alpha.3 · Independente, não afiliado ao Ministério da Saúde/DATASUS · Não indicado para decisões clínicas.
 
 ## Two intentionally separate distributions
 

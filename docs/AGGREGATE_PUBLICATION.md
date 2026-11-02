@@ -113,3 +113,9 @@ Ele expõe somente `sobre_o_servidor`, `listar_agregados` e `consultar_agregado`
 Após validação da origem e do dicionário SINAN-TB por ano, podem ser definidos indicadores oficiais de coorte, com regras de desfecho, tipo de entrada e deduplicação. Isso ocorrerá num módulo *separado*, validado contra tabulações de referência e revisado antes da publicação.
 
 A publicação pública de agregados reais deve conter metadados precisos e resultados auditáveis — jamais registros individuais.
+
+## Falhas esperadas em preparação e execução local de testes
+
+Se `preparar-agregado` retornar **AGREGADO NÃO PUBLICÁVEL — Célula pequena presente**, o mecanismo de proteção funcionou: nenhuma tabela candidata deve ser gerada. Não reduzir `K_MIN`, excluir silenciosamente categorias nem compartilhar contagens locais para contornar esse bloqueio. A análise pode ser ajustada metodologicamente, com nova revisão de risco, sem alterar o servidor público.
+
+Quando os testes PySUS simulam catálogos vazios, não acessam o cache real do pesquisador. O teste de isolamento de cache é executado em outro processo Python, porque importar PySUS fixa sua configuração de cache. Instalar `.[dev,ingest]` e rodar `python -m pytest -q` reproduz a suíte integral, validada em CI com PySUS instalado no Windows e Linux.
