@@ -42,6 +42,18 @@ def main() -> None:
     fairness.add_argument("--min-grupo", type=int, default=50)
     fairness.add_argument("--bootstrap", type=int, default=0)
     fairness.add_argument("--semente", type=int, default=42)
+    candidate = cmd.add_parser(
+        "preparar-agregado", help="Preparar CANDIDATO LOCAL NÃO APROVADO para revisão de divulgação"
+    )
+    candidate.add_argument("--agravo", choices=["TUBE", "DENG"], required=True)
+    candidate.add_argument("--ano", type=int, required=True, help="Ano do arquivo (não diagnóstico)")
+    candidate.add_argument("--uf", required=True)
+    candidate.add_argument("--por", choices=["sexo", "raca_cor"], required=True)
+    verify = cmd.add_parser(
+        "validar-pacote-aprovado", help="Conferir formato, parecer e SHA-256 de pacote aprovado; NÃO publicar"
+    )
+    verify.add_argument("arquivo", type=Path)
+    verify.add_argument("--sha256", required=True, help="SHA-256 externo aprovado")
     diagnostic = cmd.add_parser("diagnosticar-base", help="Relatório LOCAL de completude (administrativo)")
     diagnostic.add_argument("--agravo", required=True)
     diagnostic.add_argument("--ano", required=True, type=int)
@@ -112,6 +124,26 @@ def main() -> None:
             seed=args.semente, cohort=args.coorte,
         )
         print(json.dumps(result, ensure_ascii=False, indent=2))
+    elif args.comando == "preparar-agregado":
+        from .release_pipeline import prepare_candidate, write_private_candidate
+        from .aggregate_contract import candidate_digest
+        result = prepare_candidate(
+            args.db, agravo=args.agravo, ano=args.ano, uf=args.uf, por=args.por
+        )
+        path = write_private_candidate(result)
+        print("CANDIDATO PRIVADO NÃO APROVADO, sem publicação nem envio ao MCP.")
+        print("Arquivo local:", path)
+        print("SHA-256 do candidato:", candidate_digest(result))
+        print("Requer revisão epidemiológica, privacidade e comparação entre releases.")
+        print("Não envie o arquivo para serviços públicos sem parecer independente.")
+    elif args.comando == "validar-pacote-aprovado":
+        from .aggregate_contract import load_approved_release
+        approved = load_approved_release(args.arquivo, args.sha256)
+        scope = approved["candidate"]["scope"]
+        print("Estrutura, revisão registrada e checksum conferidos; NÃO é certificação de anonimização.")
+        print("Agravo:", scope["agravo"], "ano do arquivo:", scope["ano_do_arquivo"],
+              "UF:", scope["uf"], "dimensão:", scope["dimensao"])
+        print("Nenhum dado foi publicado ou enviado à nuvem.")
     elif args.comando == "diagnosticar-base":
         import json
         print(json.dumps(diagnosticar_base(args.db, args.agravo, args.ano), ensure_ascii=False, indent=2))

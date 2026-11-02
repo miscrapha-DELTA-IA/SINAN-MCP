@@ -2,7 +2,7 @@
 
 **Uma interface de ferramentas MCP para educação epidemiológica e estudos exploratórios sobre a estrutura do SINAN.**
 
-> v0.4.0-alpha.1 · Independente, não afiliado ao Ministério da Saúde/DATASUS · Não indicado para decisões clínicas.
+> v0.4.0-alpha.2 · Independente, não afiliado ao Ministério da Saúde/DATASUS · Não indicado para decisões clínicas.
 
 ## Two intentionally separate distributions
 
@@ -185,3 +185,13 @@ py -3.11 -m sinan_mcp auditar-equidade .\predicoes_teste.csv --grupo raca_cor --
 ```
 
 The **locally held-out** CSV must include only `y_true` (0/1), `y_score` (predicted LTFU probability 0–1) and `raca_cor` or `sexo`; extra columns are ignored by the auditor but should not be exported unnecessarily. Never upload it to ChatGPT or Git. This command audits predictions **already created elsewhere**; it cannot train or validate a TB model on the current seven-field projection. See [research protocol](docs/FAIRNESS_PROTOCOL.md).
+
+## Reprodutibilidade de agregados reais — candidato local e revisão obrigatória
+
+A ferramenta **`preparar-agregado`** lê somente o SQLite local e gera uma tabela demográfica candidata sob `data/review-packages/`, sem publicar nada. O módulo opcional **`sinan_mcp.approved_server`** é um servidor SEPARADO para apenas pacotes estáticos com revisões registradas e checksum travado. Ele não é o servidor público atualmente hospedado.
+
+```powershell
+py -3.11 -m sinan_mcp --db .\data\sinan.sqlite3 preparar-agregado --agravo TUBE --ano 2024 --uf PI --por raca_cor
+```
+
+O pacote real ainda não foi preparado no computador do operador, e nenhum dado real foi aprovado ou enviado para nuvem. A importação atual do arquivo TUBE 2024 tem `status=desconhecido`; isso **bloqueia** publicação antes da verificação oficial de consolidação. Consulte o [guia de publicação revisada](docs/AGGREGATE_PUBLICATION.md).

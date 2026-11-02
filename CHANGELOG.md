@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.0-alpha.2 (2026-11-02): REAL-DATA RELEASE ENGINEERING, NOT PUBLICATION
+
+- Added offline `preparar-agregado` to generate a **private unapproved** fixed demographic count candidate from local SINAN SQLite (one file-year, one UF, one dimension; no outcomes/municipalities or row-level data).
+- Fail-closed conservative small-cell guard (`min_cell=20`, `min_partition=100`), strict source and category validation, SHA-256 fingerprints, exclusive local file creation under gitignored `data/`.
+- Independent pure-stdlib `aggregate_contract` requires separate privacy/scientific review attestations, source `final` status, exact candidate and package digest, no extra keys and a single approved table.
+- Added `sinan_mcp.approved_server`: separate opt-in MCP Streamable HTTP process for ONLY immutable reviewed static JSON. Fails on missing/invalid approval, with no connection to databases or the existing synthetic public service.
+- Added dedicated synthetic privacy/security tests and an operator guide. **No real aggregates published, no change to Render synthetic preview.**
+
+
+
 ## 0.4.0-alpha.1 (2026-11-02): PUBLIC DEMONSTRATION (synthetic only)
 
 - Added **dedicated** `sinan_mcp.public_server` module with static fictional fixture, no import path to the private SQLite/ingestion/MCP server, and no patient data access.

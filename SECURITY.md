@@ -28,3 +28,11 @@
 HTTP `/mcp` uses stateless mode and JSON responses, limits request bodies and allows only a configured Host and ChatGPT browser origins. Starting without a valid hostname fails closed; TLS termination is the responsibility of the hosting proxy. Anonymous access is acceptable **only because** this public preview has no user state, real records, private resources or write actions. Adding any such capability requires a new access-control design.
 
 The public release does not solve re-identification risks for a future dataset, perform differential privacy, certify official epidemiological metrics or make the private real-data feature flag appropriate for public use. See [public policy and launch gates](docs/PUBLIC_LAUNCH.md). A Render public service needs separate operational rate limiting, uptime/monitoring, retention policy and capacity planning.
+
+## Precomputed real aggregates (under independent review)
+
+The offline `release_pipeline` imports a strictly limited count table from a locally stored SINAN projection using SQLite read-only access. It blocks entire partitions if any included demographic cell has fewer than 20 observations or the whole population is below 100, supports one UF + one FILE-year + one demographic dimension, and excludes outcome and municipal data. The output is **UNAPPROVED** and saved only under gitignored `data/`.
+
+An independent `aggregate_contract` module validates a human-reviewed static JSON release, its pinned SHA-256 and a two-reviewer record; this validates structure and attestations but **does not verify anonymity, reviewer identities or authorization**. The separate optional `approved_server` imports only this contract, never SQLite, PySUS or the research server. It fails closed if no reviewed release + pinned hash is provided and is NOT configured or deployed to Render.
+
+Conservative count thresholds are **not a formal anonymization mechanism**. Other releases, temporal overlap, auxiliary datasets, data version differences and health-context sensitivity require expert disclosure review. No real package may be published without independent approval. See [aggregate publication guide](docs/AGGREGATE_PUBLICATION.md).
