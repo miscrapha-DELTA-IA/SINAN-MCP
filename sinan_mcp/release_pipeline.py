@@ -87,8 +87,11 @@ def prepare_candidate(db: str | Path, *, agravo: str, ano: int, uf: str,
 def write_private_candidate(candidate: dict, *, root: str | Path = "./data/review-packages") -> Path:
     """Save candidate ONLY under ./data/ (which is gitignored); never upload."""
     validate_candidate(candidate)
-    data_root = Path("./data").resolve()
-    private_dir = Path(root).resolve()
+    data_root = Path.cwd().resolve() / "data"
+    # Do not permit data/ to redirect gitignored private candidates elsewhere.
+    if data_root.is_symlink():
+        raise ValueError("Diretório data/ não pode ser link simbólico")
+    private_dir = Path(root).expanduser().resolve()
     if not private_dir.is_relative_to(data_root):
         raise ValueError("Candidatos devem permanecer sob data/ ignorado pelo Git")
     private_dir.mkdir(parents=True, exist_ok=True)
