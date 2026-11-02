@@ -36,3 +36,7 @@ The offline `release_pipeline` imports a strictly limited count table from a loc
 An independent `aggregate_contract` module validates a human-reviewed static JSON release, its pinned SHA-256 and a two-reviewer record; this validates structure and attestations but **does not verify anonymity, reviewer identities or authorization**. The separate optional `approved_server` imports only this contract, never SQLite, PySUS or the research server. It fails closed if no reviewed release + pinned hash is provided and is NOT configured or deployed to Render.
 
 Conservative count thresholds are **not a formal anonymization mechanism**. Other releases, temporal overlap, auxiliary datasets, data version differences and health-context sensitivity require expert disclosure review. No real package may be published without independent approval. See [aggregate publication guide](docs/AGGREGATE_PUBLICATION.md).
+
+## Official table candidates (v0.4.0a4)
+
+`preparar-tabela-oficial` is a **local-only** conservative schema/disclosure check for a user-provided preaggregated table. It does not access source websites, attest that values are authentic, validate the declared source SHA-256 against an export, or publish values. Its output remains an UNAPPROVED candidate inside gitignored `data/review-packages/`, not consumed by either public MCP service. Independent source reconciliation, cross-release disclosure risk and authorization are required before any public use.

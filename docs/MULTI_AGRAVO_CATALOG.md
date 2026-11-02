@@ -55,3 +55,18 @@ A página de índice não é uma tabela de dados. Para que valores oficiais seja
 ## Próximo trabalho
 
 Preparar um importador independente de **tabelas oficiais pré-agregadas** com manifesto de proveniência por agravo, ano e filtro, conferência manual dos valores e controle de interações entre releases. Nenhum indicador real foi adicionado ao servidor neste marco.
+
+## Recepção local de tabelas oficiais pré-agregadas — sem publicação
+
+A rotina `preparar-tabela-oficial` é distinta do importador PySUS de microdados. Exige um JSON criado localmente a partir de uma **tabulação obtida pelo responsável**, contendo `source.url`, `titulo_tabela`, `extracao_utc` em UTC, `sha256_arquivo_origem` (do arquivo original), `filtros_tabulacao`, `estado_consolidacao`; um `scope` com nome/código interno, UF, anos, **tipo de ano**, `registros_tabnet`, dimensão; e uma lista de células.
+
+Exemplo inteiramente fictício, **não extraído do DATASUS**: [`examples/tabnet_artificial.example.json`](../examples/tabnet_artificial.example.json). A URL é apenas um índice oficial; o checksum foi inventado. Nunca usar o exemplo como evidência real.
+
+```powershell
+cd "$HOME\Downloads\SINAN-MCP-GitHub"
+py -3.11 -m sinan_mcp preparar-tabela-oficial ".\data\entrada_tabnet_privada.json"
+```
+
+Não há requisição HTTP, conferência de números com a fonte, autenticação do SHA-256 declarado ou aprovação científica. O módulo valida formato, URL HTTPS permitida e uma única dimensão de contagem; recusa células abaixo de 20 ou total abaixo de 100. A saída permanece **UNAPPROVED** em `data/review-packages/`, sem integração automática com o servidor MCP.
+
+Um revisor deve comparar independentemente o arquivo original, seus filtros e valores com a tabulação oficial, examinar interações entre releases e documentar autorização de divulgação. O código não pode suprir essa revisão.

@@ -5,6 +5,7 @@
 - Created a static catalogue of **14 internal disease/notification aliases** and four curated official navigation sources for SINAN/DATASUS, clearly differentiated from valid datasets or statistics.
 - Added three public read-only MCP tools: `pesquisar_agravos`, `descrever_agravo`, `listar_fontes_oficiais`, supporting Unicode/diacritic-insensitive searches and explicit availability flags.
 - Kept all public numerical tools **synthetic-only TB demonstration**; no SQLite, individual records, dynamic remote downloading, live case counts or public health outcome statistics.
+- Added local `preparar-tabela-oficial` intake for explicitly declared, pre-aggregated TABNET tables across disease codes. It requires source URL, extraction timestamp, declared export SHA-256, filters, year semantics, dimension and bounded cells, then produces only a PRIVATE UNAPPROVED candidate. It does not verify authenticity or approval.
 - Documented non-exhaustive scope, internal alias caveats and per-agravo validation milestones; added safety and HTTP smoke regression tests.
 - Does not automatically deploy changes to Render. Public deployment remains independently controlled.
 

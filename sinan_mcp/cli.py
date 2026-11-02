@@ -42,6 +42,11 @@ def main() -> None:
     fairness.add_argument("--min-grupo", type=int, default=50)
     fairness.add_argument("--bootstrap", type=int, default=0)
     fairness.add_argument("--semente", type=int, default=42)
+    official = cmd.add_parser(
+        "preparar-tabela-oficial",
+        help="Conferir um JSON local com metadados oficiais declarados, SEM publicar",
+    )
+    official.add_argument("arquivo", type=Path, help="JSON local privado com tabela pré-agregada")
     candidate = cmd.add_parser(
         "preparar-agregado", help="Preparar CANDIDATO LOCAL NÃO APROVADO para revisão de divulgação"
     )
@@ -124,6 +129,17 @@ def main() -> None:
             seed=args.semente, cohort=args.coorte,
         )
         print(json.dumps(result, ensure_ascii=False, indent=2))
+    elif args.comando == "preparar-tabela-oficial":
+        from .official_table_intake import prepare_private_tabnet_candidate
+        try:
+            path = prepare_private_tabnet_candidate(args.arquivo)
+        except (ValueError, OSError) as exc:
+            parser.exit(2, "TABELA NÃO ADMITIDA — não publicada: " + str(exc) + "\\n")
+        print("TABELA OFICIAL DECLARADA — CANDIDATO PRIVADO NÃO APROVADO.")
+        print("Arquivo local:", path)
+        print("A URL, conteúdo, checksum declarado e consolidação NÃO foram")
+        print("verificados contra a fonte remota. Revisão humana obrigatória.")
+        print("Nenhum dado foi publicado nem enviado ao MCP.")
     elif args.comando == "preparar-agregado":
         from .release_pipeline import prepare_candidate, write_private_candidate
         from .aggregate_contract import candidate_digest
