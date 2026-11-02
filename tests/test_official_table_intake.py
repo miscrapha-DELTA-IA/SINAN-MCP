@@ -162,7 +162,7 @@ def test_duplicate_json_keys_refused_before_candidate_creation(tmp_path, monkeyp
     )
     source = tmp_path / "duplicate.json"
     source.write_text(payload, encoding="utf-8")
-    with pytest.raises(ValueError, match="duplicadas"):
+    with pytest.raises(ValueError, match="JSON de tabela inválido"):
         prepare_private_tabnet_candidate(source)
     assert not (tmp_path / "data").exists()
 
