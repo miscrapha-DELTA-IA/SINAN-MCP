@@ -236,3 +236,20 @@ def test_cli_small_cell_block_is_clear_and_never_writes_a_candidate(tmp_path):
     assert "201" not in proc.stderr
     assert "19" not in proc.stderr
     assert not list((tmp_path / "data").rglob("*.candidate.json"))
+
+
+
+def test_private_release_rejects_symlinked_data_root(tmp_path, monkeypatch):
+    db = fake_db(tmp_path)
+    candidate = prepare_candidate(db, agravo="TUBE", ano=2024,
+                                  uf="PI", por="sexo")
+    monkeypatch.chdir(tmp_path)
+    outside = tmp_path / "public-assets"
+    outside.mkdir()
+    try:
+        (tmp_path / "data").symlink_to(outside, target_is_directory=True)
+    except (OSError, NotImplementedError):
+        pytest.skip("O sistema não permite criar links simbólicos")
+    with pytest.raises(ValueError, match="simbólico"):
+        write_private_candidate(candidate)
+    assert list(outside.iterdir()) == []

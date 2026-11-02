@@ -12,12 +12,14 @@ O índice de referência possui atualmente **14 aliases internos de agravos** (T
 
 - `pesquisar_agravos(termo, limite)`: busca por texto e nome, inclusive sem acentos.
 - `descrever_agravo(codigo_interno)`: estado de implementação, limites e links oficiais.
+- `matriz_capacidades()`: capacidades por agravo, com estado explícito de dados reais indisponíveis no servidor público.
+- `planejar_consulta_agravo(agravo, ano, uf, por)`: plano estruturado de pesquisa; resolve nomes ambíguos, não executa consultas reais.
 - `listar_fontes_oficiais()`: páginas oficiais verificadas do MS, DATASUS/TABNET e Portal SINAN. Esses links são pontos de entrada, não arquivos de valores previamente auditados.
 - `contar_notificacoes` e `proporcao_abandono_tuberculose`: **continuam limitadas ao exemplo inventado de TUBE/2024/PI no servidor público**, não a notificações reais.
 - A CLI `preparar-tabela-oficial` confere um JSON local de tabulação já agregada, produz um candidato privado e **nunca publica diretamente**. Verificações de formato e de células mínimas não autenticam os dados junto ao DATASUS.
 - Os agregados reais dependerão de tabelas pré-computadas, documentação por agravo/ano e revisão independente antes de disponibilização; nenhum banco individual é acessado na modalidade pública.
 
-Consulte [escopo e fontes do catálogo](docs/MULTI_AGRAVO_CATALOG.md).
+Consulte [escopo e fontes do catálogo](docs/MULTI_AGRAVO_CATALOG.md). Consulte também o [guia de pesquisa multiagravo e publicação segura](docs/SAFE_MULTIAGRAVO_PLANNER.md).
 
 ## Two intentionally separate distributions
 

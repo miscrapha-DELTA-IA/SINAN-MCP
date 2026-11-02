@@ -24,6 +24,10 @@ from .official_sources import (
     pesquisar_agravos as _search_conditions,
     descrever_agravo as _describe_condition,
 )
+from .query_planner import (
+    matriz_capacidades as _capabilities,
+    planejar_consulta_agravo as _plan_query,
+)
 
 PUBLIC_VERSION = "0.4.0a4"
 WARNING = (
@@ -135,6 +139,21 @@ def pesquisar_agravos(termo: str = "", limite: int = 20) -> dict[str, Any]:
 def descrever_agravo(codigo_interno: str) -> dict[str, Any]:
     """Distingue código interno, documentação, validação e disponibilidade."""
     return _describe_condition(codigo_interno)
+
+
+@mcp.tool()
+def matriz_capacidades() -> dict[str, Any]:
+    """Matriz dos agravos REFERENCIADOS, deixando explícita a ausência de dados reais."""
+    return _capabilities()
+
+
+@mcp.tool()
+def planejar_consulta_agravo(
+    agravo: str, ano: int | None = None, uf: str | None = None,
+    por: str = "sexo",
+) -> dict[str, Any]:
+    """Orienta pesquisa de qualquer agravo sem inventar dados nem acessar microdados."""
+    return _plan_query(agravo, ano, uf, por)
 
 
 @mcp.tool()
