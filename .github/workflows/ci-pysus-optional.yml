@@ -1,0 +1,27 @@
+name: CI optional PySUS offline
+on:
+  push:
+    branches:
+      - main
+      - fix/local-pysus-tests-and-aggregate-errors
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  python-with-pysus:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install real optional PySUS dependencies
+        run: python -m pip install -e ".[dev,ingest]"
+      - name: Run entire offline test suite including discovery and review gates
+        run: python -m pytest -q
+      # No clinical files, no remote microdata downloads, no data artifacts.
