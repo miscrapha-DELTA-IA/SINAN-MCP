@@ -19,8 +19,13 @@ from mcp.server.transport_security import TransportSecuritySettings
 from starlette.responses import JSONResponse
 
 from .catalogue import listar_agravos as _catalogue, metodologia_tuberculose as _method
+from .official_sources import (
+    listar_fontes_oficiais as _official_sources,
+    pesquisar_agravos as _search_conditions,
+    descrever_agravo as _describe_condition,
+)
 
-PUBLIC_VERSION = "0.4.0a1"
+PUBLIC_VERSION = "0.4.0a4"
 WARNING = (
     "EXEMPLO INTEGRALMENTE SINTÉTICO. Os números NÃO são do SINAN real, "
     "não representam pacientes, notificações oficiais, incidência ou risco."
@@ -28,8 +33,8 @@ WARNING = (
 mcp = MCPServer(
     "SINAN MCP — public demonstration",
     instructions=(
-        "Este servidor público fornece documentação e um exemplo 100% FICTÍCIO. "
-        "Não há bases reais importadas nem acesso a microdados. "
+        "Este servidor público oferece catálogo de REFERÊNCIAS a múltiplos agravos e um exemplo 100% FICTÍCIO apenas de tuberculose. "
+        "Listar um agravo ou uma fonte NÃO equivale a ter dados reais disponíveis. Não há bases reais importadas nem acesso a microdados. "
         "Em TODAS as respostas com valores numéricos, identifique explicitamente "
         "os números como sintéticos e nunca os utilize para inferências epidemiológicas. "
         "Nunca afirme que dados do SINAN real foram consultados."
@@ -112,6 +117,24 @@ def listar_agravos() -> dict[str, Any]:
     )
     data["aviso"] = WARNING
     return data
+
+
+@mcp.tool()
+def listar_fontes_oficiais() -> dict[str, Any]:
+    """Fontes oficiais de consulta: somente links e documentação, SEM números reais."""
+    return _official_sources()
+
+
+@mcp.tool()
+def pesquisar_agravos(termo: str = "", limite: int = 20) -> dict[str, Any]:
+    """Encontra agravos em índice EXEMPLIFICATIVO; sem download nem dados individuais."""
+    return _search_conditions(termo, limite)
+
+
+@mcp.tool()
+def descrever_agravo(codigo_interno: str) -> dict[str, Any]:
+    """Distingue código interno, documentação, validação e disponibilidade."""
+    return _describe_condition(codigo_interno)
 
 
 @mcp.tool()

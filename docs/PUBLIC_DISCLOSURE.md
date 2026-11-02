@@ -17,3 +17,7 @@ Read-only health check: https://sinan-mcp-public-preview.onrender.com/health
 **Clinical disclaimer:** No diagnosis, treatment recommendation, individual-level risk score, clinical decision support or official epidemiological statistic is produced by this preview.
 
 **Source and security reports:** https://github.com/miscrapha-DELTA-IA/SINAN-MCP — report security concerns privately without attaching patient records, keys or sensitive logs.
+
+## Catálogo de múltiplos agravos (v0.4.0a4, sujeito a implantação)
+
+O catálogo possui referências e aliases internos para várias doenças e agravos, além de páginas de consulta oficiais. A presença de uma doença na busca não representa uma base carregada, um código oficial PySUS verificado ou estatísticas de notificação disponíveis. Só as ferramentas de demonstração de TB retornam contagens **totalmente fictícias**. A coleta de tabelas reais exige uma cadeia separada de validação científica, documentação de proveniência, proteção estatística e aprovação independente antes da publicação.

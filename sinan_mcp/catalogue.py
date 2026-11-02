@@ -1,5 +1,6 @@
 """Curated scope: supported ingest/export != epidemiologically validated indicator."""
 from __future__ import annotations
+from .official_sources import listar_fontes_oficiais as _official_sources, pesquisar_agravos as _reference_conditions
 
 CATALOGUE = {
     "TUBE": {
@@ -18,7 +19,7 @@ CATALOGUE = {
 
 
 def listar_agravos() -> dict:
-    return {"schema_version": "0.3", "agravos_piloto": CATALOGUE,
+    return {"schema_version": "0.3", "agravos_piloto": CATALOGUE, "indice_de_referencia": _reference_conditions(), "fontes_navegacao": _official_sources(),
             "aviso": "Lista de módulos testados com dados sintéticos; não implica validação para todos os anos e layouts de SINAN.",
             "outros_agravos": "Podem ser importados experimentalmente pela CLI, mas não têm modelo científico curado."}
 

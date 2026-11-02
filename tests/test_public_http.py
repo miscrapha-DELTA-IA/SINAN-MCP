@@ -93,6 +93,7 @@ def test_public_http_end_to_end_and_host_origin_rejection(protocol):
             "sobre_o_servidor", "listar_bases", "listar_agravos",
             "descrever_campos", "metodologia_abandono_tuberculose",
             "contar_notificacoes", "proporcao_abandono_tuberculose",
+            "listar_fontes_oficiais", "pesquisar_agravos", "descrever_agravo",
         }
 
         code, response = call("tools/call", {

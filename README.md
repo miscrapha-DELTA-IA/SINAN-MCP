@@ -2,13 +2,27 @@
 
 **Uma interface de ferramentas MCP para educação epidemiológica e estudos exploratórios sobre a estrutura do SINAN.**
 
-> v0.4.0-alpha.3 · Independente, não afiliado ao Ministério da Saúde/DATASUS · Não indicado para decisões clínicas.
+> v0.4.0-alpha.4 · Independente, não afiliado ao Ministério da Saúde/DATASUS · Não indicado para decisões clínicas.
+
+## Alcance: múltiplos agravos, não somente tuberculose
+
+**Objetivo:** navegar, pesquisar e eventualmente consultar agregados aprovados de múltiplas doenças e agravos de notificação registrados no SINAN. **Não significa qualquer doença da medicina nem qualquer código CID.** A lista de agravos notificáveis e os sistemas de origem mudam; para alguns temas há bases em sistemas diferentes do SINAN.
+
+O índice de referência possui atualmente **14 aliases internos de agravos** (TB, dengue, hanseníase, hepatites virais, sífilis, meningite, violências, etc.). Isso é um **índice exemplificativo, não a lista nacional exaustiva e não um mapa validado de códigos PySUS**. A pesquisa de referências **não contém contagens reais**, não comprova importação e não significa que um indicador foi validado.
+
+- `pesquisar_agravos(termo, limite)`: busca por texto e nome, inclusive sem acentos.
+- `descrever_agravo(codigo_interno)`: estado de implementação, limites e links oficiais.
+- `listar_fontes_oficiais()`: páginas oficiais verificadas do MS, DATASUS/TABNET e Portal SINAN. Esses links são pontos de entrada, não arquivos de valores previamente auditados.
+- `contar_notificacoes` e `proporcao_abandono_tuberculose`: **continuam limitadas ao exemplo inventado de TUBE/2024/PI no servidor público**, não a notificações reais.
+- Os agregados reais dependerão de tabelas pré-computadas, documentação por agravo/ano e revisão independente antes de disponibilização; nenhum banco individual é acessado na modalidade pública.
+
+Consulte [escopo e fontes do catálogo](docs/MULTI_AGRAVO_CATALOG.md).
 
 ## Two intentionally separate distributions
 
 | Mode | Entry point | Data | Intended use |
 |---|---|---|---|
-| **Public HTTPS preview** | `python -m sinan_mcp.public_server` | **120 fictional TB demo records, in code**; no SQLite, no actual SINAN records | Shareable educational illustration and API demonstration |
+| **Public HTTPS preview** | `python -m sinan_mcp.public_server` | Referências para múltiplos agravos; **120 registros TB fictícios apenas como demonstração**; sem SQLite ou SINAN real | Descoberta de fontes, educação e demonstração do protocolo |
 | **Private/local research** | `python -m sinan_mcp --db ./data/sinan-demo.sqlite3 servir` | User-selected local SQLite; real data only under safeguards | Private protocol integration and research |
 
 **The public deployment is not a live SINAN statistics source.** Any actual real-data output requires a separately validated, pre-aggregated dataset and independent privacy/security review. The 113,012 real TB 2024 records imported into the user's Windows were **not** copied to the public server.

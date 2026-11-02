@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.0-alpha.4 (2026-11-02): multi-agravo reference and official-source catalogue
+
+- Created a static catalogue of **14 internal disease/notification aliases** and four curated official navigation sources for SINAN/DATASUS, clearly differentiated from valid datasets or statistics.
+- Added three public read-only MCP tools: `pesquisar_agravos`, `descrever_agravo`, `listar_fontes_oficiais`, supporting Unicode/diacritic-insensitive searches and explicit availability flags.
+- Kept all public numerical tools **synthetic-only TB demonstration**; no SQLite, individual records, dynamic remote downloading, live case counts or public health outcome statistics.
+- Documented non-exhaustive scope, internal alias caveats and per-agravo validation milestones; added safety and HTTP smoke regression tests.
+- Does not automatically deploy changes to Render. Public deployment remains independently controlled.
+
+
+
 ## 0.4.0-alpha.3 (2026-11-02): cache-independent PySUS regression tests
 
 - Fixed three mocked discovery tests that unexpectedly consulted the operator's installed PySUS DuckLake metadata cache after reporting intentionally empty FileBags. Fakes now pin the fallback to an empty result without modifying actual discovery behavior.

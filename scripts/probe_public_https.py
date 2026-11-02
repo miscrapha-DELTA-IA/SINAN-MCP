@@ -82,8 +82,9 @@ def main():
         "sobre_o_servidor", "listar_bases", "listar_agravos", "descrever_campos",
         "metodologia_abandono_tuberculose", "contar_notificacoes",
         "proporcao_abandono_tuberculose",
+        "listar_fontes_oficiais", "pesquisar_agravos", "descrever_agravo",
     }
-    print("PASS MCP tools/list: seven read-only demonstration tools")
+    print("PASS MCP tools/list: 10 read-only reference/demo tools")
 
     bases = tool("listar_bases", {})
     assert bases["dados_reais_disponiveis"] is False
@@ -98,6 +99,19 @@ def main():
     assert "SINTÉTICO" in counts["aviso"]
     assert sum(x["notificacoes_ficticias"] for x in counts["resultado"]["dados"]) == 120
     print("PASS MCP contar_notificacoes: 120 explicitly fictional records")
+
+    found = tool("pesquisar_agravos", {"termo": "hanseniase"})
+    assert found["total_no_indice_curado"] >= 1
+    assert any(x["codigo_interno"] == "HANS" for x in found["resultados"])
+    assert all(x["dados_reais_disponiveis_no_mcp_publico"] is False
+               for x in found["resultados"])
+    print("PASS MCP catalogue: multi-disease references, zero real data")
+
+    sources = tool("listar_fontes_oficiais", {})
+    assert sources["natureza"] == "somente_metadados_de_navegacao"
+    assert all(f["possui_valores_importados_neste_mcp"] is False
+               for f in sources["fontes"])
+    print("PASS MCP source links: official navigation metadata only")
 
     try:
         rpc("tools/list", {}, origin="https://evil.example.org")
