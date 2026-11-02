@@ -1,12 +1,34 @@
 # SINAN MCP
 
-**Epidemiological data from Brazil, exposed through auditable Model Context Protocol tools.**
+**Uma interface de ferramentas MCP para educação epidemiológica e estudos exploratórios sobre a estrutura do SINAN.**
 
-> v0.3.0-alpha.3 · Local-first research prototype · Unaffiliated with the Ministry of Health · Not for clinical decisions or patient inference.
+> v0.4.0-alpha.1 · Independente, não afiliado ao Ministério da Saúde/DATASUS · Não indicado para decisões clínicas.
 
-The LLM interprets the question; the server calculates the answer from locally imported public surveillance data. No real SINAN data ships with the project.
+## Two intentionally separate distributions
 
-## 1-minute synthetic demo
+| Mode | Entry point | Data | Intended use |
+|---|---|---|---|
+| **Public HTTPS preview** | `python -m sinan_mcp.public_server` | **120 fictional TB demo records, in code**; no SQLite, no actual SINAN records | Shareable educational illustration and API demonstration |
+| **Private/local research** | `python -m sinan_mcp --db ./data/sinan-demo.sqlite3 servir` | User-selected local SQLite; real data only under safeguards | Private protocol integration and research |
+
+**The public deployment is not a live SINAN statistics source.** Any actual real-data output requires a separately validated, pre-aggregated dataset and independent privacy/security review. The 113,012 real TB 2024 records imported into the user's Windows were **not** copied to the public server.
+
+## Publishing today: safe public preview
+
+See [public launch checklist](docs/PUBLIC_LAUNCH.md), [public privacy notice](docs/PUBLIC_DISCLOSURE.md), and [Render blueprint](render.yaml). The service starts only with a hosting-provided hostname:
+
+```sh
+python -m pip install -e .
+SINAN_PUBLIC_HOST=example-mcp.your-domain.com PORT=10000 python -m sinan_mcp.public_server
+```
+
+`/health` is a non-sensitive uptime check; `/mcp` is the stateless Streamable HTTP endpoint. **Never configure a public server to load `data/sinan.sqlite3` or to run `sinan_mcp.server`.** The private local server remains available independently.
+
+For private usage, continue below.
+
+---
+
+
 
 Python 3.11+ (Windows, macOS or Linux):
 

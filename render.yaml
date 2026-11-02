@@ -1,0 +1,15 @@
+# Optional Render Blueprint: deliberately SYNTHETIC-ONLY public MCP.
+# Requires user selection/approval of a Render workspace and service plan.
+# Do not attach disks, private database URLs, PySUS caches, or tunnel credentials.
+services:
+  - type: web
+    name: sinan-mcp-public-preview
+    runtime: python
+    plan: free
+    buildCommand: python -m pip install -e .
+    startCommand: python -m sinan_mcp.public_server
+    healthCheckPath: /health
+    autoDeploy: false
+    envVars:
+      - key: SINAN_PUBLIC_REAL_DATA
+        value: "0"

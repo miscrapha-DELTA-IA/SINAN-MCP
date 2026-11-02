@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.0-alpha.1 (2026-11-02): PUBLIC DEMONSTRATION (synthetic only)
+
+- Added **dedicated** `sinan_mcp.public_server` module with static fictional fixture, no import path to the private SQLite/ingestion/MCP server, and no patient data access.
+- Added seven narrowly scoped public read-only MCP tools with repeated explicit synthetic disclaimers, strict demonstration-only filters, and a non-sensitive health endpoint.
+- Added real Streamable HTTP with `stateless_http=True`, JSON replies, 16 KiB request limit, and validated Host/Origin allowlists; refuses to start without an approved hostname.
+- Added isolated Render blueprint (`render.yaml`), deployment/review guide, a standalone privacy notice and security regression tests. Requires an operator-approved workspace and deployment. **Not yet certified for real health-data release.**
+- Clarified that OpenAI Secure MCP Tunnel is not sufficient for public plugin submissions and that Plugin Directory publication requires a separate platform review.
+
+
+
 ## 0.3.0-alpha.3 (2026-11-01)
 
 - Public MCP/REST numeric queries now open the SQLite database **read-only** and refuse to initialize missing databases.

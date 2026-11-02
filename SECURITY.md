@@ -20,3 +20,11 @@
 - Never store API keys or `tunnel_id` plus credentials in Git, CLI logs, screenshots, chat messages, README examples or tracking systems. Use a least-privileged runtime key.
 - Keep the local profile and SQLite folder access-controlled. Do not use a network-shared disk or publish the HTTP/REST interface. Do not enable `SINAN_PUBLIC_REAL_DATA=1` unless the responsible data custodian has assessed provenance, disclosure risk, security controls, intended use and legal/institutional requirements.
 - The offline `auditar-equidade` command consumes individual test predictions. Prediction CSVs may reveal health information; keep input and outputs private. Its results are **not** retrievable through MCP tools.
+
+## Strict public/private boundary — v0.4.0a1
+
+**Public production start: `python -m sinan_mcp.public_server` ONLY.** This module is isolated from `sinan_mcp.server`, `sinan_mcp.tool_api`, `sinan_mcp.core`, all SQLite operations, CLI imports and PySUS. It runs exclusively on hardcoded *fictional* records. An incorrectly set `SINAN_DB_PATH` or `SINAN_PUBLIC_REAL_DATA=1` cannot turn it into a real-data server.
+
+HTTP `/mcp` uses stateless mode and JSON responses, limits request bodies and allows only a configured Host and ChatGPT browser origins. Starting without a valid hostname fails closed; TLS termination is the responsibility of the hosting proxy. Anonymous access is acceptable **only because** this public preview has no user state, real records, private resources or write actions. Adding any such capability requires a new access-control design.
+
+The public release does not solve re-identification risks for a future dataset, perform differential privacy, certify official epidemiological metrics or make the private real-data feature flag appropriate for public use. See [public policy and launch gates](docs/PUBLIC_LAUNCH.md). A Render public service needs separate operational rate limiting, uptime/monitoring, retention policy and capacity planning.
