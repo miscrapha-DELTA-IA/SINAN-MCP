@@ -13,6 +13,18 @@
 
 **The public deployment is not a live SINAN statistics source.** Any actual real-data output requires a separately validated, pre-aggregated dataset and independent privacy/security review. The 113,012 real TB 2024 records imported into the user's Windows were **not** copied to the public server.
 
+## Instância pública em operação (somente dados sintéticos)
+
+- **MCP Streamable HTTP:** [https://sinan-mcp-public-preview.onrender.com/mcp](https://sinan-mcp-public-preview.onrender.com/mcp)
+- **Saúde:** [https://sinan-mcp-public-preview.onrender.com/health](https://sinan-mcp-public-preview.onrender.com/health)
+- **Hospedagem:** Render, instância gratuita isolada, autoDeploy desativado
+- **Validação externa:** [Public HTTPS MCP smoke — GitHub Actions](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/workflows/public-live-smoke.yml)
+- **Estado dos dados:** EXCLUSIVAMENTE 120 registros demonstrativos fictícios TUBE/2024/PI. **Não é uma API de estatísticas oficiais.**
+
+No ChatGPT, crie um conector/servidor MCP personalizado por **URL HTTPS** (não por túnel), use o endereço `/mcp` acima e escolha sem autenticação apenas para esta instância de demonstração sem dados privados. A instalação local de pesquisa permanece separada. A publicação no Plugin Directory depende de revisão e aceite próprios da plataforma.
+
+A instância gratuita pode suspender após inatividade, causando latência na primeira chamada. O operador deve considerar monitoramento e custo/cotas antes da divulgação ampla.
+
 ## Publishing today: safe public preview
 
 See [public launch checklist](docs/PUBLIC_LAUNCH.md), [public privacy notice](docs/PUBLIC_DISCLOSURE.md), and [Render blueprint](render.yaml). The service starts only with a hosting-provided hostname:

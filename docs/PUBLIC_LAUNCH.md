@@ -4,6 +4,18 @@
 
 The production public server is **a separate module**: `sinan_mcp.public_server`. It has only hardcoded fictional records and static methodology/catalogue texts. It never reads `SINAN_DB_PATH`, opens SQLite, queries PySUS, receives credentials, accepts arbitrary filters, nor exposes import, prediction or fairness-audit endpoints. Its outputs consistently and explicitly mark numerical results as **synthetic**.
 
+## Confirmed public preview — 2026-11-02
+
+New Render web service `sinan-mcp-public-preview` deployed in a dedicated Free instance in `My Workspace`, with no databases, disks, or private tunnel credentials. Automatic deploys are disabled.
+
+- Verified HTTPS health URL: https://sinan-mcp-public-preview.onrender.com/health
+- Verified public MCP URL: https://sinan-mcp-public-preview.onrender.com/mcp
+- Git revision running: `43307f28f6831b6b43a533fa85ee624eab97fc18` (`v0.4.0a1`).
+- Independently verified by GitHub Actions workflow `public-live-smoke.yml` (success run `41506993125`): /health, MCP initialize, tools/list, listar_bases, contar_notificacoes and forbidden-Origin HTTP 403.
+- Main CI at revision `01b758112a6db71309e87273254ca6ce2e0379ac` also passed. Changes after the deployment do not update the running service automatically.
+
+**These tests establish endpoint functionality, not legal/official certification, immunity to denial-of-service, or approval for Plugin Directory listing.**
+
 ## Deployment architecture
 
 Public client → HTTPS reverse proxy (e.g. Render) → MCP Streamable HTTP `/mcp` → static synthetic demo tools.
