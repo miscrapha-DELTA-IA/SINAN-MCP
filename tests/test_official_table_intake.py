@@ -121,3 +121,62 @@ def test_invalid_cli_refuses_and_writes_nothing(tmp_path):
     assert "TABELA NÃO ADMITIDA" in proc.stderr
     assert "Traceback" not in proc.stderr
     assert not (tmp_path/"data"/"review-packages").exists()
+
+
+
+def test_category_aliases_are_single_dimension_only():
+    item = example()
+    item["cells"] = [
+        {"categoria": "Feminino", "registros": 120},
+        {"categoria": "Masculino", "registros": 130},
+    ]
+    assert validate_official_tabulation(item) is item
+
+    item["cells"][0]["categoria"] = "F"  # same canonical sex category
+    item["cells"][1]["categoria"] = "Feminino"
+    with pytest.raises(ValueError, match="duplicada"):
+        validate_official_tabulation(item)
+
+    item["cells"][1]["categoria"] = "F de 0 a 4 anos"  # covert intersection
+    with pytest.raises(ValueError, match="não reconhecida"):
+        validate_official_tabulation(item)
+
+    item["scope"]["dimensao"] = "raca_cor"
+    item["cells"] = [
+        {"categoria": "Parda", "registros": 120},
+        {"categoria": "Branca", "registros": 130},
+    ]
+    assert validate_official_tabulation(item) is item
+    item["cells"][1]["categoria"] = "4"
+    with pytest.raises(ValueError, match="duplicada"):
+        validate_official_tabulation(item)
+
+
+def test_duplicate_json_keys_refused_before_candidate_creation(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    payload = json.dumps(example(), ensure_ascii=False)
+    payload = payload.replace(
+        '"stage": "UNAPPROVED_OFFICIAL_TABULATION"',
+        '"stage": "UNAPPROVED_OFFICIAL_TABULATION", "stage": "UNAPPROVED_OFFICIAL_TABULATION"',
+        1,
+    )
+    source = tmp_path / "duplicate.json"
+    source.write_text(payload, encoding="utf-8")
+    with pytest.raises(ValueError, match="duplicadas"):
+        prepare_private_tabnet_candidate(source)
+    assert not (tmp_path / "data").exists()
+
+
+def test_symlinked_data_root_cannot_leak_private_candidate(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    outside = tmp_path / "public-assets"
+    outside.mkdir()
+    try:
+        (tmp_path / "data").symlink_to(outside, target_is_directory=True)
+    except (OSError, NotImplementedError):
+        pytest.skip("O sistema não permite criar links simbólicos")
+    source = tmp_path / "private.json"
+    source.write_text(json.dumps(example(), ensure_ascii=False), encoding="utf-8")
+    with pytest.raises(ValueError, match="simbólico"):
+        prepare_private_tabnet_candidate(source)
+    assert list(outside.iterdir()) == []
