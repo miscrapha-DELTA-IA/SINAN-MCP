@@ -127,10 +127,17 @@ def main() -> None:
     elif args.comando == "preparar-agregado":
         from .release_pipeline import prepare_candidate, write_private_candidate
         from .aggregate_contract import candidate_digest
-        result = prepare_candidate(
-            args.db, agravo=args.agravo, ano=args.ano, uf=args.uf, por=args.por
-        )
-        path = write_private_candidate(result)
+        try:
+            result = prepare_candidate(
+                args.db, agravo=args.agravo, ano=args.ano, uf=args.uf, por=args.por
+            )
+            path = write_private_candidate(result)
+        except (ValueError, FileExistsError) as exc:
+            parser.exit(
+                2,
+                "AGREGADO NÃO PUBLICÁVEL — operação encerrada sem criar ou "
+                "divulgar uma nova tabela. " + str(exc) + "\\n"
+            )
         print("CANDIDATO PRIVADO NÃO APROVADO, sem publicação nem envio ao MCP.")
         print("Arquivo local:", path)
         print("SHA-256 do candidato:", candidate_digest(result))

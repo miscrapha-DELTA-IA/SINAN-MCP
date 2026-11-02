@@ -218,3 +218,21 @@ def test_cli_does_not_send_or_publish_private_rows(tmp_path):
     assert "NÃO APROVADO" in proc.stdout
     assert "FICTICIO_PRIVADO" not in proc.stdout
     assert len(list((tmp_path / "data" / "review-packages").glob("*.candidate.json"))) == 1
+
+
+def test_cli_small_cell_block_is_clear_and_never_writes_a_candidate(tmp_path):
+    # The operator's reported small-cell block is intended behaviour.
+    db = fake_db(tmp_path, races=(201, 19))
+    proc = subprocess.run([
+        sys.executable, "-m", "sinan_mcp", "--db", str(db),
+        "preparar-agregado", "--agravo", "TUBE", "--ano", "2024",
+        "--uf", "PI", "--por", "raca_cor",
+    ], cwd=tmp_path, capture_output=True, text=True, timeout=20)
+    assert proc.returncode == 2
+    assert "AGREGADO NÃO PUBLICÁVEL" in proc.stderr
+    assert "Célula pequena" in proc.stderr
+    assert "Traceback" not in proc.stderr
+    assert "FICTICIO_PRIVADO" not in proc.stderr
+    assert "201" not in proc.stderr
+    assert "19" not in proc.stderr
+    assert not list((tmp_path / "data").rglob("*.candidate.json"))

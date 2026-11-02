@@ -90,6 +90,12 @@ def test_refuse_unexpected_download_format(tmp_path, monkeypatch):
 
 
 def test_missing_filebag_or_wrong_year(monkeypatch):
+    # Do not consult the operator's genuine persistent PySUS metadata cache.
+    # This test specifically models both discovery sources as EMPTY.
+    from sinan_mcp import catalog_fallback
+    monkeypatch.setattr(catalog_fallback, "lookup_after_pysus",
+                        lambda disease, year: [])
+
     monkeypatch.setattr(g, '_pysus', lambda: SimpleNamespace(sinan=lambda **_: FileBag([])))
     result = g.descobrir('TUBE', 2024)
     assert result['status'] == 'nao_confirmado'
@@ -137,6 +143,12 @@ def test_discovery_auto_fallback_to_origin(monkeypatch):
 
 
 def test_discovery_empty_origin_not_misreported_as_missing_dataset(monkeypatch):
+    # Do not consult the operator's genuine persistent PySUS metadata cache.
+    # This test specifically models both discovery sources as EMPTY.
+    from sinan_mcp import catalog_fallback
+    monkeypatch.setattr(catalog_fallback, "lookup_after_pysus",
+                        lambda disease, year: [])
+
     monkeypatch.setattr(g, '_pysus', lambda: SimpleNamespace(sinan=lambda **kw: FileBag([])))
     result = g.descobrir('DENG', 2024, source='origin')
     assert result['status'] == 'nao_confirmado'
@@ -157,18 +169,59 @@ def test_discovery_source_error_then_fallback(monkeypatch):
 
 
 def test_create_isolated_cache_without_touching_existing(tmp_path, monkeypatch):
+    # PySUS might have been imported by another unit test earlier in this
+    # Python process. Testing a fresh cache MUST happen in a fresh interpreter,
+    # because PySUS resolves cache settings at import time.
     import os
+    import subprocess
+    import sys
+    import json
+
+    existing = tmp_path / 'existing-user-cache'
+    existing.mkdir()
+    sentinel = existing / 'never-delete.txt'
+    sentinel.write_text('KEEP', encoding='utf-8')
+
+    env = os.environ.copy()
+    env.pop('PYSUS_CACHEPATH', None)
+    script = (
+        "import json, os; "
+        "from sinan_mcp.pysus_diagnostics import create_isolated_cache; "
+        "a = create_isolated_cache(); b = create_isolated_cache(); "
+        "print(json.dumps({'a': str(a), 'b': str(b), "
+        "'active': os.environ['PYSUS_CACHEPATH']}))"
+    )
+    proc = subprocess.run([sys.executable, '-c', script],
+                          cwd=tmp_path, env=env, capture_output=True,
+                          text=True, timeout=20)
+    assert proc.returncode == 0, proc.stderr
+    result = json.loads(proc.stdout)
+    isolated = Path(result['a'])
+    second = Path(result['b'])
+    assert isolated.is_dir() and second.is_dir()
+    assert isolated != second
+    assert isolated.parent == tmp_path / 'data'
+    assert result['active'] == str(second.resolve())
+    assert sentinel.read_text(encoding='utf-8') == 'KEEP'
+
+
+def test_create_isolated_cache_refuses_late_import(tmp_path, monkeypatch):
+    import sys
     from sinan_mcp.pysus_diagnostics import create_isolated_cache
     monkeypatch.chdir(tmp_path)
-    monkeypatch.delenv('PYSUS_CACHEPATH', raising=False)
-    isolated = create_isolated_cache()
-    assert isolated.is_dir()
-    assert isolated.parent.name == 'data'
-    assert os.environ['PYSUS_CACHEPATH'] == str(isolated.resolve())
-    assert create_isolated_cache() != isolated
+    monkeypatch.setitem(sys.modules, 'pysus', object())
+    with pytest.raises(RuntimeError, match='antes de importar'):
+        create_isolated_cache()
+    assert not (tmp_path / 'data').exists()
 
 
 def test_discovery_code_explains_common_catalog_index(monkeypatch):
+    # Do not consult the operator's genuine persistent PySUS metadata cache.
+    # This test specifically models both discovery sources as EMPTY.
+    from sinan_mcp import catalog_fallback
+    monkeypatch.setattr(catalog_fallback, "lookup_after_pysus",
+                        lambda disease, year: [])
+
     monkeypatch.setattr(g, '_pysus', lambda: SimpleNamespace(sinan=lambda **_: FileBag([])))
     out = g.descobrir('TUBE', 2024)
     assert out['status'] == 'nao_confirmado'
