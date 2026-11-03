@@ -170,7 +170,10 @@ def test_existing_offline_readiness_is_unmodified():
     assert snapshot["distribuicoes_catalogadas"] == 5
     assert snapshot["publicacao_automatica"] is False
     ctx = consultar_contexto_portal_zika_2024()
-    assert ctx["url_exata_pdf_dicionario_zika_recuperada"] is None
+    from sinan_mcp.zika_official_dictionary_reference import PDF_URL, RESOURCE_URL
+    assert ctx["url_exata_pdf_dicionario_zika_recuperada"] == PDF_URL
+    assert ctx["pagina_exata_recurso_dicionario_zika"] == RESOURCE_URL
+    assert ctx["pdf_inspecionado_visual_documentalmente"] is True
     assert ctx["conteudo_pdf_dicionario_zika_auditado"] is False
 
 
