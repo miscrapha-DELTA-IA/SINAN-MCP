@@ -188,3 +188,15 @@ def test_permanent_http_error_never_retried(tmp_path, monkeypatch):
     with pytest.raises(RuntimeError, match="permanente"):
         ci._download(_entry(size=300), target)
     assert not target.exists()
+
+
+
+def test_download_does_not_delete_preexisting_destination(tmp_path, monkeypatch):
+    pytest.importorskip("pysus")
+    target = tmp_path / "preexisting.parquet"
+    target.write_bytes(b"DO-NOT-TOUCH")
+    monkeypatch.setattr(ci, "_open_strict",
+                        lambda *_args, **_kwargs: pytest.fail("must not connect"))
+    with pytest.raises(FileExistsError):
+        ci._download(_entry(size=300), target)
+    assert target.read_bytes() == b"DO-NOT-TOUCH"
