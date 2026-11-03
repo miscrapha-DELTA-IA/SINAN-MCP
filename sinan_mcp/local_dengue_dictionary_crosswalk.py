@@ -152,6 +152,30 @@ def _only_documented_crosswalk(
     }
 
 
+def _hipoteses_documentais_de_escopo(
+    nomes_documento: set[str], nomes_observados: set[str],
+) -> list[dict]:
+    """Hypotheses from PUBLIC document fields only; NEVER certify release.
+
+    The newer public Dengue PDF lists CLINIC_CHIK at seq. 73, page 13,
+    conditioned on Chikungunya. Not seeing it in a Dengue CSV could reflect
+    source selection or export policy; neither is proven by name comparison.
+    """
+    missing = nomes_documento - nomes_observados
+    if "CLINIC_CHIK" not in missing:
+        return []
+    return [{
+        "campo_documentado": "CLINIC_CHIK",
+        "sequencia_documental": 73,
+        "pagina_pdf": 13,
+        "escopo_condicional_documentado": "Chikungunya",
+        "motivo_da_ausencia_no_csv": "NAO_DETERMINADO",
+        "hipotese": "Pode decorrer do escopo de exportacao DENG",
+        "validacao_independente": "PENDENTE",
+        "dispensa_justificada": False,
+    }]
+
+
 def confrontar_dengue_dicionarios_local(
     pdf_atual: str | Path, contrato_2015: str | Path,
     zip_2024: str | Path, destino: str | Path,
@@ -182,6 +206,9 @@ def confrontar_dengue_dicionarios_local(
         pdf["nomes_documentais"],
         {f["name"] for f in old["campos_dbf"]}, actual,
     )
+    hipoteses_escopo = _hipoteses_documentais_de_escopo(
+        pdf["nomes_documentais"], actual
+    )
     report = {
         "schema_version": "sinan-private-dengue-crosswalk-candidate-v1",
         "resource_id": RESOURCE_ID,
@@ -197,6 +224,8 @@ def confrontar_dengue_dicionarios_local(
         **documentary,
         "duplicacoes_no_pdf_atual": pdf["duplicacoes"],
         "tipos_inconsistentes_no_pdf_atual": pdf["tipos_malformados"],
+        "hipoteses_escopo_nao_validadas": hipoteses_escopo,
+        "divergencias_nominais_resolvidas_independentemente": False,
         "conflitos_dominios_necessitam_parecer": [
             {
                 "campo": "classi_fin",
@@ -254,6 +283,7 @@ def confrontar_dengue_dicionarios_local(
         "adicionais_csv_fora_pdf_atual": documentary["quantidade_csv_fora_pdf_atual"],
         "duplicacoes_pdf_atual": len(pdf["duplicacoes"]) - 1,
         "tipos_malformados_pdf_atual": len(pdf["tipos_malformados"]),
+        "ausencias_com_hipotese_de_escopo": len(hipoteses_escopo),
         "revisao": "PENDENTE",
         "publicacao_autorizada": False,
     }
