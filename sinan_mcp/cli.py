@@ -96,6 +96,14 @@ def main() -> None:
     pdf_draft.add_argument("--resource-id", required=True)
     pdf_draft.add_argument("--pdf", required=True, type=Path)
     pdf_draft.add_argument("--saida", required=True, type=Path)
+    modern_dict = cmd.add_parser(
+        "confrontar-dicionario-dengue-2024",
+        help="Somente offline: PDF documental 2024 x rascunho 2015 x cabeçalho CSV",
+    )
+    modern_dict.add_argument("--pdf", required=True, type=Path)
+    modern_dict.add_argument("--contrato-2015", required=True, type=Path)
+    modern_dict.add_argument("--zip", required=True, type=Path)
+    modern_dict.add_argument("--parecer-pendente", required=True, type=Path)
     schema_audit = cmd.add_parser(
         "comparar-esquema-privado",
         help="Compara campos localmente com PDF e contrato manual; NÃO autoriza uso real",
@@ -313,6 +321,23 @@ def main() -> None:
             parser.exit(2, "MODELO NÃO CRIADO — verifique a referência, o PDF e o destino local.\n")
         print("CANDIDATO LOCAL NÃO REVISADO. Não enviar o arquivo ao GitHub.")
         print("Campos de exemplo:", report["campos_exemplo_documentados"])
+    elif args.comando == "confrontar-dicionario-dengue-2024":
+        from .local_dengue_dictionary_crosswalk import confrontar_dengue_dicionarios_local
+        try:
+            summary = confrontar_dengue_dicionarios_local(
+                args.pdf, args.contrato_2015, args.zip, args.parecer_pendente,
+            )
+        except (ValueError, OSError, RuntimeError):
+            parser.exit(2, "CONFRONTO LOCAL NÃO CONCLUÍDO — confira PDF, ZIP, "
+                           "contrato privado de 2015 e destino novo.\n")
+        print("MATRIZ PRIVADA PENDENTE; NENHUM INDICADOR REAL AUTORIZADO.")
+        print("PDF atual: entradas:", summary["total_pdf_atual"],
+              "nomes distintos:", summary["unicos_pdf_atual"])
+        print("CSV: campos observados:", summary["csv_observados"])
+        print("PDF atual e CSV: nomes comuns:", summary["comuns_pdf_atual_csv"])
+        print("PDF atual ausentes do CSV:", summary["ausentes_csv_do_pdf_atual"])
+        print("CSV fora do PDF atual:", summary["adicionais_csv_fora_pdf_atual"])
+        print("Revisão independente:", summary["revisao"])
     elif args.comando == "rascunhar-campos-dbf-pdf":
         from .local_pdf_dictionary_candidate import gerar_rascunho_pdf_dbf_local
         try:
