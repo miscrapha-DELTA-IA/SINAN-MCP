@@ -142,6 +142,21 @@ def main() -> None:
     evidence_link.add_argument("--checklist", required=True, type=Path)
     evidence_link.add_argument("--parecer-esquema", required=True, type=Path)
     evidence_link.add_argument("--saida", required=True, type=Path)
+    annual_source = cmd.add_parser(
+        "preparar-dossie-fonte-dengue",
+        help="Inspeciona ZIP LOCAL e cria dossie NAO VALIDADO; sem dados clinicos",
+    )
+    annual_source.add_argument("--zip", required=True, type=Path)
+    annual_source.add_argument("--parecer-esquema", required=True, type=Path)
+    annual_source.add_argument("--saida", required=True, type=Path)
+    annual_attach = cmd.add_parser(
+        "vincular-fonte-dengue-roadmap",
+        help="Vincula SHA de dossie de fonte DENG/2024 sem validar origem/consolidacao",
+    )
+    annual_attach.add_argument("--checklist", required=True, type=Path)
+    annual_attach.add_argument("--parecer-esquema", required=True, type=Path)
+    annual_attach.add_argument("--dossie-fonte", required=True, type=Path)
+    annual_attach.add_argument("--saida", required=True, type=Path)
     readiness_check = cmd.add_parser(
         "diagnosticar-checklist-roadmap",
         help="Mostrar pendencias declaradas, SEM autenticar ou autorizar publicacao",
@@ -381,6 +396,31 @@ def main() -> None:
               result["n_frentes_com_evidencia_local_nao_validada"])
         print("Parecer cientifico:", "PENDENTE")
         print("Publicacao autorizada:", "NAO")
+    elif args.comando == "preparar-dossie-fonte-dengue":
+        from .local_annual_source_evidence import preparar_dossie_fonte_dengue_local
+        try:
+            result = preparar_dossie_fonte_dengue_local(
+                args.zip, args.parecer_esquema, args.saida,
+            )
+        except (ValueError, OSError, UnicodeError):
+            parser.exit(2, "DOSSIE NAO GERADO: confira ZIP, parecer e destino exclusivo.\n")
+        print("DOSSIE PRIVADO DE FONTE CRIADO. ORIGEM OFICIAL NAO AUTENTICADA.")
+        print("ZIP local vinculado ao parecer:", "SIM" if result["zip_local_conciliado_com_parecer"] else "NAO")
+        print("Consolidacao:", result["status_consolidacao"])
+        print("Publicacao:", "NAO AUTORIZADA")
+    elif args.comando == "vincular-fonte-dengue-roadmap":
+        from .local_annual_source_evidence import vincular_dossie_fonte_dengue_roadmap_local
+        try:
+            result = vincular_dossie_fonte_dengue_roadmap_local(
+                args.checklist, args.parecer_esquema, args.dossie_fonte, args.saida,
+            )
+        except (ValueError, OSError, UnicodeError):
+            parser.exit(2, "FONTE NAO VINCULADA: confira arquivos, hashes e destino.\n")
+        print("EVIDENCIA LOCAL DE FONTE VINCULADA; NENHUMA HOMOLOGACAO.")
+        print("Frentes sem evidencia:", result["n_frentes_pendentes"])
+        print("Frentes com evidencia local nao validada:",
+              result["n_frentes_com_evidencia_local_nao_validada"])
+        print("Status:", result["status"])
     elif args.comando == "diagnosticar-checklist-roadmap":
         from .roadmap_readiness import diagnosticar_checklist_local
         try:
