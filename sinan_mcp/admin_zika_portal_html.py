@@ -19,6 +19,7 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 from .admin_zika_dictionary_discovery import (
     _download_pdf_url, _normalize_title, classificar_falha_descoberta,
     UUID, PACKAGE, PACKAGE_ID, RESOURCE_PAGE_BASE,
+    _no_dupes, identificar_dicionario_zika_no_ckan,
 )
 
 PAGE = "https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus"
@@ -234,3 +235,110 @@ def descobrir_dicionario_zika_pagina(html=None):
         "publicacao_autorizada": False,
         "status": "REFERENCIA_DOCUMENTAL_IDENTIFICADA_EM_HTML_SEM_AUDITORIA",
     }
+
+
+# The public Next.js hydration data layer has been documented by PySUS:
+# https://github.com/AlertaDengue/PySUS/blob/main/pysus/api/saude/next_data.py
+# https://github.com/AlertaDengue/PySUS/blob/main/pysus/api/saude/catalog.py
+# No internal hostname, redirect or arbitrary URL is trusted.
+BUILD_ID = re.compile(r"[A-Za-z0-9_-]{8,128}\\Z")
+
+
+def _extract_build_id(html):
+    parser = _PublicPage()
+    parser.feed(html)
+    for script in parser.scripts[:MAX_SCRIPT_COUNT]:
+        if '"buildId"' not in script:
+            continue
+        try:
+            obj = json.loads(script, object_pairs_hook=_no_dupes)
+        except (ValueError, TypeError):
+            continue
+        if not isinstance(obj, dict):
+            continue
+        key = obj.get("buildId")
+        if isinstance(key, str) and BUILD_ID.fullmatch(key):
+            return key
+    raise ValueError("BUILD_ID_NAO_LOCALIZADO_NA_PAGINA")
+
+
+def _read_nextjs_dataset_json(build_id):
+    if not isinstance(build_id, str) or not BUILD_ID.fullmatch(build_id):
+        raise ValueError("BUILD_ID_INVALIDO")
+    url = (
+        "https://dadosabertos.saude.gov.br/_next/data/" + build_id
+        + "/dataset/arboviroses-zika-virus.json?slug=arboviroses-zika-virus"
+    )
+    request = Request(
+        url, method="GET",
+        headers={
+            "Accept": "application/json",
+            "User-Agent": "SINAN-MCP-documental-audit/0.4",
+        },
+    )
+    opener = build_opener(_NoRedirect())
+    with opener.open(request, timeout=TIMEOUT_SECONDS) as response:
+        if response.geturl() != url:
+            raise ValueError("REDIRECIONAMENTO_NEXTJS_BLOQUEADO")
+        mime = response.headers.get("Content-Type", "")
+        if "application/json" not in mime.lower():
+            raise ValueError("NEXTJS_RESPONDEU_NAO_JSON")
+        length = response.headers.get("Content-Length")
+        if length and (not length.isdigit() or int(length) > MAX_BYTES):
+            raise ValueError("NEXTJS_JSON_EXCEDE_LIMITE")
+        raw = response.read(MAX_BYTES + 1)
+    if len(raw) > MAX_BYTES:
+        raise ValueError("NEXTJS_JSON_EXCEDE_LIMITE")
+    parsed = json.loads(raw.decode("utf-8"), object_pairs_hook=_no_dupes)
+    if not isinstance(parsed, dict):
+        raise ValueError("NEXTJS_METADADOS_INVALIDOS")
+    return parsed
+
+
+def descobrir_dicionario_zika_portal():
+    """Two bounded same-origin requests: HTML -> Next.js dataset metadata.
+
+    If the Next.js hydration endpoint has changed or is temporarily
+    unavailable, allow only the strict HTML identity fallback. Never use
+    the broken CKAN hostname, third-party proxies or data download URLs.
+    """
+    html = _read_public_html()
+    next_data_problem = None
+    try:
+        build_id = _extract_build_id(html)
+        data = _read_nextjs_dataset_json(build_id)
+        page_props = data.get("pageProps")
+        report = identificar_dicionario_zika_no_ckan(
+            {"success": True, "result": page_props}
+        )
+        return {
+            "schema_version": "sinan-zika-nextjs-dictionary-discovery-v1",
+            "fonte_html_oficial": PAGE,
+            "metodo_de_evidencia": "nextjs_hidratacao_json_oficial",
+            "agravo": "ZIKA",
+            "recurso_uuid_documentado": report["recurso_uuid_documentado"],
+            "pagina_recurso_oficial": report["pagina_recurso_oficial"],
+            "formato_declarado_no_html": "PDF",
+            "url_pdf_aprovada_estruturalmente": report[
+                "pdf_url_apenas_se_host_e_caminho_permitidos"
+            ],
+            "arquivo_pdf_baixado": False,
+            "conteudo_pdf_auditado": False,
+            "dicionario_aplicavel_a_2024_validado": False,
+            "data_de_corte_2024_confirmada": False,
+            "dados_clinicos_acessados": False,
+            "indicador_real_homologado": False,
+            "publicacao_autorizada": False,
+            "status": "REFERENCIA_DOCUMENTAL_NEXTJS_NAO_AUDITADA",
+        }
+    except (ValueError, OSError, UnicodeError, HTTPError, URLError) as exc:
+        next_data_problem = exc
+
+    try:
+        return descobrir_dicionario_zika_pagina(html)
+    except ValueError as exc:
+        if next_data_problem is not None:
+            raise ValueError(
+                "NEXTJS_E_HTML_SEM_UUID_DOCUMENTAL_VALIDADO"
+            ) from next_data_problem
+        raise exc
