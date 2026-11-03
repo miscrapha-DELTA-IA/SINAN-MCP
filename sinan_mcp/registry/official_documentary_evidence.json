@@ -1,0 +1,70 @@
+{
+  "schema_version": "sinan-official-year-evidence-v1",
+  "catalog_revision": "2026-11-02-r1",
+  "verified_portal_links_on": "2026-11-02",
+  "scope": "evidencia_documental_de_fontes_oficiais_sem_atestado_de_compatibilidade_ano",
+  "entries": [
+    {
+      "agravo_alias_interno": "TUBE",
+      "ano_do_arquivo_pretendido": 2024,
+      "sistema_documentado": "SINAN NET",
+      "documento": {
+        "titulo": "Dicionário de Dados — SINAN NET — Versão 5.0 — Tuberculose",
+        "instituicao_publicadora": "Ministério da Saúde — Portal SINAN",
+        "edicao_documental": "SINAN NET 5.0; nome do arquivo indica 23_07_2020",
+        "pagina_oficial": "https://portalsinan.saude.gov.br/tuberculose",
+        "url_documento": "https://portalsinan.saude.gov.br/images/documentos/Agravos/Tuberculose/DICI_DADOS_NET_Tuberculose_23_07_2020.pdf",
+        "tipo": "pdf_dicionario",
+        "integridade_binaria_publicada_por_autoridade": null
+      },
+      "acesso_dados": {
+        "pagina_oficial": "https://www.gov.br/saude/pt-br/acesso-a-informacao/sic/dados-em-transparencia-ativa/svsa/agravos-de-notificacoes/agravos-de-notificacoes",
+        "arquivo_exato_2024": null,
+        "codigo_download_confirmado": null,
+        "checksum_arquivo_publicado_por_autoridade": null,
+        "status_consolidacao_2024": null,
+        "sistema_origem_no_ano_confirmado": false
+      },
+      "validacoes": {
+        "link_de_dicionario_oficial_localizado": true,
+        "arquivo_anual_identificado_independentemente": false,
+        "dicionario_aplicavel_ao_ano_confirmado": false,
+        "esquema_comparado_ao_arquivo_2024": false,
+        "aprovacao_epidemiologica_independente": false,
+        "aprovacao_para_publicar": false
+      },
+      "limitacoes": "Documento de versão NET 5.0 localizado em página do Portal SINAN. A documentação referenciada não constitui prova de que o arquivo TUBE de 2024 utiliza exatamente esse layout ou que sua situação de consolidação seja final."
+    },
+    {
+      "agravo_alias_interno": "DENG",
+      "ano_do_arquivo_pretendido": 2024,
+      "sistema_documentado": "SINAN ONLINE (Dengue/Chikungunya)",
+      "documento": {
+        "titulo": "Dicionário de Dados — SINAN Online — Dengue e Chikungunya",
+        "instituicao_publicadora": "Ministério da Saúde — Portal SINAN",
+        "edicao_documental": "SINAN Online 3.0; histórico de revisão com datas em 2014–2015",
+        "pagina_oficial": "https://portalsinan.saude.gov.br/dengue",
+        "url_documento": "https://portalsinan.saude.gov.br/images/documentos/Agravos/Dengue/DIC_DADOS_ONLINE.pdf",
+        "tipo": "pdf_dicionario",
+        "integridade_binaria_publicada_por_autoridade": null
+      },
+      "acesso_dados": {
+        "pagina_oficial": "https://www.gov.br/saude/pt-br/acesso-a-informacao/sic/dados-em-transparencia-ativa/svsa/agravos-de-notificacoes/agravos-de-notificacoes",
+        "arquivo_exato_2024": null,
+        "codigo_download_confirmado": null,
+        "checksum_arquivo_publicado_por_autoridade": null,
+        "status_consolidacao_2024": null,
+        "sistema_origem_no_ano_confirmado": false
+      },
+      "validacoes": {
+        "link_de_dicionario_oficial_localizado": true,
+        "arquivo_anual_identificado_independentemente": false,
+        "dicionario_aplicavel_ao_ano_confirmado": false,
+        "esquema_comparado_ao_arquivo_2024": false,
+        "aprovacao_epidemiologica_independente": false,
+        "aprovacao_para_publicar": false
+      },
+      "limitacoes": "O dicionário SINAN Online 3.0 trata conjuntamente Dengue e Chikungunya e contém histórico de revisões de 2015. Sua correspondência com o arquivo nacional DENG de 2024 e o sistema de origem utilizado nesse período ainda não foram estabelecidos."
+    }
+  ]
+}
