@@ -74,3 +74,11 @@ registro anual.
 
 `conferir-zip-distribuicao` é CLI administrativa offline, com nome exato, limite de tamanho, SHA-256 local, ZIP de uma entrada e bloqueio de caminhos, symlinks e explosão de descompactação. A ferramenta não descompacta ou lê linhas, e seus hashes não autenticam a publicação. Não publique relatórios locais ou dados reais em issues/CI.
 
+
+
+## Auditar localmente esquema e dicionário não autoriza uso dos dados
+
+`local_schema_review` é um processo separado do MCP público e da ingestão clínica. Aceita arquivos locais de origem legítima sob responsabilidade do pesquisador: um ZIP de recurso anual curado, um PDF de dicionário e uma transcrição manual vinculada ao SHA local do PDF. CSV só lê cabeçalho; JSON opcional lê transitoriamente valores de no máximo 64 registros no parser ijson, sem reproduzi-los em resultados. A execução acontece exclusivamente na máquina autorizada. Não há busca online, upload, registro em servidor, logs de valores clínicos ou persistência de microdados.
+
+O relatório privado inclui apenas nomes de campos previamente transcritos (metadados documentais), contagens de campos não reconhecidos e checksums locais. Um pacote com dez pendências é criado com modo restrito e sem sobrescrever arquivos. O resultado continua não autenticado e não validado epidemiologicamente. Nenhuma flag de contrato ou edição manual de parecer concede autorização de análise real ou publicação. Não executar sobre arquivos reais em CI, issues, prompts ou ambiente compartilhado.
+
