@@ -69,6 +69,19 @@ def main() -> None:
     )
     lineage.add_argument("manifesto", type=Path)
     lineage.add_argument("arquivo", type=Path)
+    inspect_contracts = cmd.add_parser(
+        "listar-contratos-demo", help="Lista contratos ilustrativos TUBE/DENG sem dados"
+    )
+    diff_contract = cmd.add_parser(
+        "comparar-contratos-demo", help="Diff de definições sintéticas (não oficial)"
+    )
+    diff_contract.add_argument("primeiro")
+    diff_contract.add_argument("segundo")
+    validate_contract = cmd.add_parser(
+        "validar-csv-demo", help="PoC Pandera local, apenas esquema sintético"
+    )
+    validate_contract.add_argument("arquivo", type=Path)
+    validate_contract.add_argument("--contrato", required=True)
     quality = cmd.add_parser(
         "auditar-qualidade", help="Relatório privado de qualidade da projeção já importada"
     )
@@ -215,6 +228,27 @@ def main() -> None:
         except (OSError, ValueError) as exc:
             parser.exit(2, "LINHAGEM NÃO VERIFICADA — " + str(exc) + "\n")
         print("SOMENTE INTEGRIDADE LOCAL; ORIGEM E PUBLICAÇÃO NÃO CERTIFICADAS.")
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+    elif args.comando == "listar-contratos-demo":
+        import json
+        from .schema_contracts import list_example_contracts
+        print(json.dumps(list_example_contracts(), ensure_ascii=False, indent=2))
+    elif args.comando == "comparar-contratos-demo":
+        import json
+        from .schema_contracts import diff_example_contracts
+        try:
+            report = diff_example_contracts(args.primeiro, args.segundo)
+        except ValueError as exc:
+            parser.exit(2, "CONTRATOS NÃO COMPARÁVEIS — " + str(exc) + "\n")
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+    elif args.comando == "validar-csv-demo":
+        import json
+        from .schema_contracts import validate_example_csv
+        try:
+            report = validate_example_csv(args.arquivo, contract_id=args.contrato)
+        except (ValueError, RuntimeError, OSError) as exc:
+            parser.exit(2, "VALIDAÇÃO LOCAL RECUSADA — " + str(exc) + "\n")
+        print("VALIDAÇÃO DE EXEMPLO LOCAL, NÃO CERTIFICA DADOS SINAN.")
         print(json.dumps(report, ensure_ascii=False, indent=2))
     elif args.comando == "auditar-qualidade":
         import json
