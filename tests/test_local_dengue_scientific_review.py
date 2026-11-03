@@ -96,6 +96,26 @@ def test_plan_changed_after_simulation_blocks_creation(tmp_path):
     assert not out.exists()
 
 
+@pytest.mark.parametrize("changes", [
+    {"unidade_observacional": "PESSOA_UNICA"},
+    {"coorte_definida_independentemente": True},
+    {"revisao_clinica_independente": "APROVADA"},
+    {"data_cutoff_confirmada": True},
+])
+def test_forged_cohort_plan_rejected_even_after_new_synthetic_run(tmp_path, changes):
+    plan, simulation, out = _artifacts(tmp_path)
+    candidate = json.loads(plan.read_text(encoding="utf-8"))
+    candidate.update(changes)
+    plan.write_text(json.dumps(candidate), encoding="utf-8")
+    newer_simulation = tmp_path / "simulacao-nova.json"
+    synth.auditar_fixture_dengue_local(plan, newer_simulation)
+    with pytest.raises(ValueError, match="conclusao"):
+        review.preparar_pacote_revisao_dengue_local(
+            plan, newer_simulation, out
+        )
+    assert not out.exists()
+
+
 @pytest.mark.parametrize("tamper", [
     lambda d: d.update({"publicacao_autorizada": True}),
     lambda d: d.update({"qualidade_coorte_homologada": True}),
