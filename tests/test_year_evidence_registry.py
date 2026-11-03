@@ -18,7 +18,7 @@ from sinan_mcp.year_evidence_review import confrontar_documento_e_arquivo_local
 
 def test_publisher_documents_linked_but_not_applied_to_year():
     items = reg.listar_evidencias_documentais()
-    assert items["total_entradas_documentadas"] == 3
+    assert items["total_entradas_documentadas"] == 12
     assert items["quantidade_anos_de_arquivo_cientificamente_verificados"] == 0
     assert not items["base_real_disponibilizada"]
     assert len(items["catalog_metadata_sha256"]) == 64
@@ -36,7 +36,11 @@ def test_publisher_documents_linked_but_not_applied_to_year():
     assert "2020.pdf" in t["evidencia_documental"]["documento_url"]
     assert "DIC_DADOS_ONLINE.pdf" in d["evidencia_documental"]["documento_url"]
     assert "2015" in d["evidencia_documental"]["edicao_documental"]
-    for entry in [t, d, chik]:
+    for entry in [
+        reg.consultar_evidencia_agravo_ano(code, 2024)
+        for code in ("TUBE", "DENG", "CHIK", "HANS", "SIFC", "HEPA",
+                     "MENI", "VIOL", "LEIV", "LTAN", "ANIM", "COQU")
+    ]:
         assert entry["link_dicionario_oficial_localizado"] is True
         for flag in (
             "arquivo_anual_independentemente_verificado",
@@ -90,6 +94,12 @@ def test_unsafe_year_queries_fail_closed(code, year):
         url_documento="http://portalsinan.saude.gov.br/a.pdf"),
     lambda x: x["entries"][0]["documento"].update(
         url_documento="https://portalsinan.saude.gov.br/%2e%2e/unsafe.pdf"),
+    lambda x: x["entries"][0]["documento"].update(
+        url_documento="https://portalsinan.saude.gov.br/images/documentos/Agravos/Hepatites%2FVirais/x.pdf"),
+    lambda x: x["entries"][0]["documento"].update(
+        url_documento="https://portalsinan.saude.gov.br/images/documentos/Agravos/Unknown%20Folder/x.pdf"),
+    lambda x: x["entries"][0]["documento"].update(
+        url_documento="https://portalsinan.saude.gov.br/images/documentos/Agravos/Hepatites%20Virais/../x.pdf"),
     lambda x: x["entries"][0].update(
         ano_do_arquivo_pretendido=True),
     lambda x: x["entries"][0].update(
@@ -235,3 +245,20 @@ def test_public_metadata_cli_does_not_need_private_db(tmp_path):
     assert obj["link_dicionario_oficial_localizado"]
     assert not obj["compatibilidade_dicionario_ano_verificada"]
     assert not (tmp_path / "data").exists()
+
+
+def test_historical_pdf_evidence_does_not_validate_2024_or_unlisted_disease():
+    from sinan_mcp.multiagravo_readiness import diagnosticar_cobertura_multiagravo
+    result = diagnosticar_cobertura_multiagravo(2024)
+    assert result["agravos_referenciados"] == 14
+    assert result["agravos_com_documentacao_localizada"] == 12
+    assert result["distribuicoes_catalogadas"] == 3
+    assert result["dados_clinicos_consultados"] is False
+    for row in result["registros"]:
+        assert row["indicador_real_homologado"] is False
+        assert row["publicacao_autorizada"] is False
+        assert row["arquivo_anual_autenticado"] is False
+        assert row["dicionario_aplicavel_ao_ano_validado"] is False
+    for code in ("ZIKA", "SIFA"):
+        row = next(x for x in result["registros"] if x["agravo"] == code)
+        assert row["documento_oficial_localizado"] is False
