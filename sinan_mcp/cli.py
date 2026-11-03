@@ -165,6 +165,12 @@ def main() -> None:
     quality_plan.add_argument("--parecer-esquema", required=True, type=Path)
     quality_plan.add_argument("--dossie-fonte", required=True, type=Path)
     quality_plan.add_argument("--saida", required=True, type=Path)
+    synthetic_qa = cmd.add_parser(
+        "auditar-csv-sintetico-dengue",
+        help="SIMULACAO 100% ARTIFICIAL: nao abre nenhum CSV, ZIP ou banco",
+    )
+    synthetic_qa.add_argument("--plano", required=True, type=Path)
+    synthetic_qa.add_argument("--saida", required=True, type=Path)
     readiness_check = cmd.add_parser(
         "diagnosticar-checklist-roadmap",
         help="Mostrar pendencias declaradas, SEM autenticar ou autorizar publicacao",
@@ -441,6 +447,18 @@ def main() -> None:
         print("Verificacoes pendentes:", result["checkpoints_pendentes"])
         print("Frentes roadmap ainda pendentes:", result["frentes_roadmap_ainda_pendentes"])
         print("Qualidade/coorte validada:", "NAO")
+        print("Publicacao autorizada:", "NAO")
+    elif args.comando == "auditar-csv-sintetico-dengue":
+        from .synthetic_dengue_csv_audit import auditar_fixture_dengue_local
+        try:
+            result = auditar_fixture_dengue_local(args.plano, args.saida)
+        except (ValueError, OSError, UnicodeError):
+            parser.exit(2, "SIMULACAO NAO GERADA: confira plano privado e destino novo.\n")
+        print("AUDITORIA EXCLUSIVAMENTE SINTETICA. NENHUM DADO SINAN LIDO.")
+        print("Linhas artificiais:", result["linhas_sinteticas"])
+        print("Entradas invalidas recusadas:", result["casos_adversariais_recusados"])
+        print("Checkpoints cientificos homologados:", result["checkpoints_cientificos_validados"])
+        print("Status:", result["status"])
         print("Publicacao autorizada:", "NAO")
     elif args.comando == "diagnosticar-checklist-roadmap":
         from .roadmap_readiness import diagnosticar_checklist_local

@@ -158,3 +158,29 @@ py -3.11 -m sinan_mcp preparar-plano-qualidade-dengue `
 Saída: 9 verificações pendentes, **5 frentes roadmap ainda sem evidência, 2 evidências locais NÃO validadas**, nenhuma análise real e nenhuma autorização. O comando não altera o checklist anterior e não possui botão para promover `qualidade_coorte`. Para produzir uma evidência verdadeira de qualidade serão necessários autorização para auditoria local dos valores, protocolo científico por agravo/ano, regras de supressão dos resultados privados e comparação independente, sem disponibilizar microdados via MCP ou GitHub.
 
 **Diferença para o comando existente `auditar-qualidade`:** este último atua sobre projeção SQLite local já importada e pode produzir métricas sensíveis; a projeção omite ou normaliza valores de origem, de modo que seu relatório não comprova completude/validade de todos os campos brutos nem define pessoas/casos únicos. O plano do PR #11 serve para impedir que tal relatório seja interpretado como prova isolada de prontidão.
+
+## P2 — Ensaio técnico do auditor CSV exclusivamente sintético (PR #12)
+
+Com o protocolo privado de nove checkpoints DENG/2024 já criado e **5 frentes do roadmap ainda sem evidência**, uma rotina opcional `auditar-csv-sintetico-dengue` permite ensaiar os erros que o auditor futuro deverá encontrar. **Não lê nenhum registro real:** a CLI só aceita `--plano` (JSON do protocolo local) e `--saida` (novo JSON), não possui parâmetro próprio `--csv` ou `--zip`, não abre banco, não chama rede, não importa PySUS e nunca toca no arquivo `DENGBR24.csv.zip`. O parâmetro global `--db` do executável, caso fornecido, não é usado por essa rotina.
+
+O motor de teste usa **seis linhas artificiais, escritas no próprio código**. Todas devem trazer um marcador sintético. É obrigatório respeitar limites de tamanho, de linhas e de comprimento de células; cabeçalho inesperado, linhas com números de colunas incorretos e ausência do marcador são recusados. Os resultados informam **apenas contagens artificiais**, sem valores literais das linhas:
+
+- completude literal por campo em pequeno conjunto de exemplo;
+- datas no formato ilustrativo ISO inválidas, registros cujo ano de notificação ilustrativo difere de 2024 e possíveis inversões temporais, **sem assumir regra epidemiológica aplicável ao CSV real**;
+- linhas inteiras textualmente idênticas, **sem concluir duplicação de indivíduos ou casos**;
+- quatro cenários adversariais de CSV recusados, mais casos de limite, autorização adulterada, alterações de escopo, JSON duplicado e tentativa de passar `--zip` cobertos em testes;
+- `CLASSI_FIN` permanece sem domínio clínico validado, `UF` não é mapeado automaticamente e `CLINC_CHIK` não recebe alias automático.
+
+Todos os números do relatório são de **uma fixture artificial**. O relatório inclui o SHA-256 do plano de qualidade para vinculação documental, mas não contém microdados ou resultados epidemiológicos. Marca `checkpoints_cientificos_validados = 0`, `roadmap_alterado = false`, `publicacao_autorizada = false` e `status = SIMULACAO_TECNICA_SEM_DADOS_CLINICOS`. Não existe ação de promover o gate `qualidade_coorte`.
+
+PowerShell 5.1, na branch do PR #12:
+
+```powershell
+py -3.11 -m pytest -q tests/test_synthetic_dengue_csv_audit.py
+
+py -3.11 -m sinan_mcp auditar-csv-sintetico-dengue `
+  --plano ".\data\plano-qualidade-DENG-2024-privado.json" `
+  --saida ".\data\simulacao-qualidade-DENG-2024.json"
+```
+
+**Próximo passo após a simulação:** pactuar com epidemiologista, responsável institucional e privacidade o contrato de valores, os códigos e as condições de custódia. O scanner real deverá ser um **outro módulo**, executado só em ambiente autorizado, com leitura limitada/streaming, tratamento de erros e relatórios que evitem divulgação de pequenas células, e com comparação independente do TabNet de mesma versão. **Não executar dados reais nesta fase.**
