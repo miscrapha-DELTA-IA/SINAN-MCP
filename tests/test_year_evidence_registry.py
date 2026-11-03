@@ -18,7 +18,7 @@ from sinan_mcp.year_evidence_review import confrontar_documento_e_arquivo_local
 
 def test_publisher_documents_linked_but_not_applied_to_year():
     items = reg.listar_evidencias_documentais()
-    assert items["total_entradas_documentadas"] == 12
+    assert items["total_entradas_documentadas"] == 13
     assert items["quantidade_anos_de_arquivo_cientificamente_verificados"] == 0
     assert not items["base_real_disponibilizada"]
     assert len(items["catalog_metadata_sha256"]) == 64
@@ -39,7 +39,7 @@ def test_publisher_documents_linked_but_not_applied_to_year():
     for entry in [
         reg.consultar_evidencia_agravo_ano(code, 2024)
         for code in ("TUBE", "DENG", "CHIK", "HANS", "SIFC", "HEPA",
-                     "MENI", "VIOL", "LEIV", "LTAN", "ANIM", "COQU")
+                     "MENI", "VIOL", "LEIV", "LTAN", "ANIM", "COQU", "ZIKA")
     ]:
         assert entry["link_dicionario_oficial_localizado"] is True
         for flag in (
@@ -251,7 +251,7 @@ def test_historical_pdf_evidence_does_not_validate_2024_or_unlisted_disease():
     from sinan_mcp.multiagravo_readiness import diagnosticar_cobertura_multiagravo
     result = diagnosticar_cobertura_multiagravo(2024)
     assert result["agravos_referenciados"] == 14
-    assert result["agravos_com_documentacao_localizada"] == 12
+    assert result["agravos_com_documentacao_localizada"] == 13
     assert result["distribuicoes_catalogadas"] == 5
     assert result["dados_clinicos_consultados"] is False
     for row in result["registros"]:
@@ -259,6 +259,7 @@ def test_historical_pdf_evidence_does_not_validate_2024_or_unlisted_disease():
         assert row["publicacao_autorizada"] is False
         assert row["arquivo_anual_autenticado"] is False
         assert row["dicionario_aplicavel_ao_ano_validado"] is False
-    for code in ("ZIKA", "SIFA"):
-        row = next(x for x in result["registros"] if x["agravo"] == code)
-        assert row["documento_oficial_localizado"] is False
+    zika = next(x for x in result["registros"] if x["agravo"] == "ZIKA")
+    sifa = next(x for x in result["registros"] if x["agravo"] == "SIFA")
+    assert zika["documento_oficial_localizado"] is True
+    assert sifa["documento_oficial_localizado"] is False
