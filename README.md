@@ -49,6 +49,16 @@ O PDF exato desse recurso não foi recuperado, e nenhuma compatibilidade
 com 2024 foi atestada. A contagem permanece 12 dicionários curados e
 5 distribuições anuais, com zero indicadores homologados.
 
+O host `ckan-dadosabertos.saude.gov.br` não resolveu no Windows
+(`DNS_ERROR_RCODE_NAME_ERROR`). A descoberta passou a consultar
+o HTML do [conjunto oficial de Zika](https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus)
+sem depender da API CKAN. Use
+`py -3.11 -m sinan_mcp identificar-dicionario-zika-portal`;
+o comando antigo com sufixo `-ckan` foi mantido como alias, mas agora
+usa o mesmo portal HTML. O procedimento pode retornar evidência
+insuficiente se o UUID não estiver presente em JSON/links embutidos;
+isso não implica ausência do documento. O PDF continua não auditado.
+
 Para descobrir o UUID específico do **dicionário de Zika** sem baixar PDF
 ou microdados, há um comando administrativo opcional de catálogo CKAN:
 `py -3.11 -m sinan_mcp identificar-dicionario-zika-ckan`.
