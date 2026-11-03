@@ -115,7 +115,7 @@ def test_network_reader_requires_real_checksum(tmp_path, monkeypatch):
         def geturl(self):
             return "https://nbg1.your-objectstorage.com/pysus/public/data/ftp/sinan/TUBE/2024/BR/TUBEBR24.parquet"
 
-    monkeypatch.setattr(request, "urlopen", lambda req, timeout: Reply(payload))
+    monkeypatch.setattr(ci, "_open_strict", lambda req, timeout: Reply(payload))
     output = tmp_path / "test.parquet"
     assert ci._download(e, output) == (digest, len(payload))
     assert output.read_bytes() == payload
@@ -126,3 +126,65 @@ def test_network_reader_requires_real_checksum(tmp_path, monkeypatch):
 def test_no_implicit_remote_download_on_discovery(tmp_path, monkeypatch):
     monkeypatch.setenv("PYSUS_CACHEPATH", str(tmp_path))
     assert ci.manifest("TUBE", 2024) == []
+
+
+
+def test_redirect_rejected_before_following_host():
+    blocker = ci._RejectRedirect()
+    with pytest.raises(RuntimeError, match="Redirecionamento"):
+        blocker.redirect_request(None, None, 302, "found", {},
+                                 "http://127.0.0.1/internal")
+
+
+def test_catalog_rejects_unsafe_path_segment():
+    with pytest.raises(ValueError, match="Caminho"):
+        ci._validate_manifest([(
+            "public/data/ftp/sinan/TUBE/2024/%2f/private.parquet", 100, None
+        )])
+
+
+def test_transient_transfer_retry_cleans_partial_file(tmp_path, monkeypatch):
+    pytest.importorskip("pysus")
+    import io
+    from urllib.error import URLError
+
+    payload = b"fictional-bytes-only"
+    e = _entry(size=len(payload), sha=hashlib.sha256(payload).hexdigest())
+    calls = []
+    delays = []
+
+    class Reply(io.BytesIO):
+        status = 200
+
+        def geturl(self):
+            return "https://nbg1.your-objectstorage.com/pysus/public/data/ftp/sinan/TUBE/2024/BR/TUBEBR24.parquet"
+
+    def attempt(request, *, timeout):
+        calls.append(timeout)
+        if len(calls) == 1:
+            raise URLError("simulated transient outage")
+        return Reply(payload)
+
+    monkeypatch.setattr(ci, "_open_strict", attempt)
+    monkeypatch.setattr(ci.time, "sleep", lambda s: delays.append(s))
+    file = tmp_path / "retry.parquet"
+    assert ci._download(e, file) == (e["sha256"], len(payload))
+    assert len(calls) == 2 and delays == [1]
+    assert file.read_bytes() == payload
+
+
+def test_permanent_http_error_never_retried(tmp_path, monkeypatch):
+    pytest.importorskip("pysus")
+    from urllib.error import HTTPError
+
+    def unavailable(request, *, timeout):
+        raise HTTPError("https://nbg1.your-objectstorage.com", 404,
+                        "not found", {}, None)
+
+    monkeypatch.setattr(ci, "_open_strict", unavailable)
+    monkeypatch.setattr(ci.time, "sleep",
+                        lambda *_: pytest.fail("Permanent error must not retry"))
+    target = tmp_path / "no.parquet"
+    with pytest.raises(RuntimeError, match="permanente"):
+        ci._download(_entry(size=300), target)
+    assert not target.exists()
