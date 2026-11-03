@@ -263,3 +263,62 @@ def test_historical_pdf_evidence_does_not_validate_2024_or_unlisted_disease():
     sifa = next(x for x in result["registros"] if x["agravo"] == "SIFA")
     assert zika["documento_oficial_localizado"] is True
     assert sifa["documento_oficial_localizado"] is False
+
+
+def test_zika_specific_dictionary_is_located_not_proven_applicable_2024():
+    zika = reg.consultar_evidencia_agravo_ano("ZIKA", 2024)
+    from sinan_mcp.zika_official_dictionary_reference import PDF_URL, RESOURCE_URL
+    assert zika["link_dicionario_oficial_localizado"] is True
+    assert zika["evidencia_documental"]["documento_url"] == PDF_URL
+    assert zika["evidencia_documental"]["pagina_oficial"] == RESOURCE_URL
+    assert zika["compatibilidade_dicionario_ano_verificada"] is False
+    assert zika["codigo_download_anual_verificado"] is False
+    assert zika["consolidacao_anual_confirmada"] is False
+    assert zika["sha256_oficial_do_arquivo_disponivel"] is False
+    assert zika["acesso_publico_a_dados_reais"] is False
+    assert zika["autorizacao_de_publicacao"] is False
+    older = reg.consultar_evidencia_agravo_ano("ZIKA", 2023)
+    assert older["link_dicionario_oficial_localizado"] is False
+    assert older["evidencia_documental"] is None
+    sifa = reg.consultar_evidencia_agravo_ano("SIFA", 2024)
+    assert sifa["link_dicionario_oficial_localizado"] is False
+
+
+@pytest.mark.parametrize("change", [
+    lambda e: e["documento"].update(
+        pagina_oficial="https://dadosabertos.saude.gov.br/redirect/other"),
+    lambda e: e["documento"].update(
+        pagina_oficial="https://dadosabertos.saude.gov.br.evil.invalid/"
+        "dataset/arboviroses-zika-virus/resource/"
+        "58038262-c745-46ea-979b-8727eb08ec5c"),
+    lambda e: e["documento"].update(
+        url_documento="https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/"
+        "SINAN/Zikavirus/../dic_dados_zika.pdf"),
+    lambda e: e["documento"].update(
+        url_documento="https://s3.sa-east-1.amazonaws.com/"
+        "ckan.saude.gov.br/SINAN/Zikavirus/dic_dados_zika.pdf?redirect=true"),
+    lambda e: e["documento"].update(
+        url_documento="https://s3.sa-east-1.amazonaws.com.evil.invalid/"
+        "ckan.saude.gov.br/SINAN/Zikavirus/dic_dados_zika.pdf"),
+    lambda e: e["documento"].update(
+        integridade_binaria_publicada_por_autoridade="0" * 64),
+    lambda e: e["validacoes"].update(
+        dicionario_aplicavel_ao_ano_confirmado=True),
+    lambda e: e["validacoes"].update(
+        aprovacao_para_publicar=True),
+    lambda e: e.update(ano_do_arquivo_pretendido=2023),
+    lambda e: e.update(agravo_alias_interno="SIFA"),
+])
+def test_zika_official_s3_pdf_exception_is_exact_and_never_approves(change):
+    registry = copy.deepcopy({
+        "schema_version": reg.SCHEMA,
+        "catalog_revision": "2026-11-03-r3",
+        "verified_portal_links_on": "2026-11-03",
+        "scope": "evidencia_documental_de_fontes_oficiais_sem_atestado_de_compatibilidade_ano",
+        "entries": list(reg._index()[1]),
+    })
+    zika_entry = next(e for e in registry["entries"]
+                      if e["agravo_alias_interno"] == "ZIKA")
+    change(zika_entry)
+    with pytest.raises(ValueError):
+        reg.validate_registry(registry)
