@@ -197,6 +197,22 @@ def confrontar_dengue_dicionarios_local(
         **documentary,
         "duplicacoes_no_pdf_atual": pdf["duplicacoes"],
         "tipos_inconsistentes_no_pdf_atual": pdf["tipos_malformados"],
+        "conflitos_dominios_necessitam_parecer": [
+            {
+                "campo": "classi_fin",
+                "pagina_tabela_categorias": 12,
+                "sequencia": 70,
+                "codigos_na_categoria": ["1", "2", "8"],
+                "paginas_com_regras_contraditorias": [13],
+                "referencias_codigos_regras": ["11", "12", "13"],
+                "status": "NAO_CONCILIADO",
+                "risco": (
+                    "Nao usar definicao de caso grave ou confirmado por "
+                    "codes sem contrato de dominio revisado por epidemiologista"
+                ),
+            },
+        ],
+        "dominios_categoricos_verificados": False,
         "linhas_de_pacientes_lidas": 0,
         "campos_csv_desconhecidos_incluidos_no_parecer": False,
         "sha256_oficial_autenticado": False,
