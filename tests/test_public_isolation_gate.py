@@ -44,6 +44,21 @@ def test_real_public_import_graph_stays_in_reviewed_metadata_allowlist():
     ("from os import getenv\n", "acesso direto a ambiente nao revisto"),
     ("exec('from sinan_mcp.core import connect')\n",
      "execucao ou import dinamico"),
+    ("from importlib import import_module\n", "import dinamico"),
+    ("from importlib import util\n", "import dinamico"),
+    ("from importlib.util import spec_from_file_location\n", "dependencia externa"),
+    ("import importlib\n", "dependencia externa"),
+    ("import builtins\n", "dependencia externa"),
+    ("from builtins import eval as safe_eval\n", "dependencia externa"),
+    ("import runpy\n", "dependencia externa"),
+    ("from pathlib import Path\n", "dependencia externa"),
+    ("from os import system\n", "operacao de sistema"),
+    ("import os\nos.system('true')\n", "operacao de sistema"),
+    ("import os as system_helper\n", "alias de os"),
+    ("from os import *\n", "import estrela"),
+    ("import os\nos.environ.copy()\n", "variavel de ambiente privada"),
+    ("import os\nos.getenv('DATABASE_URL')\n", "variavel de ambiente privada"),
+    ("import os\nos.getenv(name)\n", "variavel de ambiente privada"),
 ])
 def test_known_isolation_bypasses_are_rejected_by_ast_policy(source, expected):
     deps, errors = inspect_source("public_server", source)
@@ -90,3 +105,14 @@ def test_public_graph_denies_an_added_private_import(tmp_path):
     )
     violations = audit_public_import_boundary(tmp_path)
     assert any("core" in message for message in violations)
+
+
+def test_only_known_public_host_variables_allowed():
+    source = (
+        "import os\n"
+        "port = os.getenv('PORT', '10000')\n"
+        "host = os.getenv('SINAN_PUBLIC_HOST')\n"
+        "render_host = os.getenv('RENDER_EXTERNAL_HOSTNAME', '')\n"
+    )
+    _, errors = inspect_source("public_server", source)
+    assert errors == []
