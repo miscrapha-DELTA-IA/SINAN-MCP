@@ -10,6 +10,7 @@ import unicodedata
 from typing import Any
 
 from .official_sources import CONDITIONS, OFFICIAL_SOURCES
+from .year_evidence_registry import consultar_evidencia_agravo_ano
 
 SCHEMA = "sinan-research-plan-v1"
 UF = frozenset(
@@ -82,7 +83,7 @@ def planejar_consulta_agravo(
         if not isinstance(uf, str) or uf.strip().upper() not in UF:
             raise ValueError("UF inválida; use sigla brasileira ou BR.")
         uf = uf.strip().upper()
-    if por not in GROUPS:
+    if not isinstance(por, str) or por not in GROUPS:
         raise ValueError("Apenas sexo ou raca_cor; nenhum cruzamento é planejado.")
 
     normalized = _normalize(term)
@@ -106,6 +107,10 @@ def planejar_consulta_agravo(
         "entrada": {"agravo": term, "ano": ano, "uf": uf, "dimensao": por},
         "estado": status,
         "correspondencias": [_record(x) for x in matches],
+        "evidencia_documental_agravo_ano": (
+            consultar_evidencia_agravo_ano(matches[0][0], ano)
+            if ano is not None and len(matches) == 1 else None
+        ),
         "consulta_executada": False,
         "dados_reais_disponiveis_no_servidor_publico": False,
         "resultado_epidemiologico": None,
