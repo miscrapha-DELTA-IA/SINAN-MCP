@@ -4,8 +4,11 @@ from __future__ import annotations
 import copy
 import inspect
 import json
+import socket
+import ssl
 import subprocess
 import sys
+from urllib.error import HTTPError, URLError
 
 import pytest
 
@@ -175,3 +178,38 @@ def test_discovery_is_not_imported_by_public_mcp_or_offline_diagnostic():
     from sinan_mcp import public_server, multiagravo_readiness
     assert "admin_zika_dictionary_discovery" not in inspect.getsource(public_server)
     assert "admin_zika_dictionary_discovery" not in inspect.getsource(multiagravo_readiness)
+
+
+@pytest.mark.parametrize("exc,category", [
+    (HTTPError("https://example.invalid", 403, "Forbidden", {}, None), "HTTP_403"),
+    (HTTPError("https://example.invalid", 404, "Not Found", {}, None), "HTTP_404"),
+    (HTTPError("https://example.invalid", 429, "Limit", {}, None), "HTTP_429"),
+    (HTTPError("https://example.invalid", 502, "Bad Gateway", {}, None), "HTTP_502"),
+    (HTTPError("https://example.invalid", 302, "Redirect", {}, None),
+     "REDIRECIONAMENTO_HTTP_BLOQUEADO"),
+    (URLError(socket.gaierror(-2, "Name or service not known")), "DNS_NAO_RESOLVE"),
+    (URLError("getaddrinfo failed"), "DNS_NAO_RESOLVE"),
+    (URLError(TimeoutError("timed out")), "TIMEOUT"),
+    (URLError(ConnectionRefusedError("refused")), "CONEXAO_RECUSADA"),
+    (TimeoutError("timed out"), "TIMEOUT"),
+    (ssl.SSLError("CERTIFICATE_VERIFY_FAILED"), "TLS_CERTIFICADO_OU_CONEXAO"),
+    (ValueError("Dicionário Zika ausente ou ambíguo no catálogo"),
+     "RECURSO_AUSENTE_OU_AMBIGUO"),
+    (ValueError("Conjunto CKAN diferente do Sinan/Vírus Zika"),
+     "PACOTE_CKAN_DIVERGENTE"),
+    (ValueError("Resposta remota não é JSON CKAN"), "RESPOSTA_NAO_JSON"),
+    (ValueError("Redirecionamento de recurso de metadados proibido"),
+     "REDIRECIONAMENTO_BLOQUEADO"),
+    (ValueError("Metadados remotos excedem limite"), "RESPOSTA_EXCEDE_LIMITE"),
+    (ValueError("Recurso com campos desconhecidos"), "METADADOS_CKAN_REJEITADOS"),
+    (URLError("proxy unavailable"), "CONEXAO_FALHOU_SEM_CAUSA_CONFIRMADA"),
+])
+def test_failure_diagnostics_use_only_stable_categories(exc, category):
+    assert discovery.classificar_falha_descoberta(exc) == category
+
+
+def test_failure_diagnostic_does_not_expose_arbitrary_remote_error_strings():
+    exc = URLError("secret-token=DO_NOT_ECHO_ENDPOINT")
+    category = discovery.classificar_falha_descoberta(exc)
+    assert "DO_NOT_ECHO_ENDPOINT" not in category
+    assert category == "CONEXAO_FALHOU_SEM_CAUSA_CONFIRMADA"
