@@ -130,3 +130,31 @@ continua diferente da auditoria do PDF ou da compatibilidade com 2024.
 
 Fonte técnica para a decisão arquitetural:
 [documentação de fonte oficial do projeto independente MCP CNES](https://github.com/kevyn-castelo/mcp-cnes/blob/main/docs/fontes.md).
+
+
+## Estrutura Next.js verificada no cliente PySUS
+
+O [módulo `next_data.py` do PySUS](https://github.com/AlertaDengue/PySUS/blob/main/pysus/api/saude/next_data.py)
+descreve o `buildId` do frontend, e
+[`catalog.py`](https://github.com/AlertaDengue/PySUS/blob/main/pysus/api/saude/catalog.py)
+documenta o endpoint de hidratação do conjunto:
+
+```text
+GET https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus
+GET https://dadosabertos.saude.gov.br/_next/data/<buildId>/dataset/arboviroses-zika-virus.json?slug=arboviroses-zika-virus
+```
+
+O `buildId` só é usado após validação estrita como identificador Next.js
+alfanumérico (também aceita `_` e `-`), nunca texto arbitrário nem
+parâmetro externo. O JSON de hidratação, quando disponível, tem
+`pageProps.id`, `pageProps.name` e `pageProps.resources`.
+O parser exige o mesmo ID do conjunto oficial Zika e um recurso
+**único**, com título Zika, formato PDF e UUID sintaticamente válido.
+
+As duas requisições são somente **HTML + JSON de metadados**,
+no mesmo host governamental, com limite de bytes, timeout,
+proibição de redirects e ausência de cache em disco. Se a rota
+de hidratação retornar erro ou mudar, tenta-se extrair UUID
+do HTML já recebido. Se ambos os métodos falharem, informa-se
+`NEXTJS_E_HTML_SEM_UUID_DOCUMENTAL_VALIDADO`, sem fabricar recurso.
+**Nenhuma leitura de PDF/ZIP ocorre nessa descoberta**.
