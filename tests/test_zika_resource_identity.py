@@ -143,7 +143,10 @@ def test_zika_official_portal_context_is_not_2024_file_approval():
     assert ctx["recurso_de_dicionario_zika_listado_no_portal"] is True
     assert ctx["titulo_recurso_dicionario"] == "Dicionário de dados - Zika Vírus"
     assert ctx["data_de_atualizacao_listada_do_dicionario"] == "2025-07-14"
-    assert ctx["url_exata_pdf_dicionario_zika_recuperada"] is None
+    from sinan_mcp.zika_official_dictionary_reference import PDF_URL, RESOURCE_URL
+    assert ctx["url_exata_pdf_dicionario_zika_recuperada"] == PDF_URL
+    assert ctx["pagina_exata_recurso_dicionario_zika"] == RESOURCE_URL
+    assert ctx["pdf_inspecionado_visual_documentalmente"] is True
     assert ctx["conteudo_pdf_dicionario_zika_auditado"] is False
     assert ctx["dicionario_de_zika_aplicavel_ao_ano_2024_validado"] is False
     assert ctx["distribuicoes_anuais_catalogadas"] == 2
