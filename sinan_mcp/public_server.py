@@ -33,6 +33,10 @@ from .semantics import (
     planejar_medida_epidemiologica as _semantic_plan,
     semantica_demo as _synthetic_semantics,
 )
+from .year_evidence_registry import (
+    listar_evidencias_documentais as _year_evidence_list,
+    consultar_evidencia_agravo_ano as _year_evidence,
+)
 
 PUBLIC_VERSION = "0.4.0a4"
 WARNING = (
@@ -178,6 +182,20 @@ def planejar_medida_epidemiologica(
         agravo, ano_do_arquivo, unidade_observacional, eixo_temporal,
         tipo_medida, denominador, fonte_denominador,
     )
+
+
+@mcp.tool()
+def listar_evidencias_documentais() -> dict[str, Any]:
+    """Lista documentos oficiais localizados; NÃO comprova dicionário para cada ano."""
+    return _year_evidence_list()
+
+
+@mcp.tool()
+def consultar_evidencia_agravo_ano(
+    agravo: str, ano: int,
+) -> dict[str, Any]:
+    """Consulta evidências documentais por agravo/ano; não autentica arquivos ou estatísticas."""
+    return _year_evidence(agravo, ano)
 
 
 @mcp.tool()

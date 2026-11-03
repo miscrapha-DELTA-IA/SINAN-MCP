@@ -137,3 +137,21 @@ Sem essas comprovações o produto não deve expor dados reais por MCP remoto.
 ## Complemento PoC research-grade (branch derivada)
 
 Foram implementadas, ainda sob revisão, duas tools públicas somente de metadados para especificação semântica e planejamento de medidas, ambas incapazes de consultar dados reais. Entraram contratos JSON ilustrativos TUBE/DENG 2024 com validação Pandera opcional e exclusivamente local, diferença entre esquemas e suíte de snapshot dos nomes/descrições/argumentos da interface MCP. A CI opcional de Pandera valida nos dois sistemas operacionais. **Não** foram adicionados dicionários epidemiológicos oficiais, indicadores reais ou autorização de publicação. Ver [manual](SEMANTIC_RESEARCH_POC.md).
+
+
+## Registro documental por agravo e ano (camada adicional)
+
+Entraram referências de dicionários hospedados no Portal SINAN para
+TUBE/2024, DENG/2024 e CHIK/2024, com status
+`documento_oficial_localizado_ano_nao_verificado`. Os documentos
+oferecidos pelo órgão têm edições antigas e a correspondência com
+arquivos específicos de 2024 **não foi atestada**. O módulo público
+consultar_evidencia_agravo_ano consulta apenas metadados; a CLI local
+confrontar-evidencia-ano apenas observa hashes de arquivos fornecidos,
+sem autenticar origem. Nenhum dado real foi divulgado. Veja
+[registro documental](OFFICIAL_YEAR_EVIDENCE_REGISTRY.md).
+
+**Pendente:** identificar arquivos e edições exatos por agravo/ano,
+comprovar estado de consolidação e esquema do dicionário, adquirir
+atestado científico/institucional verificável e manter trilha de
+mudanças e revisão cumulativa, antes de liberar indicadores.

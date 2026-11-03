@@ -27,4 +27,4 @@ testpaths = ["tests"]
 asyncio_default_fixture_loop_scope = "function"
 
 [tool.setuptools.package-data]
-sinan_mcp = ["contracts/*.json"]
+sinan_mcp = ["contracts/*.json", "registry/*.json"]
