@@ -127,6 +127,19 @@ def main() -> None:
     schema_audit.add_argument("--pdf", required=True, type=Path)
     schema_audit.add_argument("--contrato", required=True, type=Path)
     schema_audit.add_argument("--parecer-pendente", required=True, type=Path)
+    readiness_template = cmd.add_parser(
+        "preparar-checklist-roadmap",
+        help="Criar checklist privado multiagravo/ano, todos os gates PENDENTES",
+    )
+    readiness_template.add_argument("--agravo", required=True)
+    readiness_template.add_argument("--ano", required=True, type=int)
+    readiness_template.add_argument("--resource-id")
+    readiness_template.add_argument("--saida", required=True, type=Path)
+    readiness_check = cmd.add_parser(
+        "diagnosticar-checklist-roadmap",
+        help="Mostrar pendencias declaradas, SEM autenticar ou autorizar publicacao",
+    )
+    readiness_check.add_argument("--arquivo", required=True, type=Path)
     list_year = cmd.add_parser(
         "listar-evidencias-ano", help="Lista documentos oficiais localizados, SEM validar arquivo anual"
     )
@@ -335,6 +348,33 @@ def main() -> None:
             parser.exit(2, "MODELO NÃO CRIADO — verifique a referência, o PDF e o destino local.\n")
         print("CANDIDATO LOCAL NÃO REVISADO. Não enviar o arquivo ao GitHub.")
         print("Campos de exemplo:", report["campos_exemplo_documentados"])
+    elif args.comando == "preparar-checklist-roadmap":
+        from .roadmap_readiness import preparar_checklist_local
+        try:
+            result = preparar_checklist_local(
+                args.agravo, args.ano, args.saida, args.resource_id
+            )
+        except (ValueError, OSError):
+            parser.exit(2, "CHECKLIST NAO GERADO: confira escopo e destino novo.\n")
+        print("CHECKLIST PRIVADO CRIADO, USO REAL BLOQUEADO.")
+        print("Agravo:", result["agravo"], "ano do arquivo:", result["ano_do_arquivo"])
+        print("Frentes pendentes:", result["n_frentes_pendentes"])
+        print("Autorizacao de publicacao:", "NAO")
+    elif args.comando == "diagnosticar-checklist-roadmap":
+        from .roadmap_readiness import diagnosticar_checklist_local
+        try:
+            result = diagnosticar_checklist_local(args.arquivo)
+        except (ValueError, OSError):
+            parser.exit(2, "CHECKLIST NAO VALIDADO: arquivo privado invalido.\n")
+        print("DIAGNOSTICO OPERACIONAL, NAO APROVACAO CIENTIFICA.")
+        print("Agravo:", result["agravo"], "ano:", result["ano_do_arquivo"])
+        print("Frentes pendentes:", result["n_frentes_pendentes"],
+              "de", result["total_frentes"])
+        print("Pendencias:", ", ".join(result["pendencias_sem_evidencia"]))
+        print("Declaracoes locais:", result["n_frentes_com_evidencia_local_nao_validada"])
+        print("Pareceres externos nao autenticados:",
+              result["n_frentes_com_parecer_declarado_nao_autenticado"])
+        print("Status:", result["status"])
     elif args.comando == "conferir-hipoteses-grafia-dengue":
         from .local_dengue_spelling_review import gerar_hipoteses_grafia_dengue_local
         try:
