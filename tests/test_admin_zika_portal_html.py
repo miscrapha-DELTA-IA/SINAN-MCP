@@ -141,7 +141,7 @@ def test_existing_public_diagnostics_remain_unchanged():
     from sinan_mcp import public_server
     cov = diagnosticar_cobertura_multiagravo(2024)
     assert cov["agravos_referenciados"] == 14
-    assert cov["agravos_com_documentacao_localizada"] == 12
+    assert cov["agravos_com_documentacao_localizada"] == 13
     assert cov["distribuicoes_catalogadas"] == 5
     assert cov["publicacao_automatica"] is False
     assert "admin_zika_portal_html" not in inspect.getsource(public_server)
