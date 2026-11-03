@@ -40,3 +40,78 @@ Conservative count thresholds are **not a formal anonymization mechanism**. Othe
 ## Official table candidates (v0.4.0a4)
 
 `preparar-tabela-oficial` is a **local-only** conservative schema/disclosure check for a user-provided preaggregated table. It does not access source websites, attest that values are authentic, validate the declared source SHA-256 against an export, or publish values. Its output remains an UNAPPROVED candidate inside gitignored `data/review-packages/`, not consumed by either public MCP service. Independent source reconciliation, cross-release disclosure risk and authorization are required before any public use.
+
+## Roadmap: offline verification and transport hardening
+
+- The new administrator-only commands (`verificar-proveniencia`, `verificar-linhagem`, `auditar-qualidade`, `confrontar-tabnet`, `verificar-composicao`) deliberately **do not register as public MCP tools**. Reports from local SQLite or source tables can be sensitive and must not be pasted into issues or public assistants.
+- SHA-256 verifies **local byte integrity only**; operator-supplied official URLs, download codes, dictionary versions and `final` flags remain unverified assertions until an independent provenance review. A CSV hash can be linked to the import snapshot; PySUS composite snapshot digests require a different attestation.
+- The constrained PySUS catalog importer refuses redirected requests before contacting another host, caps transfer sizes, retries transient failures at most three times, removes partial files and avoids overwriting existing files. This does not replace transport penetration tests or a full supply-chain audit.
+- The offline release composition gate rejects multiple approved packages involving the same disease and UF, across years/versions/dimensions. A successful check **never authorizes publication** or establishes cross-release anonymity, external linkage safety, legitimate reviewer identity or legal authorization.
+- CI blocks tracked files in `data/` and common clinical/credential formats, but it is **only a path/extension check**, not a secret/PII content scan. Review the entire diff before merge; use organization-level secret scanning and restricted reviewer access.
+- The service has no production remote microdata OAuth, scope-based permissions, institutional review attestation, or privacy-budget infrastructure. **Do not expose private data remotely or auto-deploy real aggregate releases.** See [implementation and blocking gates](docs/ROADMAP_IMPLEMENTATION.md).
+
+
+## Evidências de fonte oficial por agravo e ano
+
+A referência a um documento hospedado pelo Portal SINAN **não** garante
+que esse dicionário seja aplicável ao arquivo de determinado ano. A
+curadoria `year_evidence_registry` falha fechada: nenhum campo em JSON
+pode promover documentação localizada a dataset autenticado, coorte
+validada ou autorização de publicação. Nenhum novo endpoint acessa
+SQLite, PySUS, arquivos privados ou rede.
+
+`confrontar-evidencia-ano` é CLI administrativa local. Um PDF com
+cabeçalho válido, nome igual e SHA-256 calculado localmente pode ser
+falsificado; o relatório explicitamente **não** comprova publicação
+ou identidade do arquivo. Conserve documentação e resultados sensíveis
+fora de issues, PRs e artefatos de CI. A cadeia de confiança exige
+revisores e provas externas autenticados antes de promover qualquer
+registro anual.
+
+## Distribuições anuais no catálogo oficial
+
+`official_annual_resources` expõe exclusivamente links e UUIDs de recursos do portal governamental. Uma referência a uma distribuição não autoriza downloads automáticos, ingestão, publicação ou conclusão de consolidação; o portal pode atualizar arquivos sem alteração de seus nomes.
+
+`conferir-zip-distribuicao` é CLI administrativa offline, com nome exato, limite de tamanho, SHA-256 local, ZIP de uma entrada e bloqueio de caminhos, symlinks e explosão de descompactação. A ferramenta não descompacta ou lê linhas, e seus hashes não autenticam a publicação. Não publique relatórios locais ou dados reais em issues/CI.
+
+
+
+## Auditar localmente esquema e dicionário não autoriza uso dos dados
+
+`local_schema_review` é um processo separado do MCP público e da ingestão clínica. Aceita arquivos locais de origem legítima sob responsabilidade do pesquisador: um ZIP de recurso anual curado, um PDF de dicionário e uma transcrição manual vinculada ao SHA local do PDF. CSV só lê cabeçalho; JSON opcional lê transitoriamente valores de no máximo 64 registros no parser ijson, sem reproduzi-los em resultados. A execução acontece exclusivamente na máquina autorizada. Não há busca online, upload, registro em servidor, logs de valores clínicos ou persistência de microdados.
+
+O relatório privado inclui apenas nomes de campos previamente transcritos (metadados documentais), contagens de campos não reconhecidos e checksums locais. Um pacote com dez pendências é criado com modo restrito e sem sobrescrever arquivos. O resultado continua não autenticado e não validado epidemiologicamente. Nenhuma flag de contrato ou edição manual de parecer concede autorização de análise real ou publicação. Não executar sobre arquivos reais em CI, issues, prompts ou ambiente compartilhado.
+
+
+
+## Rascunho de campos DBF do PDF local
+
+`local_pdf_dictionary_candidate.py` é uma CLI administrativa que aceita somente o PDF de nome esperado para a referência documental curada DENG/CHIK, confere cabeçalho e SHA-256 local, limita tamanho/páginas/tokens e exige três campos âncora antes de criar novo contrato de páginas. Usa a dependência **opcional** PyMuPDF no computador do operador; não baixa PDFs, não acessa registros, não consulta o MCP e não confere a integridade binária por assinatura governamental. O candidato fica privado, é não revisado e jamais serve de aprovação. O layout de outros PDFs não é suportado, mesmo que outro arquivo seja renomeado para imitar o nome esperado.
+
+
+
+## Confronto privado de PDF Dengue de 2024 e antigo PDF 2015
+
+`local_dengue_dictionary_crosswalk.py` é exclusivamente administrativo, sem ligação com o MCP público. O perfil PDF de 22 páginas utiliza hash **local observado no arquivo compartilhado pelo pesquisador**, para recusar edições não revisadas. Esta verificação NÃO autentica a origem governamental nem confirma que o dicionário é aplicável ao ZIP de 2024. O ZIP é inspecionado pelo validador existente e a comparação lê somente a primeira linha CSV limitada a 128 KiB. Nomes fora dos dicionários não são ecoados e valores de notificações não são lidos. O relatório JSON exclusivo tem flags de validação e divulgação negativas; o código não aprova a fonte, a ciência ou a privacidade.
+
+
+## Diagnóstico de prontidão do roadmap — não é aprovação
+
+O módulo `roadmap_readiness.py` administra apenas checklists locais JSON por alias/ano. Não importa SQLite/PySUS/ZIP, não contata rede, não abre microdados e não cria release; não integra ferramentas MCP públicas. Cada gate reporta no máximo situação declarada e SHA-256 local de sua evidência, não identidade do avaliador. A implementação exige validação estrita de estrutura, recusando campos adicionais, nomes de status desconhecidos, autorização de publicação ou evidências declaradas sem hash. A avaliação **nunca produz autorização técnica ou legal para publicar ou acessar dados reais remotamente**, mesmo que todas as sete frentes sejam declaradas com parecer.
+
+
+
+## P0 integration boundary guard (pending code review)
+
+The new scripts/check_public_isolation.py statically examines transitive local imports reachable from sinan_mcp.public_server. Only the explicitly reviewed public metadata modules are allowed. Imports of the private ingestion, SQLite, PySUS, release, CLI and local-scientific-review modules fail CI. Dynamic import calls and a small set of private environment variables are also denied in the public import graph. This check runs on Windows and Linux, Python 3.11/3.12.
+
+**This is static defense-in-depth, not a proof of safety:** Python can call APIs dynamically, dependencies can change and runtime behavior may have side effects. It does not replace the MCP tool contract snapshot, full diff review, dependency/secret scanning, pentesting or institutional privacy controls. Any new public import requires explicit security review and allowlist update.
+
+**The legacy local MCP/REST service is NOT the public demonstration.** The legacy environment flag SINAN_PUBLIC_REAL_DATA=1 may enable sensitive aggregate access in sinan_mcp.tool_api under some conditions; it is **not** a permission model and must not be used for internet or third-party connector exposure without independent authority and security review. The Render Blueprint remains pinned to sinan_mcp.public_server, autoDeploy false and synthetic-only data.
+
+**Year coverage is not clinical readiness:** the administrative command diagnosticar-cobertura-multiagravo reads only fixed, packaged reference catalogs and reports all real-data/indicator/publication approval flags as false for every disease/year. It does not open local datasets or modify readiness gates.
+
+
+### Public deployment manifest pinning
+
+The scripts/check_public_deployment.py CI step enforces an exact textual snapshot of render.yaml: only the synthetic public_server start command, real-data flag set to 0, and autoDeploy false are accepted. This guard prevents unnoticed changes in the tracked blueprint; it is not a YAML semantic audit and cannot verify external Render account settings. Legitimate changes require a deliberate security review and an updated pinned snapshot.

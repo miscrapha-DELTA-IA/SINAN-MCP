@@ -10,6 +10,7 @@ import hashlib
 import json
 import os
 import re
+import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
@@ -30,6 +31,43 @@ REFERENCE_TIMES = frozenset({
     "ano_notificacao", "ano_diagnostico", "ano_arquivo", "ano_encerramento",
     "ano_ocorrencia",
 })
+
+# Accepted one-dimensional codes and familiar TABNET category labels. A free
+# text category might encode a second dimension, age, place or individual detail.
+# These are syntax checks only; omitted suppressed categories still require
+# independent disclosure review against the ORIGINAL complete tabulation.
+CATEGORY_ALIASES = {
+    "sexo": {
+        "f": "F", "feminino": "F", "m": "M", "masculino": "M",
+        "i": "I", "ignorado": "I", "ignorada": "I",
+        "ignorado/ausente": "I", "nao informado": "I",
+        "sem informacao": "I",
+    },
+    "raca_cor": {
+        "1": "1", "branca": "1", "branco": "1",
+        "2": "2", "preta": "2", "preto": "2",
+        "3": "3", "amarela": "3", "amarelo": "3",
+        "4": "4", "parda": "4", "pardo": "4",
+        "5": "5", "indigena": "5",
+        "9": "9", "ignorado": "9", "ignorada": "9",
+        "ignorado/ausente": "9", "nao informado": "9",
+        "sem informacao": "9",
+    },
+}
+
+
+def _normalized_category(value: str) -> str:
+    s = unicodedata.normalize("NFKD", value.casefold().strip())
+    return " ".join("".join(x for x in s if not unicodedata.combining(x)).split())
+
+
+def _reject_duplicate_keys(pairs: list[tuple[str, object]]) -> dict:
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("JSON com chaves duplicadas não é admitido")
+        result[key] = value
+    return result
 
 
 def _canonical(doc: dict) -> bytes:
@@ -72,7 +110,8 @@ def validate_official_tabulation(obj: object) -> dict:
     raw_hash = src["sha256_arquivo_origem"]
     if not isinstance(raw_hash, str) or not re.fullmatch("[0-9a-f]{64}", raw_hash):
         raise ValueError("SHA-256 da tabulação original obrigatório")
-    if src["estado_consolidacao"] not in {"desconhecido", "preliminar", "final"}:
+    if (not isinstance(src["estado_consolidacao"], str)
+            or src["estado_consolidacao"] not in {"desconhecido", "preliminar", "final"}):
         raise ValueError("Estado de consolidação inválido")
     timestamp = _check_text(src["extracao_utc"], maximum=40)
     try:
@@ -91,16 +130,18 @@ def validate_official_tabulation(obj: object) -> dict:
     if not isinstance(code, str) or not re.fullmatch("[A-Z]{4,8}", code):
         raise ValueError("Código interno inválido")
     _check_text(scope["agravo_nome"])
-    if scope["uf"] not in UF:
+    if not isinstance(scope["uf"], str) or scope["uf"] not in UF:
         raise ValueError("Território inválido")
     if (type(scope["ano_inicio"]) is not int or type(scope["ano_fim"]) is not int
             or not 2000 <= scope["ano_inicio"] <= scope["ano_fim"] <= 2100):
         raise ValueError("Anos inválidos")
-    if scope["tipo_ano"] not in REFERENCE_TIMES:
+    if (not isinstance(scope["tipo_ano"], str)
+            or scope["tipo_ano"] not in REFERENCE_TIMES):
         raise ValueError("Tipo de período não definido")
     if scope["indicador"] != "registros_tabnet":
         raise ValueError("Este estágio só permite contagem de registros em TABNET")
-    if scope["dimensao"] not in {"sexo", "raca_cor"}:
+    if (not isinstance(scope["dimensao"], str)
+            or scope["dimensao"] not in {"sexo", "raca_cor"}):
         raise ValueError("Somente uma dimensão simples permitida")
     rows = obj["cells"]
     if not isinstance(rows, list) or not 2 <= len(rows) <= 12:
@@ -111,9 +152,13 @@ def validate_official_tabulation(obj: object) -> dict:
         if not isinstance(cell, dict) or set(cell) != {"categoria", "registros"}:
             raise ValueError("Estrutura de célula inválida")
         category = _check_text(cell["categoria"], maximum=50)
-        if category in seen:
-            raise ValueError("Categoria duplicada")
-        seen.add(category)
+        normalized = _normalized_category(category)
+        canonical = CATEGORY_ALIASES[scope["dimensao"]].get(normalized)
+        if canonical is None:
+            raise ValueError("Categoria não reconhecida para a dimensão declarada")
+        if canonical in seen:
+            raise ValueError("Categoria duplicada ou alias equivalente")
+        seen.add(canonical)
         n = cell["registros"]
         if type(n) is not int or n < K_MIN or n > 100_000_000:
             raise ValueError("Célula abaixo do limite: não é divulgável")
@@ -136,12 +181,17 @@ def prepare_private_tabnet_candidate(path: str | Path,
     if not source.is_file() or source.stat().st_size > MAX_BYTES:
         raise ValueError("Arquivo de tabela ausente ou excessivamente grande")
     try:
-        obj = json.loads(source.read_text(encoding="utf-8"))
+        obj = json.loads(source.read_text(encoding="utf-8"),
+                         object_pairs_hook=_reject_duplicate_keys)
     except (UnicodeError, ValueError) as exc:
         raise ValueError("JSON de tabela inválido") from exc
     validate_official_tabulation(obj)
-    private_root = (Path.cwd() / "data").resolve()
-    target_dir = Path(review_dir).resolve()
+    private_root = Path.cwd().resolve() / "data"
+    # A symlinked data/ directory can redirect a private candidate into a
+    # public checkout or a synchronized folder despite the .gitignore rule.
+    if private_root.is_symlink():
+        raise ValueError("Diretório data/ não pode ser link simbólico")
+    target_dir = Path(review_dir).expanduser().resolve()
     if not target_dir.is_relative_to(private_root):
         raise ValueError("A saída precisa permanecer dentro de data/ ignorado pelo Git")
     target_dir.mkdir(parents=True, exist_ok=True)

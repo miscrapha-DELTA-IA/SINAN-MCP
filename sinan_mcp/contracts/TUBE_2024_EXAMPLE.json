@@ -1,0 +1,55 @@
+{
+  "schema_version": "sinan-example-schema-contract-v1",
+  "contract_id": "TUBE_2024_EXAMPLE",
+  "agravo_alias_interno": "TUBE",
+  "ano_do_arquivo": 2024,
+  "estado": "DEMONSTRACAO_SINTETICA_NAO_VALIDADA",
+  "documento_oficial_verificado": false,
+  "permissao_publicacao": false,
+  "nota": "Exemplo com colunas reduzidas e códigos ilustrativos; NÃO reproduz integralmente o dicionário oficial do ano.",
+  "columns": [
+    {
+      "name": "ID_MN_RESI",
+      "kind": "pattern",
+      "expression": "[0-9]{6}",
+      "required": true
+    },
+    {
+      "name": "CS_SEXO",
+      "kind": "enum",
+      "values": [
+        "M",
+        "F",
+        "I",
+        ""
+      ],
+      "required": true
+    },
+    {
+      "name": "CS_RACA",
+      "kind": "enum",
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "9",
+        ""
+      ],
+      "required": true
+    },
+    {
+      "name": "SITUA_ENCE",
+      "kind": "enum",
+      "values": [
+        "1",
+        "2",
+        "10",
+        ""
+      ],
+      "required": true
+    }
+  ],
+  "allow_extra_columns": false
+}

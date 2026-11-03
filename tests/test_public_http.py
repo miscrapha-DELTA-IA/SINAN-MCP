@@ -94,6 +94,10 @@ def test_public_http_end_to_end_and_host_origin_rejection(protocol):
             "descrever_campos", "metodologia_abandono_tuberculose",
             "contar_notificacoes", "proporcao_abandono_tuberculose",
             "listar_fontes_oficiais", "pesquisar_agravos", "descrever_agravo",
+            "matriz_capacidades", "planejar_consulta_agravo",
+            "vocabulario_semantico", "planejar_medida_epidemiologica",
+            "listar_evidencias_documentais", "consultar_evidencia_agravo_ano",
+            "consultar_recursos_oficiais_ano", "listar_recursos_oficiais_anuais",
         }
 
         code, response = call("tools/call", {

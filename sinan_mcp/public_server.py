@@ -24,6 +24,23 @@ from .official_sources import (
     pesquisar_agravos as _search_conditions,
     descrever_agravo as _describe_condition,
 )
+from .query_planner import (
+    matriz_capacidades as _capabilities,
+    planejar_consulta_agravo as _plan_query,
+)
+from .semantics import (
+    vocabulario_semantico as _semantic_vocabulary,
+    planejar_medida_epidemiologica as _semantic_plan,
+    semantica_demo as _synthetic_semantics,
+)
+from .year_evidence_registry import (
+    listar_evidencias_documentais as _year_evidence_list,
+    consultar_evidencia_agravo_ano as _year_evidence,
+)
+from .official_annual_resources import (
+    consultar_recursos_oficiais_ano as _annual_resources,
+    listar_recursos_oficiais_anuais as _annual_resource_index,
+)
 
 PUBLIC_VERSION = "0.4.0a4"
 WARNING = (
@@ -138,6 +155,66 @@ def descrever_agravo(codigo_interno: str) -> dict[str, Any]:
 
 
 @mcp.tool()
+def matriz_capacidades() -> dict[str, Any]:
+    """Matriz dos agravos REFERENCIADOS, deixando explícita a ausência de dados reais."""
+    return _capabilities()
+
+
+@mcp.tool()
+def planejar_consulta_agravo(
+    agravo: str, ano: int | None = None, uf: str | None = None,
+    por: str = "sexo",
+) -> dict[str, Any]:
+    """Orienta pesquisa de qualquer agravo sem inventar dados nem acessar microdados."""
+    return _plan_query(agravo, ano, uf, por)
+
+
+@mcp.tool()
+def vocabulario_semantico() -> dict[str, Any]:
+    """Define unidades, eixos temporais, medidas e denominadores sem consultar dados."""
+    return _semantic_vocabulary()
+
+
+@mcp.tool()
+def planejar_medida_epidemiologica(
+    agravo: str, ano_do_arquivo: int, unidade_observacional: str,
+    eixo_temporal: str, tipo_medida: str, denominador: str | None = None,
+    fonte_denominador: str | None = None,
+) -> dict[str, Any]:
+    """Planeja uma medida com semântica controlada; nunca executa cálculo real."""
+    return _semantic_plan(
+        agravo, ano_do_arquivo, unidade_observacional, eixo_temporal,
+        tipo_medida, denominador, fonte_denominador,
+    )
+
+
+@mcp.tool()
+def listar_evidencias_documentais() -> dict[str, Any]:
+    """Lista documentos oficiais localizados; NÃO comprova dicionário para cada ano."""
+    return _year_evidence_list()
+
+
+@mcp.tool()
+def consultar_evidencia_agravo_ano(
+    agravo: str, ano: int,
+) -> dict[str, Any]:
+    """Consulta evidências documentais por agravo/ano; não autentica arquivos ou estatísticas."""
+    return _year_evidence(agravo, ano)
+
+
+@mcp.tool()
+def consultar_recursos_oficiais_ano(agravo: str, ano: int) -> dict[str, Any]:
+    """Lista IDs oficiais de recursos por ano; não consulta registros nem valida layout."""
+    return _annual_resources(agravo, ano)
+
+
+@mcp.tool()
+def listar_recursos_oficiais_anuais() -> dict[str, Any]:
+    """Lista pares de agravo/ano no catálogo do MS; sem dados epidemiológicos."""
+    return _annual_resource_index()
+
+
+@mcp.tool()
 def descrever_campos() -> dict[str, Any]:
     """Explica variáveis do protótipo e a necessidade de validação científica."""
     return {
@@ -179,6 +256,7 @@ def contar_notificacoes(agravo: str, ano_inicio: int | None = None,
             ],
         },
         "proveniencia": _result_meta(),
+        "semantica": _synthetic_semantics(proporcao=False),
         "aviso": WARNING,
     }
 
@@ -206,6 +284,7 @@ def proporcao_abandono_tuberculose(ano_inicio: int | None = None,
         "tipo": "simulacao_nao_oficial_de_abandono",
         "resultado": {"dados": data, "agrupar_por": por},
         "proveniencia": _result_meta(),
+        "semantica": _synthetic_semantics(proporcao=True),
         "aviso": WARNING,
     }
 

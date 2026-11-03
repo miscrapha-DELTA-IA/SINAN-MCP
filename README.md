@@ -12,12 +12,58 @@ O índice de referência possui atualmente **14 aliases internos de agravos** (T
 
 - `pesquisar_agravos(termo, limite)`: busca por texto e nome, inclusive sem acentos.
 - `descrever_agravo(codigo_interno)`: estado de implementação, limites e links oficiais.
+- `matriz_capacidades()`: capacidades por agravo, com estado explícito de dados reais indisponíveis no servidor público.
+- `planejar_consulta_agravo(agravo, ano, uf, por)`: plano estruturado de pesquisa; resolve nomes ambíguos, não executa consultas reais.
 - `listar_fontes_oficiais()`: páginas oficiais verificadas do MS, DATASUS/TABNET e Portal SINAN. Esses links são pontos de entrada, não arquivos de valores previamente auditados.
 - `contar_notificacoes` e `proporcao_abandono_tuberculose`: **continuam limitadas ao exemplo inventado de TUBE/2024/PI no servidor público**, não a notificações reais.
 - A CLI `preparar-tabela-oficial` confere um JSON local de tabulação já agregada, produz um candidato privado e **nunca publica diretamente**. Verificações de formato e de células mínimas não autenticam os dados junto ao DATASUS.
 - Os agregados reais dependerão de tabelas pré-computadas, documentação por agravo/ano e revisão independente antes de disponibilização; nenhum banco individual é acessado na modalidade pública.
 
-Consulte [escopo e fontes do catálogo](docs/MULTI_AGRAVO_CATALOG.md).
+Consulte [escopo e fontes do catálogo](docs/MULTI_AGRAVO_CATALOG.md). Consulte também o [guia de pesquisa multiagravo e publicação segura](docs/SAFE_MULTIAGRAVO_PLANNER.md).
+
+
+
+## Rascunho de campos DBF extraídos do PDF (somente offline)
+
+O comando administrativo `rascunhar-campos-dbf-pdf` extrai **candidatos** à coluna DBF do dicionário Sinan Online Dengue/Chikungunya revisado em 2015, registrando a página de cada nome e recusando extrair documentos com layout não reconhecido. O status permanece transcrição manual não revisada; a compatibilidade com 2024 **não é atestada**.
+
+O catálogo oficial Sinan/Dengue também identifica um **dicionário de dados atualizado em julho de 2025**. A comparação integral requer cotejar ambos os documentos e a transformação de exportação, sem assumir que a edição de 2015 é completa. Instruções e comandos PowerShell: [Rascunho PDF de campos DBF](docs/PDF_DBF_CANDIDATES.md).
+
+## Comparação privada dos esquemas com dicionários de dados
+
+Uma prova de conceito administrativa e offline permite criar um contrato de campos DBF a partir de um PDF local e comparar sua transcrição com o cabeçalho do ZIP CSV, ou com uma amostra de chaves de um ZIP JSON por streaming opcional. O comparador produz um relatório privado de divergências com estado de revisão pendente e **não executa análises reais**.
+
+Comece pelo [protocolo detalhado](docs/LOCAL_DICTIONARY_SCHEMA_AUDIT.md). Exemplo local: `py -3.11 -m sinan_mcp preparar-modelo-esquema --help` e `py -3.11 -m sinan_mcp comparar-esquema-privado --help`. Para JSON, instale o extra opcional `schemaaudit` com ijson. Não envie ZIP/PDF de trabalho ou relatórios privados ao servidor ou ao GitHub.
+
+## Distribuições oficiais de 2024 identificadas no Portal de Dados Abertos
+
+Há um registro separado de recursos individuais catalogados pelo Ministério da Saúde: **DENG/2024 em CSV e JSON** e **CHIK/2024 em JSON**, cada um com a página oficial, UUID do recurso e nome do ZIP. Para TUBE/2024, o registro ainda não contém distribuição anual primariamente confirmada.
+
+As ferramentas MCP `consultar_recursos_oficiais_ano` e `listar_recursos_oficiais_anuais` oferecem **somente metadados**, sem transferir dados. O planejador distingue recurso anual registrado de dicionário efetivamente aplicável; essa compatibilidade permanece não comprovada. Há também comando administrativo `conferir-zip-distribuicao` que verifica estrutura de um ZIP local sem abrir os registros e sem autenticar sua origem.
+
+Consulte [Registro de recursos anuais oficiais e limitações](docs/OFFICIAL_ANNUAL_DISTRIBUTIONS.md).
+
+## Registro curado de fontes e dicionários por agravo/ano (sem dados reais)
+
+O índice de evidências documentais foi iniciado com **TUBE/2024**, **DENG/2024** e **CHIK/2024**. Consulte: [registro de fontes por ano e limitações](docs/OFFICIAL_YEAR_EVIDENCE_REGISTRY.md).
+
+Os documentos correspondentes são hospedados no Portal SINAN, mas suas edições identificadas são de 2020 (NET 5.0, tuberculose, conforme nome do PDF) e 2014–2015 (ONLINE 3.0, dengue/chikungunya). **Não há confirmação de que sejam os layouts exatos dos arquivos de 2024.** O índice registra links documentais localizados, não uma base anual validada.
+
+Novas tools somente de metadados: `listar_evidencias_documentais` e `consultar_evidencia_agravo_ano`. O planejador multiagravo inclui a evidência anual apenas quando o agravo e ano estão identificados. Anos não verificados não herdam dicionários de outros anos. Monitoramento administrativo `monitorar-documento-ano` consulta apenas HEAD em URL curada (sem baixar documento ou dados) e não valida a edição anual. Ferramenta administrativa opcional `confrontar-evidencia-ano` calcula hashes de arquivos fornecidos localmente, mas não autentica origem ou autoriza publicação.
+
+## PoCs research-grade: semântica, contratos e conformidade MCP
+
+Esta branch experimental acrescenta um **planejador semântico** para distinguir registros, casos, indivíduos, períodos e denominadores, recusando medidas insuficientemente definidas sem gerar números. A demonstração continua inteiramente fictícia.
+
+Há também contratos JSON **estritamente sintéticos** TUBE/DENG 2024, um validador offline Pandera opt-in para CSVs fictícios, diff entre contratos e testes de regressão do inventário público de tools MCP, incluindo o protocolo 2026-07-28. Nada disso certifica dicionários oficiais ou habilita consultas reais.
+
+Consulte o [manual de PoCs científicas](docs/SEMANTIC_RESEARCH_POC.md). Para testar a qualidade opcional no Windows/Linux: python -m pip install -e ".[dev,quality]".
+
+## Ferramentas locais de curadoria e segurança (roadmap)
+
+O roadmap ganhou verificadores **administrativos offline**, fora do MCP público: `verificar-proveniencia`, `verificar-linhagem`, `auditar-qualidade`, `confrontar-tabnet` e `verificar-composicao`. O espelho PySUS possui rejeição de redirecionamento e tentativas limitadas. Esses comandos não verificam, por si, a autenticidade oficial, a equivalência de coortes ou o direito de publicação.
+
+**Implementação experimental em revisão:** [Estado detalhado e comandos Windows](docs/ROADMAP_IMPLEMENTATION.md). A versão implantada no Render continua sintética; não há OAuth ou API remota de microdados habilitada.
 
 ## Two intentionally separate distributions
 
@@ -210,3 +256,43 @@ py -3.11 -m sinan_mcp --db .\data\sinan.sqlite3 preparar-agregado --agravo TUBE 
 ```
 
 O pacote real ainda não foi preparado no computador do operador, e nenhum dado real foi aprovado ou enviado para nuvem. A importação atual do arquivo TUBE 2024 tem `status=desconhecido`; isso **bloqueia** publicação antes da verificação oficial de consolidação. Consulte o [guia de publicação revisada](docs/AGGREGATE_PUBLICATION.md).
+
+### Revisão do primeiro confronto DENG/2024
+
+O primeiro cotejo entre o cabeçalho local de 121 campos e o rascunho DBF de 2015 identificou 9 candidatos ausentes. A inspeção visual do PDF determinou **1 falso positivo** (`A`, texto explicativo da página 14), deixando **8 campos efetivamente documentados em 2015**, sem demonstrar exigência para o CSV 2024. O extrator passou a excluir apenas esse caso específico; a transcrição continua não revisada e o CSV não foi disponibilizado no repositório. [Parecer documental de nove campos](docs/DENG_2024_SCHEMA_DIVERGENCE_REVIEW.md).
+
+
+
+## Dicionário Dengue documental (PDF criado em 2024)
+
+A CLI administrativa `confrontar-dicionario-dengue-2024` compara, **somente no computador do pesquisador**, o arquivo PDF documental de 22 páginas, o contrato provisório do PDF DBF 2015 e o **cabeçalho** de um ZIP CSV de 2024; não acessa linhas clínicas nem habilita relatórios públicos. O documento recebido apresenta **121 entradas numeradas, 120 nomes únicos** devido à duplicação de `coufinf` nas sequências 64/67; também possui tipos literalmente malformados `char()1` nas entradas 115/116. Estes problemas e a aplicabilidade documental ao ano continuam não revisados. Veja [procedimento de confronto](docs/DENG_2024_MODERN_DICTIONARY_CROSSWALK.md).
+
+## Plano de conclusão do roadmap multiagravo — diagnóstico local
+
+O [plano de conclusão P0–P6](docs/ROADMAP_COMPLETION_GATES.md) explica o que falta em integração de código, fonte/dicionário por agravo/ano, qualidade, protocolos, privacidade, segurança, identidade e operação. Os PRs de pesquisa continuam **em draft e não foram implantados no servidor público sintético**.
+
+A CLI administrativa offline tem os comandos `preparar-checklist-roadmap` e `diagnosticar-checklist-roadmap` para inventariar sete gates por agravo e ano, sem dados clínicos, acesso remoto, identidade de paciente ou permissão de publicação. **Um checklist preenchido não autoriza estatísticas reais**, mesmo com sete pareceres declarados. Usar somente caminhos privados da pasta `data/`, nunca anexar manifestações/pareceres ao repositório.
+
+
+
+## Consolidação P0 e diagnóstico multiagravo (em revisão)
+
+A integração técnica das branches em rascunho #1 e #3–#13 está proposta em um PR consolidado separado, **não implantado nem mesclado**. O [plano de aceite P0](docs/P0_INTEGRATION_ACCEPTANCE.md) descreve a árvore de dependências, o isolamento do MCP público e os controles ainda necessários.
+
+Para verificar no próprio computador a diferença entre **referência de agravo**, **recurso anual identificado** e **dados/indicadores homologados**, sem baixar ou ler microdados:
+
+    py -3.11 -m sinan_mcp diagnosticar-cobertura-multiagravo --ano 2024
+    py -3.11 -m sinan_mcp diagnosticar-cobertura-multiagravo --ano 2024 --agravo CHIK
+
+Na curadoria atual, o índice possui 14 agravos de referência, 3 distribuições catalogadas em 2024 (2 DENG, 1 CHIK), 3 agravos com documento relacionado ao ano (TUBE, DENG, CHIK) e **zero indicadores reais homologados**. A confirmação de layout, versão e coorte continua pendente por agravo/ano. O índice não substitui o catálogo nacional nem estabelece suporte operacional universal.
+
+Os novos testes e a verificação CI de fronteira pública podem ser executados com:
+
+    py -3.11 -m pytest -q tests/test_multiagravo_readiness_integration.py tests/test_public_isolation_gate.py
+    py -3.11 scripts/check_public_isolation.py
+    py -3.11 scripts/check_sensitive_repo.py
+
+A implantação pública continua restrita a sinan_mcp.public_server, uma demonstração inteiramente sintética. **Não usar o serviço local legado com SINAN_PUBLIC_REAL_DATA=1 em ambiente público.**
+
+
+A configuração sintética do Render também é verificada por scripts/check_public_deployment.py na CI. Mudanças em render.yaml exigem atualização revisada desse snapshot; a checagem não substitui análise da configuração efetiva na plataforma.

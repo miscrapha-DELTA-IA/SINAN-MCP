@@ -71,7 +71,9 @@ def validate_candidate(candidate: Any) -> None:
         raise ValueError("Proveniência inválida")
     if not isinstance(src["tipo"], str) or src["tipo"] not in {"synthetic", "csv-local"} and not src["tipo"].startswith("pysus"):
         raise ValueError("Fonte inválida")
-    if src["status_informado"] not in {"desconhecido", "preliminar", "final"} or src["referencia_oficial"] != REFERENCE:
+    if (not isinstance(src["status_informado"], str)
+            or src["status_informado"] not in {"desconhecido", "preliminar", "final"}
+            or src["referencia_oficial"] != REFERENCE):
         raise ValueError("Status ou referência oficial inválida")
     if not isinstance(src["importado_em_utc"], str) or len(src["importado_em_utc"]) > 64:
         raise ValueError("Data de importação inválida")
@@ -91,7 +93,7 @@ def validate_candidate(candidate: Any) -> None:
         if not isinstance(cell, dict) or set(cell) != {"categoria", "registros"}:
             raise ValueError("Campo de célula inesperado")
         category, n = cell["categoria"], cell["registros"]
-        if category not in CODES[group] or category in seen:
+        if not isinstance(category, str) or category not in CODES[group] or category in seen:
             raise ValueError("Categoria inválida/duplicada")
         if type(n) is not int or not K_MIN <= n <= 50_000_000:
             raise ValueError("Contagem menor que mínimo autorizado ou inválida")
@@ -119,8 +121,16 @@ def load_approved_release(path: str | Path, sha256: str) -> dict:
     raw = file.read_bytes()
     if hashlib.sha256(raw).hexdigest() != sha256:
         raise ValueError("Checksum do pacote difere do aprovado")
+    def strict_pairs(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError("Chave JSON duplicada")
+            result[key] = value
+        return result
+
     try:
-        obj = json.loads(raw)
+        obj = json.loads(raw, object_pairs_hook=strict_pairs)
     except (UnicodeError, ValueError) as exc:
         raise ValueError("Pacote JSON inválido") from exc
     if not isinstance(obj, dict) or set(obj) != {
