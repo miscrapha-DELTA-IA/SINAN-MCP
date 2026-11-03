@@ -83,3 +83,36 @@ O PDF anexado pelo operador apresentou SHA-256 local `d15122f38b32c4b3caf58cca7e
 2. Revisar, **somente no computador do pesquisador**, os dois nomes adicionais antes de qualquer divulgação. Verificar se são metadados válidos da exportação, campos de processamento, diferenças de layout ou material não destinado ao público.
 3. Revisar domínios, classificações (especialmente `classi_fin` e códigos 1/2/8 contra 11/12/13), duplicação `coufinf`, `char()1` nas seq. 115/116 e a versão documental efetivamente utilizada para 2024.
 4. Preservar parecer privado, hashes e datas, solicitar avaliação epidemiológica e de privacidade independentes. Não publicar nem usar para calcular indicadores reais até os gates serem satisfeitos.
+
+
+## Análise de escopo de CLINIC_CHIK e dois nomes extras com arquivo privativo
+
+O operador identificou no parecer documental o **único nome de PDF ausente do CSV**: \`CLINIC_CHIK\`. Esse campo existe na **seq. 73, página 13** do PDF de 22 páginas, como **"Apresentação clínica Chikungunya"**, habilitado condicionalmente em chikungunya. O catálogo oficial declara que o Sinan Online atende tanto dengue quanto chikungunya, mas o recurso anual em revisão é especificamente **DENG** (CSV 2024).
+
+**Hipótese plausível, não validação:** a ausência de \`CLINIC_CHIK\` no CSV DENG pode decorrer do escopo de exportação e **não demonstra erro**. A implementação mantém \`nome_comum_pdf_atual_csv = 119\`, \`nomes_pdf_atual_ausentes_csv = ["CLINIC_CHIK"]\`, \`quantidade_csv_fora_pdf_atual = 2\`, além de \`hipoteses_escopo_nao_validadas\` com \`dispensa_justificada = false\` e \`validacao_independente = PENDENTE\`. Somente a revisão epidemiológica pode confirmar a política e edição efetiva de exportação.
+
+Para que o revisor examine **os dois nomes desconhecidos** sem imprimir no terminal nem incluí-los no relatório normal, foi criado comando administrativo **opt-in** \`preparar-revisao-local-extras-dengue\`, que:
+
+- Lê somente a **primeira linha CSV** do ZIP local já conferido, com limite de bytes/colunas; não acessa nenhuma linha de paciente.
+- Confere que os SHA-256 do PDF, do candidato 2015 e do ZIP correspondem aos identificadores registrados no parecer anterior **pendente**; recusa divergências.
+- Gera outro arquivo exclusivo na pasta local \`data/\` (que está em \`.gitignore\`), com os dois nomes **APENAS PARA USO INTERNO DO REVISOR**; o terminal informa somente a quantidade.
+- Impede sobrescrever um arquivo existente e mantém flags de revisão e publicação \`PENDENTE/FALSE\`. Em Windows, o padrão de permissões do diretório e ACLs NTFS ainda requerem controle do próprio operador; o modo \`0o600\` não prova confidencialidade da pasta em todos os ambientes.
+
+Em Windows PowerShell 5.1, usando o clone atualizado na branch do PR #9:
+
+    cd "$env:USERPROFILE\Downloads\SINAN-MCP-Auditoria"
+    py -3.11 -m pip install -e ".[dev,pdfaudit,schemaaudit]"
+    py -3.11 -m pytest -q tests/test_local_dengue_csv_extra_review.py
+    py -3.11 -m sinan_mcp preparar-revisao-local-extras-dengue \`
+      --pdf ".\data\dic_dados_dengue.pdf" \`
+      --contrato-2015 ".\data\contrato-dengue-2024-dbf-candidato-v2015-revisado.json" \`
+      --zip ".\data\DENGBR24.csv.zip" \`
+      --parecer-anterior ".\data\parecer-pendente-dengue-crosswalk-2024.json" \`
+      --saida-privada ".\data\revisao-privada-dois-campos-csv-2024.json"
+
+O conteúdo privado pode ser examinado **apenas localmente**, por profissional autorizado, por exemplo abrindo com \`notepad .\data\revisao-privada-dois-campos-csv-2024.json\`. Não inserir nomes suspeitos de identificadores ou informações pessoais em chat, prompts, tickets ou GitHub, nem subir arquivos de saída. Nenhuma classificação automática será declarada e o status original não é alterado.
+
+A investigação desses dois nomes deve cotejar a [página do recurso CSV 2024 no portal](https://dadosabertos.saude.gov.br/dataset/arboviroses-dengue/resource/4cf2f7b8-9920-41b5-817a-1ffc13e0690c) e documentação oficial de exportação. Sem documento específico, classificar como **"campo presente no CSV, não encontrado no PDF, origem/função pendente"**.
+
+A documentação do [conjunto Sinan/Dengue](https://dadosabertos.saude.gov.br/dataset/arboviroses-dengue) menciona regras específicas para análise de casos graves, óbitos e cortes de atualização. Isso **não substitui** a validação do domínio real de \`CLASSI_FIN\` nem a revisão de definição de caso por faixa de ano.
+
