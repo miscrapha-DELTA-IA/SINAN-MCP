@@ -39,6 +39,16 @@ Comece pelo [protocolo detalhado](docs/LOCAL_DICTIONARY_SCHEMA_AUDIT.md). Exempl
 
 Há um registro separado de recursos individuais catalogados pelo Ministério da Saúde: **DENG/2024 em CSV e JSON**, **CHIK/2024 em JSON** e **ZIKA/2024 em JSON e Parquet**, cada um com a página oficial, UUID do recurso e nome do ZIP. O ZIKA ainda não tem dicionário específico curado para 2024. Para TUBE/2024, o registro ainda não contém distribuição anual primariamente confirmada.
 
+A descrição oficial do conjunto [Sinan/Vírus Zika](https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus)
+indica **SINAN Net**, prazo textual de 60 dias para encerramento, histórico
+congelado em datas específicas (sem divulgar o corte exato de ZIKABR24)
+e lista um **"Dicionário de dados - Zika Vírus"** atualizado em
+14/07/2025. Esses elementos foram incorporados, com limitações explícitas,
+ao plano documental ZIKA: `planejar-confronto-documental-2024 --agravo ZIKA`.
+O PDF exato desse recurso não foi recuperado, e nenhuma compatibilidade
+com 2024 foi atestada. A contagem permanece 12 dicionários curados e
+5 distribuições anuais, com zero indicadores homologados.
+
 Para ZIKA/2024, a [conferência das páginas oficiais dos recursos](docs/ZIKA_2024_OFFICIAL_RESOURCE_IDENTITY.md)
 registrou UUID, formato, status administrativo e ID do conjunto comuns ao JSON
 e Parquet. A CLI `confrontar-identidade-zika-2024` coteja o snapshot
