@@ -76,7 +76,7 @@ def test_snapshot_of_public_descriptions_and_input_field_names():
             for name, (description, fields) in EXPECTED.items():
                 tool = by_name[name]
                 assert tool.description == description, f"Description changed: {name}"
-                assert set(tool.inputSchema.get("properties", {})) == set(fields), (
+                assert set(tool.model_dump(by_alias=True)["inputSchema"].get("properties", {})) == set(fields), (
                     f"Input schema changed: {name}"
                 )
                 assert not name.startswith(
