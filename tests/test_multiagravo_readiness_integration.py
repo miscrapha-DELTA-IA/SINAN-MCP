@@ -16,7 +16,7 @@ def test_2024_registry_coverage_not_equivalent_to_research_approval():
     info = diagnosticar_cobertura_multiagravo(2024)
     assert info["agravos_referenciados"] == len(CONDITIONS) == 14
     assert info["agravos_com_documentacao_localizada"] == 12
-    assert info["distribuicoes_catalogadas"] == 3
+    assert info["distribuicoes_catalogadas"] == 5
     assert info["status"] == "DIAGNOSTICO_DOCUMENTAL_SEM_VALIDACAO_EPIDEMIOLOGICA"
     assert info["dados_clinicos_consultados"] is False
     assert info["publicacao_automatica"] is False
@@ -26,6 +26,11 @@ def test_2024_registry_coverage_not_equivalent_to_research_approval():
     assert entries["DENG"]["formatos_catalogados"] == ["CSV", "JSON"]
     assert entries["CHIK"]["distribuicoes_anuais_catalogadas"] == 1
     assert entries["CHIK"]["formatos_catalogados"] == ["JSON"]
+    assert entries["ZIKA"]["documento_oficial_localizado"] is False
+    assert entries["ZIKA"]["distribuicoes_anuais_catalogadas"] == 2
+    assert entries["ZIKA"]["formatos_catalogados"] == ["JSON", "PARQUET"]
+    assert entries["SIFA"]["documento_oficial_localizado"] is False
+    assert entries["SIFA"]["distribuicoes_anuais_catalogadas"] == 0
     assert entries["TUBE"]["distribuicoes_anuais_catalogadas"] == 0
     for code in ("TUBE", "DENG", "CHIK"):
         assert entries[code]["documento_oficial_localizado"] is True
@@ -78,11 +83,12 @@ def test_cli_produces_only_metadata_counters(tmp_path):
     assert ok.returncode == 0, ok.stderr
     assert "Agravos no indice consultados: 14" in ok.stdout
     assert "Agravos com documentacao localizada: 12" in ok.stdout
-    assert "Distribuicoes anuais catalogadas: 3" in ok.stdout
+    assert "Distribuicoes anuais catalogadas: 5" in ok.stdout
     assert "Acesso real e publicacao autorizados: NAO" in ok.stdout
     assert "DENG documento: SIM distribuicoes: 2" in ok.stdout
     assert "CHIK documento: SIM distribuicoes: 1" in ok.stdout
     assert "TUBE documento: SIM distribuicoes: 0" in ok.stdout
+    assert "ZIKA documento: NAO distribuicoes: 2" in ok.stdout
     assert not private_path.exists()
     invalid = subprocess.run(cmd + ["--agravo", "FAKE"],
                              capture_output=True, text=True, timeout=30)
