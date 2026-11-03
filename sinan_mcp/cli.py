@@ -466,6 +466,14 @@ def main() -> None:
               "SIM" if report["orientacao_ministerial_2024_sobre_a_ficha"] else "NAO")
         print("UUID e formato da pagina oficial documentados:",
               "SIM" if report["identidade_publica_uuid_formato_documentada"] else "NAO")
+        if report["agravo"] == "ZIKA":
+            print("Sistema SINAN Net descrito no catalogo oficial:",
+                  "SIM" if report["sinan_net_descrito_no_portal"] else "NAO")
+            print("Dicionario especifico Zika listado no portal:",
+                  "SIM" if report["dicionario_especifico_zika_listado_no_portal"] else "NAO")
+            print("PDF especifico Zika auditado:",
+                  "SIM" if report["pdf_exato_zika_auditado"] else "NAO")
+            print("Data de corte exata do arquivo ZIKA/2024: NAO IDENTIFICADA")
         print("Topicos de revisao pendentes:", report["total_topicos_pendentes"])
         for entry in report["topicos_pendentes"]:
             print(entry["topico"] + ": PENDENTE")
