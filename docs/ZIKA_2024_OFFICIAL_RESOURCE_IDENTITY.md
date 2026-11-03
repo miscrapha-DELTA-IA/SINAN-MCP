@@ -51,10 +51,19 @@ chikungunya e Zika), a ser examinada antes de comparações interestaduais.
 Há ainda na lista oficial um item denominado **"Dicionário de dados -
 Zika Vírus"**, com atualização exibida **14/07/2025**. O item é uma
 evidência documental **mais específica** que o PDF genérico de
-Notificação Individual encontrado no Portal SINAN. Entretanto, este
-levantamento não recuperou o **UUID/URL exata e o conteúdo auditável do
-PDF desse item**. Logo, **não** incrementa a contagem dos 12 dicionários
-específicos já curados nem confirma edição aplicável a ZIKA/2024.
+Notificação Individual encontrado no Portal SINAN. O PDF específico foi **posteriormente localizado** na página oficial:
+[recurso `58038262-c745-46ea-979b-8727eb08ec5c`](https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus/resource/58038262-c745-46ea-979b-8727eb08ec5c),
+que liga diretamente a
+[`dic_dados_zika.pdf`](https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/SINAN/Zikavirus/dic_dados_zika.pdf).
+A fonte pública possui **8 páginas e 37 campos numerados**, identificados
+como SINAN Net, conforme inspeção visual das páginas. O novo diagnóstico
+`diagnosticar-pdf-oficial-zika` registra essa evidência.
+
+**Importante:** a referência histórica foi registrada em módulo separado
+para revisão e ainda **não integrada ao catálogo geral de 12 dicionários
+previamente curados**. Localizar e inspecionar o PDF tampouco confirma a
+edição ou aplicabilidade à exportação ZIKA/2024. O checksum oficial,
+o confronto do esquema com ZIKABR24 e a data de corte continuam ausentes.
 
 O módulo offline `sinan_mcp/zika_portal_context.py` mantém
 separados: (1) fatos textuais publicados pelo portal; (2) referência
