@@ -12,6 +12,7 @@ from .shared_notification_documents import diagnosticar_documentacao_transversal
 from .year_evidence_registry import consultar_evidencia_agravo_ano
 from .zika_resource_identity import confrontar_snapshot_portal_zika_2024
 from .zika_portal_context import consultar_contexto_portal_zika_2024
+from .zika_official_dictionary_reference import diagnosticar_pdf_oficial_zika
 
 SCHEMA = "sinan-2024-documentary-crosswalk-plan-v1"
 SUPPORTED = frozenset(("ZIKA", "SIFA"))
@@ -92,6 +93,9 @@ def planejar_confronto_documental_2024(agravo: str) -> dict[str, Any]:
     official_portal_context = (
         consultar_contexto_portal_zika_2024() if agravo == "ZIKA" else None
     )
+    zika_pdf = (
+        diagnosticar_pdf_oficial_zika() if agravo == "ZIKA" else None
+    )
     topics = [{
         "topico": code,
         "questao_de_revisao": description,
@@ -117,6 +121,22 @@ def planejar_confronto_documental_2024(agravo: str) -> dict[str, Any]:
             ] if official_portal_context is not None else False
         ),
         "pdf_exato_zika_auditado": False,
+        "pdf_especifico_zika_localizado_no_portal": (
+            zika_pdf["documento_especifico_zika_localizado"]
+            if zika_pdf is not None else False
+        ),
+        "pdf_zika_inspecionado_visualmente": (
+            zika_pdf["documento_inspecionado_visualmente"]
+            if zika_pdf is not None else False
+        ),
+        "pagina_recurso_dicionario_zika": (
+            zika_pdf["url_recurso_governamental"]
+            if zika_pdf is not None else None
+        ),
+        "numero_campos_documentados_zika": (
+            zika_pdf["numero_de_campos_numerados_no_documento"]
+            if zika_pdf is not None else 0
+        ),
         "corte_exato_do_arquivo_2024_conhecido": False,
         "origem_dos_bytes_2024_autenticada": False,
         "recursos_cotejados_com_snapshot_portal": (
