@@ -39,6 +39,25 @@ Comece pelo [protocolo detalhado](docs/LOCAL_DICTIONARY_SCHEMA_AUDIT.md). Exempl
 
 Há um registro separado de recursos individuais catalogados pelo Ministério da Saúde: **DENG/2024 em CSV e JSON**, **CHIK/2024 em JSON** e **ZIKA/2024 em JSON e Parquet**, cada um com a página oficial, UUID do recurso e nome do ZIP. O ZIKA ainda não tem dicionário específico curado para 2024. Para TUBE/2024, o registro ainda não contém distribuição anual primariamente confirmada.
 
+A descrição oficial do conjunto [Sinan/Vírus Zika](https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus)
+indica **SINAN Net**, prazo textual de 60 dias para encerramento, histórico
+congelado em datas específicas (sem divulgar o corte exato de ZIKABR24)
+e lista um **"Dicionário de dados - Zika Vírus"** atualizado em
+14/07/2025. Esses elementos foram incorporados, com limitações explícitas,
+ao plano documental ZIKA: `planejar-confronto-documental-2024 --agravo ZIKA`.
+O PDF exato desse recurso não foi recuperado, e nenhuma compatibilidade
+com 2024 foi atestada. A contagem permanece 12 dicionários curados e
+5 distribuições anuais, com zero indicadores homologados.
+
+Para ZIKA/2024, a [conferência das páginas oficiais dos recursos](docs/ZIKA_2024_OFFICIAL_RESOURCE_IDENTITY.md)
+registrou UUID, formato, status administrativo e ID do conjunto comuns ao JSON
+e Parquet. A CLI `confrontar-identidade-zika-2024` coteja o snapshot
+documental offline com os ponteiros já curados, mas **não confirma bytes,
+datas de corte, layout, status epidemiológico nem disponibilidade da URL em
+tempo real**. O candidato `SIFABR24.dbc` encontrado em índice de terceiro
+ainda não foi autenticado por fonte primária, então SIFA permanece com
+0 distribuições anuais oficiais no índice.
+
 As ferramentas MCP `consultar_recursos_oficiais_ano` e `listar_recursos_oficiais_anuais` oferecem **somente metadados**, sem transferir dados. O planejador distingue recurso anual registrado de dicionário efetivamente aplicável; essa compatibilidade permanece não comprovada. Há também comando administrativo `conferir-zip-distribuicao` que verifica estrutura de um ZIP local sem abrir os registros e sem autenticar sua origem.
 
 Consulte [Registro de recursos anuais oficiais e limitações](docs/OFFICIAL_ANNUAL_DISTRIBUTIONS.md).

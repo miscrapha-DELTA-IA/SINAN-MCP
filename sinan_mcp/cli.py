@@ -144,6 +144,10 @@ def main() -> None:
         help="Matriz de revisão documental ZIKA/SIFA, sem acesso a dados reais",
     )
     crosswalk.add_argument("--agravo", required=True, help="ZIKA ou SIFA")
+    cmd.add_parser(
+        "confrontar-identidade-zika-2024",
+        help="Conferir snapshot offline de UUID/formato/pacote do portal, nao de ZIP",
+    )
     readiness_template = cmd.add_parser(
         "preparar-checklist-roadmap",
         help="Criar checklist privado multiagravo/ano, todos os gates PENDENTES",
@@ -460,10 +464,38 @@ def main() -> None:
         print("Distribuicoes anuais catalogadas:", report["numero_de_distribuicoes_catalogadas"])
         print("Orientacao ministerial 2024 da ficha:",
               "SIM" if report["orientacao_ministerial_2024_sobre_a_ficha"] else "NAO")
+        print("UUID e formato da pagina oficial documentados:",
+              "SIM" if report["identidade_publica_uuid_formato_documentada"] else "NAO")
+        if report["agravo"] == "ZIKA":
+            print("Sistema SINAN Net descrito no catalogo oficial:",
+                  "SIM" if report["sinan_net_descrito_no_portal"] else "NAO")
+            print("Dicionario especifico Zika listado no portal:",
+                  "SIM" if report["dicionario_especifico_zika_listado_no_portal"] else "NAO")
+            print("PDF especifico Zika auditado:",
+                  "SIM" if report["pdf_exato_zika_auditado"] else "NAO")
+            print("Data de corte exata do arquivo ZIKA/2024: NAO IDENTIFICADA")
         print("Topicos de revisao pendentes:", report["total_topicos_pendentes"])
         for entry in report["topicos_pendentes"]:
             print(entry["topico"] + ": PENDENTE")
         print("Campos reais lidos: 0; indicadores homologados: 0")
+        print("Acesso real e publicacao autorizados: NAO")
+        print("Status:", report["status"])
+    elif args.comando == "confrontar-identidade-zika-2024":
+        from .zika_resource_identity import confrontar_snapshot_portal_zika_2024
+        try:
+            report = confrontar_snapshot_portal_zika_2024()
+        except (ValueError, OSError):
+            parser.exit(2, "IDENTIDADE DOCUMENTAL ZIKA INCONSISTENTE.\n")
+        print("IDENTIDADE DOCUMENTAL ZIKA/2024, NAO AUTENTICACAO DE ARQUIVO.")
+        print("Data da curadoria:", report["data_curadoria_documental"])
+        print("Recursos com identidade documental concordante:",
+              report["registros_documentais_concordantes"])
+        for row in report["registros"]:
+            print(row["formato_documentado"], "UUID:", row["resource_id"],
+                  "status da pagina na curadoria:", row["estado_observado_na_pagina"])
+        print("Reconsulta online nesta execucao: NAO")
+        print("Arquivos binarios acessados: 0; campos clinicos lidos: 0")
+        print("Layout 2024 e consolidacao comprovados: NAO")
         print("Acesso real e publicacao autorizados: NAO")
         print("Status:", report["status"])
     elif args.comando == "preparar-checklist-roadmap":
