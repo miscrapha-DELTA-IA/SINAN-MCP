@@ -82,6 +82,22 @@ def main() -> None:
     )
     annual_zip.add_argument("arquivo", type=Path)
     annual_zip.add_argument("--resource-id", required=True)
+    schema_template = cmd.add_parser(
+        "preparar-modelo-esquema",
+        help="Gera candidato local com 3 campos documentais de exemplo; SEM validar 2024",
+    )
+    schema_template.add_argument("--resource-id", required=True)
+    schema_template.add_argument("--pdf", required=True, type=Path)
+    schema_template.add_argument("--saida", required=True, type=Path)
+    schema_audit = cmd.add_parser(
+        "comparar-esquema-privado",
+        help="Compara campos localmente com PDF e contrato manual; NÃO autoriza uso real",
+    )
+    schema_audit.add_argument("--resource-id", required=True)
+    schema_audit.add_argument("--zip", required=True, type=Path)
+    schema_audit.add_argument("--pdf", required=True, type=Path)
+    schema_audit.add_argument("--contrato", required=True, type=Path)
+    schema_audit.add_argument("--parecer-pendente", required=True, type=Path)
     list_year = cmd.add_parser(
         "listar-evidencias-ano", help="Lista documentos oficiais localizados, SEM validar arquivo anual"
     )
@@ -282,6 +298,32 @@ def main() -> None:
             parser.exit(2, "ZIP LOCAL NÃO ADMITIDO — " + str(exc) + "\n")
         print("AUDITORIA LOCAL: não autentica publicação oficial ou dados clínicos.")
         print(json.dumps(report, ensure_ascii=False, indent=2))
+    elif args.comando == "preparar-modelo-esquema":
+        from .local_schema_review import preparar_modelo_local
+        try:
+            report = preparar_modelo_local(args.resource_id, args.pdf, args.saida)
+        except (OSError, ValueError, RuntimeError):
+            parser.exit(2, "MODELO NÃO CRIADO — verifique a referência, o PDF e o destino local.\n")
+        print("CANDIDATO LOCAL NÃO REVISADO. Não enviar o arquivo ao GitHub.")
+        print("Campos de exemplo:", report["campos_exemplo_documentados"])
+    elif args.comando == "comparar-esquema-privado":
+        from .local_schema_review import (
+            comparar_esquema_local, salvar_parecer_pendente_local,
+        )
+        try:
+            report = comparar_esquema_local(
+                args.resource_id, args.zip, args.pdf, args.contrato
+            )
+            summary = salvar_parecer_pendente_local(
+                report, args.parecer_pendente
+            )
+        except (OSError, ValueError, RuntimeError):
+            parser.exit(2, "COMPARAÇÃO LOCAL RECUSADA — confira contrato, PDF, pacote e destino.\n")
+        print("PACOTE DE REVISÃO PRIVADA GERADO; NENHUM INDICADOR REAL AUTORIZADO.")
+        print("Estado:", report["estado"])
+        print("Campos do dicionário não encontrados:", len(report["campos_documentados_ausentes"]))
+        print("Campos fora da transcrição:", report["n_campos_nao_documentados"])
+        print("Parecer independente:", "PENDENTE")
     elif args.comando == "listar-evidencias-ano":
         import json
         from .year_evidence_registry import listar_evidencias_documentais

@@ -160,3 +160,9 @@ mudanças e revisão cumulativa, antes de liberar indicadores.
 
 As páginas do Portal de Dados Abertos do SUS possibilitaram registrar URLs e IDs de distribuição de **DENG/2024** (CSV e JSON) e **CHIK/2024** (JSON). Esses recursos foram separados dos dicionários já catalogados; o arquivo binário, versão exata, data de corte, situação de consolidação e compatibilidade de layout ainda NÃO foram verificados. O planejador passou a expor ambos os níveis sem criar valores reais. Os testes usam apenas ZIPs falsos e dados sintéticos. Veja [distribuições anuais](OFFICIAL_ANNUAL_DISTRIBUTIONS.md).
 
+
+
+## Prova de conceito de comparação de esquema e dicionário
+
+Criada a CLI `preparar-modelo-esquema` para gerar contrato PRIVADO com campos DBF documentais parcialmente transcritos de PDF local, e `comparar-esquema-privado` para confrontá-lo com o cabeçalho de um ZIP CSV ou com amostra limitada de chaves JSON, gerando pacote de dez pendências para revisão. Nenhum valor clínico é publicado. A edição do dicionário não é presumida válida para 2024; contratos de exemplo e cotejo de cabeçalho não validam casos, códigos ou dados reais. O processamento JSON usa ijson opcional, em ambiente local. Ver [protocolo privado](LOCAL_DICTIONARY_SCHEMA_AUDIT.md).
+

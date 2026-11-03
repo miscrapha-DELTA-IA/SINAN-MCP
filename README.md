@@ -22,6 +22,12 @@ O índice de referência possui atualmente **14 aliases internos de agravos** (T
 Consulte [escopo e fontes do catálogo](docs/MULTI_AGRAVO_CATALOG.md). Consulte também o [guia de pesquisa multiagravo e publicação segura](docs/SAFE_MULTIAGRAVO_PLANNER.md).
 
 
+## Comparação privada dos esquemas com dicionários de dados
+
+Uma prova de conceito administrativa e offline permite criar um contrato de campos DBF a partir de um PDF local e comparar sua transcrição com o cabeçalho do ZIP CSV, ou com uma amostra de chaves de um ZIP JSON por streaming opcional. O comparador produz um relatório privado de divergências com estado de revisão pendente e **não executa análises reais**.
+
+Comece pelo [protocolo detalhado](docs/LOCAL_DICTIONARY_SCHEMA_AUDIT.md). Exemplo local: `py -3.11 -m sinan_mcp preparar-modelo-esquema --help` e `py -3.11 -m sinan_mcp comparar-esquema-privado --help`. Para JSON, instale o extra opcional `schemaaudit` com ijson. Não envie ZIP/PDF de trabalho ou relatórios privados ao servidor ou ao GitHub.
+
 ## Distribuições oficiais de 2024 identificadas no Portal de Dados Abertos
 
 Há um registro separado de recursos individuais catalogados pelo Ministério da Saúde: **DENG/2024 em CSV e JSON** e **CHIK/2024 em JSON**, cada um com a página oficial, UUID do recurso e nome do ZIP. Para TUBE/2024, o registro ainda não contém distribuição anual primariamente confirmada.
