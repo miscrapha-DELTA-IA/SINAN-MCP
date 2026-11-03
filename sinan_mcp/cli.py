@@ -139,6 +139,11 @@ def main() -> None:
     )
     shared_docs.add_argument("--ano", type=int, required=True)
     shared_docs.add_argument("--agravo", help="Alias interno opcional, ex.: ZIKA")
+    crosswalk = cmd.add_parser(
+        "planejar-confronto-documental-2024",
+        help="Matriz de revisão documental ZIKA/SIFA, sem acesso a dados reais",
+    )
+    crosswalk.add_argument("--agravo", required=True, help="ZIKA ou SIFA")
     readiness_template = cmd.add_parser(
         "preparar-checklist-roadmap",
         help="Criar checklist privado multiagravo/ano, todos os gates PENDENTES",
@@ -442,6 +447,23 @@ def main() -> None:
                   "vinculo direto:",
                   "SIM" if row["vinculo_direto_na_pagina_do_agravo"] else "NAO",
                   "compatibilidade 2024: NAO")
+        print("Acesso real e publicacao autorizados: NAO")
+        print("Status:", report["status"])
+    elif args.comando == "planejar-confronto-documental-2024":
+        from .documentary_crosswalk_2024 import planejar_confronto_documental_2024
+        try:
+            report = planejar_confronto_documental_2024(args.agravo)
+        except ValueError:
+            parser.exit(2, "MATRIZ DOCUMENTAL NAO CRIADA: use ZIKA ou SIFA.\n")
+        print("MATRIZ DOCUMENTAL 2024, NAO CONFRONTO DE DADOS OU APROVACAO.")
+        print("Agravo:", report["agravo"])
+        print("Distribuicoes anuais catalogadas:", report["numero_de_distribuicoes_catalogadas"])
+        print("Orientacao ministerial 2024 da ficha:",
+              "SIM" if report["orientacao_ministerial_2024_sobre_a_ficha"] else "NAO")
+        print("Topicos de revisao pendentes:", report["total_topicos_pendentes"])
+        for entry in report["topicos_pendentes"]:
+            print(entry["topico"] + ": PENDENTE")
+        print("Campos reais lidos: 0; indicadores homologados: 0")
         print("Acesso real e publicacao autorizados: NAO")
         print("Status:", report["status"])
     elif args.comando == "preparar-checklist-roadmap":
