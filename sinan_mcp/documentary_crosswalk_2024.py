@@ -11,6 +11,7 @@ from .official_annual_resources import consultar_recursos_oficiais_ano
 from .shared_notification_documents import diagnosticar_documentacao_transversal
 from .year_evidence_registry import consultar_evidencia_agravo_ano
 from .zika_resource_identity import confrontar_snapshot_portal_zika_2024
+from .zika_portal_context import consultar_contexto_portal_zika_2024
 
 SCHEMA = "sinan-2024-documentary-crosswalk-plan-v1"
 SUPPORTED = frozenset(("ZIKA", "SIFA"))
@@ -88,6 +89,9 @@ def planejar_confronto_documental_2024(agravo: str) -> dict[str, Any]:
     identity_snapshot = (
         confrontar_snapshot_portal_zika_2024() if agravo == "ZIKA" else None
     )
+    official_portal_context = (
+        consultar_contexto_portal_zika_2024() if agravo == "ZIKA" else None
+    )
     topics = [{
         "topico": code,
         "questao_de_revisao": description,
@@ -102,6 +106,19 @@ def planejar_confronto_documental_2024(agravo: str) -> dict[str, Any]:
         "referencias_documentais": sources,
         "numero_de_distribuicoes_catalogadas": n,
         "identidade_publica_uuid_formato_documentada": identity_snapshot is not None,
+        "sinan_net_descrito_no_portal": (
+            official_portal_context[
+                "sistema_de_notificacao_mencionado_pelo_portal"
+            ] if official_portal_context is not None else False
+        ),
+        "dicionario_especifico_zika_listado_no_portal": (
+            official_portal_context[
+                "recurso_de_dicionario_zika_listado_no_portal"
+            ] if official_portal_context is not None else False
+        ),
+        "pdf_exato_zika_auditado": False,
+        "corte_exato_do_arquivo_2024_conhecido": False,
+        "origem_dos_bytes_2024_autenticada": False,
         "recursos_cotejados_com_snapshot_portal": (
             identity_snapshot["registros_documentais_concordantes"]
             if identity_snapshot is not None else 0
