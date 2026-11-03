@@ -82,3 +82,9 @@ registro anual.
 
 O relatório privado inclui apenas nomes de campos previamente transcritos (metadados documentais), contagens de campos não reconhecidos e checksums locais. Um pacote com dez pendências é criado com modo restrito e sem sobrescrever arquivos. O resultado continua não autenticado e não validado epidemiologicamente. Nenhuma flag de contrato ou edição manual de parecer concede autorização de análise real ou publicação. Não executar sobre arquivos reais em CI, issues, prompts ou ambiente compartilhado.
 
+
+
+## Rascunho de campos DBF do PDF local
+
+`local_pdf_dictionary_candidate.py` é uma CLI administrativa que aceita somente o PDF de nome esperado para a referência documental curada DENG/CHIK, confere cabeçalho e SHA-256 local, limita tamanho/páginas/tokens e exige três campos âncora antes de criar novo contrato de páginas. Usa a dependência **opcional** PyMuPDF no computador do operador; não baixa PDFs, não acessa registros, não consulta o MCP e não confere a integridade binária por assinatura governamental. O candidato fica privado, é não revisado e jamais serve de aprovação. O layout de outros PDFs não é suportado, mesmo que outro arquivo seja renomeado para imitar o nome esperado.
+
