@@ -23,9 +23,19 @@ PUBLIC_ALLOWLIST = frozenset({
 FORBIDDEN_EXTERNAL = frozenset({
     "sqlite3", "pysus", "pandas", "pyarrow", "duckdb", "requests",
     "httpx", "subprocess", "socket", "smtplib", "tempfile", "pickle",
+    "builtins", "runpy", "ctypes", "pathlib", "io",
 })
 FORBIDDEN_EXACT_IMPORTS = frozenset({
     "urllib.request", "urllib3", "asyncio.subprocess",
+    "importlib.util", "importlib.machinery",
+})
+PUBLIC_ENV_ALLOWLIST = frozenset({
+    "SINAN_PUBLIC_HOST", "RENDER_EXTERNAL_HOSTNAME", "PORT",
+})
+FORBIDDEN_OS_OPERATIONS = frozenset({
+    "system", "popen", "startfile", "spawnl", "spawnle", "spawnlp",
+    "spawnlpe", "spawnv", "spawnve", "spawnvp", "spawnvpe",
+    "execv", "execve", "execvp", "execvpe",
 })
 FORBIDDEN_ENV = frozenset({
     "SINAN_DB_PATH", "SINAN_PUBLIC_REAL_DATA",
@@ -43,7 +53,7 @@ def inspect_source(module: str, source: str) -> tuple[set[str], list[str]]:
     violations: list[str] = []
 
     def external(name: str):
-        if (name.split(".")[0] in FORBIDDEN_EXTERNAL
+        if (name == "importlib" or name.split(".")[0] in FORBIDDEN_EXTERNAL
                 or any(name == x or name.startswith(x + ".")
                        for x in FORBIDDEN_EXACT_IMPORTS)):
             violations.append(f"{module}: dependencia externa nao permitida ({name})")
@@ -65,8 +75,20 @@ def inspect_source(module: str, source: str) -> tuple[set[str], list[str]]:
                     local(name[len("sinan_mcp."):])
                 else:
                     external(name)
+                if name == "os" and alias.asname:
+                    violations.append(f"{module}: alias de os nao permitido")
         elif isinstance(node, ast.ImportFrom):
             name = node.module or ""
+            if any(alias.name == "*" for alias in node.names):
+                violations.append(f"{module}: import estrela nao permitido")
+            if name == "importlib" and any(
+                alias.name != "resources" for alias in node.names
+            ):
+                violations.append(f"{module}: import dinamico via importlib nao permitido")
+            if name == "os" and any(
+                alias.name in FORBIDDEN_OS_OPERATIONS for alias in node.names
+            ):
+                violations.append(f"{module}: operacao de sistema nao permitida")
             if node.level >= 2:
                 violations.append(f"{module}: import relativo ascendente")
             elif node.level == 1:
@@ -86,6 +108,11 @@ def inspect_source(module: str, source: str) -> tuple[set[str], list[str]]:
                 alias.name in {"environ", "getenv"} for alias in node.names
             ):
                 violations.append(f"{module}: acesso direto a ambiente nao revisto")
+        elif isinstance(node, ast.Attribute):
+            if (isinstance(node.value, ast.Name)
+                    and node.value.id == "os"
+                    and node.attr == "environ"):
+                violations.append(f"{module}: variavel de ambiente privada usada")
         elif isinstance(node, ast.Subscript):
             target = node.value
             if (isinstance(target, ast.Attribute)
@@ -97,6 +124,11 @@ def inspect_source(module: str, source: str) -> tuple[set[str], list[str]]:
                 violations.append(f"{module}: variavel de ambiente privada usada")
         elif isinstance(node, ast.Call):
             f = node.func
+            if (isinstance(f, ast.Attribute)
+                    and isinstance(f.value, ast.Name)
+                    and f.value.id == "os"
+                    and f.attr in FORBIDDEN_OS_OPERATIONS):
+                violations.append(f"{module}: operacao de sistema nao permitida")
             if isinstance(f, ast.Name) and f.id in {
                 "__import__", "eval", "exec", "compile"
             }:
@@ -119,9 +151,12 @@ def inspect_source(module: str, source: str) -> tuple[set[str], list[str]]:
                 and f.value.attr == "environ"
                 and f.attr == "get"
             )
-            if (environment_getter and node.args
-                    and isinstance(node.args[0], ast.Constant)
-                    and node.args[0].value in FORBIDDEN_ENV):
+            if environment_getter and (
+                not node.args or not isinstance(node.args[0], ast.Constant)
+                or type(node.args[0].value) is not str
+                or node.args[0].value not in PUBLIC_ENV_ALLOWLIST
+                or node.keywords
+            ):
                 violations.append(f"{module}: variavel de ambiente privada usada")
     return imports, violations
 
