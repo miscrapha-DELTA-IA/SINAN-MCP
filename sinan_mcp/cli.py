@@ -328,6 +328,7 @@ def main() -> None:
         print("Campos candidatos:", report["campos_candidatos_extraidos"])
         print("Nomes ambíguos não normalizados:", report["nomes_ambiguos_nao_normalizados"])
         print("Repetições no PDF:", report["nomes_repetidos_no_pdf"])
+        print("Falsos positivos revisados excluídos:", report["falsos_positivos_revisados_excluidos"])
         print("Revisão humana:", "PENDENTE")
     elif args.comando == "comparar-esquema-privado":
         from .local_schema_review import (
