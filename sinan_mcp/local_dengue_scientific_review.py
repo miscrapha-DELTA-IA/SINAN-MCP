@@ -207,6 +207,7 @@ def validate_review_packet(doc: object) -> dict:
                 "resource_id": RESOURCE_ID,
             }
             or doc["checkpoints_qualidade_pendentes"] != len(CHECKPOINTS)
+            or type(doc["revisores_autenticados"]) is not int
             or doc["revisores_autenticados"] != 0
             or doc["parecer_epidemiologico"] != "PENDENTE"
             or doc["parecer_privacidade_institucional"] != "PENDENTE"
