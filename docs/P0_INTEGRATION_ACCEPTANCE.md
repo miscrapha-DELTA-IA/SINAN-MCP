@@ -33,7 +33,7 @@ Novo comando de diagnóstico administrativo, com metadados de catálogos version
 Para o índice atualmente curado:
 
 - 14 aliases de referência, não 14 conectores comprovados nem lista exaustiva nacional.
-- Esta pilha documental aumenta a contagem de dicionários específicos localizados de 3 para 12. A extensão ZIKA/2024 adiciona 2 recursos catalogados (JSON e Parquet), elevando as distribuições de 3 para 5. Isso **não** aumenta a contagem de dicionários específicos nem confirma correspondência com o arquivo de 2024. Dados individuais, indicadores, acesso real e autorização de publicação permanecem bloqueados.
+- A pilha documental evoluiu de 3 para **13 dicionários específicos históricos localizados**, com inclusão do PDF governamental de ZIKA. A extensão ZIKA/2024 adicionou 2 recursos catalogados (JSON e Parquet), elevando as distribuições anuais identificadas de 3 para 5. Isso **não comprova correspondência entre o PDF e o esquema da exportação de 2024**. Dados individuais, indicadores, acesso real e autorização de publicação permanecem bloqueados.
 - DENG/2024: 2 distribuições anuais identificadas no portal (CSV e JSON), **sem validação epidemiológica da exportação**.
 - CHIK/2024: 1 distribuição anual identificada (JSON), sem validação anual do esquema/indicadores.
 - ZIKA/2024: 2 distribuições anuais identificadas (JSON e Parquet) no portal. **Dicionário histórico específico Zika localizado, mas sem compatibilidade com o esquema ZIKA/2024 comprovada.** A página do Portal SINAN refere o dicionário de Notificação Individual, de natureza geral.
