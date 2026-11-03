@@ -100,3 +100,39 @@ Exemplo Windows PowerShell 5.1 (branch do PR #10 e arquivos já existentes em `d
     py -3.11 -m sinan_mcp diagnosticar-checklist-roadmap --arquivo .\data\roadmap-DENG-2024-com-evidencia.json
 
 **Não** concluir automaticamente que um gate está aprovado: um estado com evidência local é uma pendência organizada. A revisão de esquemas só contou nomes, ainda sem fonte autenticada, interpretação de UF, confirmação da nomenclatura CLINC_CHIK/CLINIC_CHIK, tipos, domínio CLASSI_FIN e parecer epidemiológico independente.
+
+## Próxima frente: evidência local de fonte e versão DENG/2024
+
+O diagnóstico inicial de DENG/2024 tinha **7/7 gates sem evidência**. Após vincular o parecer privado de nomes do PDF/CSV, passou a **6/7 gates sem evidência e 1 evidência local NÃO VALIDADA**. O próximo passo usa o **mesmo ZIP já baixado**, sem novos downloads, e NÃO lê ou extrai registros clínicos.
+
+Em 03/11/2026, o [recurso público Dengue – 2024, CSV](https://dadosabertos.saude.gov.br/dataset/arboviroses-dengue/resource/4cf2f7b8-9920-41b5-817a-1ffc13e0690c) indicava última atualização **20/10/2026 10:04 (UTC-03:00)** e metadados atualizados na mesma data, com estado de recurso **active**. O [catálogo Sinan/Dengue](https://dadosabertos.saude.gov.br/dataset/arboviroses-dengue) afirma frequência de atualização semanal e possíveis divergências entre bases e tabulações CGARB, além de usar congelamentos específicos em séries históricas. Estes detalhes são **observações de catálogo, não garantia de que o ZIP local seja a cópia de 20/10/2026 nem que seu conteúdo esteja definitivo**. A integridade SHA-256 local não substitui checksum assinado/publicado pela autoridade nem atestação institucional.
+
+**Dois comandos administrativos adicionados ao PR #10:**
+
+1. `preparar-dossie-fonte-dengue` inspeciona localmente nome, ZIP diretório central, restrições de segurança e SHA-256 dos bytes, compara com o hash já salvo no parecer documental DENG/2024. Só cria um novo JSON privado com metadados, URLs do catálogo curado e indicadores de *origem não autenticada*, *data de corte não verificada*, *consolidação desconhecida*, *não autorizado*.
+2. `vincular-fonte-dengue-roadmap` confere que o checklist existente possui o SHA do mesmo parecer de esquema, e que o novo dossiê corresponde ao seu ZIP/PDF. Cria **outro** checklist sem sobrescrever o anterior, marcando `fonte_agravo_ano` apenas como `EVIDENCIA_LOCAL_NAO_VALIDADA`.
+
+Exemplo PowerShell 5.1, com o projeto na branch correta e testes passando:
+
+```powershell
+cd "$env:USERPROFILE\Downloads\SINAN-MCP-Auditoria"
+py -3.11 -m pytest -q tests/test_local_annual_source_evidence.py
+
+py -3.11 -m sinan_mcp preparar-dossie-fonte-dengue `
+  --zip ".\data\DENGBR24.csv.zip" `
+  --parecer-esquema ".\data\parecer-pendente-dengue-crosswalk-2024.json" `
+  --saida ".\data\dossie-fonte-DENG-2024-local.json"
+
+py -3.11 -m sinan_mcp vincular-fonte-dengue-roadmap `
+  --checklist ".\data\roadmap-DENG-2024-com-evidencia.json" `
+  --parecer-esquema ".\data\parecer-pendente-dengue-crosswalk-2024.json" `
+  --dossie-fonte ".\data\dossie-fonte-DENG-2024-local.json" `
+  --saida ".\data\roadmap-DENG-2024-com-fonte-local.json"
+
+py -3.11 -m sinan_mcp diagnosticar-checklist-roadmap `
+  --arquivo ".\data\roadmap-DENG-2024-com-fonte-local.json"
+```
+
+Resultado esperado: **5 gates ainda sem evidência, 2 com evidência local NÃO VALIDADA, zero pareceres externos autenticados e status BLOQUEADO_PARA_USO_REAL_E_PUBLICACAO.** Não divulgar arquivos privados nem publicar números epidemiológicos. Não confundir **2 evidências registradas** com **2 frentes homologadas**.
+
+Ainda faltam para esta frente a comprovação de origem oficial exata do ZIP (idealmente checksum oficial ou trilha de download validada), o estado de consolidação, a data de corte, a edição aplicável do dicionário e a análise científica independente. O projeto não contém uma chave capaz de transformar esses estados em `APROVADO` automaticamente.
