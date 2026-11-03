@@ -88,3 +88,8 @@ O relatório privado inclui apenas nomes de campos previamente transcritos (meta
 
 `local_pdf_dictionary_candidate.py` é uma CLI administrativa que aceita somente o PDF de nome esperado para a referência documental curada DENG/CHIK, confere cabeçalho e SHA-256 local, limita tamanho/páginas/tokens e exige três campos âncora antes de criar novo contrato de páginas. Usa a dependência **opcional** PyMuPDF no computador do operador; não baixa PDFs, não acessa registros, não consulta o MCP e não confere a integridade binária por assinatura governamental. O candidato fica privado, é não revisado e jamais serve de aprovação. O layout de outros PDFs não é suportado, mesmo que outro arquivo seja renomeado para imitar o nome esperado.
 
+
+
+## Confronto privado de PDF Dengue de 2024 e antigo PDF 2015
+
+`local_dengue_dictionary_crosswalk.py` é exclusivamente administrativo, sem ligação com o MCP público. O perfil PDF de 22 páginas utiliza hash **local observado no arquivo compartilhado pelo pesquisador**, para recusar edições não revisadas. Esta verificação NÃO autentica a origem governamental nem confirma que o dicionário é aplicável ao ZIP de 2024. O ZIP é inspecionado pelo validador existente e a comparação lê somente a primeira linha CSV limitada a 128 KiB. Nomes fora dos dicionários não são ecoados e valores de notificações não são lidos. O relatório JSON exclusivo tem flags de validação e divulgação negativas; o código não aprova a fonte, a ciência ou a privacidade.
