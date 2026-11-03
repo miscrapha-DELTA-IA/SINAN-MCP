@@ -55,6 +55,10 @@ def test_checksum_only_proves_local_integrity(tmp_path):
 
 @pytest.mark.parametrize("change", [
     lambda x: x.update(agravo="UNKNOWN"),
+    lambda x: x.update(agravo=[]),
+    lambda x: x.update(tipo_ano=[]),
+    lambda x: x.update(metodo={}),
+    lambda x: x.update(situacao_declarada=[]),
     lambda x: x.update(ano_arquivo=True),
     lambda x: x.update(tipo_ano="ano_indeterminado"),
     lambda x: x.update(metodo="http-arbitrary"),
