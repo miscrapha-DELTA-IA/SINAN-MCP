@@ -83,6 +83,24 @@ def test_zika_identity_cli_is_metadata_only_and_no_private_db(tmp_path):
     assert not (tmp_path / "sinan.sqlite3").exists()
 
 
+def test_crosswalk_acknowledges_portal_uuid_substep_but_retains_ten_gates():
+    from sinan_mcp.documentary_crosswalk_2024 import planejar_confronto_documental_2024
+    zika = planejar_confronto_documental_2024("ZIKA")
+    sifa = planejar_confronto_documental_2024("SIFA")
+    assert zika["identidade_publica_uuid_formato_documentada"] is True
+    assert zika["recursos_cotejados_com_snapshot_portal"] == 2
+    assert zika["data_curadoria_identidade_portal"] == "2026-11-03"
+    assert sifa["identidade_publica_uuid_formato_documentada"] is False
+    assert sifa["recursos_cotejados_com_snapshot_portal"] == 0
+    for plan in (zika, sifa):
+        assert plan["total_topicos_pendentes"] == 10
+        assert all(item["status"] == "PENDENTE_DE_EVIDENCIA_E_REVISAO_HUMANA"
+                   for item in plan["topicos_pendentes"])
+        assert plan["metadados_site_reconsultados_na_execucao"] is False
+        assert plan["arquivos_anuais_autenticados"] == 0
+        assert plan["autorizacao_publicacao"] is False
+
+
 def test_multidisease_diagnostic_and_sifa_official_counts_unaffected():
     from sinan_mcp.multiagravo_readiness import diagnosticar_cobertura_multiagravo
     from sinan_mcp.official_annual_resources import consultar_recursos_oficiais_ano
