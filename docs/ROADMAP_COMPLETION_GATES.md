@@ -136,3 +136,25 @@ py -3.11 -m sinan_mcp diagnosticar-checklist-roadmap `
 Resultado esperado: **5 gates ainda sem evidência, 2 com evidência local NÃO VALIDADA, zero pareceres externos autenticados e status BLOQUEADO_PARA_USO_REAL_E_PUBLICACAO.** Não divulgar arquivos privados nem publicar números epidemiológicos. Não confundir **2 evidências registradas** com **2 frentes homologadas**.
 
 Ainda faltam para esta frente a comprovação de origem oficial exata do ZIP (idealmente checksum oficial ou trilha de download validada), o estado de consolidação, a data de corte, a edição aplicável do dicionário e a análise científica independente. O projeto não contém uma chave capaz de transformar esses estados em `APROVADO` automaticamente.
+
+## P2 — Plano de qualidade e coorte, sem leitura de microdados (PR #11)
+
+A CLI administrativa `preparar-plano-qualidade-dengue` cria um **protocolo privado NÃO VALIDADO** para DENG/2024 usando somente os hashes do parecer de esquema e do dossiê da fonte já registrados no checklist. **Não acessa o ZIP, CSV, banco de dados nem qualquer registro individual**. A fase é de planejamento; não representa auditoria clínica ou homologação.
+
+**Nove itens para revisão independente, todos PENDENTES:** escopo e unidade observacional (notificação ≠ pessoa ≠ caso); linhas de origem versus importadas; completude e valores ignorados; domínios clínicos, especialmente `CLASSI_FIN`, `CLINC_CHIK`/`CLINIC_CHIK`, `UF`; consistência de datas e ano de arquivo; residência versus notificação; unicidade de notificações e falsa duplicação de tuplas; reconciliação com TabNet na mesma data de corte/definição; risco de divulgação da própria auditoria.
+
+Exemplo Windows PowerShell 5.1, com branch de PR #11 e dossiês privados já criados:
+
+```powershell
+py -3.11 -m pytest -q tests/test_local_dengue_quality_protocol.py
+
+py -3.11 -m sinan_mcp preparar-plano-qualidade-dengue `
+  --checklist ".\data\roadmap-DENG-2024-com-fonte-local.json" `
+  --parecer-esquema ".\data\parecer-pendente-dengue-crosswalk-2024.json" `
+  --dossie-fonte ".\data\dossie-fonte-DENG-2024-local.json" `
+  --saida ".\data\plano-qualidade-DENG-2024-privado.json"
+```
+
+Saída: 9 verificações pendentes, **5 frentes roadmap ainda sem evidência, 2 evidências locais NÃO validadas**, nenhuma análise real e nenhuma autorização. O comando não altera o checklist anterior e não possui botão para promover `qualidade_coorte`. Para produzir uma evidência verdadeira de qualidade serão necessários autorização para auditoria local dos valores, protocolo científico por agravo/ano, regras de supressão dos resultados privados e comparação independente, sem disponibilizar microdados via MCP ou GitHub.
+
+**Diferença para o comando existente `auditar-qualidade`:** este último atua sobre projeção SQLite local já importada e pode produzir métricas sensíveis; a projeção omite ou normaliza valores de origem, de modo que seu relatório não comprova completude/validade de todos os campos brutos nem define pessoas/casos únicos. O plano do PR #11 serve para impedir que tal relatório seja interpretado como prova isolada de prontidão.

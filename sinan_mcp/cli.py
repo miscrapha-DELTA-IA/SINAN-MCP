@@ -157,6 +157,14 @@ def main() -> None:
     annual_attach.add_argument("--parecer-esquema", required=True, type=Path)
     annual_attach.add_argument("--dossie-fonte", required=True, type=Path)
     annual_attach.add_argument("--saida", required=True, type=Path)
+    quality_plan = cmd.add_parser(
+        "preparar-plano-qualidade-dengue",
+        help="Prepara plano privado de auditoria DENG/2024 SEM examinar pacientes",
+    )
+    quality_plan.add_argument("--checklist", required=True, type=Path)
+    quality_plan.add_argument("--parecer-esquema", required=True, type=Path)
+    quality_plan.add_argument("--dossie-fonte", required=True, type=Path)
+    quality_plan.add_argument("--saida", required=True, type=Path)
     readiness_check = cmd.add_parser(
         "diagnosticar-checklist-roadmap",
         help="Mostrar pendencias declaradas, SEM autenticar ou autorizar publicacao",
@@ -421,6 +429,19 @@ def main() -> None:
         print("Frentes com evidencia local nao validada:",
               result["n_frentes_com_evidencia_local_nao_validada"])
         print("Status:", result["status"])
+    elif args.comando == "preparar-plano-qualidade-dengue":
+        from .local_dengue_quality_protocol import preparar_plano_qualidade_dengue_local
+        try:
+            result = preparar_plano_qualidade_dengue_local(
+                args.checklist, args.parecer_esquema, args.dossie_fonte, args.saida,
+            )
+        except (ValueError, OSError, UnicodeError):
+            parser.exit(2, "PLANO NAO GERADO: confira checklist, hashes e destino local.\n")
+        print("PLANO PRIVADO DE QUALIDADE GERADO; NENHUM DADO CLINICO LIDO.")
+        print("Verificacoes pendentes:", result["checkpoints_pendentes"])
+        print("Frentes roadmap ainda pendentes:", result["frentes_roadmap_ainda_pendentes"])
+        print("Qualidade/coorte validada:", "NAO")
+        print("Publicacao autorizada:", "NAO")
     elif args.comando == "diagnosticar-checklist-roadmap":
         from .roadmap_readiness import diagnosticar_checklist_local
         try:
