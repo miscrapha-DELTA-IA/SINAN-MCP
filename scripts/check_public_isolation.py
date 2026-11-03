@@ -82,6 +82,19 @@ def inspect_source(module: str, source: str) -> tuple[set[str], list[str]]:
                 local(name[len("sinan_mcp."):])
             else:
                 external(name)
+            if name == "os" and any(
+                alias.name in {"environ", "getenv"} for alias in node.names
+            ):
+                violations.append(f"{module}: acesso direto a ambiente nao revisto")
+        elif isinstance(node, ast.Subscript):
+            target = node.value
+            if (isinstance(target, ast.Attribute)
+                    and isinstance(target.value, ast.Name)
+                    and target.value.id == "os"
+                    and target.attr == "environ"
+                    and isinstance(node.slice, ast.Constant)
+                    and node.slice.value in FORBIDDEN_ENV):
+                violations.append(f"{module}: variavel de ambiente privada usada")
         elif isinstance(node, ast.Call):
             f = node.func
             if isinstance(f, ast.Name) and f.id in {
@@ -93,11 +106,20 @@ def inspect_source(module: str, source: str) -> tuple[set[str], list[str]]:
                     and isinstance(f.value, ast.Name)
                     and f.value.id == "importlib"):
                 violations.append(f"{module}: importlib.import_module proibido")
-            if (isinstance(f, ast.Attribute)
-                    and isinstance(f.value, ast.Name)
-                    and f.value.id == "os"
-                    and f.attr == "getenv"
-                    and node.args
+            environment_getter = (
+                isinstance(f, ast.Attribute)
+                and isinstance(f.value, ast.Name)
+                and f.value.id == "os"
+                and f.attr == "getenv"
+            ) or (
+                isinstance(f, ast.Attribute)
+                and isinstance(f.value, ast.Attribute)
+                and isinstance(f.value.value, ast.Name)
+                and f.value.value.id == "os"
+                and f.value.attr == "environ"
+                and f.attr == "get"
+            )
+            if (environment_getter and node.args
                     and isinstance(node.args[0], ast.Constant)
                     and node.args[0].value in FORBIDDEN_ENV):
                 violations.append(f"{module}: variavel de ambiente privada usada")
