@@ -127,6 +127,12 @@ def main() -> None:
     schema_audit.add_argument("--pdf", required=True, type=Path)
     schema_audit.add_argument("--contrato", required=True, type=Path)
     schema_audit.add_argument("--parecer-pendente", required=True, type=Path)
+    multi_year = cmd.add_parser(
+        "diagnosticar-cobertura-multiagravo",
+        help="Mapa documental por agravo/ano SEM abrir dados reais",
+    )
+    multi_year.add_argument("--ano", type=int, required=True)
+    multi_year.add_argument("--agravo", help="Alias interno, opcional, ex.: DENG")
     readiness_template = cmd.add_parser(
         "preparar-checklist-roadmap",
         help="Criar checklist privado multiagravo/ano, todos os gates PENDENTES",
@@ -396,6 +402,24 @@ def main() -> None:
             parser.exit(2, "MODELO NÃO CRIADO — verifique a referência, o PDF e o destino local.\n")
         print("CANDIDATO LOCAL NÃO REVISADO. Não enviar o arquivo ao GitHub.")
         print("Campos de exemplo:", report["campos_exemplo_documentados"])
+    elif args.comando == "diagnosticar-cobertura-multiagravo":
+        from .multiagravo_readiness import diagnosticar_cobertura_multiagravo
+        try:
+            result = diagnosticar_cobertura_multiagravo(args.ano, args.agravo)
+        except (ValueError, OSError):
+            parser.exit(2, "COBERTURA NAO DIAGNOSTICADA: confira agravo e ano.\n")
+        print("COBERTURA DOCUMENTAL MULTIAGRAVO, NAO APROVACAO CLINICA.")
+        print("Ano do arquivo:", result["ano_do_arquivo"])
+        print("Agravos no indice consultados:", result["agravos_referenciados"])
+        print("Agravos com documentacao localizada:", result["agravos_com_documentacao_localizada"])
+        print("Distribuicoes anuais catalogadas:", result["distribuicoes_catalogadas"])
+        for row in result["registros"]:
+            print(row["agravo"], "documento:",
+                  "SIM" if row["documento_oficial_localizado"] else "NAO",
+                  "distribuicoes:", row["distribuicoes_anuais_catalogadas"],
+                  "indicador homologado: NAO")
+        print("Acesso real e publicacao autorizados: NAO")
+        print("Status:", result["status"])
     elif args.comando == "preparar-checklist-roadmap":
         from .roadmap_readiness import preparar_checklist_local
         try:
