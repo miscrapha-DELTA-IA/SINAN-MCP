@@ -37,6 +37,11 @@ def test_real_public_import_graph_stays_in_reviewed_metadata_allowlist():
      "import dinamico proibido"),
     ("import os\nos.getenv('SINAN_DB_PATH')\n",
      "variavel de ambiente privada"),
+    ("import os\nos.environ.get('SINAN_PUBLIC_REAL_DATA')\n",
+     "variavel de ambiente privada"),
+    ("import os\nx=os.environ['SINAN_DB_PATH']\n",
+     "variavel de ambiente privada"),
+    ("from os import getenv\n", "acesso direto a ambiente nao revisto"),
     ("exec('from sinan_mcp.core import connect')\n",
      "execucao ou import dinamico"),
 ])
