@@ -166,3 +166,8 @@ As páginas do Portal de Dados Abertos do SUS possibilitaram registrar URLs e ID
 
 Criada a CLI `preparar-modelo-esquema` para gerar contrato PRIVADO com campos DBF documentais parcialmente transcritos de PDF local, e `comparar-esquema-privado` para confrontá-lo com o cabeçalho de um ZIP CSV ou com amostra limitada de chaves JSON, gerando pacote de dez pendências para revisão. Nenhum valor clínico é publicado. A edição do dicionário não é presumida válida para 2024; contratos de exemplo e cotejo de cabeçalho não validam casos, códigos ou dados reais. O processamento JSON usa ijson opcional, em ambiente local. Ver [protocolo privado](LOCAL_DICTIONARY_SCHEMA_AUDIT.md).
 
+
+## Extração de candidatos DBF do PDF SINAN Online
+
+O primeiro confronto privado DENG/2024 mostrou 121 campos CSV, dos quais 3 estavam no contrato de exemplo e 118 estavam fora da transcrição. Não se inferiu que fossem 118 erros. Foi preparada a CLI `rascunhar-campos-dbf-pdf` para extrair nomes candidatos e páginas de um único PDF de 2015 sob perfil controlado e sempre com estado não revisado. A referência de dicionário mais recente do catálogo do Ministério da Saúde (atualizada em 2025) também deve ser cotejada antes de associar ao ano 2024. Consulte [procedimento de candidatos PDF](PDF_DBF_CANDIDATES.md).
+
