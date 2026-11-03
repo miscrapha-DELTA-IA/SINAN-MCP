@@ -34,7 +34,34 @@ nega redirecionamentos, exige HTTPS e valida o ID exato do conjunto,
 o título, a unicidade, o formato PDF e o UUID do recurso.
 
 Se o servidor CKAN estiver inacessível, o comando encerra com
-**erro de descoberta**, sem supor um identificador. O usuário pode
+**erro de descoberta**, sem supor um identificador. A saída agora informa
+uma **categoria de causa**, nunca texto bruto da resposta do servidor:
+`DNS_NAO_RESOLVE`, `TIMEOUT`, `TLS_CERTIFICADO_OU_CONEXAO`,
+`HTTP_403`, `HTTP_404`, `HTTP_429`, `REDIRECIONAMENTO_HTTP_BLOQUEADO`,
+`RESPOSTA_NAO_JSON`, `RECURSO_AUSENTE_OU_AMBIGUO`,
+`PACOTE_CKAN_DIVERGENTE` ou outra categoria fechada.
+
+Isso é uma distinção essencial: falha HTTP/DNS/TLS indica impedimento de
+consulta, **não ausência do dicionário**. Já uma resposta CKAN estruturada
+sem recurso correspondente pode indicar mudança do catálogo, nome distinto
+ou identificador de conjunto divergente. O estado anterior de dicionário
+específico Zika **listado, PDF ainda não auditado** permanece inalterado.
+
+Para comprovação local **sem usar métodos de contorno ou contatar o
+servidor com frequência**, se a categoria indicar DNS ou rede, conferir
+os seguintes comandos nativos no Windows:
+
+```powershell
+Resolve-DnsName ckan-dadosabertos.saude.gov.br -ErrorAction SilentlyContinue |
+    Select-Object Name, Type, IPAddress
+Test-NetConnection ckan-dadosabertos.saude.gov.br -Port 443 -InformationLevel Quiet
+```
+
+A confirmação de DNS/porta **não** implica resposta válida do endpoint
+CKAN, e `Test-NetConnection` pode falhar por configuração local,
+proxy, firewall ou serviço indisponível. Não desativar verificação TLS,
+não configurar proxies desconhecidos e não recorrer a scraping de
+terceiros como prova oficial. O usuário pode
 consultar diretamente a
 [página do conjunto oficial](https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus)
 e usar a modalidade documental do DATASUS. **Não execute scripts de
