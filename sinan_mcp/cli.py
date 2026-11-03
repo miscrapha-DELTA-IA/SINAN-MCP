@@ -64,6 +64,11 @@ def main() -> None:
     )
     sourceproof.add_argument("manifesto", type=Path)
     sourceproof.add_argument("arquivo", type=Path, help="Arquivo de dados local; conteúdo nunca é enviado")
+    lineage = cmd.add_parser(
+        "verificar-linhagem", help="Conferir SHA do CSV local também contra snapshot SQLite"
+    )
+    lineage.add_argument("manifesto", type=Path)
+    lineage.add_argument("arquivo", type=Path)
     quality = cmd.add_parser(
         "auditar-qualidade", help="Relatório privado de qualidade da projeção já importada"
     )
@@ -195,6 +200,15 @@ def main() -> None:
             report = verify_local_file(args.manifesto, args.arquivo)
         except (OSError, ValueError) as exc:
             parser.exit(2, "PROVENIÊNCIA NÃO VERIFICADA — " + str(exc) + "\n")
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+    elif args.comando == "verificar-linhagem":
+        import json
+        from .provenance import verify_csv_import_lineage
+        try:
+            report = verify_csv_import_lineage(args.manifesto, args.arquivo, args.db)
+        except (OSError, ValueError) as exc:
+            parser.exit(2, "LINHAGEM NÃO VERIFICADA — " + str(exc) + "\n")
+        print("SOMENTE INTEGRIDADE LOCAL; ORIGEM E PUBLICAÇÃO NÃO CERTIFICADAS.")
         print(json.dumps(report, ensure_ascii=False, indent=2))
     elif args.comando == "auditar-qualidade":
         import json
