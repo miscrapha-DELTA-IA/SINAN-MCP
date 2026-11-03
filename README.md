@@ -47,6 +47,8 @@ Consulte [Registro de recursos anuais oficiais e limitações](docs/OFFICIAL_ANN
 
 O índice de evidências documentais foi iniciado com **TUBE/2024**, **DENG/2024** e **CHIK/2024**, sendo posteriormente ampliado para 12 agravos com dicionário histórico específico (nenhum com aplicabilidade anual comprovada). Consulte: [registro de fontes por ano e limitações](docs/OFFICIAL_YEAR_EVIDENCE_REGISTRY.md).
 
+Para ZIKA e SIFA, o [diagnóstico transversal](docs/SHARED_NOTIFICATION_DOCUMENTATION.md) diferencia **o vínculo direto do PDF comum da Notificação Individual na página de Zika** da **hipótese genérica para sífilis adquirida**. Comando local: `py -3.11 -m sinan_mcp diagnosticar-documentacao-transversal --ano 2024`. Nenhuma referência compartilhada incrementa a contagem de dicionários específicos ou autoriza uso real.
+
 Os documentos correspondentes são hospedados no Portal SINAN, mas suas edições identificadas são de 2020 (NET 5.0, tuberculose, conforme nome do PDF) e 2014–2015 (ONLINE 3.0, dengue/chikungunya). **Não há confirmação de que sejam os layouts exatos dos arquivos de 2024.** O índice registra links documentais localizados, não uma base anual validada.
 
 Novas tools somente de metadados: `listar_evidencias_documentais` e `consultar_evidencia_agravo_ano`. O planejador multiagravo inclui a evidência anual apenas quando o agravo e ano estão identificados. Anos não verificados não herdam dicionários de outros anos. Monitoramento administrativo `monitorar-documento-ano` consulta apenas HEAD em URL curada (sem baixar documento ou dados) e não valida a edição anual. Ferramenta administrativa opcional `confrontar-evidencia-ano` calcula hashes de arquivos fornecidos localmente, mas não autentica origem ou autoriza publicação.

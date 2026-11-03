@@ -133,6 +133,12 @@ def main() -> None:
     )
     multi_year.add_argument("--ano", type=int, required=True)
     multi_year.add_argument("--agravo", help="Alias interno, opcional, ex.: DENG")
+    shared_docs = cmd.add_parser(
+        "diagnosticar-documentacao-transversal",
+        help="Referencias gerais de notificacao (ZIKA/SIFA) sem homologacao 2024",
+    )
+    shared_docs.add_argument("--ano", type=int, required=True)
+    shared_docs.add_argument("--agravo", help="Alias interno opcional, ex.: ZIKA")
     readiness_template = cmd.add_parser(
         "preparar-checklist-roadmap",
         help="Criar checklist privado multiagravo/ano, todos os gates PENDENTES",
@@ -420,6 +426,24 @@ def main() -> None:
                   "indicador homologado: NAO")
         print("Acesso real e publicacao autorizados: NAO")
         print("Status:", result["status"])
+    elif args.comando == "diagnosticar-documentacao-transversal":
+        from .shared_notification_documents import diagnosticar_documentacao_transversal
+        try:
+            report = diagnosticar_documentacao_transversal(args.ano, args.agravo)
+        except ValueError:
+            parser.exit(2, "DOCUMENTACAO TRANSVERSAL NAO DIAGNOSTICADA: confira agravo e ano.\n")
+        print("DOCUMENTACAO TRANSVERSAL, NAO DICIONARIO ESPECIFICO NEM VALIDACAO CLINICA.")
+        print("Ano do arquivo pretendido:", report["ano_do_arquivo_pretendido"])
+        print("Referencias transversais candidatas:", report["referencias_transversais_candidatas"])
+        print("Vinculos diretos na pagina do agravo:", report["vinculos_diretos_na_pagina_do_agravo"])
+        for row in report["registros"]:
+            print(row["agravo"], "referencia transversal:",
+                  "SIM" if row["referencia_transversal_candidata"] else "NAO",
+                  "vinculo direto:",
+                  "SIM" if row["vinculo_direto_na_pagina_do_agravo"] else "NAO",
+                  "compatibilidade 2024: NAO")
+        print("Acesso real e publicacao autorizados: NAO")
+        print("Status:", report["status"])
     elif args.comando == "preparar-checklist-roadmap":
         from .roadmap_readiness import preparar_checklist_local
         try:
