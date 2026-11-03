@@ -167,7 +167,7 @@ def main() -> None:
     quality_plan.add_argument("--saida", required=True, type=Path)
     synthetic_qa = cmd.add_parser(
         "auditar-csv-sintetico-dengue",
-        help="SIMULACAO 100% ARTIFICIAL: nao aceita --zip, --csv ou --db",
+        help="SIMULACAO 100% ARTIFICIAL: nao abre nenhum CSV, ZIP ou banco",
     )
     synthetic_qa.add_argument("--plano", required=True, type=Path)
     synthetic_qa.add_argument("--saida", required=True, type=Path)
