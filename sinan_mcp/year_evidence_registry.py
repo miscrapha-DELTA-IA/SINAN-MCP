@@ -26,6 +26,16 @@ REFERENCE_CODES = frozenset(x[0] for x in CONDITIONS)
 PORTAL = "portalsinan.saude.gov.br"
 DATA_PORTAL = "www.gov.br"
 PDF_PREFIX = "/images/documentos/Agravos/"
+# Exception for exactly one independently checked Ministry documentary
+# resource. Never allow arbitrary S3 paths or other aliases via this rule.
+ZIKA_RESOURCE_PAGE = (
+    "https://dadosabertos.saude.gov.br/dataset/"
+    "arboviroses-zika-virus/resource/58038262-c745-46ea-979b-8727eb08ec5c"
+)
+ZIKA_PDF_URL = (
+    "https://s3.sa-east-1.amazonaws.com/"
+    "ckan.saude.gov.br/SINAN/Zikavirus/dic_dados_zika.pdf"
+)
 # Exact historical directories with URL-encoded spaces on Portal SINAN.
 # Other percent escapes, nested paths and unreviewed names are rejected.
 ALLOWED_ENCODED_PDF_DIRECTORIES = frozenset({
@@ -151,8 +161,18 @@ def validate_registry(payload: object) -> dict:
             raise ValueError("Tipo de documento fora da allowlist")
         if doc["integridade_binaria_publicada_por_autoridade"] is not None:
             raise ValueError("Checksum oficial não verificado: não pode ser declarado")
-        _official_url(doc["pagina_oficial"], PORTAL, "/")
-        _official_url(doc["url_documento"], PORTAL, PDF_PREFIX)
+        # ZIKA was published in the government open-data S3 resource,
+        # not the separate historical Portal SINAN. Exact literals for
+        # both source URLs prevent broadening the documentary allowlist.
+        if code == "ZIKA":
+            if (year != 2024
+                    or doc["pagina_oficial"] != ZIKA_RESOURCE_PAGE
+                    or doc["url_documento"] != ZIKA_PDF_URL
+                    or doc["tipo"] != "pdf_dicionario"):
+                raise ValueError("Fonte governamental de Zika não corresponde ao recurso curado")
+        else:
+            _official_url(doc["pagina_oficial"], PORTAL, "/")
+            _official_url(doc["url_documento"], PORTAL, PDF_PREFIX)
         if not doc["url_documento"].endswith(".pdf"):
             raise ValueError("Documento oficial esperado deve ser PDF")
         data = entry["acesso_dados"]
