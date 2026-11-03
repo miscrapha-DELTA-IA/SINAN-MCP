@@ -55,6 +55,13 @@ EXPECTED = {
         "Consulta evidências documentais por agravo/ano; não autentica arquivos ou estatísticas.",
         ("agravo", "ano"),
     ),
+    "consultar_recursos_oficiais_ano": (
+        "Lista IDs oficiais de recursos por ano; não consulta registros nem valida layout.",
+        ("agravo", "ano"),
+    ),
+    "listar_recursos_oficiais_anuais": (
+        "Lista pares de agravo/ano no catálogo do MS; sem dados epidemiológicos.", (),
+    ),
     "descrever_campos": (
         "Explica variáveis do protótipo e a necessidade de validação científica.", (),
     ),
