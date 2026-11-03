@@ -18,11 +18,13 @@ from sinan_mcp.local_distribution_review import conferir_zip_recurso_local
 DENG_CSV_ID = "4cf2f7b8-9920-41b5-817a-1ffc13e0690c"
 DENG_JSON_ID = "28975ef7-da35-498e-b179-cfbde2150f90"
 CHIK_JSON_ID = "74c005e0-e1b8-4db0-997d-8c80b2d37f8a"
+ZIKA_JSON_ID = "264978ca-f795-4940-b5d3-ebc21e7d1c7c"
+ZIKA_PARQUET_ID = "41bfda2a-5826-4ef9-8913-497247e6c9ce"
 
 
 def test_official_resource_ids_and_unchanged_publishing_pages():
     result = resources.listar_recursos_oficiais_anuais()
-    assert result["quantidade_distribuicoes_identificadas"] == 3
+    assert result["quantidade_distribuicoes_identificadas"] == 5
     assert result["arquivos_binarios_verificados"] == 0
     assert result["anos_com_dicionario_aplicavel_verificado"] == 0
     dengue = resources.consultar_recursos_oficiais_ano("DENG", 2024)
@@ -34,7 +36,16 @@ def test_official_resource_ids_and_unchanged_publishing_pages():
     chik = resources.consultar_recursos_oficiais_ano("CHIK", 2024)
     assert chik["quantidade_recursos_catalogados"] == 1
     assert chik["recursos"][0]["resource_id"] == CHIK_JSON_ID
-    for row in dengue["recursos"] + chik["recursos"]:
+    zika = resources.consultar_recursos_oficiais_ano("ZIKA", 2024)
+    assert zika["estado"] == "recurso_anual_identificado_no_catalogo"
+    assert zika["quantidade_recursos_catalogados"] == 2
+    assert zika["documento_de_dicionario_localizado"] is False
+    assert not zika["compatibilidade_dicionario_ano_verificada"]
+    assert {x["resource_id"] for x in zika["recursos"]} == {
+        ZIKA_JSON_ID, ZIKA_PARQUET_ID,
+    }
+    assert {x["formato"] for x in zika["recursos"]} == {"JSON", "PARQUET"}
+    for row in dengue["recursos"] + chik["recursos"] + zika["recursos"]:
         assert row["pagina_recurso_oficial"].startswith(
             "https://dadosabertos.saude.gov.br/dataset/")
         assert row["url_distribuicao_publicada"].startswith(
@@ -90,6 +101,12 @@ def test_planner_keeps_document_vs_distribution_vs_data_validity_separate():
         distribution_format="PARQUET"),
     lambda x: x["records"][0].update(
         resource_id="not-a-uuid"),
+    lambda x: x["records"][-1].update(
+        link_documental_do_dicionario_identificado=True),
+    lambda x: x["records"][-1].update(
+        distribution_url="https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/SINAN/Zikavirus/json/%2e%2e/z.zip"),
+    lambda x: x["records"][-1].update(
+        distribution_format="CSV"),
     lambda x: x["records"][0].update(
         agravo_alias_interno="TUBE"),
     lambda x: x["records"][0].update(
@@ -215,3 +232,31 @@ def test_cli_metadata_read_does_not_create_private_db(tmp_path):
     assert obj["quantidade_recursos_catalogados"] == 2
     assert not obj["publicacao_autorizada"]
     assert not (tmp_path / "data").exists()
+
+
+def test_zika_only_metadata_and_no_2024_disease_specific_dictionary():
+    metadata = resources.consultar_recursos_oficiais_ano("ZIKA", 2024)
+    assert metadata["documento_de_dicionario_localizado"] is False
+    assert metadata["microdados_acessados"] is False
+    assert metadata["analise_epidemiologica_autorizada"] is False
+    assert metadata["publicacao_autorizada"] is False
+    assert metadata["quantidade_recursos_catalogados"] == 2
+    assert resources.consultar_recursos_oficiais_ano("ZIKA", 2023)[
+        "quantidade_recursos_catalogados"
+    ] == 0
+    assert resources.consultar_recursos_oficiais_ano("SIFA", 2024)[
+        "quantidade_recursos_catalogados"
+    ] == 0
+
+
+def test_parquet_zip_only_inspects_synthetic_central_directory(tmp_path):
+    path = _fixture_zip(tmp_path, resource_id=ZIKA_PARQUET_ID,
+                        payload=b"synthetic parquet placeholder, no health data")
+    audit = conferir_zip_recurso_local(ZIKA_PARQUET_ID, path)
+    assert audit["arquivo_zip_estrutura_compativel_com_nome_registrado"] is True
+    assert audit["formato_declarado"] == "PARQUET"
+    assert audit["conteudo_clinico_lido"] is False
+    assert audit["arquivos_extraidos"] == 0
+    assert audit["origem_dos_bytes_autenticada"] is False
+    assert audit["dicionario_aplicavel_validado"] is False
+    assert audit["publicacao_autorizada"] is False

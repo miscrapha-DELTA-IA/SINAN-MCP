@@ -1,6 +1,6 @@
 # Registro de recursos anuais no Portal de Dados Abertos do SUS
 
-## Estado do levantamento de 03/11/2026
+## Estado do levantamento de 03/11/2026 (expansão ZIKA sem validação anual)
 
 Esta camada complementa o catálogo de **documentos de dicionários** por
 agravo/ano e resolve uma etapa distinta: identificar o **recurso de distribuição
@@ -13,7 +13,17 @@ autenticado ou que um dicionário específico tenha sido validado.
 | DENG | 2024 | [DENGBR24.csv.zip](https://dadosabertos.saude.gov.br/dataset/arboviroses-dengue/resource/4cf2f7b8-9920-41b5-817a-1ffc13e0690c) — 4cf2f7b8-9920-41b5-817a-1ffc13e0690c | CSV compactado | NÃO |
 | DENG | 2024 | [DENGBR24.json.zip](https://dadosabertos.saude.gov.br/dataset/arboviroses-dengue/resource/28975ef7-da35-498e-b179-cfbde2150f90) — 28975ef7-da35-498e-b179-cfbde2150f90 | JSON compactado | NÃO |
 | CHIK | 2024 | [CHIKBR24.json.zip](https://dadosabertos.saude.gov.br/dataset/arboviroses-febre-de-chikungunya/resource/74c005e0-e1b8-4db0-997d-8c80b2d37f8a) — 74c005e0-e1b8-4db0-997d-8c80b2d37f8a | JSON compactado | NÃO |
+| ZIKA | 2024 | [ZIKABR24.json.zip](https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus/resource/264978ca-f795-4940-b5d3-ebc21e7d1c7c) — 264978ca-f795-4940-b5d3-ebc21e7d1c7c | JSON compactado | NÃO |
+| ZIKA | 2024 | [ZIKABR24.parquet.zip](https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus/resource/41bfda2a-5826-4ef9-8913-497247e6c9ce) — 41bfda2a-5826-4ef9-8913-497247e6c9ce | Parquet compactado | NÃO |
 | TUBE | 2024 | Referência anual exata ainda não identificada por fonte primária equivalente nesta rodada | — | NÃO |
+
+**Diferença importante:** ZIKA/2024 possui duas referências de distribuição
+no índice, mas **nenhum dicionário específico de Zika curado e validado**
+para esse arquivo. O Portal SINAN oferece o dicionário de Notificação
+Individual (comum a diversos agravos), que não equivale a um dicionário
+específico da estrutura de Zika. A documentação de SIFA também permanece
+sem dicionário específico curado. Esses casos não podem ser promovidos
+automaticamente a compatibilidade de esquema ou capacidade analítica.
 
 Atenção: **as URLs reais de distribuição estão no catálogo JSON**;
 o usuário deve conferir primeiro a página do recurso. Nenhum dado foi
@@ -23,6 +33,7 @@ autorização para publicar microdados ou seus agregados.
 As páginas oficiais dos conjuntos
 [Sinan/Dengue](https://dadosabertos.saude.gov.br/dataset/arboviroses-dengue)
 e [Sinan/Febre de Chikungunya](https://dadosabertos.saude.gov.br/dataset/arboviroses-febre-de-chikungunya)
+e [Sinan/Vírus Zika](https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus)
 declaram atualização periódica e alertam para possíveis diferenças
 frente à CGARB. O material informa que os arquivos históricos podem
 ser congelados em datas de corte próprias; uma atualização do portal
@@ -66,6 +77,7 @@ No clone atualizado para esta branch:
     py -3.11 -m sinan_mcp listar-distribuicoes-oficiais
     py -3.11 -m sinan_mcp consultar-distribuicao-ano --agravo DENG --ano 2024
     py -3.11 -m sinan_mcp consultar-distribuicao-ano --agravo TUBE --ano 2024
+    py -3.11 -m sinan_mcp consultar-distribuicao-ano --agravo ZIKA --ano 2024
     py -3.11 -m pytest -q tests/test_official_annual_resources.py
 
 A inspeção opcional não baixa dados e só pode ser feita em um ZIP já

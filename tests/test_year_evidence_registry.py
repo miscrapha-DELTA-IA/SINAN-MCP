@@ -252,7 +252,7 @@ def test_historical_pdf_evidence_does_not_validate_2024_or_unlisted_disease():
     result = diagnosticar_cobertura_multiagravo(2024)
     assert result["agravos_referenciados"] == 14
     assert result["agravos_com_documentacao_localizada"] == 12
-    assert result["distribuicoes_catalogadas"] == 3
+    assert result["distribuicoes_catalogadas"] == 5
     assert result["dados_clinicos_consultados"] is False
     for row in result["registros"]:
         assert row["indicador_real_homologado"] is False

@@ -37,7 +37,7 @@ Comece pelo [protocolo detalhado](docs/LOCAL_DICTIONARY_SCHEMA_AUDIT.md). Exempl
 
 ## Distribuições oficiais de 2024 identificadas no Portal de Dados Abertos
 
-Há um registro separado de recursos individuais catalogados pelo Ministério da Saúde: **DENG/2024 em CSV e JSON** e **CHIK/2024 em JSON**, cada um com a página oficial, UUID do recurso e nome do ZIP. Para TUBE/2024, o registro ainda não contém distribuição anual primariamente confirmada.
+Há um registro separado de recursos individuais catalogados pelo Ministério da Saúde: **DENG/2024 em CSV e JSON**, **CHIK/2024 em JSON** e **ZIKA/2024 em JSON e Parquet**, cada um com a página oficial, UUID do recurso e nome do ZIP. O ZIKA ainda não tem dicionário específico curado para 2024. Para TUBE/2024, o registro ainda não contém distribuição anual primariamente confirmada.
 
 As ferramentas MCP `consultar_recursos_oficiais_ano` e `listar_recursos_oficiais_anuais` oferecem **somente metadados**, sem transferir dados. O planejador distingue recurso anual registrado de dicionário efetivamente aplicável; essa compatibilidade permanece não comprovada. Há também comando administrativo `conferir-zip-distribuicao` que verifica estrutura de um ZIP local sem abrir os registros e sem autenticar sua origem.
 
@@ -45,7 +45,7 @@ Consulte [Registro de recursos anuais oficiais e limitações](docs/OFFICIAL_ANN
 
 ## Registro curado de fontes e dicionários por agravo/ano (sem dados reais)
 
-O índice de evidências documentais foi iniciado com **TUBE/2024**, **DENG/2024** e **CHIK/2024**. Consulte: [registro de fontes por ano e limitações](docs/OFFICIAL_YEAR_EVIDENCE_REGISTRY.md).
+O índice de evidências documentais foi iniciado com **TUBE/2024**, **DENG/2024** e **CHIK/2024**, sendo posteriormente ampliado para 12 agravos com dicionário histórico específico (nenhum com aplicabilidade anual comprovada). Consulte: [registro de fontes por ano e limitações](docs/OFFICIAL_YEAR_EVIDENCE_REGISTRY.md).
 
 Os documentos correspondentes são hospedados no Portal SINAN, mas suas edições identificadas são de 2020 (NET 5.0, tuberculose, conforme nome do PDF) e 2014–2015 (ONLINE 3.0, dengue/chikungunya). **Não há confirmação de que sejam os layouts exatos dos arquivos de 2024.** O índice registra links documentais localizados, não uma base anual validada.
 
@@ -284,7 +284,7 @@ Para verificar no próprio computador a diferença entre **referência de agravo
     py -3.11 -m sinan_mcp diagnosticar-cobertura-multiagravo --ano 2024
     py -3.11 -m sinan_mcp diagnosticar-cobertura-multiagravo --ano 2024 --agravo CHIK
 
-Na curadoria atual, o índice possui 14 agravos de referência, 3 distribuições catalogadas em 2024 (2 DENG, 1 CHIK), 3 agravos com documento relacionado ao ano (TUBE, DENG, CHIK) e **zero indicadores reais homologados**. A confirmação de layout, versão e coorte continua pendente por agravo/ano. O índice não substitui o catálogo nacional nem estabelece suporte operacional universal.
+Na curadoria desta branch, o índice possui 14 agravos de referência, 5 distribuições catalogadas em 2024 (2 DENG, 1 CHIK, 2 ZIKA), 12 agravos com dicionários históricos específicos localizados e **zero indicadores reais homologados**. A confirmação de layout, versão e coorte continua pendente por agravo/ano. O índice não substitui o catálogo nacional nem estabelece suporte operacional universal.
 
 Os novos testes e a verificação CI de fronteira pública podem ser executados com:
 
