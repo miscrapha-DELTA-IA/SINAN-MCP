@@ -205,3 +205,77 @@ def test_cli_local_gates(tmp_path):
     assert bad.returncode == 2
     assert "PROVENIÊNCIA NÃO VERIFICADA" in bad.stderr
     assert "Traceback" not in bad.stderr
+
+
+
+def fake_declared_tabnet(tmp_path, *, year_type="ano_arquivo", second=110):
+    obj = {
+        "schema_version": "sinan-official-tabulation-candidate-v1",
+        "stage": "UNAPPROVED_OFFICIAL_TABULATION",
+        "source": {
+            "url": "https://datasus.saude.gov.br/informacoes-de-saude-tabnet/",
+            "titulo_tabela": "TABELA INTEIRAMENTE INVENTADA PARA TESTE",
+            "extracao_utc": "2026-11-02T18:00:00Z",
+            "sha256_arquivo_origem": "f" * 64,
+            "filtros_tabulacao": "teste fake TUBE; ano 2024, uf PI, sexo",
+            "estado_consolidacao": "desconhecido",
+        },
+        "scope": {
+            "agravo_codigo_interno": "TUBE",
+            "agravo_nome": "Tuberculose",
+            "uf": "PI",
+            "ano_inicio": 2024, "ano_fim": 2024,
+            "tipo_ano": year_type,
+            "indicador": "registros_tabnet", "dimensao": "sexo",
+        },
+        "cells": [
+            {"categoria": "F", "registros": 110},
+            {"categoria": "M", "registros": second},
+        ],
+        "limitations": "TABELA ARTIFICIAL DE TESTE. NUNCA USAR PARA ESTATISTICAS REAIS.",
+    }
+    file = tmp_path / "tabnet-fake.json"
+    file.write_text(json.dumps(obj), encoding="utf-8")
+    return file
+
+
+def test_offline_reconciliation_equal_but_never_certified(tmp_path):
+    from sinan_mcp.reconciliation import reconcile_declared_table
+    db = fake_snapshot(tmp_path)
+    file = fake_declared_tabnet(tmp_path)
+    report = reconcile_declared_table(db, file)
+    assert report["categorias_iguais"] is True
+    assert report["contagens_iguais"] is True
+    assert report["numero_de_categorias_com_diferenca"] == 0
+    assert not report["arquivo_fonte_oficial_autenticado"]
+    assert not report["coorte_epidemiologica_validada"]
+    assert not report["publicacao_autorizada"]
+    assert '"registros"' not in json.dumps(report)
+    assert "FAKE0" not in json.dumps(report)
+
+
+def test_offline_reconciliation_detects_fake_mismatch_and_wrong_year(tmp_path):
+    from sinan_mcp.reconciliation import reconcile_declared_table
+    db = fake_snapshot(tmp_path)
+    file = fake_declared_tabnet(tmp_path, second=120)
+    report = reconcile_declared_table(db, file)
+    assert not report["contagens_iguais"]
+    assert report["numero_de_categorias_com_diferenca"] == 1
+    file = fake_declared_tabnet(tmp_path, year_type="ano_diagnostico")
+    with pytest.raises(ValueError, match="ano_arquivo"):
+        reconcile_declared_table(db, file)
+
+
+def test_offline_reconciliation_blocks_small_cells(tmp_path):
+    from sinan_mcp.reconciliation import reconcile_declared_table
+    db = fake_snapshot(tmp_path)
+    import sqlite3
+    # Mutate the disposable synthetic fixture only.
+    with sqlite3.connect(db) as con:
+        con.execute(
+            "DELETE FROM registros WHERE rowid IN "
+            "(SELECT rowid FROM registros WHERE sexo='M' LIMIT 95)"
+        )
+    file = fake_declared_tabnet(tmp_path)
+    with pytest.raises(ValueError, match="pequena"):
+        reconcile_declared_table(db, file)
