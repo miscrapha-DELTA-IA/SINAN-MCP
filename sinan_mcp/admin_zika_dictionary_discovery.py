@@ -68,6 +68,14 @@ def _download_pdf_url(value):
     """Return an exact allowed URL or None; never return a rejected input."""
     if not isinstance(value, str) or len(value) > 512:
         return None
+    # The Ministry resource page explicitly publishes this PDF in the
+    # Zikavirus root directory, not in the earlier assumed /pdf/ folder.
+    # Match the full literal URL instead of loosening the S3 allowlist.
+    if value == (
+        "https://s3.sa-east-1.amazonaws.com/"
+        "ckan.saude.gov.br/SINAN/Zikavirus/dic_dados_zika.pdf"
+    ):
+        return value
     try:
         url = urlsplit(value)
         if (
