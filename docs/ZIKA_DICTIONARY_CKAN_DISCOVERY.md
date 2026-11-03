@@ -90,3 +90,43 @@ por via oficial (páginas, versão, nome e definição dos campos),
 identificação do corte do arquivo de 2024, e só então eventual
 confronto privado autorizado de esquemas. Não marcar `SIM` em nenhum
 gate científico por sucesso dessa chamada CKAN.
+
+
+## Correção do DNS e novo acesso pelo HTML oficial (03/11/2026)
+
+O Windows confirmou `DNS_ERROR_RCODE_NAME_ERROR` para
+`ckan-dadosabertos.saude.gov.br`: esse host não deve continuar sendo
+considerado uma API pública obrigatória. O portal usa frontend Next.js;
+integrações independentes descrevem recursos em JSON dentro do HTML
+de `dadosabertos.saude.gov.br/dataset/...`, sem API CKAN clássica.
+
+**Novo comando preferencial:**
+
+```powershell
+py -3.11 -m sinan_mcp identificar-dicionario-zika-portal
+```
+
+O comando anterior `identificar-dicionario-zika-ckan` é mantido
+como **alias de compatibilidade**, mas também consulta a página HTML
+oficial, não o subdomínio que não resolve. A implementação usa uma única
+requisição HTTPS GET de até 3 MiB e 10 segundos, sem redirecionamentos,
+HTML de host/caminho fixos, sem execução de JavaScript e sem download
+de PDFs ou ZIPs.
+
+O parser aceita apenas referências vinculadas à lista de recursos que
+inclua também ao menos um UUID ZIKA/2024 já comprovado. O título do
+recurso deve ser exatamente "Dicionário de dados - Zika Vírus" (com
+normalização de acentos) e o UUID precisa seguir formato estrito. Somente
+uma URL S3 oficial cujo caminho passe pela allowlist pode ser exibida;
+mesmo assim o PDF não é baixado nem auditado.
+
+**Limitação:** caso o site gere os dados exclusivamente no navegador
+ou em um formato HTML não reconhecido, o comando informa
+`HTML_SEM_UUID_DOCUMENTAL_VERIFICAVEL`; isso **não** significa que o
+dicionário não exista. Use o catálogo oficial no navegador e o pacote
+`Docs_TAB_SINAN.zip` da modalidade Documentação, sem atribuir validade
+a dados reais nem inventar UUID. A existência de um item no portal
+continua diferente da auditoria do PDF ou da compatibilidade com 2024.
+
+Fonte técnica para a decisão arquitetural:
+[documentação de fonte oficial do projeto independente MCP CNES](https://github.com/kevyn-castelo/mcp-cnes/blob/main/docs/fontes.md).
