@@ -22,14 +22,15 @@ não para o arquivo de dados pretendido em determinado ano.
 | LTAN / 2024 | [Dicionário Leishmaniose tegumentar americana](https://portalsinan.saude.gov.br/images/documentos/Agravos/Leishmaniose%20Tegumentar%20Americana/DIC_DADOS_LTA_v5.pdf) | SINAN NET 5.0; julho/2010 | NÃO verificada |
 | ANIM / 2024 | [Dicionário Acidentes por animais peçonhentos](https://portalsinan.saude.gov.br/images/documentos/Agravos/AAP/DIC_DADOS_Animais_Pedonhentos_v5.pdf) | SINAN NET 5.0; julho/2010 | NÃO verificada |
 | COQU / 2024 | [Dicionário Coqueluche](https://portalsinan.saude.gov.br/images/documentos/Agravos/Coqueluche/DIC_DADOS_Coqueluche_v5.pdf) | SINAN NET 5.0; fevereiro/2012 | NÃO verificada |
+| ZIKA / 2024 | [Dicionário específico Zika — Sinan Net](https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus/resource/58038262-c745-46ea-979b-8727eb08ec5c) | PDF governamental com 8 páginas e 37 campos numerados; edição aplicável a 2024 não demonstrada | NÃO verificada |
 
-As páginas oficiais são https://portalsinan.saude.gov.br/tuberculose e
-https://portalsinan.saude.gov.br/dengue e
-https://portalsinan.saude.gov.br/chikungunya. Para os outros nove agravos com
-PDF específico localizado, os endereços oficiais estão incorporados à matriz
-versionada. Os demais dois aliases (ZIKA e SIFA) continuam SEM dicionário
-**específico** curado neste registro: a existência de ficha genérica no
-portal não deve ser contabilizada como dicionário específico de 2024.
+As páginas de fontes incluem o Portal SINAN e, para ZIKA, o
+[Portal de Dados Abertos do SUS](https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus).
+A matriz agora referencia **13 documentos específicos históricos de 14
+aliases de exemplo**. O único alias sem dicionário específico curado neste
+índice é SIFA. O PDF de Notificação Individual de 2018 é genérico
+e **não substitui** esse dicionário. Nenhum dos 13 documentos foi
+comprovado como esquema da exportação de 2024.
 O Ministério da Saúde explica
 a obtenção de dados por agravo e ano em:
 https://www.gov.br/saude/pt-br/acesso-a-informacao/sic/dados-em-transparencia-ativa/svsa/agravos-de-notificacoes/agravos-de-notificacoes .
@@ -37,7 +38,7 @@ https://www.gov.br/saude/pt-br/acesso-a-informacao/sic/dados-em-transparencia-at
 Essa orientação remete aos dicionários de Docs_TAB_SINAN.zip. Não foram
 confirmados nesta etapa o arquivo nacional de 2024, checksum publicado
 pela autoridade, status final, data de corte ou versão de dicionário
-vinculada aos arquivos anuais de qualquer dos 12 agravos com dicionário localizado. Os três recursos anuais já catalogados continuam sendo 2 de DENG e 1 de CHIK; nenhum recurso novo foi validado nesta revisão.
+vinculada aos arquivos anuais de qualquer dos 13 agravos com dicionário localizado. O índice anual contém cinco distribuições publicadas (DENG 2, CHIK 1, ZIKA 2), mas nenhuma teve layout ou situação de consolidação homologados.
 
 Uma evidência documental localizada não garante correção para determinado
 ano. O SINAN NET, SINAN ONLINE e outros sistemas podem empregar layouts
