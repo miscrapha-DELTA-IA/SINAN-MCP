@@ -145,3 +145,110 @@ def test_existing_public_diagnostics_remain_unchanged():
     assert cov["distribuicoes_catalogadas"] == 5
     assert cov["publicacao_automatica"] is False
     assert "admin_zika_portal_html" not in inspect.getsource(public_server)
+
+
+def test_known_nextjs_build_id_is_validated_without_extra_network():
+    import json
+    html = (
+        '<script id="__NEXT_DATA__" type="application/json">'
+        + json.dumps({"buildId": "HJKl1234_ABCD"})
+        + '</script>'
+    )
+    assert portal._extract_build_id(html) == "HJKl1234_ABCD"
+    with pytest.raises(ValueError):
+        portal._extract_build_id(
+            '<script type="application/json">{"buildId":"../evil"}</script>'
+        )
+
+
+def test_nextjs_hydration_returns_metadata_only(monkeypatch):
+    import json
+    build_id = "HJKl1234_ABCD"
+    html = (
+        '<script id="__NEXT_DATA__" type="application/json">'
+        + json.dumps({"buildId": build_id})
+        + '</script>'
+    )
+    page_props = {
+        "id": portal.PACKAGE_ID,
+        "name": portal.PACKAGE,
+        "resources": [
+            {"id": KNOWN_ID, "name": "Zika Vírus - 2024", "format": "JSON"},
+            {"id": DICT_ID, "name": "Dicionário de dados - Zika Vírus",
+             "format": "PDF", "url": PDF},
+        ],
+    }
+    monkeypatch.setattr(portal, "_read_public_html", lambda: html)
+    def mock_nextjs(actual_id):
+        assert actual_id == build_id
+        return {"pageProps": page_props}
+    monkeypatch.setattr(portal, "_read_nextjs_dataset_json", mock_nextjs)
+    report = portal.descobrir_dicionario_zika_portal()
+    assert report["metodo_de_evidencia"] == "nextjs_hidratacao_json_oficial"
+    assert report["recurso_uuid_documentado"] == DICT_ID
+    assert report["url_pdf_aprovada_estruturalmente"] == PDF
+    assert report["arquivo_pdf_baixado"] is False
+    assert report["conteudo_pdf_auditado"] is False
+    assert report["dicionario_aplicavel_a_2024_validado"] is False
+    assert report["indicador_real_homologado"] is False
+    assert report["publicacao_autorizada"] is False
+
+
+def test_nextjs_response_only_uses_official_same_origin(monkeypatch):
+    import json
+    raw = json.dumps({"pageProps": {"id": portal.PACKAGE_ID}}).encode("utf-8")
+    class Response:
+        headers = {"Content-Type": "application/json", "Content-Length": str(len(raw))}
+        def __enter__(self):
+            return self
+        def __exit__(self, *args):
+            return False
+        def geturl(self):
+            return (
+                portal.PAGE.replace("/dataset/arboviroses-zika-virus", "")
+                + "/_next/data/HJKl1234_ABCD/dataset/"
+                "arboviroses-zika-virus.json?slug=arboviroses-zika-virus"
+            )
+        def read(self, n):
+            assert n == portal.MAX_BYTES + 1
+            return raw
+    class Opener:
+        def open(self, req, timeout):
+            assert req.full_url == Response().geturl()
+            assert req.get_method() == "GET"
+            assert timeout == portal.TIMEOUT_SECONDS
+            return Response()
+    def safe_build_opener(handler):
+        assert isinstance(handler, portal._NoRedirect)
+        return Opener()
+    monkeypatch.setattr(portal, "build_opener", safe_build_opener)
+    assert portal._read_nextjs_dataset_json("HJKl1234_ABCD") == {
+        "pageProps": {"id": portal.PACKAGE_ID}
+    }
+    with pytest.raises(ValueError):
+        portal._read_nextjs_dataset_json("../traverse")
+
+
+def test_nextjs_failure_uses_html_fallback_without_claiming_pdf(monkeypatch):
+    html = (
+        '<script id="__NEXT_DATA__" type="application/json">'
+        '{"buildId":"HJKl1234_ABCD"}</script>'
+        f'<a href="/dataset/arboviroses-zika-virus/resource/{KNOWN_ID}">'
+        'Zika Vírus - 2024</a>'
+        f'<a href="/dataset/arboviroses-zika-virus/resource/{DICT_ID}">'
+        'Dicionário de dados - Zika Vírus</a>'
+    )
+    monkeypatch.setattr(portal, "_read_public_html", lambda: html)
+    def unavailable(_):
+        raise ValueError("NEXTJS_METADADOS_INVALIDOS")
+    monkeypatch.setattr(portal, "_read_nextjs_dataset_json", unavailable)
+    result = portal.descobrir_dicionario_zika_portal()
+    assert result["metodo_de_evidencia"] == "link_publico_no_html_oficial"
+    assert result["formato_declarado_no_html"] == "INDETERMINADO"
+    assert result["conteudo_pdf_auditado"] is False
+
+
+def test_both_portal_discovery_methods_fail_closed_when_unknown(monkeypatch):
+    monkeypatch.setattr(portal, "_read_public_html", lambda: "<html>No links</html>")
+    with pytest.raises(ValueError, match="NEXTJS_E_HTML_SEM_UUID_DOCUMENTAL_VALIDADO"):
+        portal.descobrir_dicionario_zika_portal()
