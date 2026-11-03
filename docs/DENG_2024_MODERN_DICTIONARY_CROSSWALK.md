@@ -60,3 +60,26 @@ A fonte de 22 páginas contém uma inconsistência epidemiológica ainda não ex
 - Não há evidência, apenas com estes PDFs, de qual mapeamento foi efetivamente gravado no CSV rotulado 2024; não é lícito inferir equivalência, nem ajustar códigos por suposição.
 
 Por isso a CLI do confronto registra uma **divergência semântica não conciliada** e define explicitamente `dominios_categoricos_verificados: false`, sem liberação de indicador. A correspondência de nomes do cabeçalho NÃO resolve esse bloqueio. É necessário consultar a área técnica para a edição e domínio válidos e revisar conjuntamente com um epidemiologista.
+
+
+## Primeira execução local com o CSV 2024
+
+Em 03/11/2026, o pesquisador executou o comando administrativo `confrontar-dicionario-dengue-2024` com PDF documental de 22 páginas, contrato candidato DBF 2015 e arquivo `DENGBR24.csv.zip` local. Saída exclusivamente agregada/metadados, informada pelo operador:
+
+- Documento PDF: **121 entradas** e **120 nomes distintos** (`coufinf` consta duas vezes, seq. 64 e 67).
+- CSV anual: **121 nomes observados no cabeçalho**; leitura apenas da primeira linha CSV, sem registros individuais.
+- PDF ∩ CSV: **119 nomes iguais** (comparação nominal, normalização somente da caixa).
+- PDF − CSV: **1 nome documentado ausente** (nome exato permanece em parecer privado local).
+- CSV − PDF: **2 nomes adicionais** (não listados nem transmitidos; requerem revisão local de confidencialidade e proveniência).
+- Parecer independente: **PENDENTE**, aprovação clínica/semântica, privacidade, qualidade e publicação **não concedidas**.
+
+O número de entradas PDF igual ao número de colunas CSV **não** representa igualdade dos esquemas: há uma duplicação documental e três diferenças no conjunto de nomes (1 + 2). A taxa nominal 119/120 ≈ 99,2% é limitada aos nomes de campos, sem validação de valores ou tipos. O nome **documentado pelo PDF** que falta no CSV está armazenado no JSON privado em `nomes_pdf_atual_ausentes_csv`, seguro para consultar localmente. Os dois nomes presentes apenas no CSV são deliberadamente omitidos pelo software; não devem ser acrescentados automaticamente ao dicionário nem enviados ao GitHub.
+
+O PDF anexado pelo operador apresentou SHA-256 local `d15122f38b32c4b3caf58cca7e717065b24c888771ecad8e7a3ed02e0efd16a1`, e metadados internos de criação em 22/03/2024. Esses metadados não autenticam o documento oficialmente. O aviso `pymupdf_layout` é somente sugestão opcional, não falha de extração neste confronto.
+
+### Encaminhamento pontual
+
+1. Obter **somente** a entrada documental ausente: `(Get-Content .\data\parecer-pendente-dengue-crosswalk-2024.json -Raw | ConvertFrom-Json).nomes_pdf_atual_ausentes_csv`. O nome consta no PDF público; não precisa ler nem enviar o ZIP.
+2. Revisar, **somente no computador do pesquisador**, os dois nomes adicionais antes de qualquer divulgação. Verificar se são metadados válidos da exportação, campos de processamento, diferenças de layout ou material não destinado ao público.
+3. Revisar domínios, classificações (especialmente `classi_fin` e códigos 1/2/8 contra 11/12/13), duplicação `coufinf`, `char()1` nas seq. 115/116 e a versão documental efetivamente utilizada para 2024.
+4. Preservar parecer privado, hashes e datas, solicitar avaliação epidemiológica e de privacidade independentes. Não publicar nem usar para calcular indicadores reais até os gates serem satisfeitos.
