@@ -104,6 +104,15 @@ def main() -> None:
     modern_dict.add_argument("--contrato-2015", required=True, type=Path)
     modern_dict.add_argument("--zip", required=True, type=Path)
     modern_dict.add_argument("--parecer-pendente", required=True, type=Path)
+    private_csv_names = cmd.add_parser(
+        "preparar-revisao-local-extras-dengue",
+        help="Grava NOMES extras CSV somente em arquivo PRIVADO local, nao exibe nomes",
+    )
+    private_csv_names.add_argument("--pdf", required=True, type=Path)
+    private_csv_names.add_argument("--contrato-2015", required=True, type=Path)
+    private_csv_names.add_argument("--zip", required=True, type=Path)
+    private_csv_names.add_argument("--parecer-anterior", required=True, type=Path)
+    private_csv_names.add_argument("--saida-privada", required=True, type=Path)
     schema_audit = cmd.add_parser(
         "comparar-esquema-privado",
         help="Compara campos localmente com PDF e contrato manual; NÃO autoriza uso real",
@@ -321,6 +330,20 @@ def main() -> None:
             parser.exit(2, "MODELO NÃO CRIADO — verifique a referência, o PDF e o destino local.\n")
         print("CANDIDATO LOCAL NÃO REVISADO. Não enviar o arquivo ao GitHub.")
         print("Campos de exemplo:", report["campos_exemplo_documentados"])
+    elif args.comando == "preparar-revisao-local-extras-dengue":
+        from .local_dengue_csv_extra_review import gerar_revisao_privada_cabecalhos_dengue
+        try:
+            result = gerar_revisao_privada_cabecalhos_dengue(
+                args.pdf, args.contrato_2015, args.zip,
+                args.parecer_anterior, args.saida_privada,
+            )
+        except (ValueError, OSError, RuntimeError, UnicodeError):
+            parser.exit(2, "REVISAO PRIVADA NAO GERADA - confira documentos, "
+                           "ZIP, hashes, parecer e destino exclusivo.\n")
+        print("REVISAO DE CABECALHO PRIVADA CRIADA; NAO PUBLICAR.")
+        print("Quantidade de nomes extras:", result["quantidade"])
+        print("Nomes no terminal:", "NAO")
+        print("Parecer independente:", result["revisao"])
     elif args.comando == "confrontar-dicionario-dengue-2024":
         from .local_dengue_dictionary_crosswalk import confrontar_dengue_dicionarios_local
         try:
