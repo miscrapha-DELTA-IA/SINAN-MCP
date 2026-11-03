@@ -92,7 +92,8 @@ def validate_resource_catalog(doc: object) -> dict:
         if not isinstance(row, dict) or set(row) != REQUIRED:
             raise ValueError("Recurso com campos inesperados ou ausentes")
         code, year = row["agravo_alias_interno"], row["ano_rotulado_no_portal"]
-        if code not in DATASET_SLUGS or type(year) is not int or year != 2024:
+        if (not isinstance(code, str) or code not in DATASET_SLUGS
+                or type(year) is not int or year != 2024):
             raise ValueError("Este catálogo piloto só possui anos/agravos checados")
         slug, folder, prefix = DATASET_SLUGS[code]
         resource_id = row["resource_id"]
