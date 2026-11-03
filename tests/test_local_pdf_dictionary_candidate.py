@@ -41,8 +41,9 @@ def _fake_pdf(tmp_path, *, anchored=True, extra_pages=0, corrupt=False):
     # be mistaken for a DBF field.
     c.drawString(100, 455, "PII_SECRET_FIELD")
     c.showPage()
-    for _ in range(extra_pages):
-        c.drawString(720, 400, "LEUCOPENIA")
+    for index in range(extra_pages):
+        # PDF page 14 is continuation prose, not a DBF table cell.
+        c.drawString(720, 400, "A" if index == 11 else "LEUCOPENIA")
         c.showPage()
     c.save()
     return path
@@ -144,3 +145,20 @@ def test_inappropriate_extra_pages_rejected(tmp_path):
     pdf = _fake_pdf(tmp_path, extra_pages=45)
     with pytest.raises(ValueError, match="número de páginas"):
         _scan_official_pdf_draft(pdf)
+
+
+
+def test_single_letter_A_on_page_14_is_reviewed_narrative_not_dbf(tmp_path):
+    """Regression reproducing one false positive in the official 2015 PDF."""
+    pdf = _fake_pdf(tmp_path, extra_pages=12)
+    fields, stats = _scan_official_pdf_draft(pdf)
+    assert "A" not in {x["name"] for x in fields}
+    assert stats["falsos_positivos_revisados_excluidos"] == 1
+    # Other tokens in the same extraction geometry are still candidates.
+    assert "LEUCOPENIA" in {x["name"] for x in fields}
+    candidate = tmp_path / "reviewed-candidate.json"
+    summary = gerar_rascunho_pdf_dbf_local(DENG, pdf, candidate)
+    assert summary["falsos_positivos_revisados_excluidos"] == 1
+    assert "A" not in {x["name"] for x in load_candidate(candidate)["campos_dbf"]}
+    assert summary["dicionario_aplicavel_2024_confirmado"] is False
+    assert summary["publicacao_autorizada"] is False
