@@ -21,6 +21,15 @@ O índice de referência possui atualmente **14 aliases internos de agravos** (T
 
 Consulte [escopo e fontes do catálogo](docs/MULTI_AGRAVO_CATALOG.md). Consulte também o [guia de pesquisa multiagravo e publicação segura](docs/SAFE_MULTIAGRAVO_PLANNER.md).
 
+
+## Distribuições oficiais de 2024 identificadas no Portal de Dados Abertos
+
+Há um registro separado de recursos individuais catalogados pelo Ministério da Saúde: **DENG/2024 em CSV e JSON** e **CHIK/2024 em JSON**, cada um com a página oficial, UUID do recurso e nome do ZIP. Para TUBE/2024, o registro ainda não contém distribuição anual primariamente confirmada.
+
+As ferramentas MCP `consultar_recursos_oficiais_ano` e `listar_recursos_oficiais_anuais` oferecem **somente metadados**, sem transferir dados. O planejador distingue recurso anual registrado de dicionário efetivamente aplicável; essa compatibilidade permanece não comprovada. Há também comando administrativo `conferir-zip-distribuicao` que verifica estrutura de um ZIP local sem abrir os registros e sem autenticar sua origem.
+
+Consulte [Registro de recursos anuais oficiais e limitações](docs/OFFICIAL_ANNUAL_DISTRIBUTIONS.md).
+
 ## Registro curado de fontes e dicionários por agravo/ano (sem dados reais)
 
 O índice de evidências documentais foi iniciado com **TUBE/2024**, **DENG/2024** e **CHIK/2024**. Consulte: [registro de fontes por ano e limitações](docs/OFFICIAL_YEAR_EVIDENCE_REGISTRY.md).

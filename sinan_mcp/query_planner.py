@@ -11,6 +11,7 @@ from typing import Any
 
 from .official_sources import CONDITIONS, OFFICIAL_SOURCES
 from .year_evidence_registry import consultar_evidencia_agravo_ano
+from .official_annual_resources import consultar_recursos_oficiais_ano
 
 SCHEMA = "sinan-research-plan-v1"
 UF = frozenset(
@@ -109,6 +110,10 @@ def planejar_consulta_agravo(
         "correspondencias": [_record(x) for x in matches],
         "evidencia_documental_agravo_ano": (
             consultar_evidencia_agravo_ano(matches[0][0], ano)
+            if ano is not None and len(matches) == 1 else None
+        ),
+        "recursos_de_distribuicao_ano": (
+            consultar_recursos_oficiais_ano(matches[0][0], ano)
             if ano is not None and len(matches) == 1 else None
         ),
         "consulta_executada": False,

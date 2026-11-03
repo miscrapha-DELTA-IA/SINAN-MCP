@@ -155,3 +155,8 @@ sem autenticar origem. Nenhum dado real foi divulgado. Veja
 comprovar estado de consolidação e esquema do dicionário, adquirir
 atestado científico/institucional verificável e manter trilha de
 mudanças e revisão cumulativa, antes de liberar indicadores.
+
+## Registro de distribuições anuais do portal governamental
+
+As páginas do Portal de Dados Abertos do SUS possibilitaram registrar URLs e IDs de distribuição de **DENG/2024** (CSV e JSON) e **CHIK/2024** (JSON). Esses recursos foram separados dos dicionários já catalogados; o arquivo binário, versão exata, data de corte, situação de consolidação e compatibilidade de layout ainda NÃO foram verificados. O planejador passou a expor ambos os níveis sem criar valores reais. Os testes usam apenas ZIPs falsos e dados sintéticos. Veja [distribuições anuais](OFFICIAL_ANNUAL_DISTRIBUTIONS.md).
+
