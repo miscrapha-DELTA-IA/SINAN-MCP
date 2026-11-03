@@ -18,20 +18,25 @@ from sinan_mcp.year_evidence_review import confrontar_documento_e_arquivo_local
 
 def test_publisher_documents_linked_but_not_applied_to_year():
     items = reg.listar_evidencias_documentais()
-    assert items["total_entradas_documentadas"] == 2
+    assert items["total_entradas_documentadas"] == 3
     assert items["quantidade_anos_de_arquivo_cientificamente_verificados"] == 0
     assert not items["base_real_disponibilizada"]
     assert len(items["catalog_metadata_sha256"]) == 64
     t = reg.consultar_evidencia_agravo_ano("TUBE", 2024)
     d = reg.consultar_evidencia_agravo_ano("DENG", 2024)
-    assert t["estado"] == d["estado"] == (
+    chik = reg.consultar_evidencia_agravo_ano("CHIK", 2024)
+    assert t["estado"] == d["estado"] == chik["estado"] == (
         "documento_oficial_localizado_ano_nao_verificado"
     )
+    assert chik["evidencia_documental"]["documento_url"] == d[
+        "evidencia_documental"]["documento_url"]
+    assert chik["evidencia_documental"]["pagina_oficial"].endswith(
+        "/chikungunya")
     assert t["evidencia_documental"]["edicao_documental"].startswith("SINAN NET 5.0")
     assert "2020.pdf" in t["evidencia_documental"]["documento_url"]
     assert "DIC_DADOS_ONLINE.pdf" in d["evidencia_documental"]["documento_url"]
     assert "2015" in d["evidencia_documental"]["edicao_documental"]
-    for entry in [t, d]:
+    for entry in [t, d, chik]:
         assert entry["link_dicionario_oficial_localizado"] is True
         for flag in (
             "arquivo_anual_independentemente_verificado",
