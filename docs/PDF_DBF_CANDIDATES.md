@@ -47,3 +47,9 @@ Uma comparação opcional contra o ZIP local (sem copiar dados):
 5. Encaminhar transcrição e divergências à revisão epidemiológica independente e à análise de privacidade, antes de qualquer habilitação de análise ou publicação real
 
 O rascunho é uma conveniência de curadoria, **não atestado nem contrato validado**. A ferramenta não permite aprovar um release nem disponibilizar registros via MCP.
+
+## Correção verificada de falso positivo na página 14
+
+No relatório local do operador, a primeira extração de candidatos do PDF de 2015 indicou 87 campos, com 9 ausentes e 43 extras no CSV. A revisão visual do documento mostrou que o candidato `A` na página 14 é apenas texto narrativo da continuação do campo de bairro, e não um nome na coluna DBF. O código agora **exclui somente (`A`, página 14)** e conta exclusões revisadas no resumo de extração. Portanto, o documento anterior contém 86 candidatos realmente listados (78 observados e 8 ausentes) — a confirmação automática dessas contagens ainda exige executar a nova versão no PDF/ZIP locais.
+
+Ver [revisão documental específica](DENG_2024_SCHEMA_DIVERGENCE_REVIEW.md). Não alterar documentos anteriores manualmente: gerar novos candidato e parecer em nomes diferentes para preservar rastreabilidade. A diferença entre o PDF de 2015 e o dicionário de dengue do portal atualizado em 2025 ainda precisa de revisão epidemiológica independente.
