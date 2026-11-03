@@ -55,7 +55,7 @@ def test_incidence_with_unverified_reference_still_cannot_calculate():
 
 
 @pytest.mark.parametrize("changes,expected", [
-    ({"agravo": "XXXXX"}, "fora_do_indice_curado"),
+    ({"agravo": "ABCD"}, "fora_do_indice_curado"),
     ({"unidade_observacional": "individuo"},
      "recusado_contagem_nao_e_registro_de_notificacao"),
     ({"tipo_medida": "letalidade", "unidade_observacional": "obito",
