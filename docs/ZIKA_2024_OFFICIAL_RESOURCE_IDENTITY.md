@@ -30,11 +30,44 @@ estáveis e compara, de modo **offline**, cada UUID/formato/URL com
 Erros de conjunto, formato, UUID duplicado, URL ou campos de aprovação
 inesperados resultam em falha fechada.
 
+## Contexto epidemiológico publicado no portal — sem validação do ZIP
+
+A [página oficial do conjunto Sinan/Vírus Zika](https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus)
+informa que os casos são notificados no **SINAN Net** e que suspeitos devem
+ser investigados/encerrados em até **60 dias**. Apresenta como casos
+prováveis os casos suspeitos notificados, exceto descartados. Essas são
+afirmações do **texto do portal**, não a análise de registros do arquivo
+2024; a aplicação operacional dessas regras não foi testada.
+
+A mesma página descreve que séries históricas são produzidas de bases
+**congeladas em data específica para cada ano** e observa diferenças
+potenciais em relação aos dados da CGARB. Contudo, a **data de corte do
+recurso específico ZIKABR24 não é fornecida na descrição**. A data de
+atualização do cadastro do recurso não substitui a data epidemiológica
+de congelamento. O texto ainda informa particularidade do Espírito
+Santo desde 2020 (e-SUS Vigilância; fontes distintas para dengue,
+chikungunya e Zika), a ser examinada antes de comparações interestaduais.
+
+Há ainda na lista oficial um item denominado **"Dicionário de dados -
+Zika Vírus"**, com atualização exibida **14/07/2025**. O item é uma
+evidência documental **mais específica** que o PDF genérico de
+Notificação Individual encontrado no Portal SINAN. Entretanto, este
+levantamento não recuperou o **UUID/URL exata e o conteúdo auditável do
+PDF desse item**. Logo, **não** incrementa a contagem dos 12 dicionários
+específicos já curados nem confirma edição aplicável a ZIKA/2024.
+
+O módulo offline `sinan_mcp/zika_portal_context.py` mantém
+separados: (1) fatos textuais publicados pelo portal; (2) referência
+a um documento ainda não inspecionado; e (3) estados de arquivo
+específico, autenticidade, corte e layout **desconhecidos**. Não existe
+ingestão de dados, nem autorização de publicação.
+
 ## Resultado operacional
 
 ```powershell
 py -3.11 -m sinan_mcp confrontar-identidade-zika-2024
 py -3.11 -m sinan_mcp planejar-confronto-documental-2024 --agravo ZIKA
+# Esse comando agora exibe SINAN Net, dicionário listado e corte desconhecido
 py -3.11 -m pytest -q tests/test_zika_resource_identity.py
 ```
 
