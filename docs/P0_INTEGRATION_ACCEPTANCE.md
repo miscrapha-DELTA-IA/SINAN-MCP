@@ -39,6 +39,7 @@ Para o índice atualmente curado:
 - ZIKA/2024: 2 distribuições anuais identificadas (JSON e Parquet) no portal. **Nenhum dicionário específico ZIKA/2024 validado ou curado neste índice.** A página do Portal SINAN refere o dicionário de Notificação Individual, de natureza geral.
 - TUBE/2024: documentação histórica localizada, sem distribuição anual exata autenticada neste índice.
 - 12 agravos têm dicionários históricos específicos localizados (incluindo TUBE, DENG e CHIK), todos com **aplicabilidade a 2024 não verificada**. Os aliases ZIKA e SIFA seguem sem dicionário específico curado nesta matriz; uma ficha genérica não supre esse requisito.
+- Para SIFA, o Guia de Vigilância em Saúde do MS de 2024, p. 506, orienta Notificação/Conclusão para sífilis adquirida em adultos. Isso **não** autentica o arquivo SIFA/2024 e **não** demonstra que o PDF geral revisado em 2018 corresponda ao seu layout. Matriz de 10 etapas pendentes: `docs/SIFA_ZIKA_2024_DOCUMENTARY_CROSSWALK.md`; CLI `planejar-confronto-documental-2024 --agravo SIFA`.
 - **Nenhum indicador clínico real homologado**; flags arquivo_anual_autenticado, dicionario_aplicavel_ao_ano_validado, coorte_ano_validada, indicador_real_homologado, dados_reais_disponiveis_no_mcp_publico e publicacao_autorizada são obrigatoriamente false.
 
 O diagnóstico não recebe ZIP/CSV/SQLite/credencial, não abre data/, não consulta serviços externos nem disponibiliza linhas ou números epidemiológicos.
