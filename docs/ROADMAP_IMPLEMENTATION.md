@@ -15,6 +15,7 @@ DATASUS; não certifica dados epidemiológicos, anonimização ou legalidade.
 | Linhagem arquivo -> SQLite | Implementado **para CSV local** | verificar-linhagem: compara hash de bytes com hash do snapshot; não serve para digest composto PySUS |
 | Qualidade por doença/ano | Implementado **para projeção importada** | quality_gate: completude, consistência de contagem, formato, tuplas idênticas |
 | Reconciliação com tabela | Implementado **como comparação não certificada** | reconciliation: mesmo agravo/UF/ano do arquivo/dimensão, categorias exatas, recusa célula pequena |
+| Planejamento de protocolos por agravo/ano | Disponível somente como proposta | indicator_protocols e planejar-indicador; TB exploratória e DENG contagem descritiva, sem cálculo real |
 | Indicadores específicos oficiais | **Bloqueado** | ainda exige definições epidemiológicas aprovadas por agravo/ano, deduplicação e denominadores |
 | Revisão de composição entre releases | Bloqueio conservador disponível | release_composition nega agravo+UF repetido mesmo em anos/versões diferentes |
 | OAuth, autorização institucional e API de microdados | **Não implementado e não habilitado** | sem identidade institucional confiável, não publicar dados privados |
@@ -65,6 +66,17 @@ Com os arquivos reais **sob controle institucional**, faça:
 O hash compara bytes locais e pode identificar alteração do arquivo. É uma
 **verificação de integridade**, não confirmação de origem governamental,
 liberdade de divulgação ou validade de indicador.
+
+**Métodos específicos por agravo/ano, apenas metadados:**
+
+    py -3.11 -m sinan_mcp planejar-indicador --agravo TUBE --ano 2024
+    py -3.11 -m sinan_mcp planejar-indicador --agravo DENG --ano 2024
+    py -3.11 -m sinan_mcp planejar-indicador --agravo HEPA --ano 2024
+
+TB apresenta apenas a metodologia exploratória já documentada; dengue
+somente contagem descritiva, não incidência. Para HEPA e outros agravos, a
+ausência de protocolo devolve estado sem_protocolo_especifico, nunca valores
+inventados ou definição clínica extrapolada.
 
 **Comparação com tabela TABNET declarada** (separada e privada):
 
