@@ -157,3 +157,43 @@ def verify_local_file(manifest_path: str | Path, data_path: str | Path) -> dict:
             "verificação independente e não são certificados por este comando."
         ),
     }
+
+
+
+def verify_csv_import_lineage(
+    manifest_path: str | Path, data_path: str | Path, db_path: str | Path,
+) -> dict:
+    """Compare verified CSV bytes with the active local SQLite snapshot digest.
+
+    Supports only CSV imports with a direct file digest. PySUS composite
+    digests use a different definition and cannot be equated to this hash.
+    """
+    from contextlib import closing
+    from .core import db_connect_readonly
+
+    summary = verify_local_file(manifest_path, data_path)
+    doc = load_manifest(manifest_path)
+    if doc["metodo"] != "csv-local":
+        raise ValueError("Linhagem direta exige manifesto csv-local")
+    with closing(db_connect_readonly(db_path)) as con:
+        row = con.execute(
+            "SELECT tipo_fonte, sha256, status, n_registros FROM fontes "
+            "WHERE agravo=? AND ano=?", (doc["agravo"], doc["ano_arquivo"])
+        ).fetchone()
+    if row is None or row["tipo_fonte"] != "csv-local":
+        raise ValueError("Snapshot CSV correspondente não está importado")
+    if row["sha256"] != summary["arquivo_sha256"]:
+        raise ValueError("Fingerprint do snapshot difere do arquivo verificado")
+    return {
+        **summary,
+        "snapshot_csv_corresponde_ao_arquivo": True,
+        "status_snapshot_declarado": row["status"],
+        "registros_metadado_local": row["n_registros"],
+        "fonte_original_independentemente_autenticada": False,
+        "publicacao_autorizada": False,
+        "nota_linhagem": (
+            "Hash do CSV local coincide com a projeção importada. Isso não "
+            "certifica a origem governamental, dicionário, data de corte "
+            "nem a ausência de duplicações epidemiológicas."
+        ),
+    }
