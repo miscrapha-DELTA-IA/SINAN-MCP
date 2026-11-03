@@ -89,6 +89,13 @@ def main() -> None:
     schema_template.add_argument("--resource-id", required=True)
     schema_template.add_argument("--pdf", required=True, type=Path)
     schema_template.add_argument("--saida", required=True, type=Path)
+    pdf_draft = cmd.add_parser(
+        "rascunhar-campos-dbf-pdf",
+        help="Candidatos DBF do PDF SINAN Online 2015; exige revisão humana, sem validação 2024",
+    )
+    pdf_draft.add_argument("--resource-id", required=True)
+    pdf_draft.add_argument("--pdf", required=True, type=Path)
+    pdf_draft.add_argument("--saida", required=True, type=Path)
     schema_audit = cmd.add_parser(
         "comparar-esquema-privado",
         help="Compara campos localmente com PDF e contrato manual; NÃO autoriza uso real",
@@ -306,6 +313,22 @@ def main() -> None:
             parser.exit(2, "MODELO NÃO CRIADO — verifique a referência, o PDF e o destino local.\n")
         print("CANDIDATO LOCAL NÃO REVISADO. Não enviar o arquivo ao GitHub.")
         print("Campos de exemplo:", report["campos_exemplo_documentados"])
+    elif args.comando == "rascunhar-campos-dbf-pdf":
+        from .local_pdf_dictionary_candidate import gerar_rascunho_pdf_dbf_local
+        try:
+            report = gerar_rascunho_pdf_dbf_local(
+                args.resource_id, args.pdf, args.saida
+            )
+        except (ValueError, OSError, RuntimeError):
+            parser.exit(
+                2, "RASCUNHO PDF NÃO GERADO — perfil de layout, PDF ou destino "
+                   "não conferem. Verifique o PDF local e revise manualmente.\n"
+            )
+        print("CANDIDATO DBF EXTRAÍDO; DICIONÁRIO 2024 NÃO VALIDADO.")
+        print("Campos candidatos:", report["campos_candidatos_extraidos"])
+        print("Nomes ambíguos não normalizados:", report["nomes_ambiguos_nao_normalizados"])
+        print("Repetições no PDF:", report["nomes_repetidos_no_pdf"])
+        print("Revisão humana:", "PENDENTE")
     elif args.comando == "comparar-esquema-privado":
         from .local_schema_review import (
             comparar_esquema_local, salvar_parecer_pendente_local,
