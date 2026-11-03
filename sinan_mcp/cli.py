@@ -150,7 +150,11 @@ def main() -> None:
     )
     cmd.add_parser(
         "identificar-dicionario-zika-ckan",
-        help="ADMIN: busca somente metadados da ficha PDF Zika no CKAN oficial; sem baixar PDF",
+        help="Compatibilidade: busca dicionario na pagina HTML oficial; CKAN antigo indisponivel",
+    )
+    cmd.add_parser(
+        "identificar-dicionario-zika-portal",
+        help="ADMIN: busca somente metadados do PDF Zika no HTML oficial sem baixar arquivos",
     )
     readiness_template = cmd.add_parser(
         "preparar-checklist-roadmap",
@@ -502,34 +506,34 @@ def main() -> None:
         print("Layout 2024 e consolidacao comprovados: NAO")
         print("Acesso real e publicacao autorizados: NAO")
         print("Status:", report["status"])
-    elif args.comando == "identificar-dicionario-zika-ckan":
-        from .admin_zika_dictionary_discovery import (
-            identificar_dicionario_zika_no_ckan, classificar_falha_descoberta,
-        )
+    elif args.comando in ("identificar-dicionario-zika-portal",
+                            "identificar-dicionario-zika-ckan"):
+        from .admin_zika_portal_html import descobrir_dicionario_zika_pagina
+        from .admin_zika_dictionary_discovery import classificar_falha_descoberta
         from urllib.error import HTTPError, URLError
         try:
-            report = identificar_dicionario_zika_no_ckan()
+            report = descobrir_dicionario_zika_pagina()
         except (ValueError, OSError, UnicodeError, HTTPError, URLError) as exc:
-            cause = classificar_falha_descoberta(exc)
+            reason = classificar_falha_descoberta(exc)
             parser.exit(
-                2,
-                "DICIONARIO ZIKA NAO LOCALIZADO COM EVIDENCIA SUFICIENTE.\n"
-                "Causa tecnica: " + cause + "\n"
-                "Nenhum UUID ou PDF foi presumido. Para consulta alternativa, "
-                "abra o conjunto oficial Sinan/Virus Zika ou siga o guia do "
-                "MS na modalidade DOCUMENTACAO (Docs_TAB_SINAN.zip).\n"
+                2, "DOCUMENTO ZIKA NAO IDENTIFICADO COM PROVENIENCIA SUFICIENTE.\n"
+                "Causa tecnica: " + reason + "\n"
+                "Pagina oficial: https://dadosabertos.saude.gov.br/dataset/"
+                "arboviroses-zika-virus\n"
+                "HTML pode omitir o UUID mesmo quando o titulo aparece na pagina. "
+                "Nao usar resultados fabricados ou a antiga API CKAN.\n"
                 "PDF auditado: NAO; layout 2024 validado: NAO; "
                 "publicacao autorizada: NAO.\n"
             )
-        print("METADADOS DE DICIONARIO ZIKA NO CKAN; PDF NAO AUDITADO.")
+        print("METADADOS DE DICIONARIO ZIKA NO HTML OFICIAL; PDF NAO AUDITADO.")
+        print("Origem:", report["fonte_html_oficial"])
+        print("Metodo:", report["metodo_de_evidencia"])
         print("UUID recurso:", report["recurso_uuid_documentado"])
         print("Pagina oficial do recurso:", report["pagina_recurso_oficial"])
-        print("Formato:", report["formato"])
-        print("URL PDF em caminho permitido:",
-              "SIM" if report["url_pdf_validada_estruturalmente"] else "NAO")
-        if report["url_pdf_validada_estruturalmente"]:
-            print("URL documental candidata:",
-                  report["pdf_url_apenas_se_host_e_caminho_permitidos"])
+        print("Formato registrado:", report["formato_declarado_no_html"])
+        if report["url_pdf_aprovada_estruturalmente"] is not None:
+            print("URL PDF documental candidata:",
+                  report["url_pdf_aprovada_estruturalmente"])
         print("PDF baixado: NAO; PDF auditado: NAO")
         print("Layout 2024 e data de corte confirmados: NAO")
         print("Indicadores homologados: 0; publicacao autorizada: NAO")
