@@ -184,3 +184,26 @@ py -3.11 -m sinan_mcp auditar-csv-sintetico-dengue `
 ```
 
 **Próximo passo após a simulação:** pactuar com epidemiologista, responsável institucional e privacidade o contrato de valores, os códigos e as condições de custódia. O scanner real deverá ser um **outro módulo**, executado só em ambiente autorizado, com leitura limitada/streaming, tratamento de erros e relatórios que evitem divulgação de pequenas células, e com comparação independente do TabNet de mesma versão. **Não executar dados reais nesta fase.**
+
+
+## P2/P3 — Pacote de revisão científica versionado, sem dados reais (PR #13)
+
+Após o ensaio do PR #12, realizado pelo operador no Windows (**6 linhas 100% sintéticas**, 4 exemplos de entrada inválida recusados, 0 checkpoints científicos homologados), o próximo artefato não é um indicador. É uma **solicitação estruturada de decisões científicas**.
+
+O módulo administrativo local \`local_dengue_scientific_review.py\` lê **somente dois JSONs privados já existentes**, o plano de qualidade e o relatório da simulação sintética. Confere os SHA-256 e verifica se a simulação usa exatamente as contagens de seis linhas artificiais, se nenhum registro real foi declarado como lido e se o status continua bloqueado. Rejeita pareceres que tentem declarar aprovação, escopo diferente, evidência adulterada e chaves JSON duplicadas. **Nunca abre CSV, ZIP, PDF ou SQLite.**
+
+Comandos PowerShell 5.1 na branch do PR #13:
+
+    py -3.11 -m pytest -q tests/test_local_dengue_scientific_review.py
+
+    py -3.11 -m sinan_mcp preparar-pacote-revisao-cientifica-dengue --plano ".\data\plano-qualidade-DENG-2024-privado.json" --simulacao ".\data\simulacao-qualidade-DENG-2024.json" --saida ".\data\pacote-revisao-cientifica-DENG-2024.json"
+
+    py -3.11 -m sinan_mcp diagnosticar-pacote-revisao-cientifica-dengue --arquivo ".\data\pacote-revisao-cientifica-DENG-2024.json"
+
+O pacote contém **7 decisões documentais explicitamente PENDENTES**, sobre \`CLASSI_FIN\`, \`CLINC_CHIK\` versus \`CLINIC_CHIK\`, \`UF\`, unidade observacional, janela temporal, indicador/denominador, privacidade e acesso. Também mantém os **9 checkpoints metodológicos de qualidade ainda pendentes**. Não inclui dados pessoais, amostras, valores de registros ou contagens epidemiológicas reais. O arquivo é criado exclusivamente em pasta privada, sem sobrescrever versões antigas.
+
+**O que significa esse marco:** temos um documento versionado para solicitar análise de epidemiologistas, responsáveis pela fonte e privacidade. **Não é um parecer, nem certifica revisão externa**; o código mantém \`revisores_autenticados = 0\`, \`qualidade_coorte_homologada = false\`, \`dominios_clinicos_validados = false\`, \`autorizacao_uso_real = false\` e \`publicacao_autorizada = false\`. Tentar alterar qualquer flag de aprovação faz o diagnóstico recusar o arquivo; a aprovação humana e institucional efetiva deve seguir procedimento independente fora desse mecanismo.
+
+**Antes de implementar o processamento de CSV real**: confirmar o dicionário exato de DENG/2024 e a origem do arquivo; resolver a ambiguidade de \`CLASSI_FIN\`, \`UF\` e \`CLINC_CHIK\` por fonte oficial; definir coorte, datas, universo e indicador; obter autorização adequada, custodiante responsável, critérios de supressão e riscos de inferência por composição. O [roteiro documental para especialistas](DENG_2024_SCIENTIFIC_REVIEW_DECISIONS.md) diferencia os códigos históricos de 2016 do contrato efetivamente aplicável ao CSV anual.
+
+O roadmap DENG/2024 permanece com **5 de 7 frentes sem evidência e 2 evidências locais não homologadas** até essas verificações. **A criação deste pacote NÃO constitui uma terceira evidência de auditoria real**.
