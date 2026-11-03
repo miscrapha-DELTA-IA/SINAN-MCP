@@ -67,3 +67,10 @@ ou identidade do arquivo. Conserve documentação e resultados sensíveis
 fora de issues, PRs e artefatos de CI. A cadeia de confiança exige
 revisores e provas externas autenticados antes de promover qualquer
 registro anual.
+
+## Distribuições anuais no catálogo oficial
+
+`official_annual_resources` expõe exclusivamente links e UUIDs de recursos do portal governamental. Uma referência a uma distribuição não autoriza downloads automáticos, ingestão, publicação ou conclusão de consolidação; o portal pode atualizar arquivos sem alteração de seus nomes.
+
+`conferir-zip-distribuicao` é CLI administrativa offline, com nome exato, limite de tamanho, SHA-256 local, ZIP de uma entrada e bloqueio de caminhos, symlinks e explosão de descompactação. A ferramenta não descompacta ou lê linhas, e seus hashes não autenticam a publicação. Não publique relatórios locais ou dados reais em issues/CI.
+
