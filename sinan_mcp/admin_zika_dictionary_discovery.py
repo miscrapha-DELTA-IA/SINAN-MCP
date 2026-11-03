@@ -12,7 +12,10 @@ from __future__ import annotations
 
 import json
 import re
+import socket
+import ssl
 import unicodedata
+from urllib.error import HTTPError, URLError
 from urllib.parse import urlsplit
 from urllib.request import (
     HTTPRedirectHandler, Request, build_opener,
@@ -174,3 +177,67 @@ def identificar_dicionario_zika_no_ckan(payload=None):
             "Nenhuma aplicabilidade a 2024 foi estabelecida."
         ),
     }
+
+
+def classificar_falha_descoberta(exc: Exception) -> str:
+    """Operator-safe failure category, without server body, URLs or credentials.
+
+    Never claim a particular root cause unless the exception establishes it.
+    No additional network requests, logs or local file reads occur here.
+    """
+    if isinstance(exc, HTTPError):
+        status = exc.code
+        if type(status) is not int or not 100 <= status <= 599:
+            return "STATUS_HTTP_INVALIDO"
+        if 300 <= status <= 399:
+            return "REDIRECIONAMENTO_HTTP_BLOQUEADO"
+        return f"HTTP_{status}"
+    if isinstance(exc, (socket.timeout, TimeoutError)):
+        return "TIMEOUT"
+    if isinstance(exc, ssl.SSLError):
+        return "TLS_CERTIFICADO_OU_CONEXAO"
+    if isinstance(exc, URLError):
+        reason = exc.reason
+        if isinstance(reason, socket.gaierror):
+            return "DNS_NAO_RESOLVE"
+        if isinstance(reason, (socket.timeout, TimeoutError)):
+            return "TIMEOUT"
+        if isinstance(reason, ssl.SSLError):
+            return "TLS_CERTIFICADO_OU_CONEXAO"
+        if isinstance(reason, ConnectionRefusedError):
+            return "CONEXAO_RECUSADA"
+        reason_class = str(reason).lower()
+        if any(token in reason_class for token in (
+            "getaddrinfo", "name or service not known", "name resolution",
+            "nodename nor servname", "no such host",
+        )):
+            return "DNS_NAO_RESOLVE"
+        if "timed out" in reason_class or "timeout" in reason_class:
+            return "TIMEOUT"
+        if "certificate" in reason_class or "tls" in reason_class:
+            return "TLS_CERTIFICADO_OU_CONEXAO"
+        return "CONEXAO_FALHOU_SEM_CAUSA_CONFIRMADA"
+    if isinstance(exc, json.JSONDecodeError):
+        return "RESPOSTA_JSON_INVALIDA"
+    if isinstance(exc, UnicodeError):
+        return "RESPOSTA_CODIFICACAO_INVALIDA"
+    if isinstance(exc, ValueError):
+        msg = str(exc)
+        if "Dicionário Zika ausente ou ambíguo" in msg:
+            return "RECURSO_AUSENTE_OU_AMBIGUO"
+        if "Conjunto CKAN diferente" in msg:
+            return "PACOTE_CKAN_DIVERGENTE"
+        if "não é JSON CKAN" in msg:
+            return "RESPOSTA_NAO_JSON"
+        if "Redirecionamento" in msg:
+            return "REDIRECIONAMENTO_BLOQUEADO"
+        if "excedem limite" in msg or "fora do limite" in msg:
+            return "RESPOSTA_EXCEDE_LIMITE"
+        return "METADADOS_CKAN_REJEITADOS"
+    if isinstance(exc, OSError):
+        if isinstance(exc, socket.gaierror):
+            return "DNS_NAO_RESOLVE"
+        if isinstance(exc, ConnectionRefusedError):
+            return "CONEXAO_RECUSADA"
+        return "ERRO_SISTEMA_OU_REDE_INDETERMINADO"
+    return "FALHA_INDETERMINADA"
