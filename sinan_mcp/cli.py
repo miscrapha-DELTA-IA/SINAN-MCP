@@ -135,6 +135,13 @@ def main() -> None:
     readiness_template.add_argument("--ano", required=True, type=int)
     readiness_template.add_argument("--resource-id")
     readiness_template.add_argument("--saida", required=True, type=Path)
+    evidence_link = cmd.add_parser(
+        "vincular-evidencia-dengue-roadmap",
+        help="Vincula SOMENTE SHA de parecer DENG/2024 pendente; nao aprova nenhuma frente",
+    )
+    evidence_link.add_argument("--checklist", required=True, type=Path)
+    evidence_link.add_argument("--parecer-esquema", required=True, type=Path)
+    evidence_link.add_argument("--saida", required=True, type=Path)
     readiness_check = cmd.add_parser(
         "diagnosticar-checklist-roadmap",
         help="Mostrar pendencias declaradas, SEM autenticar ou autorizar publicacao",
@@ -360,6 +367,20 @@ def main() -> None:
         print("Agravo:", result["agravo"], "ano do arquivo:", result["ano_do_arquivo"])
         print("Frentes pendentes:", result["n_frentes_pendentes"])
         print("Autorizacao de publicacao:", "NAO")
+    elif args.comando == "vincular-evidencia-dengue-roadmap":
+        from .local_roadmap_evidence import vincular_parecer_dengue_checklist_local
+        try:
+            result = vincular_parecer_dengue_checklist_local(
+                args.checklist, args.parecer_esquema, args.saida,
+            )
+        except (ValueError, OSError, UnicodeError):
+            parser.exit(2, "VINCULO NAO CRIADO: confira escopo, parecer, checklist e saida nova.\n")
+        print("PARECER DE DENGUE VINCULADO COMO EVIDENCIA LOCAL NAO VALIDADA.")
+        print("Frentes sem evidencia:", result["n_frentes_pendentes"])
+        print("Frentes com evidencia nao validada:",
+              result["n_frentes_com_evidencia_local_nao_validada"])
+        print("Parecer cientifico:", "PENDENTE")
+        print("Publicacao autorizada:", "NAO")
     elif args.comando == "diagnosticar-checklist-roadmap":
         from .roadmap_readiness import diagnosticar_checklist_local
         try:
