@@ -101,22 +101,17 @@ def _read_public_html():
 
 
 def _bounded_json_tree(text):
-    """Interpret inline JSON only; never evaluate JavaScript or fetch JS assets."""
+    """Parse complete JSON; reject fragments without package identity.
+
+    Fragment extraction discarded the parent CKAN UUID and could accept
+    unrelated resources. No orphan resources list is trusted.
+    """
     try:
         parsed = json.loads(text)
     except (ValueError, TypeError):
-        parsed = None
-    if parsed is not None:
+        return
+    if isinstance(parsed, dict):
         yield parsed
-    # JSON object embedded directly inside a script (non-Next_DATA).
-    needle = re.compile(r'"resources"\s*:\s*\[')
-    decoder = json.JSONDecoder()
-    for match in list(needle.finditer(text))[:8]:
-        try:
-            found, _ = decoder.raw_decode(text[match.end() - 1:])
-        except ValueError:
-            continue
-        yield {"resources": found}
 
 
 def _resource_collections(node):
@@ -133,9 +128,7 @@ def _resource_collections(node):
             if isinstance(listed, list) and len(listed) <= 200:
                 package_id = current.get("id")
                 package_name = current.get("name")
-                if package_id not in (None, PACKAGE_ID):
-                    continue
-                if package_name not in (None, PACKAGE):
+                if package_id != PACKAGE_ID or package_name != PACKAGE:
                     continue
                 yield listed
             for k, v in current.items():
