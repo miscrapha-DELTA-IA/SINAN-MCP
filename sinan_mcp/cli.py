@@ -104,6 +104,11 @@ def main() -> None:
     modern_dict.add_argument("--contrato-2015", required=True, type=Path)
     modern_dict.add_argument("--zip", required=True, type=Path)
     modern_dict.add_argument("--parecer-pendente", required=True, type=Path)
+    spelling = cmd.add_parser("conferir-hipoteses-grafia-dengue", help="Gerar hipoteses locais a partir de pareceres privados; sem dados de pacientes")
+    spelling.add_argument("--pdf", required=True, type=Path)
+    spelling.add_argument("--parecer-anterior", required=True, type=Path)
+    spelling.add_argument("--extras-privados", required=True, type=Path)
+    spelling.add_argument("--saida-privada", required=True, type=Path)
     private_csv_names = cmd.add_parser(
         "preparar-revisao-local-extras-dengue",
         help="Grava NOMES extras CSV somente em arquivo PRIVADO local, nao exibe nomes",
@@ -330,6 +335,19 @@ def main() -> None:
             parser.exit(2, "MODELO NÃO CRIADO — verifique a referência, o PDF e o destino local.\n")
         print("CANDIDATO LOCAL NÃO REVISADO. Não enviar o arquivo ao GitHub.")
         print("Campos de exemplo:", report["campos_exemplo_documentados"])
+    elif args.comando == "conferir-hipoteses-grafia-dengue":
+        from .local_dengue_spelling_review import gerar_hipoteses_grafia_dengue_local
+        try:
+            result = gerar_hipoteses_grafia_dengue_local(
+                args.pdf, args.parecer_anterior, args.extras_privados, args.saida_privada,
+            )
+        except (ValueError, OSError, RuntimeError, UnicodeError):
+            parser.exit(2, "HIPOTESES NAO GERADAS: confira documentos e destino.\n")
+        print("HIPOTESES PRIVADAS, NAO APROVADAS.")
+        print("Extras examinados:", result["extras_avaliados"])
+        print("Hipoteses de grafia:", result["hipoteses_grafia"])
+        print("Sem correspondencia:", result["sem_correspondencia"])
+        print("Revisao independente:", result["revisao_independente"])
     elif args.comando == "preparar-revisao-local-extras-dengue":
         from .local_dengue_csv_extra_review import gerar_revisao_privada_cabecalhos_dengue
         try:
