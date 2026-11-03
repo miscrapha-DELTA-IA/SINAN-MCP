@@ -223,6 +223,20 @@ def classificar_falha_descoberta(exc: Exception) -> str:
         return "RESPOSTA_CODIFICACAO_INVALIDA"
     if isinstance(exc, ValueError):
         msg = str(exc)
+        if msg in frozenset({
+            "HTML_SEM_UUID_DOCUMENTAL_VERIFICAVEL",
+            "HTML_OFICIAL_INVALIDO",
+            "HTML_EXCEDE_LIMITE",
+            "HTML_JSON_ESTRUTURA_EXCEDE_LIMITE",
+            "HTML_METADADOS_AMBIGUOS",
+            "SCRIPT_HTML_EXCEDE_LIMITE",
+            "RECURSO_DOCUMENTAL_AMBIGUO",
+            "UUID_DOCUMENTAL_INVALIDO",
+            "FORMATO_DOCUMENTAL_DIVERGENTE",
+            "PAGINA_OFICIAL_NAO_HTML",
+            "REDIRECIONAMENTO_PAGINA_OFICIAL",
+        }):
+            return msg
         if "Dicionário Zika ausente ou ambíguo" in msg:
             return "RECURSO_AUSENTE_OU_AMBIGUO"
         if "Conjunto CKAN diferente" in msg:
