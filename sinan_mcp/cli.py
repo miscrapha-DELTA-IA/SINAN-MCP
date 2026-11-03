@@ -69,6 +69,10 @@ def main() -> None:
     )
     quality.add_argument("--agravo", required=True)
     quality.add_argument("--ano", required=True, type=int)
+    reconciliation = cmd.add_parser(
+        "confrontar-tabnet", help="Comparar tabela declarada com base local, sem divulgar células"
+    )
+    reconciliation.add_argument("arquivo", type=Path)
     composition = cmd.add_parser(
         "verificar-composicao", help="Bloqueio de releases sobrepostos, SEM publicar"
     )
@@ -200,6 +204,15 @@ def main() -> None:
         except (OSError, ValueError) as exc:
             parser.exit(2, "AUDITORIA LOCAL INDISPONÍVEL — " + str(exc) + "\n")
         print("AVISO: RELATÓRIO SENSÍVEL LOCAL; NÃO COMPARTILHAR/ENVIAR AO MCP.")
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+    elif args.comando == "confrontar-tabnet":
+        import json
+        from .reconciliation import reconcile_declared_table
+        try:
+            report = reconcile_declared_table(args.db, args.arquivo)
+        except (OSError, ValueError) as exc:
+            parser.exit(2, "COMPARAÇÃO NÃO ADMITIDA — " + str(exc) + "\n")
+        print("RESULTADO LOCAL PRIVADO, NÃO PUBLICÁVEL AUTOMATICAMENTE.")
         print(json.dumps(report, ensure_ascii=False, indent=2))
     elif args.comando == "verificar-composicao":
         import json
