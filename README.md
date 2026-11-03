@@ -23,7 +23,7 @@ Consulte [escopo e fontes do catálogo](docs/MULTI_AGRAVO_CATALOG.md). Consulte 
 
 ## Registro curado de fontes e dicionários por agravo/ano (sem dados reais)
 
-O índice de evidências documentais foi iniciado com **TUBE/2024** e **DENG/2024**. Consulte: [registro de fontes por ano e limitações](docs/OFFICIAL_YEAR_EVIDENCE_REGISTRY.md).
+O índice de evidências documentais foi iniciado com **TUBE/2024**, **DENG/2024** e **CHIK/2024**. Consulte: [registro de fontes por ano e limitações](docs/OFFICIAL_YEAR_EVIDENCE_REGISTRY.md).
 
 Os documentos correspondentes são hospedados no Portal SINAN, mas suas edições identificadas são de 2020 (NET 5.0, tuberculose, conforme nome do PDF) e 2014–2015 (ONLINE 3.0, dengue/chikungunya). **Não há confirmação de que sejam os layouts exatos dos arquivos de 2024.** O índice registra links documentais localizados, não uma base anual validada.
 
