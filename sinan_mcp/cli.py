@@ -337,6 +337,8 @@ def main() -> None:
         print("PDF atual e CSV: nomes comuns:", summary["comuns_pdf_atual_csv"])
         print("PDF atual ausentes do CSV:", summary["ausentes_csv_do_pdf_atual"])
         print("CSV fora do PDF atual:", summary["adicionais_csv_fora_pdf_atual"])
+        print("Hipóteses de diferença de escopo (NÃO validadas):",
+              summary["ausencias_com_hipotese_de_escopo"])
         print("Revisão independente:", summary["revisao"])
     elif args.comando == "rascunhar-campos-dbf-pdf":
         from .local_pdf_dictionary_candidate import gerar_rascunho_pdf_dbf_local
