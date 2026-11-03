@@ -37,6 +37,10 @@ from .year_evidence_registry import (
     listar_evidencias_documentais as _year_evidence_list,
     consultar_evidencia_agravo_ano as _year_evidence,
 )
+from .official_annual_resources import (
+    consultar_recursos_oficiais_ano as _annual_resources,
+    listar_recursos_oficiais_anuais as _annual_resource_index,
+)
 
 PUBLIC_VERSION = "0.4.0a4"
 WARNING = (
@@ -196,6 +200,18 @@ def consultar_evidencia_agravo_ano(
 ) -> dict[str, Any]:
     """Consulta evidências documentais por agravo/ano; não autentica arquivos ou estatísticas."""
     return _year_evidence(agravo, ano)
+
+
+@mcp.tool()
+def consultar_recursos_oficiais_ano(agravo: str, ano: int) -> dict[str, Any]:
+    """Lista IDs oficiais de recursos por ano; não consulta registros nem valida layout."""
+    return _annual_resources(agravo, ano)
+
+
+@mcp.tool()
+def listar_recursos_oficiais_anuais() -> dict[str, Any]:
+    """Lista pares de agravo/ano no catálogo do MS; sem dados epidemiológicos."""
+    return _annual_resource_index()
 
 
 @mcp.tool()
