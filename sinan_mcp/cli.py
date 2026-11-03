@@ -78,6 +78,12 @@ def main() -> None:
         "confrontar-tabnet", help="Comparar tabela declarada com base local, sem divulgar células"
     )
     reconciliation.add_argument("arquivo", type=Path)
+    methods = cmd.add_parser(
+        "planejar-indicador", help="Verificar propostas por agravo/ano, SEM calcular dados reais"
+    )
+    methods.add_argument("--agravo", required=True)
+    methods.add_argument("--ano", required=True, type=int)
+    methods.add_argument("--protocolo", default=None)
     composition = cmd.add_parser(
         "verificar-composicao", help="Bloqueio de releases sobrepostos, SEM publicar"
     )
@@ -227,6 +233,14 @@ def main() -> None:
         except (OSError, ValueError) as exc:
             parser.exit(2, "COMPARAÇÃO NÃO ADMITIDA — " + str(exc) + "\n")
         print("RESULTADO LOCAL PRIVADO, NÃO PUBLICÁVEL AUTOMATICAMENTE.")
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+    elif args.comando == "planejar-indicador":
+        import json
+        from .indicator_protocols import plan_indicator
+        try:
+            report = plan_indicator(args.agravo, args.ano, args.protocolo)
+        except ValueError as exc:
+            parser.exit(2, "PROTOCOLO NÃO DISPONÍVEL — " + str(exc) + "\n")
         print(json.dumps(report, ensure_ascii=False, indent=2))
     elif args.comando == "verificar-composicao":
         import json
