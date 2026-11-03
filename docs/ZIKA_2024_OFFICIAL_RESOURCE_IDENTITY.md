@@ -60,8 +60,8 @@ como SINAN Net, conforme inspeção visual das páginas. O novo diagnóstico
 `diagnosticar-pdf-oficial-zika` registra essa evidência.
 
 **Importante:** a referência histórica foi registrada em módulo separado
-para revisão e ainda **não integrada ao catálogo geral de 12 dicionários
-previamente curados**. Localizar e inspecionar o PDF tampouco confirma a
+para revisão e agora **integrada ao catálogo geral**, que possui 13 dicionários
+históricos específicos identificados, ainda sem validar a edição para 2024. Localizar e inspecionar o PDF tampouco confirma a
 edição ou aplicabilidade à exportação ZIKA/2024. O checksum oficial,
 o confronto do esquema com ZIKABR24 e a data de corte continuam ausentes.
 
@@ -108,7 +108,7 @@ na interface ou índice oficial de transferência; o caminho de terceiro
 não deve ser importado como fonte autenticada. Também não comprova
 o sistema de origem, os campos ou as regras de divulgação.
 
-**Invariantes preservadas:** 14 aliases, 12 dicionários históricos
-específicos, 5 distribuições anuais de fontes oficiais catalogadas,
+**Situação documental atual:** 14 aliases, 13 dicionários históricos
+específicos localizados, 5 distribuições anuais de fontes oficiais catalogadas,
 0 indicadores homologados, 0 arquivos clínicos acessados, nenhuma
 alteração do servidor MCP público.
