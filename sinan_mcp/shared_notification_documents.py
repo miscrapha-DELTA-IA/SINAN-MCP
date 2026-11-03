@@ -54,7 +54,7 @@ def diagnosticar_documentacao_transversal(
             "pagina_oficial": candidate[0] if candidate else None,
             "url_dicionario_compartilhado": SHARED_PDF if candidate else None,
             "edicao_documental": EDITION if candidate else None,
-            "dicionario_especifico_do_agravo": False,
+            "dicionario_especifico_neste_registro": False,
             "compatibilidade_com_arquivo_anual_demonstrada": False,
             "sistema_origem_2024_verificado": False,
             "indicador_real_homologado": False,
