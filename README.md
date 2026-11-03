@@ -49,6 +49,16 @@ O PDF exato desse recurso não foi recuperado, e nenhuma compatibilidade
 com 2024 foi atestada. A contagem permanece 12 dicionários curados e
 5 distribuições anuais, com zero indicadores homologados.
 
+Para descobrir o UUID específico do **dicionário de Zika** sem baixar PDF
+ou microdados, há um comando administrativo opcional de catálogo CKAN:
+`py -3.11 -m sinan_mcp identificar-dicionario-zika-ckan`.
+A [documentação da descoberta](docs/ZIKA_DICTIONARY_CKAN_DISCOVERY.md)
+explica o endpoint oficial candidato, as restrições de rede e a saída
+segura quando a API está indisponível. O sucesso identifica no máximo
+a ficha documental; **não** altera flags de compatibilidade ZIKA/2024,
+corte, validação científica ou autorização. O dicionário listado no
+portal continua **não auditado** até obter o PDF exato.
+
 Para ZIKA/2024, a [conferência das páginas oficiais dos recursos](docs/ZIKA_2024_OFFICIAL_RESOURCE_IDENTITY.md)
 registrou UUID, formato, status administrativo e ID do conjunto comuns ao JSON
 e Parquet. A CLI `confrontar-identidade-zika-2024` coteja o snapshot
