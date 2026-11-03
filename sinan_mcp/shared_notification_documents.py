@@ -17,6 +17,17 @@ SHARED_PDF = (
     + "/images/documentos/Agravos/NINDIV/DIC_DADOS_NET_Not_Individual_rev.pdf"
 )
 EDITION = "SINAN NET 5.0 — dicionário de Notificação Individual, novembro/2018"
+# The 2024 Ministry guide directly recommends the Notification/Conclusion form
+# for acquired syphilis in adults (printed p. 506). The 2017 note corroborates
+# Individual Notification, but neither source authenticates the SIFA/2024 file.
+MINISTRY_GUIDE_2024 = (
+    "https://www.gov.br/saude/pt-br/centrais-de-conteudo/publicacoes/"
+    "svsa/vigilancia/guia-de-vigilancia-em-saude-volume-2-6a-edicao"
+)
+MINISTRY_NOTE_2017 = (
+    PORTAL + "/images/documentos/Agravos/Sifilis-Ges/"
+    "Nota_Informativa_Sifilis.pdf"
+)
 # Deliberately scoped to research planning for the 2024 file year.
 # ZIKA links to the shared dictionary on its official disease page.
 # SIFA is only a CANDIDATE: the generic notification page does not
@@ -45,6 +56,7 @@ def diagnosticar_documentacao_transversal(
     for code in selected:
         candidate = CANDIDATES.get(code) if ano == 2024 else None
         direct = candidate is not None and code == "ZIKA"
+        specific_guidance = code == "SIFA" and candidate is not None
         rows.append({
             "agravo": code,
             "ano_do_arquivo_pretendido": ano,
@@ -54,6 +66,18 @@ def diagnosticar_documentacao_transversal(
             "pagina_oficial": candidate[0] if candidate else None,
             "url_dicionario_compartilhado": SHARED_PDF if candidate else None,
             "edicao_documental": EDITION if candidate else None,
+            "orientacao_especifica_de_notificacao_no_guia_2024": specific_guidance,
+            "instrumento_de_notificacao_orientado": (
+                "Ficha de Notificação/Conclusão para sífilis adquirida em adultos"
+                if specific_guidance else None
+            ),
+            "pagina_impressa_guia_ministerial": 506 if specific_guidance else None,
+            "url_guia_ministerial_2024": (
+                MINISTRY_GUIDE_2024 if specific_guidance else None
+            ),
+            "url_nota_informativa_ministerial_2017": (
+                MINISTRY_NOTE_2017 if specific_guidance else None
+            ),
             "dicionario_especifico_neste_registro": False,
             "compatibilidade_com_arquivo_anual_demonstrada": False,
             "sistema_origem_2024_verificado": False,
@@ -78,7 +102,9 @@ def diagnosticar_documentacao_transversal(
         "aviso": (
             "Dicionário geral de Notificação Individual SINAN NET 5.0 (2018). "
             "O vínculo direto existe na página de Zika; para sífilis adquirida "
-            "é apenas hipótese documental genérica. Nenhum dos dois prova "
+            "o guia ministerial de 2024 orienta a ficha de Notificação/Conclusão "
+            "para adultos, mas não vincula o PDF de 2018 ao arquivo anual. "
+            "Nenhum dos dois prova "
             "layout, arquivo, sistema, coorte ou indicador de 2024."
         ),
     }
