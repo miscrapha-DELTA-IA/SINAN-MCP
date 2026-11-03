@@ -15,6 +15,7 @@ dependencies = ["mcp>=2,<3"]
 ingest = ["pysus>=2.11.7,<3", "pandas>=2,<3", "pyarrow>=17,<25"]
 quality = ["pandera[pandas]>=0.32,<0.34", "pandas>=2,<3"]
 schemaaudit = ["ijson>=3.2,<4"]
+pdfaudit = ["pymupdf>=1.24,<2"]
 dev = ["pytest>=8", "pytest-asyncio>=0.24", "mcp[cli]>=2,<3"]
 
 [project.scripts]
