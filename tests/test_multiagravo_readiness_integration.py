@@ -15,7 +15,7 @@ from sinan_mcp.official_sources import CONDITIONS
 def test_2024_registry_coverage_not_equivalent_to_research_approval():
     info = diagnosticar_cobertura_multiagravo(2024)
     assert info["agravos_referenciados"] == len(CONDITIONS) == 14
-    assert info["agravos_com_documentacao_localizada"] == 12
+    assert info["agravos_com_documentacao_localizada"] == 13
     assert info["distribuicoes_catalogadas"] == 5
     assert info["status"] == "DIAGNOSTICO_DOCUMENTAL_SEM_VALIDACAO_EPIDEMIOLOGICA"
     assert info["dados_clinicos_consultados"] is False
@@ -82,7 +82,7 @@ def test_cli_produces_only_metadata_counters(tmp_path):
     ok = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
     assert ok.returncode == 0, ok.stderr
     assert "Agravos no indice consultados: 14" in ok.stdout
-    assert "Agravos com documentacao localizada: 12" in ok.stdout
+    assert "Agravos com documentacao localizada: 13" in ok.stdout
     assert "Distribuicoes anuais catalogadas: 5" in ok.stdout
     assert "Acesso real e publicacao autorizados: NAO" in ok.stdout
     assert "DENG documento: SIM distribuicoes: 2" in ok.stdout
