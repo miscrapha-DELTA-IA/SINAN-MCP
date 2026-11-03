@@ -142,7 +142,7 @@ Foram implementadas, ainda sob revisão, duas tools públicas somente de metadad
 ## Registro documental por agravo e ano (camada adicional)
 
 Entraram referências de dicionários hospedados no Portal SINAN para
-TUBE/2024 e DENG/2024, com status
+TUBE/2024, DENG/2024 e CHIK/2024, com status
 `documento_oficial_localizado_ano_nao_verificado`. Os documentos
 oferecidos pelo órgão têm edições antigas e a correspondência com
 arquivos específicos de 2024 **não foi atestada**. O módulo público
