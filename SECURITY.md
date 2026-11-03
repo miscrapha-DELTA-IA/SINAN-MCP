@@ -110,3 +110,8 @@ The new scripts/check_public_isolation.py statically examines transitive local i
 **The legacy local MCP/REST service is NOT the public demonstration.** The legacy environment flag SINAN_PUBLIC_REAL_DATA=1 may enable sensitive aggregate access in sinan_mcp.tool_api under some conditions; it is **not** a permission model and must not be used for internet or third-party connector exposure without independent authority and security review. The Render Blueprint remains pinned to sinan_mcp.public_server, autoDeploy false and synthetic-only data.
 
 **Year coverage is not clinical readiness:** the administrative command diagnosticar-cobertura-multiagravo reads only fixed, packaged reference catalogs and reports all real-data/indicator/publication approval flags as false for every disease/year. It does not open local datasets or modify readiness gates.
+
+
+### Public deployment manifest pinning
+
+The scripts/check_public_deployment.py CI step enforces an exact textual snapshot of render.yaml: only the synthetic public_server start command, real-data flag set to 0, and autoDeploy false are accepted. This guard prevents unnoticed changes in the tracked blueprint; it is not a YAML semantic audit and cannot verify external Render account settings. Legitimate changes require a deliberate security review and an updated pinned snapshot.
