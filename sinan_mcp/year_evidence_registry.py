@@ -26,6 +26,13 @@ REFERENCE_CODES = frozenset(x[0] for x in CONDITIONS)
 PORTAL = "portalsinan.saude.gov.br"
 DATA_PORTAL = "www.gov.br"
 PDF_PREFIX = "/images/documentos/Agravos/"
+# Exact historical directories with URL-encoded spaces on Portal SINAN.
+# Other percent escapes, nested paths and unreviewed names are rejected.
+ALLOWED_ENCODED_PDF_DIRECTORIES = frozenset({
+    "Hepatites%20Virais",
+    "Leishmaniose%20Visceral",
+    "Leishmaniose%20Tegumentar%20Americana",
+})
 DATA_PATH = (
     "/saude/pt-br/acesso-a-informacao/sic/dados-em-transparencia-ativa/"
     "svsa/agravos-de-notificacoes/agravos-de-notificacoes"
@@ -83,11 +90,23 @@ def _official_url(url: object, host: str, prefix: str) -> str:
         port = parsed.port
     except ValueError as exc:
         raise ValueError("URL documental inválida") from exc
+    encoded_path_ok = False
+    if host == PORTAL and prefix == PDF_PREFIX and "%" in parsed.path:
+        suffix = (
+            parsed.path[len(PDF_PREFIX):]
+            if parsed.path.startswith(PDF_PREFIX) else ""
+        )
+        parts = suffix.split("/")
+        encoded_path_ok = (
+            len(parts) == 2
+            and parts[0] in ALLOWED_ENCODED_PDF_DIRECTORIES
+            and re.fullmatch(r"[A-Za-z0-9_.-]+[.]pdf", parts[1]) is not None
+        )
     if (parsed.scheme != "https" or parsed.hostname != host
             or parsed.username is not None or parsed.password is not None
             or port not in (None, 443) or parsed.query or parsed.fragment
             or not parsed.path.startswith(prefix)
-            or "\\" in raw or "%" in parsed.path or "//" in parsed.path
+            or "\\" in raw or ("%" in parsed.path and not encoded_path_ok) or "//" in parsed.path
             or any(ord(c) < 33 for c in raw)):
         raise ValueError("Referência fora do domínio/caminho HTTPS oficial")
     return raw
