@@ -133,3 +133,7 @@ sem bloqueio continua com publicacao_autorizada=false. Não existe comando
    de qualquer implantação que não seja a simulação pública.
 
 Sem essas comprovações o produto não deve expor dados reais por MCP remoto.
+
+## Complemento PoC research-grade (branch derivada)
+
+Foram implementadas, ainda sob revisão, duas tools públicas somente de metadados para especificação semântica e planejamento de medidas, ambas incapazes de consultar dados reais. Entraram contratos JSON ilustrativos TUBE/DENG 2024 com validação Pandera opcional e exclusivamente local, diferença entre esquemas e suíte de snapshot dos nomes/descrições/argumentos da interface MCP. A CI opcional de Pandera valida nos dois sistemas operacionais. **Não** foram adicionados dicionários epidemiológicos oficiais, indicadores reais ou autorização de publicação. Ver [manual](SEMANTIC_RESEARCH_POC.md).
