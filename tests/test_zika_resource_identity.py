@@ -122,3 +122,81 @@ def test_snapshot_never_calls_network_or_private_database():
         "import pysus", "import subprocess", "SINAN_DB_PATH", "from .core import",
     ):
         assert forbidden not in src
+
+
+def test_zika_official_portal_context_is_not_2024_file_approval():
+    from sinan_mcp.zika_portal_context import consultar_contexto_portal_zika_2024
+    ctx = consultar_contexto_portal_zika_2024()
+    assert ctx["agravo"] == "ZIKA"
+    assert ctx["ano_rotulado_no_arquivo"] == 2024
+    assert ctx["url_conjunto_oficial"] == (
+        "https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus"
+    )
+    assert ctx["sistema_de_notificacao_descrito_no_conjunto"] == "SINAN Net"
+    assert ctx["sistema_de_notificacao_mencionado_pelo_portal"] is True
+    assert ctx["sistema_de_origem_dos_bytes_2024_autenticado"] is False
+    assert ctx["prazo_de_encerramento_documentado_dias"] == 60
+    assert ctx["definicao_de_caso_validada_em_registros_2024"] is False
+    assert ctx["series_historicas_congeladas_em_datas_especificas_por_ano"] is True
+    assert ctx["data_de_corte_exata_do_zip_2024"] is None
+    assert ctx["data_atualizacao_portal_equivale_a_corte_epidemiologico"] is False
+    assert ctx["recurso_de_dicionario_zika_listado_no_portal"] is True
+    assert ctx["titulo_recurso_dicionario"] == "Dicionário de dados - Zika Vírus"
+    assert ctx["data_de_atualizacao_listada_do_dicionario"] == "2025-07-14"
+    assert ctx["url_exata_pdf_dicionario_zika_recuperada"] is None
+    assert ctx["conteudo_pdf_dicionario_zika_auditado"] is False
+    assert ctx["dicionario_de_zika_aplicavel_ao_ano_2024_validado"] is False
+    assert ctx["distribuicoes_anuais_catalogadas"] == 2
+    assert ctx["arquivos_binarios_2024_verificados"] == 0
+    assert ctx["campos_clinicos_lidos"] == 0
+    assert ctx["dados_reais_disponiveis_no_mcp_publico"] is False
+    assert ctx["indicadores_reais_homologados"] == 0
+    assert ctx["publicacao_autorizada"] is False
+
+
+def test_zika_crosswalk_context_does_not_close_scientific_gates():
+    from sinan_mcp.documentary_crosswalk_2024 import planejar_confronto_documental_2024
+    zika = planejar_confronto_documental_2024("ZIKA")
+    sifa = planejar_confronto_documental_2024("SIFA")
+    assert zika["sinan_net_descrito_no_portal"] is True
+    assert zika["dicionario_especifico_zika_listado_no_portal"] is True
+    assert zika["pdf_exato_zika_auditado"] is False
+    assert zika["corte_exato_do_arquivo_2024_conhecido"] is False
+    assert zika["origem_dos_bytes_2024_autenticada"] is False
+    assert sifa["sinan_net_descrito_no_portal"] is False
+    assert sifa["dicionario_especifico_zika_listado_no_portal"] is False
+    for plan in (zika, sifa):
+        assert plan["total_topicos_pendentes"] == 10
+        assert all(item["status"] == "PENDENTE_DE_EVIDENCIA_E_REVISAO_HUMANA"
+                   for item in plan["topicos_pendentes"])
+        assert plan["autorizacao_analise_real"] is False
+        assert plan["autorizacao_publicacao"] is False
+
+
+def test_zika_portal_context_cli_keeps_cutoff_unknown(tmp_path):
+    args = [
+        sys.executable, "-m", "sinan_mcp",
+        "planejar-confronto-documental-2024", "--agravo", "ZIKA",
+    ]
+    p = subprocess.run(
+        args, capture_output=True, text=True, cwd=tmp_path, timeout=30,
+    )
+    assert p.returncode == 0, p.stderr
+    assert "Sistema SINAN Net descrito no catalogo oficial: SIM" in p.stdout
+    assert "Dicionario especifico Zika listado no portal: SIM" in p.stdout
+    assert "PDF especifico Zika auditado: NAO" in p.stdout
+    assert "Data de corte exata do arquivo ZIKA/2024: NAO IDENTIFICADA" in p.stdout
+    assert "Topicos de revisao pendentes: 10" in p.stdout
+    assert "Campos reais lidos: 0; indicadores homologados: 0" in p.stdout
+    assert "Acesso real e publicacao autorizados: NAO" in p.stdout
+    assert not (tmp_path / "data").exists()
+
+
+def test_zika_context_only_uses_static_metadata():
+    from sinan_mcp import zika_portal_context
+    src = inspect.getsource(zika_portal_context)
+    for forbidden in (
+        "import requests", "import sqlite3", "urllib.request", "urlopen(",
+        "import pysus", "import subprocess", "SINAN_DB_PATH", "from .core import",
+    ):
+        assert forbidden not in src
