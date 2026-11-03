@@ -266,3 +266,10 @@ O primeiro cotejo entre o cabeçalho local de 121 campos e o rascunho DBF de 201
 ## Dicionário Dengue documental (PDF criado em 2024)
 
 A CLI administrativa `confrontar-dicionario-dengue-2024` compara, **somente no computador do pesquisador**, o arquivo PDF documental de 22 páginas, o contrato provisório do PDF DBF 2015 e o **cabeçalho** de um ZIP CSV de 2024; não acessa linhas clínicas nem habilita relatórios públicos. O documento recebido apresenta **121 entradas numeradas, 120 nomes únicos** devido à duplicação de `coufinf` nas sequências 64/67; também possui tipos literalmente malformados `char()1` nas entradas 115/116. Estes problemas e a aplicabilidade documental ao ano continuam não revisados. Veja [procedimento de confronto](docs/DENG_2024_MODERN_DICTIONARY_CROSSWALK.md).
+
+## Plano de conclusão do roadmap multiagravo — diagnóstico local
+
+O [plano de conclusão P0–P6](docs/ROADMAP_COMPLETION_GATES.md) explica o que falta em integração de código, fonte/dicionário por agravo/ano, qualidade, protocolos, privacidade, segurança, identidade e operação. Os PRs de pesquisa continuam **em draft e não foram implantados no servidor público sintético**.
+
+A CLI administrativa offline tem os comandos `preparar-checklist-roadmap` e `diagnosticar-checklist-roadmap` para inventariar sete gates por agravo e ano, sem dados clínicos, acesso remoto, identidade de paciente ou permissão de publicação. **Um checklist preenchido não autoriza estatísticas reais**, mesmo com sete pareceres declarados. Usar somente caminhos privados da pasta `data/`, nunca anexar manifestações/pareceres ao repositório.
+

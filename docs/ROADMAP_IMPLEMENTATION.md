@@ -171,3 +171,9 @@ Criada a CLI `preparar-modelo-esquema` para gerar contrato PRIVADO com campos DB
 
 O primeiro confronto privado DENG/2024 mostrou 121 campos CSV, dos quais 3 estavam no contrato de exemplo e 118 estavam fora da transcrição. Não se inferiu que fossem 118 erros. Foi preparada a CLI `rascunhar-campos-dbf-pdf` para extrair nomes candidatos e páginas de um único PDF de 2015 sob perfil controlado e sempre com estado não revisado. A referência de dicionário mais recente do catálogo do Ministério da Saúde (atualizada em 2025) também deve ser cotejada antes de associar ao ano 2024. Consulte [procedimento de candidatos PDF](PDF_DBF_CANDIDATES.md).
 
+
+## Conclusão do roadmap (instrumentação local e dependências externas)
+
+O plano [ROADMAP_COMPLETION_GATES.md](ROADMAP_COMPLETION_GATES.md) define P0–P6 com critérios de aceite: integrar PRs e isolamento de produção, fonte anual e dicionário, qualidade/coorte, protocolos por indicador, avaliação de privacidade e LGPD, acesso remoto autenticado, e autorização independente. Os comandos `preparar-checklist-roadmap` e `diagnosticar-checklist-roadmap` geram um inventário privado e não homologam evidências nem promovem release.
+
+O protótipo contém nomes de 14 agravos no índice, mas não garante cobertura científica de todas essas doenças; o piloto DENG/2024 apresenta 119/120 correspondências nominais e pendências CLINC_CHIK, UF, CLASSI_FIN e versão final. PRs #1 e #3–#9 continuam rascunhos empilhados, sem merge/implantação dessa trilha. Desenvolvimento do checklist em PR #10 também permanece em rascunho.

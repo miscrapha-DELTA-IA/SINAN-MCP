@@ -93,3 +93,9 @@ O relatório privado inclui apenas nomes de campos previamente transcritos (meta
 ## Confronto privado de PDF Dengue de 2024 e antigo PDF 2015
 
 `local_dengue_dictionary_crosswalk.py` é exclusivamente administrativo, sem ligação com o MCP público. O perfil PDF de 22 páginas utiliza hash **local observado no arquivo compartilhado pelo pesquisador**, para recusar edições não revisadas. Esta verificação NÃO autentica a origem governamental nem confirma que o dicionário é aplicável ao ZIP de 2024. O ZIP é inspecionado pelo validador existente e a comparação lê somente a primeira linha CSV limitada a 128 KiB. Nomes fora dos dicionários não são ecoados e valores de notificações não são lidos. O relatório JSON exclusivo tem flags de validação e divulgação negativas; o código não aprova a fonte, a ciência ou a privacidade.
+
+
+## Diagnóstico de prontidão do roadmap — não é aprovação
+
+O módulo `roadmap_readiness.py` administra apenas checklists locais JSON por alias/ano. Não importa SQLite/PySUS/ZIP, não contata rede, não abre microdados e não cria release; não integra ferramentas MCP públicas. Cada gate reporta no máximo situação declarada e SHA-256 local de sua evidência, não identidade do avaliador. A implementação exige validação estrita de estrutura, recusando campos adicionais, nomes de status desconhecidos, autorização de publicação ou evidências declaradas sem hash. A avaliação **nunca produz autorização técnica ou legal para publicar ou acessar dados reais remotamente**, mesmo que todas as sete frentes sejam declaradas com parecer.
+
