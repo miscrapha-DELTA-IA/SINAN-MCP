@@ -261,3 +261,8 @@ O pacote real ainda não foi preparado no computador do operador, e nenhum dado 
 
 O primeiro cotejo entre o cabeçalho local de 121 campos e o rascunho DBF de 2015 identificou 9 candidatos ausentes. A inspeção visual do PDF determinou **1 falso positivo** (`A`, texto explicativo da página 14), deixando **8 campos efetivamente documentados em 2015**, sem demonstrar exigência para o CSV 2024. O extrator passou a excluir apenas esse caso específico; a transcrição continua não revisada e o CSV não foi disponibilizado no repositório. [Parecer documental de nove campos](docs/DENG_2024_SCHEMA_DIVERGENCE_REVIEW.md).
 
+
+
+## Dicionário Dengue documental (PDF criado em 2024)
+
+A CLI administrativa `confrontar-dicionario-dengue-2024` compara, **somente no computador do pesquisador**, o arquivo PDF documental de 22 páginas, o contrato provisório do PDF DBF 2015 e o **cabeçalho** de um ZIP CSV de 2024; não acessa linhas clínicas nem habilita relatórios públicos. O documento recebido apresenta **121 entradas numeradas, 120 nomes únicos** devido à duplicação de `coufinf` nas sequências 64/67; também possui tipos literalmente malformados `char()1` nas entradas 115/116. Estes problemas e a aplicabilidade documental ao ano continuam não revisados. Veja [procedimento de confronto](docs/DENG_2024_MODERN_DICTIONARY_CROSSWALK.md).

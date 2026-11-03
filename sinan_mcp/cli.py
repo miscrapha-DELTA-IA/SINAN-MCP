@@ -96,6 +96,28 @@ def main() -> None:
     pdf_draft.add_argument("--resource-id", required=True)
     pdf_draft.add_argument("--pdf", required=True, type=Path)
     pdf_draft.add_argument("--saida", required=True, type=Path)
+    modern_dict = cmd.add_parser(
+        "confrontar-dicionario-dengue-2024",
+        help="Somente offline: PDF documental 2024 x rascunho 2015 x cabeçalho CSV",
+    )
+    modern_dict.add_argument("--pdf", required=True, type=Path)
+    modern_dict.add_argument("--contrato-2015", required=True, type=Path)
+    modern_dict.add_argument("--zip", required=True, type=Path)
+    modern_dict.add_argument("--parecer-pendente", required=True, type=Path)
+    spelling = cmd.add_parser("conferir-hipoteses-grafia-dengue", help="Gerar hipoteses locais a partir de pareceres privados; sem dados de pacientes")
+    spelling.add_argument("--pdf", required=True, type=Path)
+    spelling.add_argument("--parecer-anterior", required=True, type=Path)
+    spelling.add_argument("--extras-privados", required=True, type=Path)
+    spelling.add_argument("--saida-privada", required=True, type=Path)
+    private_csv_names = cmd.add_parser(
+        "preparar-revisao-local-extras-dengue",
+        help="Grava NOMES extras CSV somente em arquivo PRIVADO local, nao exibe nomes",
+    )
+    private_csv_names.add_argument("--pdf", required=True, type=Path)
+    private_csv_names.add_argument("--contrato-2015", required=True, type=Path)
+    private_csv_names.add_argument("--zip", required=True, type=Path)
+    private_csv_names.add_argument("--parecer-anterior", required=True, type=Path)
+    private_csv_names.add_argument("--saida-privada", required=True, type=Path)
     schema_audit = cmd.add_parser(
         "comparar-esquema-privado",
         help="Compara campos localmente com PDF e contrato manual; NÃO autoriza uso real",
@@ -313,6 +335,52 @@ def main() -> None:
             parser.exit(2, "MODELO NÃO CRIADO — verifique a referência, o PDF e o destino local.\n")
         print("CANDIDATO LOCAL NÃO REVISADO. Não enviar o arquivo ao GitHub.")
         print("Campos de exemplo:", report["campos_exemplo_documentados"])
+    elif args.comando == "conferir-hipoteses-grafia-dengue":
+        from .local_dengue_spelling_review import gerar_hipoteses_grafia_dengue_local
+        try:
+            result = gerar_hipoteses_grafia_dengue_local(
+                args.pdf, args.parecer_anterior, args.extras_privados, args.saida_privada,
+            )
+        except (ValueError, OSError, RuntimeError, UnicodeError):
+            parser.exit(2, "HIPOTESES NAO GERADAS: confira documentos e destino.\n")
+        print("HIPOTESES PRIVADAS, NAO APROVADAS.")
+        print("Extras examinados:", result["extras_avaliados"])
+        print("Hipoteses de grafia:", result["hipoteses_grafia"])
+        print("Sem correspondencia:", result["sem_correspondencia"])
+        print("Revisao independente:", result["revisao_independente"])
+    elif args.comando == "preparar-revisao-local-extras-dengue":
+        from .local_dengue_csv_extra_review import gerar_revisao_privada_cabecalhos_dengue
+        try:
+            result = gerar_revisao_privada_cabecalhos_dengue(
+                args.pdf, args.contrato_2015, args.zip,
+                args.parecer_anterior, args.saida_privada,
+            )
+        except (ValueError, OSError, RuntimeError, UnicodeError):
+            parser.exit(2, "REVISAO PRIVADA NAO GERADA - confira documentos, "
+                           "ZIP, hashes, parecer e destino exclusivo.\n")
+        print("REVISAO DE CABECALHO PRIVADA CRIADA; NAO PUBLICAR.")
+        print("Quantidade de nomes extras:", result["quantidade"])
+        print("Nomes no terminal:", "NAO")
+        print("Parecer independente:", result["revisao"])
+    elif args.comando == "confrontar-dicionario-dengue-2024":
+        from .local_dengue_dictionary_crosswalk import confrontar_dengue_dicionarios_local
+        try:
+            summary = confrontar_dengue_dicionarios_local(
+                args.pdf, args.contrato_2015, args.zip, args.parecer_pendente,
+            )
+        except (ValueError, OSError, RuntimeError):
+            parser.exit(2, "CONFRONTO LOCAL NÃO CONCLUÍDO — confira PDF, ZIP, "
+                           "contrato privado de 2015 e destino novo.\n")
+        print("MATRIZ PRIVADA PENDENTE; NENHUM INDICADOR REAL AUTORIZADO.")
+        print("PDF atual: entradas:", summary["total_pdf_atual"],
+              "nomes distintos:", summary["unicos_pdf_atual"])
+        print("CSV: campos observados:", summary["csv_observados"])
+        print("PDF atual e CSV: nomes comuns:", summary["comuns_pdf_atual_csv"])
+        print("PDF atual ausentes do CSV:", summary["ausentes_csv_do_pdf_atual"])
+        print("CSV fora do PDF atual:", summary["adicionais_csv_fora_pdf_atual"])
+        print("Hipóteses de diferença de escopo (NÃO validadas):",
+              summary["ausencias_com_hipotese_de_escopo"])
+        print("Revisão independente:", summary["revisao"])
     elif args.comando == "rascunhar-campos-dbf-pdf":
         from .local_pdf_dictionary_candidate import gerar_rascunho_pdf_dbf_local
         try:
