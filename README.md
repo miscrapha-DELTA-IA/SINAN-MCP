@@ -22,6 +22,13 @@ O índice de referência possui atualmente **14 aliases internos de agravos** (T
 Consulte [escopo e fontes do catálogo](docs/MULTI_AGRAVO_CATALOG.md). Consulte também o [guia de pesquisa multiagravo e publicação segura](docs/SAFE_MULTIAGRAVO_PLANNER.md).
 
 
+
+## Rascunho de campos DBF extraídos do PDF (somente offline)
+
+O comando administrativo `rascunhar-campos-dbf-pdf` extrai **candidatos** à coluna DBF do dicionário Sinan Online Dengue/Chikungunya revisado em 2015, registrando a página de cada nome e recusando extrair documentos com layout não reconhecido. O status permanece transcrição manual não revisada; a compatibilidade com 2024 **não é atestada**.
+
+O catálogo oficial Sinan/Dengue também identifica um **dicionário de dados atualizado em julho de 2025**. A comparação integral requer cotejar ambos os documentos e a transformação de exportação, sem assumir que a edição de 2015 é completa. Instruções e comandos PowerShell: [Rascunho PDF de campos DBF](docs/PDF_DBF_CANDIDATES.md).
+
 ## Comparação privada dos esquemas com dicionários de dados
 
 Uma prova de conceito administrativa e offline permite criar um contrato de campos DBF a partir de um PDF local e comparar sua transcrição com o cabeçalho do ZIP CSV, ou com uma amostra de chaves de um ZIP JSON por streaming opcional. O comparador produz um relatório privado de divergências com estado de revisão pendente e **não executa análises reais**.
@@ -249,3 +256,8 @@ py -3.11 -m sinan_mcp --db .\data\sinan.sqlite3 preparar-agregado --agravo TUBE 
 ```
 
 O pacote real ainda não foi preparado no computador do operador, e nenhum dado real foi aprovado ou enviado para nuvem. A importação atual do arquivo TUBE 2024 tem `status=desconhecido`; isso **bloqueia** publicação antes da verificação oficial de consolidação. Consulte o [guia de publicação revisada](docs/AGGREGATE_PUBLICATION.md).
+
+### Revisão do primeiro confronto DENG/2024
+
+O primeiro cotejo entre o cabeçalho local de 121 campos e o rascunho DBF de 2015 identificou 9 candidatos ausentes. A inspeção visual do PDF determinou **1 falso positivo** (`A`, texto explicativo da página 14), deixando **8 campos efetivamente documentados em 2015**, sem demonstrar exigência para o CSV 2024. O extrator passou a excluir apenas esse caso específico; a transcrição continua não revisada e o CSV não foi disponibilizado no repositório. [Parecer documental de nove campos](docs/DENG_2024_SCHEMA_DIVERGENCE_REVIEW.md).
+
