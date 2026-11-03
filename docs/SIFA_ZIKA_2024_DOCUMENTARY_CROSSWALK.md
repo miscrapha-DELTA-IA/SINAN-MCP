@@ -29,6 +29,21 @@ apresenta, no registro curado, dois recursos rotulados ZIKA/2024:
 JSON e Parquet. Esses ponteiros não provam bytes, origem completa, data
 de corte, esquema ou situação final.
 
+## Subetapa ZIKA concluída: identidade de metadados de catálogo
+
+Uma [conferência independente das duas páginas oficiais de ZIKA/2024](ZIKA_2024_OFFICIAL_RESOURCE_IDENTITY.md)
+registrou a coincidência de UUID, formato, título, ID do conjunto e caminho
+de distribuição com os dois ponteiros já curados. O comando offline
+`confrontar-identidade-zika-2024` detecta divergência entre o snapshot
+versionado e o catálogo local. O diagnóstico exibe a situação de cada
+subetapa separadamente.
+
+**Não encerrar o tópico "identidade_do_recurso":** a identidade dos
+metadados da página é diferente da integridade/autenticidade dos bytes,
+versão, data de corte e condição de arquivo preliminar/final.
+A matriz permanece com **10 tópicos pendentes**. O novo snapshot não
+comprova atualização em tempo real nem altera indicadores científicos.
+
 ## Matriz de tarefas sem dados de pacientes
 
 | Grupo documental | Verificação necessária | Situação |
@@ -60,6 +75,7 @@ divergências explicitadas em vez de inferidas.
 ```powershell
 py -3.11 -m sinan_mcp planejar-confronto-documental-2024 --agravo SIFA
 py -3.11 -m sinan_mcp planejar-confronto-documental-2024 --agravo ZIKA
+py -3.11 -m sinan_mcp confrontar-identidade-zika-2024
 py -3.11 -m pytest -q tests/test_documentary_crosswalk_2024.py
 ```
 
