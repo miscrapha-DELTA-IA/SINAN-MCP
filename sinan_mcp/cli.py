@@ -148,6 +148,14 @@ def main() -> None:
         "confrontar-identidade-zika-2024",
         help="Conferir snapshot offline de UUID/formato/pacote do portal, nao de ZIP",
     )
+    cmd.add_parser(
+        "identificar-dicionario-zika-ckan",
+        help="Compatibilidade: busca dicionario na pagina HTML oficial; CKAN antigo indisponivel",
+    )
+    cmd.add_parser(
+        "identificar-dicionario-zika-portal",
+        help="ADMIN: busca somente metadados do PDF Zika no HTML oficial sem baixar arquivos",
+    )
     readiness_template = cmd.add_parser(
         "preparar-checklist-roadmap",
         help="Criar checklist privado multiagravo/ano, todos os gates PENDENTES",
@@ -497,6 +505,38 @@ def main() -> None:
         print("Arquivos binarios acessados: 0; campos clinicos lidos: 0")
         print("Layout 2024 e consolidacao comprovados: NAO")
         print("Acesso real e publicacao autorizados: NAO")
+        print("Status:", report["status"])
+    elif args.comando in ("identificar-dicionario-zika-portal",
+                            "identificar-dicionario-zika-ckan"):
+        from .admin_zika_portal_html import descobrir_dicionario_zika_portal
+        from .admin_zika_dictionary_discovery import classificar_falha_descoberta
+        from urllib.error import HTTPError, URLError
+        try:
+            report = descobrir_dicionario_zika_portal()
+        except (ValueError, OSError, UnicodeError, HTTPError, URLError) as exc:
+            reason = classificar_falha_descoberta(exc)
+            parser.exit(
+                2, "DOCUMENTO ZIKA NAO IDENTIFICADO COM PROVENIENCIA SUFICIENTE.\n"
+                "Causa tecnica: " + reason + "\n"
+                "Pagina oficial: https://dadosabertos.saude.gov.br/dataset/"
+                "arboviroses-zika-virus\n"
+                "HTML pode omitir o UUID mesmo quando o titulo aparece na pagina. "
+                "Nao usar resultados fabricados ou a antiga API CKAN.\n"
+                "PDF auditado: NAO; layout 2024 validado: NAO; "
+                "publicacao autorizada: NAO.\n"
+            )
+        print("METADADOS DE DICIONARIO ZIKA NO HTML OFICIAL; PDF NAO AUDITADO.")
+        print("Origem:", report["fonte_html_oficial"])
+        print("Metodo:", report["metodo_de_evidencia"])
+        print("UUID recurso:", report["recurso_uuid_documentado"])
+        print("Pagina oficial do recurso:", report["pagina_recurso_oficial"])
+        print("Formato registrado:", report["formato_declarado_no_html"])
+        if report["url_pdf_aprovada_estruturalmente"] is not None:
+            print("URL PDF documental candidata:",
+                  report["url_pdf_aprovada_estruturalmente"])
+        print("PDF baixado: NAO; PDF auditado: NAO")
+        print("Layout 2024 e data de corte confirmados: NAO")
+        print("Indicadores homologados: 0; publicacao autorizada: NAO")
         print("Status:", report["status"])
     elif args.comando == "preparar-checklist-roadmap":
         from .roadmap_readiness import preparar_checklist_local
