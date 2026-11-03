@@ -14,6 +14,8 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
@@ -40,7 +42,9 @@ def _validate_manifest(rows) -> list[dict]:
         key = str(key).replace("\\", "/")
         pieces = key.split("/")
         name = pieces[-1]
-        if (not key.startswith(_PREFIX) or ".." in pieces
+        if (not key.startswith(_PREFIX)
+                or any(part in {"", ".", ".."} or not re.fullmatch(r"[A-Za-z0-9_.-]+", part)
+                       for part in pieces)
                 or not re.fullmatch(r"[A-Za-z0-9_.-]+[.]parquet", name)):
             raise ValueError("Caminho de arquivo inválido no catálogo PySUS")
         size = int(bytes_value) if bytes_value is not None else -1
@@ -93,41 +97,76 @@ def manifest(agravo: str, ano: int) -> list[dict]:
     return _validate_manifest(_rows_from_catalog(agravo, ano))
 
 
+class _RejectRedirect(urllib.request.HTTPRedirectHandler):
+    """Refuse redirects BEFORE accessing their destinations (SSRF protection)."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        raise RuntimeError("Redirecionamento HTTPS não permitido no adaptador PySUS")
+
+
+def _open_strict(request, *, timeout: int):
+    return urllib.request.build_opener(_RejectRedirect).open(request, timeout=timeout)
+
+
 def _download(entry: dict, destination: Path) -> tuple[str, int]:
-    """Stream a single whitelisted public Parquet, enforcing size and SHA256."""
+    """Bounded, integrity-checked, origin-locked read with limited retry.
+
+    Retries only transient network responses, up to three attempts; never
+    retries a checksum mismatch or HTTP 4xx other than 408/429. A failed
+    attempt deletes its partial file before the next attempt.
+    """
     from pysus.api import types
 
+    valid = _validate_manifest([(
+        entry["key"], entry["size"], entry.get("sha256")
+    )])[0]
     host = str(types.S3_ENDPOINT)
     if host != "nbg1.your-objectstorage.com" or str(types.S3_BUCKET) != "pysus":
         raise RuntimeError("Endpoint PySUS inesperado; download bloqueado")
-    url = "https://" + host + "/pysus/" + urllib.parse.quote(entry["key"], safe="/")
+    url = "https://" + host + "/pysus/" + urllib.parse.quote(valid["key"], safe="/")
     request = urllib.request.Request(
-        url, headers={"User-Agent": "SINAN-MCP/0.3 (local public data importer)"}
+        url, headers={"User-Agent": "SINAN-MCP/0.4 (local public data importer)"}
     )
-    checksum = hashlib.sha256()
-    count = 0
-    with urllib.request.urlopen(request, timeout=60) as response:
-        actual_url = urllib.parse.urlsplit(response.geturl())
-        if actual_url.scheme != "https" or actual_url.hostname != host:
-            raise RuntimeError("Redirecionamento para endpoint não aprovado")
-        if response.status != 200:
-            raise RuntimeError("Servidor não entregou o arquivo completo (HTTP 200 exigido)")
-        with destination.open("xb") as out:
-            while True:
-                chunk = response.read(1024 * 1024)
-                if not chunk:
-                    break
-                count += len(chunk)
-                if count > MAX_FILE_BYTES or count > entry["size"]:
-                    raise ValueError("Download excedeu tamanho declarado pelo catálogo")
-                checksum.update(chunk)
-                out.write(chunk)
-    if count != entry["size"]:
-        raise ValueError("Download incompleto: tamanho diferente do catálogo")
-    digest = checksum.hexdigest()
-    if entry["sha256"] and digest != entry["sha256"]:
-        raise ValueError("SHA256 difere do catálogo: conteúdo rejeitado")
-    return digest, count
+    for attempt in range(3):
+        digest = hashlib.sha256()
+        count = 0
+        try:
+            with _open_strict(request, timeout=60) as response:
+                actual_url = urllib.parse.urlsplit(response.geturl())
+                if (actual_url.scheme != "https" or actual_url.hostname != host
+                        or response.status != 200):
+                    raise RuntimeError("Endpoint ou resposta de download não autorizado")
+                with destination.open("xb") as out:
+                    while True:
+                        chunk = response.read(1024 * 1024)
+                        if not chunk:
+                            break
+                        count += len(chunk)
+                        if count > MAX_FILE_BYTES or count > valid["size"]:
+                            raise ValueError("Download excedeu tamanho declarado pelo catálogo")
+                        digest.update(chunk)
+                        out.write(chunk)
+            if count != valid["size"]:
+                raise ValueError("Download incompleto: tamanho diferente do catálogo")
+            checksum = digest.hexdigest()
+            if valid["sha256"] and checksum != valid["sha256"]:
+                raise ValueError("SHA256 difere do catálogo: conteúdo rejeitado")
+            return checksum, count
+        except (urllib.error.HTTPError, urllib.error.URLError,
+                TimeoutError, ConnectionError, OSError) as exc:
+            destination.unlink(missing_ok=True)
+            if isinstance(exc, urllib.error.HTTPError) and exc.code not in (
+                408, 429, 500, 502, 503, 504,
+            ):
+                raise RuntimeError("Erro HTTP permanente na fonte de dados") from None
+            if attempt == 2:
+                raise RuntimeError("Fonte indisponível após tentativas limitadas") from None
+            time.sleep(min(2 ** attempt, 2))
+        except BaseException:
+            destination.unlink(missing_ok=True)
+            raise
+    raise RuntimeError("Falha inesperada na transferência")
+
 
 
 def importar_fallback(db_path, *, agravo: str, ano: int, status: str):
