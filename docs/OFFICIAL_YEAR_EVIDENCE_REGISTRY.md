@@ -58,6 +58,7 @@ Os dados reais no servidor público permanecem indisponíveis.
     py -3.11 -m sinan_mcp listar-evidencias-ano
     py -3.11 -m sinan_mcp consultar-evidencia-ano --agravo TUBE --ano 2024
     py -3.11 -m sinan_mcp consultar-evidencia-ano --agravo TUBE --ano 2023
+    py -3.11 -m sinan_mcp monitorar-documento-ano --agravo TUBE --ano 2024
 
 Somente se o pesquisador tiver documentos e arquivos legitimamente
 obtidos e mantidos em ambiente privado, é possível executar:
@@ -99,3 +100,15 @@ inteiramente ilustrativos.
 
 Os próximos passos serão compatibilização de dicionários oficiais com
 arquivos concretos e definição de procedimento de revisão independente.
+
+
+## Monitoramento manual de link oficial (HEAD, não download)
+
+O comando monitorar-documento-ano faz **uma** consulta HTTP HEAD à URL do PDF
+previamente registrada. Ele recusa redirecionamentos, não recebe URLs do
+usuário e não baixa documentos ou microdados. Informa somente se a URL
+respondeu como PDF, foi recusada, esteve inacessível ou deu resposta
+inconclusiva. Uma resposta 200 não é prova de integridade binária,
+publicação original, aplicabilidade de layout a 2024 ou situação final.
+Bloqueios 403/405 e falhas de rede não demonstram que a fonte desapareceu.
+O comando é sempre explícito e local, nunca tool do MCP remoto.
