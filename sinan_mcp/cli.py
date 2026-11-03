@@ -171,6 +171,18 @@ def main() -> None:
     )
     synthetic_qa.add_argument("--plano", required=True, type=Path)
     synthetic_qa.add_argument("--saida", required=True, type=Path)
+    review_packet = cmd.add_parser(
+        "preparar-pacote-revisao-cientifica-dengue",
+        help="Prepara perguntas cientificas PENDENTES, sem dados nem aprovacao",
+    )
+    review_packet.add_argument("--plano", required=True, type=Path)
+    review_packet.add_argument("--simulacao", required=True, type=Path)
+    review_packet.add_argument("--saida", required=True, type=Path)
+    review_check = cmd.add_parser(
+        "diagnosticar-pacote-revisao-cientifica-dengue",
+        help="Diagnostica somente pacote local de perguntas nao homologadas",
+    )
+    review_check.add_argument("--arquivo", required=True, type=Path)
     readiness_check = cmd.add_parser(
         "diagnosticar-checklist-roadmap",
         help="Mostrar pendencias declaradas, SEM autenticar ou autorizar publicacao",
@@ -458,6 +470,32 @@ def main() -> None:
         print("Linhas artificiais:", result["linhas_sinteticas"])
         print("Entradas invalidas recusadas:", result["casos_adversariais_recusados"])
         print("Checkpoints cientificos homologados:", result["checkpoints_cientificos_validados"])
+        print("Status:", result["status"])
+        print("Publicacao autorizada:", "NAO")
+    elif args.comando == "preparar-pacote-revisao-cientifica-dengue":
+        from .local_dengue_scientific_review import preparar_pacote_revisao_dengue_local
+        try:
+            result = preparar_pacote_revisao_dengue_local(
+                args.plano, args.simulacao, args.saida
+            )
+        except (ValueError, OSError, UnicodeError):
+            parser.exit(2, "PACOTE CIENTIFICO NAO GERADO: confira hashes e destino novo.\n")
+        print("PEDIDO DE REVISAO CIENTIFICA, NAO HOMOLOGACAO.")
+        print("Questoes pendentes:", result["questoes_cientificas_pendentes"])
+        print("Checkpoints de qualidade pendentes:", result["checkpoints_qualidade_pendentes"])
+        print("Pareceres autenticados:", result["revisores_autenticados"])
+        print("Dados reais lidos:", result["dados_reais_lidos"])
+        print("Status:", result["status"])
+    elif args.comando == "diagnosticar-pacote-revisao-cientifica-dengue":
+        from .local_dengue_scientific_review import diagnosticar_pacote_cientifico_local
+        try:
+            result = diagnosticar_pacote_cientifico_local(args.arquivo)
+        except (ValueError, OSError, UnicodeError):
+            parser.exit(2, "PACOTE CIENTIFICO INVALIDO OU NAO PENDENTE.\n")
+        print("QUESTOES CIENTIFICAS AINDA NAO HOMOLOGADAS.")
+        print("Questoes pendentes:", result["questoes_cientificas_pendentes"])
+        print("Checkpoints de qualidade pendentes:", result["checkpoints_qualidade_pendentes"])
+        print("Pareceres autenticados:", result["revisores_autenticados"])
         print("Status:", result["status"])
         print("Publicacao autorizada:", "NAO")
     elif args.comando == "diagnosticar-checklist-roadmap":
