@@ -96,7 +96,7 @@ def _read_ckan_json():
                                 "User-Agent": "SINAN-MCP-documental-audit/0.4"},
         method="GET",
     )
-    opener = build_opener(_NoRedirect)
+    opener = build_opener(_NoRedirect())
     with opener.open(request, timeout=TIMEOUT) as response:
         if response.geturl() != CKAN_ENDPOINT:
             raise ValueError("Redirecionamento de recurso de metadados proibido")
