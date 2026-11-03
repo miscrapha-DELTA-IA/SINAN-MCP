@@ -48,6 +48,13 @@ EXPECTED = {
         ("agravo", "ano_do_arquivo", "unidade_observacional",
          "eixo_temporal", "tipo_medida", "denominador", "fonte_denominador"),
     ),
+    "listar_evidencias_documentais": (
+        "Lista documentos oficiais localizados; NÃO comprova dicionário para cada ano.", (),
+    ),
+    "consultar_evidencia_agravo_ano": (
+        "Consulta evidências documentais por agravo/ano; não autentica arquivos ou estatísticas.",
+        ("agravo", "ano"),
+    ),
     "descrever_campos": (
         "Explica variáveis do protótipo e a necessidade de validação científica.", (),
     ),
