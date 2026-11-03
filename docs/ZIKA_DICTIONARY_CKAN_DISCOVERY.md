@@ -158,3 +158,32 @@ de hidratação retornar erro ou mudar, tenta-se extrair UUID
 do HTML já recebido. Se ambos os métodos falharem, informa-se
 `NEXTJS_E_HTML_SEM_UUID_DOCUMENTAL_VALIDADO`, sem fabricar recurso.
 **Nenhuma leitura de PDF/ZIP ocorre nessa descoberta**.
+
+
+## Resultado confirmado do procedimento — recurso oficial localizado
+
+Em 03/11/2026, o comando Next.js executado no Windows retornou o
+**UUID `58038262-c745-46ea-979b-8727eb08ec5c`** para o recurso
+"Dicionário de dados - Zika Vírus". O endereço público do recurso foi
+conferido independentemente e liga diretamente o PDF oficial:
+
+- [Recurso do Ministério da Saúde](https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus/resource/58038262-c745-46ea-979b-8727eb08ec5c)
+- [PDF `dic_dados_zika.pdf`](https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/SINAN/Zikavirus/dic_dados_zika.pdf)
+
+**Correção relevante da allowlist:** a URL oficial está diretamente
+em `SINAN/Zikavirus/dic_dados_zika.pdf`, **não** sob `/pdf/`
+como se supôs antes. A implementação permite agora exatamente
+essa URL literal, mantendo rejeição de hosts e caminhos arbitrários.
+
+A inspeção visual do documento mostrou oito páginas e 37 campos
+numerados, como `dt_notific`, `cs_raca`, `classi_fin`,
+`dt_encerra` e `tp_sistema`. São **campos do PDF**, não
+campos autenticados do ZIP ZIKABR24. A referência está disponível em
+`py -3.11 -m sinan_mcp diagnosticar-pdf-oficial-zika`.
+Nenhum arquivo com registros individuais foi baixado ou acessado.
+Não há checksum oficial do PDF registrado, nem confronto do esquema
+real de 2024, nem data de corte confirmada.
+
+A seção anterior descreve o estado **antes** dessa descoberta. O
+documento exato agora é conhecido, mas não se deve mudar `SIM`
+para os gates científicos do ano de 2024 automaticamente.
