@@ -127,6 +127,8 @@ def _download(entry: dict, destination: Path) -> tuple[str, int]:
     request = urllib.request.Request(
         url, headers={"User-Agent": "SINAN-MCP/0.4 (local public data importer)"}
     )
+    if destination.exists() or destination.is_symlink():
+        raise FileExistsError("Arquivo de destino já existe; não será sobrescrito")
     for attempt in range(3):
         digest = hashlib.sha256()
         count = 0
@@ -154,6 +156,8 @@ def _download(entry: dict, destination: Path) -> tuple[str, int]:
             return checksum, count
         except (urllib.error.HTTPError, urllib.error.URLError,
                 TimeoutError, ConnectionError, OSError) as exc:
+            if isinstance(exc, FileExistsError):
+                raise
             destination.unlink(missing_ok=True)
             if isinstance(exc, urllib.error.HTTPError) and exc.code not in (
                 408, 429, 500, 502, 503, 504,
