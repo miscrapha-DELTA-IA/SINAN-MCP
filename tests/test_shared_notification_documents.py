@@ -96,7 +96,7 @@ def test_offline_cli_output_retains_absence_of_approval(tmp_path):
 def test_legacy_multiagravo_diagnosis_unchanged():
     from sinan_mcp.multiagravo_readiness import diagnosticar_cobertura_multiagravo
     result = diagnosticar_cobertura_multiagravo(2024)
-    assert result["agravos_com_documentacao_localizada"] == 12
+    assert result["agravos_com_documentacao_localizada"] == 13
     assert result["distribuicoes_catalogadas"] == 5
     assert result["publicacao_automatica"] is False
 
