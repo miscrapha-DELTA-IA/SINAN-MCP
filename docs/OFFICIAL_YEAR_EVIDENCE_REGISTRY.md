@@ -12,16 +12,18 @@ não para o arquivo de dados pretendido em determinado ano.
 |---|---|---|---|
 | TUBE / 2024 | [Dicionário de tuberculose](https://portalsinan.saude.gov.br/images/documentos/Agravos/Tuberculose/DICI_DADOS_NET_Tuberculose_23_07_2020.pdf) | SINAN NET 5.0; nome PDF indica 2020 | NÃO verificada |
 | DENG / 2024 | [Dicionário Dengue/Chikungunya](https://portalsinan.saude.gov.br/images/documentos/Agravos/Dengue/DIC_DADOS_ONLINE.pdf) | SINAN Online 3.0, histórico 2014–2015 | NÃO verificada |
+| CHIK / 2024 | [Dicionário Dengue/Chikungunya](https://portalsinan.saude.gov.br/images/documentos/Agravos/Dengue/DIC_DADOS_ONLINE.pdf) | SINAN Online 3.0, histórico 2014–2015 | NÃO verificada |
 
 As páginas oficiais são https://portalsinan.saude.gov.br/tuberculose e
-https://portalsinan.saude.gov.br/dengue. O Ministério da Saúde explica
+https://portalsinan.saude.gov.br/dengue e
+https://portalsinan.saude.gov.br/chikungunya. O Ministério da Saúde explica
 a obtenção de dados por agravo e ano em:
 https://www.gov.br/saude/pt-br/acesso-a-informacao/sic/dados-em-transparencia-ativa/svsa/agravos-de-notificacoes/agravos-de-notificacoes .
 
 Essa orientação remete aos dicionários de Docs_TAB_SINAN.zip. Não foram
 confirmados nesta etapa o arquivo nacional de 2024, checksum publicado
 pela autoridade, status final, data de corte ou versão de dicionário
-vinculada ao arquivo TUBE ou DENG de 2024.
+vinculada ao arquivo TUBE, DENG ou CHIK de 2024.
 
 Uma evidência documental localizada não garante correção para determinado
 ano. O SINAN NET, SINAN ONLINE e outros sistemas podem empregar layouts
