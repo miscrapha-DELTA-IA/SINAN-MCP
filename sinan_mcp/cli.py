@@ -69,6 +69,19 @@ def main() -> None:
     )
     lineage.add_argument("manifesto", type=Path)
     lineage.add_argument("arquivo", type=Path)
+    annual_index = cmd.add_parser(
+        "listar-distribuicoes-oficiais", help="Mostra IDs de recursos anuais no catálogo do MS, sem downloads"
+    )
+    annual_find = cmd.add_parser(
+        "consultar-distribuicao-ano", help="Consulta recurso oficial por agravo/ano, somente metadados"
+    )
+    annual_find.add_argument("--agravo", required=True)
+    annual_find.add_argument("--ano", required=True, type=int)
+    annual_zip = cmd.add_parser(
+        "conferir-zip-distribuicao", help="Analisa APENAS o ZIP local, sem extrair conteúdo"
+    )
+    annual_zip.add_argument("arquivo", type=Path)
+    annual_zip.add_argument("--resource-id", required=True)
     list_year = cmd.add_parser(
         "listar-evidencias-ano", help="Lista documentos oficiais localizados, SEM validar arquivo anual"
     )
@@ -247,6 +260,27 @@ def main() -> None:
         except (OSError, ValueError) as exc:
             parser.exit(2, "LINHAGEM NÃO VERIFICADA — " + str(exc) + "\n")
         print("SOMENTE INTEGRIDADE LOCAL; ORIGEM E PUBLICAÇÃO NÃO CERTIFICADAS.")
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+    elif args.comando == "listar-distribuicoes-oficiais":
+        import json
+        from .official_annual_resources import listar_recursos_oficiais_anuais
+        print(json.dumps(listar_recursos_oficiais_anuais(), ensure_ascii=False, indent=2))
+    elif args.comando == "consultar-distribuicao-ano":
+        import json
+        from .official_annual_resources import consultar_recursos_oficiais_ano
+        try:
+            report = consultar_recursos_oficiais_ano(args.agravo, args.ano)
+        except ValueError as exc:
+            parser.exit(2, "RECURSO NÃO IDENTIFICADO — " + str(exc) + "\n")
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+    elif args.comando == "conferir-zip-distribuicao":
+        import json
+        from .local_distribution_review import conferir_zip_recurso_local
+        try:
+            report = conferir_zip_recurso_local(args.resource_id, args.arquivo)
+        except (OSError, ValueError) as exc:
+            parser.exit(2, "ZIP LOCAL NÃO ADMITIDO — " + str(exc) + "\n")
+        print("AUDITORIA LOCAL: não autentica publicação oficial ou dados clínicos.")
         print(json.dumps(report, ensure_ascii=False, indent=2))
     elif args.comando == "listar-evidencias-ano":
         import json
