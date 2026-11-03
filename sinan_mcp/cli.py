@@ -464,6 +464,8 @@ def main() -> None:
         print("Distribuicoes anuais catalogadas:", report["numero_de_distribuicoes_catalogadas"])
         print("Orientacao ministerial 2024 da ficha:",
               "SIM" if report["orientacao_ministerial_2024_sobre_a_ficha"] else "NAO")
+        print("UUID e formato da pagina oficial documentados:",
+              "SIM" if report["identidade_publica_uuid_formato_documentada"] else "NAO")
         print("Topicos de revisao pendentes:", report["total_topicos_pendentes"])
         for entry in report["topicos_pendentes"]:
             print(entry["topico"] + ": PENDENTE")
