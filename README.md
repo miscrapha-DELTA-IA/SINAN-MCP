@@ -21,6 +21,14 @@ O índice de referência possui atualmente **14 aliases internos de agravos** (T
 
 Consulte [escopo e fontes do catálogo](docs/MULTI_AGRAVO_CATALOG.md). Consulte também o [guia de pesquisa multiagravo e publicação segura](docs/SAFE_MULTIAGRAVO_PLANNER.md).
 
+## PoCs research-grade: semântica, contratos e conformidade MCP
+
+Esta branch experimental acrescenta um **planejador semântico** para distinguir registros, casos, indivíduos, períodos e denominadores, recusando medidas insuficientemente definidas sem gerar números. A demonstração continua inteiramente fictícia.
+
+Há também contratos JSON **estritamente sintéticos** TUBE/DENG 2024, um validador offline Pandera opt-in para CSVs fictícios, diff entre contratos e testes de regressão do inventário público de tools MCP, incluindo o protocolo 2026-07-28. Nada disso certifica dicionários oficiais ou habilita consultas reais.
+
+Consulte o [manual de PoCs científicas](docs/SEMANTIC_RESEARCH_POC.md). Para testar a qualidade opcional no Windows/Linux: python -m pip install -e ".[dev,quality]".
+
 ## Ferramentas locais de curadoria e segurança (roadmap)
 
 O roadmap ganhou verificadores **administrativos offline**, fora do MCP público: `verificar-proveniencia`, `verificar-linhagem`, `auditar-qualidade`, `confrontar-tabnet` e `verificar-composicao`. O espelho PySUS possui rejeição de redirecionamento e tentativas limitadas. Esses comandos não verificam, por si, a autenticidade oficial, a equivalência de coortes ou o direito de publicação.
