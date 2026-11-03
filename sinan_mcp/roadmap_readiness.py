@@ -135,7 +135,7 @@ def validate_checklist(value: object) -> dict:
             "situacao", "evidencia_sha256_local"
         }:
             raise ValueError("Formato de gate invalido")
-        if entry["situacao"] not in STATES:
+        if not isinstance(entry["situacao"], str) or entry["situacao"] not in STATES:
             raise ValueError("Gate com situacao desconhecida")
         sha = entry["evidencia_sha256_local"]
         if entry["situacao"] == "PENDENTE":
