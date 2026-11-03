@@ -69,3 +69,12 @@ Além disso: executar matrizes opcionais PDF, esquema/JSON, Pandera, PySUS offli
 A estação do operador já confirmou: 5 de 7 frentes sem evidência, 2 evidências locais **não homologadas**, nove checkpoints de qualidade pendentes, sete questões científicas pendentes e zero pareceres independentes autenticados. O órgão responsável foi contatado pelo operador; **um pedido enviado não significa resposta ou aprovação**.
 
 **Estado até novos pareceres:** BLOQUEADO_PARA_USO_REAL_E_PUBLICACAO. Código integrado em CI não significa dados válidos; o MCP público não fornece consultas reais de doenças cadastradas no índice.
+
+
+## 6. Snapshot imutável da implantação pública
+
+O novo scripts/check_public_deployment.py compara render.yaml com a configuração **sintética conhecida** byte a byte. A CI recusa alterações involuntárias: iniciar sinan_mcp.server em vez de public_server, ativar SINAN_PUBLIC_REAL_DATA, habilitar autoDeploy, anexar um segundo serviço ou mesmo modificar comentários sem passar por revisão explícita. Este controle de snapshot **não analisa semanticamente YAML** e não inspeciona as configurações efetivas de uma conta Render; é apenas garantia verificável de que o blueprint sob Git não mudou inadvertidamente. Testes adversariais em tests/test_public_deployment_guard.py.
+
+    python scripts/check_public_deployment.py
+
+Antes de uma mudança legítima no blueprint, obter revisão humana da configuração e atualizar o snapshot junto com testes de segurança. Não realizar deploy automático como parte do P0.
