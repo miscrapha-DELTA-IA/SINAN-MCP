@@ -210,7 +210,7 @@ def test_local_cross_check_rejects_wrong_url_pdf_or_modified_file(tmp_path):
     bad["url_dicionario"] = reg.consultar_evidencia_agravo_ano(
         "TUBE", 2024)["evidencia_documental"]["documento_url"]
     manifest.write_text(json.dumps(bad), encoding="utf-8")
-    pdf.write_bytes(b"FAKEPDF")
+    pdf.write_bytes(b"THIS_IS_NOT_A_PDF\n%%EOF\n")
     with pytest.raises(ValueError, match="assinatura PDF"):
         confrontar_documento_e_arquivo_local(manifest, datafile, pdf)
     pdf.write_bytes(b"%PDF-1.4\n%%EOF")
