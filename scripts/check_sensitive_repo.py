@@ -21,7 +21,9 @@ BLOCKED_NAMES = frozenset({
 
 
 def classify_path(path: str) -> str | None:
-    value = path.replace("\\", "/").lstrip("./")
+    value = path.replace("\\", "/")
+    while value.startswith("./"):
+        value = value[2:]
     item = PurePosixPath(value)
     parts = [part.lower() for part in item.parts]
     if not parts:
