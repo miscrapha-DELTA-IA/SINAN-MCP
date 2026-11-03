@@ -21,6 +21,12 @@ O índice de referência possui atualmente **14 aliases internos de agravos** (T
 
 Consulte [escopo e fontes do catálogo](docs/MULTI_AGRAVO_CATALOG.md). Consulte também o [guia de pesquisa multiagravo e publicação segura](docs/SAFE_MULTIAGRAVO_PLANNER.md).
 
+## Ferramentas locais de curadoria e segurança (roadmap)
+
+O roadmap ganhou verificadores **administrativos offline**, fora do MCP público: `verificar-proveniencia`, `verificar-linhagem`, `auditar-qualidade`, `confrontar-tabnet` e `verificar-composicao`. O espelho PySUS possui rejeição de redirecionamento e tentativas limitadas. Esses comandos não verificam, por si, a autenticidade oficial, a equivalência de coortes ou o direito de publicação.
+
+**Implementação experimental em revisão:** [Estado detalhado e comandos Windows](docs/ROADMAP_IMPLEMENTATION.md). A versão implantada no Render continua sintética; não há OAuth ou API remota de microdados habilitada.
+
 ## Two intentionally separate distributions
 
 | Mode | Entry point | Data | Intended use |

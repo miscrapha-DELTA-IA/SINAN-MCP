@@ -40,3 +40,12 @@ Conservative count thresholds are **not a formal anonymization mechanism**. Othe
 ## Official table candidates (v0.4.0a4)
 
 `preparar-tabela-oficial` is a **local-only** conservative schema/disclosure check for a user-provided preaggregated table. It does not access source websites, attest that values are authentic, validate the declared source SHA-256 against an export, or publish values. Its output remains an UNAPPROVED candidate inside gitignored `data/review-packages/`, not consumed by either public MCP service. Independent source reconciliation, cross-release disclosure risk and authorization are required before any public use.
+
+## Roadmap: offline verification and transport hardening
+
+- The new administrator-only commands (`verificar-proveniencia`, `verificar-linhagem`, `auditar-qualidade`, `confrontar-tabnet`, `verificar-composicao`) deliberately **do not register as public MCP tools**. Reports from local SQLite or source tables can be sensitive and must not be pasted into issues or public assistants.
+- SHA-256 verifies **local byte integrity only**; operator-supplied official URLs, download codes, dictionary versions and `final` flags remain unverified assertions until an independent provenance review. A CSV hash can be linked to the import snapshot; PySUS composite snapshot digests require a different attestation.
+- The constrained PySUS catalog importer refuses redirected requests before contacting another host, caps transfer sizes, retries transient failures at most three times, removes partial files and avoids overwriting existing files. This does not replace transport penetration tests or a full supply-chain audit.
+- The offline release composition gate rejects multiple approved packages involving the same disease and UF, across years/versions/dimensions. A successful check **never authorizes publication** or establishes cross-release anonymity, external linkage safety, legitimate reviewer identity or legal authorization.
+- CI blocks tracked files in `data/` and common clinical/credential formats, but it is **only a path/extension check**, not a secret/PII content scan. Review the entire diff before merge; use organization-level secret scanning and restricted reviewer access.
+- The service has no production remote microdata OAuth, scope-based permissions, institutional review attestation, or privacy-budget infrastructure. **Do not expose private data remotely or auto-deploy real aggregate releases.** See [implementation and blocking gates](docs/ROADMAP_IMPLEMENTATION.md).

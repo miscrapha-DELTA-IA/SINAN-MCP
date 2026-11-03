@@ -18,5 +18,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: python -m pip install -e ".[dev]"
+      - name: Block tracked private datasets and credentials
+        run: python scripts/check_sensitive_repo.py
       - run: python -m pytest -q
       - run: python -m sinan_mcp demo

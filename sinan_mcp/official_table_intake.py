@@ -110,7 +110,8 @@ def validate_official_tabulation(obj: object) -> dict:
     raw_hash = src["sha256_arquivo_origem"]
     if not isinstance(raw_hash, str) or not re.fullmatch("[0-9a-f]{64}", raw_hash):
         raise ValueError("SHA-256 da tabulação original obrigatório")
-    if src["estado_consolidacao"] not in {"desconhecido", "preliminar", "final"}:
+    if (not isinstance(src["estado_consolidacao"], str)
+            or src["estado_consolidacao"] not in {"desconhecido", "preliminar", "final"}):
         raise ValueError("Estado de consolidação inválido")
     timestamp = _check_text(src["extracao_utc"], maximum=40)
     try:
@@ -129,16 +130,18 @@ def validate_official_tabulation(obj: object) -> dict:
     if not isinstance(code, str) or not re.fullmatch("[A-Z]{4,8}", code):
         raise ValueError("Código interno inválido")
     _check_text(scope["agravo_nome"])
-    if scope["uf"] not in UF:
+    if not isinstance(scope["uf"], str) or scope["uf"] not in UF:
         raise ValueError("Território inválido")
     if (type(scope["ano_inicio"]) is not int or type(scope["ano_fim"]) is not int
             or not 2000 <= scope["ano_inicio"] <= scope["ano_fim"] <= 2100):
         raise ValueError("Anos inválidos")
-    if scope["tipo_ano"] not in REFERENCE_TIMES:
+    if (not isinstance(scope["tipo_ano"], str)
+            or scope["tipo_ano"] not in REFERENCE_TIMES):
         raise ValueError("Tipo de período não definido")
     if scope["indicador"] != "registros_tabnet":
         raise ValueError("Este estágio só permite contagem de registros em TABNET")
-    if scope["dimensao"] not in {"sexo", "raca_cor"}:
+    if (not isinstance(scope["dimensao"], str)
+            or scope["dimensao"] not in {"sexo", "raca_cor"}):
         raise ValueError("Somente uma dimensão simples permitida")
     rows = obj["cells"]
     if not isinstance(rows, list) or not 2 <= len(rows) <= 12:
