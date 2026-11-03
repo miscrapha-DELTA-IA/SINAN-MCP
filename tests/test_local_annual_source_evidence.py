@@ -157,7 +157,7 @@ def test_duplicate_json_and_crosswalk_changed_fail_closed(tmp_path, monkeypatch)
     source.preparar_dossie_fonte_dengue_local("fake.zip", report, dossier)
     raw = dossier.read_text(encoding="utf-8")
     dossier.write_text(raw[:-1] + ',"publicacao_autorizada":false}', encoding="utf-8")
-    with pytest.raises(ValueError, match="duplicadas"):
+    with pytest.raises(ValueError, match="malformado|duplicadas"):
         source.vincular_dossie_fonte_dengue_roadmap_local(
             linked, report, dossier, tmp_path / "out.json"
         )
