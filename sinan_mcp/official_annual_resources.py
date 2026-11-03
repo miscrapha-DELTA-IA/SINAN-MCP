@@ -22,6 +22,7 @@ SCOPE = "metadados_de_recursos_anualizados_identificados_no_portal_oficial_sem_v
 DATASET_SLUGS = {
     "DENG": ("arboviroses-dengue", "Dengue", "DENG"),
     "CHIK": ("arboviroses-febre-de-chikungunya", "Chikungunya", "CHIK"),
+    "ZIKA": ("arboviroses-zika-virus", "Zikavirus", "ZIKA"),
 }
 PUBLICATION = "Ministério da Saúde — Portal de Dados Abertos do SUS"
 RESOURCE_ID = re.compile(r"[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}\Z")
@@ -104,13 +105,17 @@ def validate_resource_catalog(doc: object) -> dict:
         ids.add(resource_id)
         if row["publisher"] != PUBLICATION:
             raise ValueError("Editor declarado não corresponde ao catálogo")
-        expected_title = ("Dengue - 2024" if code == "DENG"
-                          else "Febre de Chikungunya - 2024")
+        expected_title = {
+            "DENG": "Dengue - 2024",
+            "CHIK": "Febre de Chikungunya - 2024",
+            "ZIKA": "Zika Vírus - 2024",
+        }[code]
         if row["titulo_recurso"] != expected_title:
             raise ValueError("Título anual inesperado")
         fmt = row["distribution_format"]
-        if not isinstance(fmt, str) or fmt not in {"CSV", "JSON"}:
-            raise ValueError("Formato ainda não curado")
+        accepted_formats = {"JSON", "PARQUET"} if code == "ZIKA" else {"CSV", "JSON"}
+        if not isinstance(fmt, str) or fmt not in accepted_formats:
+            raise ValueError("Formato ainda não curado para este agravo")
         lower = fmt.lower()
         filename = f"{prefix}BR24.{lower}.zip"
         if (row["archive_filename"] != filename
@@ -132,8 +137,12 @@ def validate_resource_catalog(doc: object) -> dict:
              exact_path=distribution_path)
         if row["checksum_sha256_publicado_pela_autoridade"] is not None:
             raise ValueError("Checksum governamental não foi identificado")
-        if row["link_documental_do_dicionario_identificado"] is not True:
-            raise ValueError("Índice de referência documental ausente")
+        # The annual file may be documented even when no agravo-specific
+        # historical dictionary has been curated (e.g. ZIKA). Never fabricate it.
+        dictionary_evidence = consultar_evidencia_agravo_ano(code, year)
+        documented = dictionary_evidence["link_dicionario_oficial_localizado"]
+        if row["link_documental_do_dicionario_identificado"] is not documented:
+            raise ValueError("Evidência de dicionário inconsistente com o registro")
         if any(row[k] is not False for k in NEGATIVE):
             raise ValueError("Edição anual NÃO pode ser auto-aprovada pelo JSON")
     return doc
