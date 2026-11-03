@@ -50,3 +50,13 @@ O programa consulta apenas: **texto do PDF**, **metadados do ZIP** e **primeira 
 3. Cotejar as diferenças do documento 2015 (DBF) com a tabela 2024, testando apenas equivalências explícitas e revisadas.
 4. Revisar definições, domínios, códigos de ignorado, transformação de exportação, data de corte e status preliminar/final.
 5. Obter parecer epidemiológico independente e análise de privacidade. Nenhuma análise real, publicação nem abertura de microdados via MCP está autorizada.
+
+
+## Conflito semântico significativo: campo classi_fin
+
+A fonte de 22 páginas contém uma inconsistência epidemiológica ainda não explicada:
+- **Página 12, seq. 70:** a célula Categoria de classi_fin enumera **1 Confirmado, 2 Descartado, 8 Inconclusivo**, além de códigos ignorados.
+- **Página 13, seq. 73 e 77:** a descrição de clinic_chik condiciona a apresentação de chikungunya à classificação **13**, enquanto a regra de dengue com sinais de alarme condiciona a classificação a **11** ou **12**. O PDF DBF Sinan Online 2015 também adota classificações **10/11/12/13** na documentação, segundo versão do documento.
+- Não há evidência, apenas com estes PDFs, de qual mapeamento foi efetivamente gravado no CSV rotulado 2024; não é lícito inferir equivalência, nem ajustar códigos por suposição.
+
+Por isso a CLI do confronto registra uma **divergência semântica não conciliada** e define explicitamente `dominios_categoricos_verificados: false`, sem liberação de indicador. A correspondência de nomes do cabeçalho NÃO resolve esse bloqueio. É necessário consultar a área técnica para a edição e domínio válidos e revisar conjuntamente com um epidemiologista.
