@@ -99,3 +99,14 @@ O relatório privado inclui apenas nomes de campos previamente transcritos (meta
 
 O módulo `roadmap_readiness.py` administra apenas checklists locais JSON por alias/ano. Não importa SQLite/PySUS/ZIP, não contata rede, não abre microdados e não cria release; não integra ferramentas MCP públicas. Cada gate reporta no máximo situação declarada e SHA-256 local de sua evidência, não identidade do avaliador. A implementação exige validação estrita de estrutura, recusando campos adicionais, nomes de status desconhecidos, autorização de publicação ou evidências declaradas sem hash. A avaliação **nunca produz autorização técnica ou legal para publicar ou acessar dados reais remotamente**, mesmo que todas as sete frentes sejam declaradas com parecer.
 
+
+
+## P0 integration boundary guard (pending code review)
+
+The new scripts/check_public_isolation.py statically examines transitive local imports reachable from sinan_mcp.public_server. Only the explicitly reviewed public metadata modules are allowed. Imports of the private ingestion, SQLite, PySUS, release, CLI and local-scientific-review modules fail CI. Dynamic import calls and a small set of private environment variables are also denied in the public import graph. This check runs on Windows and Linux, Python 3.11/3.12.
+
+**This is static defense-in-depth, not a proof of safety:** Python can call APIs dynamically, dependencies can change and runtime behavior may have side effects. It does not replace the MCP tool contract snapshot, full diff review, dependency/secret scanning, pentesting or institutional privacy controls. Any new public import requires explicit security review and allowlist update.
+
+**The legacy local MCP/REST service is NOT the public demonstration.** The legacy environment flag SINAN_PUBLIC_REAL_DATA=1 may enable sensitive aggregate access in sinan_mcp.tool_api under some conditions; it is **not** a permission model and must not be used for internet or third-party connector exposure without independent authority and security review. The Render Blueprint remains pinned to sinan_mcp.public_server, autoDeploy false and synthetic-only data.
+
+**Year coverage is not clinical readiness:** the administrative command diagnosticar-cobertura-multiagravo reads only fixed, packaged reference catalogs and reports all real-data/indicator/publication approval flags as false for every disease/year. It does not open local datasets or modify readiness gates.
