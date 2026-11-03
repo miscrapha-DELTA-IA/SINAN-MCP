@@ -44,6 +44,12 @@ EXCLUDED = frozenset({
     "CHIKUNGUNYA", "DADOS", "CAMPO", "ANO", "VERSAO",
 })
 
+# Human-reviewed, page-specific false positives in the rightmost text region
+# of the 2015 official PDF. Page 14 has a standalone "A" in the continued
+# explanatory paragraph on bairros; it is NOT a DBF column identifier.
+# Do not generalize this exception to other documents or pages.
+REVIEWED_FALSE_POSITIVES = frozenset({("A", 14)})
+
 
 def _scan_official_pdf_draft(pdf_path: str | Path) -> tuple[list[dict], dict]:
     try:
@@ -66,6 +72,7 @@ def _scan_official_pdf_draft(pdf_path: str | Path) -> tuple[list[dict], dict]:
             candidates: dict[str, int] = {}
             n_ambiguous = 0
             n_repeated = 0
+            n_reviewed_false_positive = 0
             n_words = 0
             for page_idx in range(1, pdf.page_count):
                 page = pdf.load_page(page_idx)
@@ -82,6 +89,9 @@ def _scan_official_pdf_draft(pdf_path: str | Path) -> tuple[list[dict], dict]:
                             or bottom > MAX_BOTTOM_RATIO * page.rect.height):
                         continue
                     token = token.strip(" ,.;:\t\r\n")
+                    if (token, page_idx + 1) in REVIEWED_FALSE_POSITIVES:
+                        n_reviewed_false_positive += 1
+                        continue
                     if token in EXCLUDED:
                         continue
                     if REGEX_FIELD.fullmatch(token):
@@ -117,6 +127,7 @@ def _scan_official_pdf_draft(pdf_path: str | Path) -> tuple[list[dict], dict]:
         
         "quantidade_palavras_ambiguidade_ou_acento": n_ambiguous,
         "ocorrencias_de_nome_repetido_no_pdf": n_repeated,
+        "falsos_positivos_revisados_excluidos": n_reviewed_false_positive,
         "campos_ancora_localizados": len(ANCHORS),
     }
 
@@ -162,6 +173,9 @@ def gerar_rascunho_pdf_dbf_local(
         ],
         "nomes_repetidos_no_pdf": diagnostics[
             "ocorrencias_de_nome_repetido_no_pdf"
+        ],
+        "falsos_positivos_revisados_excluidos": diagnostics[
+            "falsos_positivos_revisados_excluidos"
         ],
         "cobertura_declarada": "excerto_parcial",
         "transcricao_verificada_independentemente": False,
