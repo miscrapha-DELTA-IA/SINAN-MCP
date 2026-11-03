@@ -273,3 +273,23 @@ O [plano de conclusão P0–P6](docs/ROADMAP_COMPLETION_GATES.md) explica o que 
 
 A CLI administrativa offline tem os comandos `preparar-checklist-roadmap` e `diagnosticar-checklist-roadmap` para inventariar sete gates por agravo e ano, sem dados clínicos, acesso remoto, identidade de paciente ou permissão de publicação. **Um checklist preenchido não autoriza estatísticas reais**, mesmo com sete pareceres declarados. Usar somente caminhos privados da pasta `data/`, nunca anexar manifestações/pareceres ao repositório.
 
+
+
+## Consolidação P0 e diagnóstico multiagravo (em revisão)
+
+A integração técnica das branches em rascunho #1 e #3–#13 está proposta em um PR consolidado separado, **não implantado nem mesclado**. O [plano de aceite P0](docs/P0_INTEGRATION_ACCEPTANCE.md) descreve a árvore de dependências, o isolamento do MCP público e os controles ainda necessários.
+
+Para verificar no próprio computador a diferença entre **referência de agravo**, **recurso anual identificado** e **dados/indicadores homologados**, sem baixar ou ler microdados:
+
+    py -3.11 -m sinan_mcp diagnosticar-cobertura-multiagravo --ano 2024
+    py -3.11 -m sinan_mcp diagnosticar-cobertura-multiagravo --ano 2024 --agravo CHIK
+
+Na curadoria atual, o índice possui 14 agravos de referência, 3 distribuições catalogadas em 2024 (2 DENG, 1 CHIK), 3 agravos com documento relacionado ao ano (TUBE, DENG, CHIK) e **zero indicadores reais homologados**. A confirmação de layout, versão e coorte continua pendente por agravo/ano. O índice não substitui o catálogo nacional nem estabelece suporte operacional universal.
+
+Os novos testes e a verificação CI de fronteira pública podem ser executados com:
+
+    py -3.11 -m pytest -q tests/test_multiagravo_readiness_integration.py tests/test_public_isolation_gate.py
+    py -3.11 scripts/check_public_isolation.py
+    py -3.11 scripts/check_sensitive_repo.py
+
+A implantação pública continua restrita a sinan_mcp.public_server, uma demonstração inteiramente sintética. **Não usar o serviço local legado com SINAN_PUBLIC_REAL_DATA=1 em ambiente público.**
