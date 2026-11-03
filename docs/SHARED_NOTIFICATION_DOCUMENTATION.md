@@ -52,7 +52,7 @@ direto**, sempre para o **ano pretendido de 2024**, e sem afirmar que
 a edição de 2018 corresponde ao layout ou ao sistema de origem de 2024.
 
 As contagens do diagnóstico multiagravo **não mudam**: 14 aliases,
-12 com dicionário específico histórico curado, 5 distribuições anuais
+13 com dicionário específico histórico curado, 5 distribuições anuais
 identificadas, 0 indicadores homologados.
 
 ## Diagnóstico administrativo
