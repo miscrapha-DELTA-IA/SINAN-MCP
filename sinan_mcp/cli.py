@@ -69,6 +69,20 @@ def main() -> None:
     )
     lineage.add_argument("manifesto", type=Path)
     lineage.add_argument("arquivo", type=Path)
+    list_year = cmd.add_parser(
+        "listar-evidencias-ano", help="Lista documentos oficiais localizados, SEM validar arquivo anual"
+    )
+    look_year = cmd.add_parser(
+        "consultar-evidencia-ano", help="Consulta documentação curada por agravo/ano (sem números)"
+    )
+    look_year.add_argument("--agravo", required=True)
+    look_year.add_argument("--ano", required=True, type=int)
+    audit_year = cmd.add_parser(
+        "confrontar-evidencia-ano", help="Hash local de PDF e arquivo conforme manifesto; SEM autenticar fonte"
+    )
+    audit_year.add_argument("manifesto", type=Path)
+    audit_year.add_argument("arquivo_dados", type=Path)
+    audit_year.add_argument("pdf_dicionario", type=Path)
     inspect_contracts = cmd.add_parser(
         "listar-contratos-demo", help="Lista contratos ilustrativos TUBE/DENG sem dados"
     )
@@ -228,6 +242,29 @@ def main() -> None:
         except (OSError, ValueError) as exc:
             parser.exit(2, "LINHAGEM NÃO VERIFICADA — " + str(exc) + "\n")
         print("SOMENTE INTEGRIDADE LOCAL; ORIGEM E PUBLICAÇÃO NÃO CERTIFICADAS.")
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+    elif args.comando == "listar-evidencias-ano":
+        import json
+        from .year_evidence_registry import listar_evidencias_documentais
+        print(json.dumps(listar_evidencias_documentais(), ensure_ascii=False, indent=2))
+    elif args.comando == "consultar-evidencia-ano":
+        import json
+        from .year_evidence_registry import consultar_evidencia_agravo_ano
+        try:
+            report = consultar_evidencia_agravo_ano(args.agravo, args.ano)
+        except ValueError as exc:
+            parser.exit(2, "CONSULTA DOCUMENTAL RECUSADA — " + str(exc) + "\n")
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+    elif args.comando == "confrontar-evidencia-ano":
+        import json
+        from .year_evidence_review import confrontar_documento_e_arquivo_local
+        try:
+            report = confrontar_documento_e_arquivo_local(
+                args.manifesto, args.arquivo_dados, args.pdf_dicionario
+            )
+        except (OSError, ValueError) as exc:
+            parser.exit(2, "EVIDÊNCIA LOCAL NÃO VERIFICADA — " + str(exc) + "\n")
+        print("INTEGRIDADE DE ARQUIVOS LOCAIS; AUTENTICIDADE OFICIAL NÃO COMPROVADA.")
         print(json.dumps(report, ensure_ascii=False, indent=2))
     elif args.comando == "listar-contratos-demo":
         import json
