@@ -77,6 +77,11 @@ def main() -> None:
     )
     look_year.add_argument("--agravo", required=True)
     look_year.add_argument("--ano", required=True, type=int)
+    document_head = cmd.add_parser(
+        "monitorar-documento-ano", help="HEAD apenas em URL oficial curada, SEM baixar documentos"
+    )
+    document_head.add_argument("--agravo", required=True)
+    document_head.add_argument("--ano", required=True, type=int)
     audit_year = cmd.add_parser(
         "confrontar-evidencia-ano", help="Hash local de PDF e arquivo conforme manifesto; SEM autenticar fonte"
     )
@@ -254,6 +259,14 @@ def main() -> None:
             report = consultar_evidencia_agravo_ano(args.agravo, args.ano)
         except ValueError as exc:
             parser.exit(2, "CONSULTA DOCUMENTAL RECUSADA — " + str(exc) + "\n")
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+    elif args.comando == "monitorar-documento-ano":
+        import json
+        from .document_link_probe import monitorar_link_documental
+        try:
+            report = monitorar_link_documental(args.agravo, args.ano)
+        except ValueError as exc:
+            parser.exit(2, "DOCUMENTO NÃO MONITORÁVEL — " + str(exc) + "\n")
         print(json.dumps(report, ensure_ascii=False, indent=2))
     elif args.comando == "confrontar-evidencia-ano":
         import json
