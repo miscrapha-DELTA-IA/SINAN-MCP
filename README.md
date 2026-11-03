@@ -45,9 +45,16 @@ congelado em datas específicas (sem divulgar o corte exato de ZIKABR24)
 e lista um **"Dicionário de dados - Zika Vírus"** atualizado em
 14/07/2025. Esses elementos foram incorporados, com limitações explícitas,
 ao plano documental ZIKA: `planejar-confronto-documental-2024 --agravo ZIKA`.
-O PDF exato desse recurso não foi recuperado, e nenhuma compatibilidade
-com 2024 foi atestada. A contagem permanece 12 dicionários curados e
-5 distribuições anuais, com zero indicadores homologados.
+**Atualização documental:** localizados o
+[recurso oficial de dicionário Zika](https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus/resource/58038262-c745-46ea-979b-8727eb08ec5c)
+e seu [PDF ministerial](https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/SINAN/Zikavirus/dic_dados_zika.pdf).
+A fonte contém **8 páginas e 37 campos numerados**. O comando
+`py -3.11 -m sinan_mcp diagnosticar-pdf-oficial-zika`
+expõe a referência curada offline. **Nenhuma correspondência de
+esquema com ZIKABR24 foi realizada**: continuam pendentes corte, checksum,
+consolidação, parecer e autorização. A referência adicional ainda não foi
+integrada ao índice multiagravo anterior de 12 dicionários, que permanece
+com 5 distribuições anuais e zero indicadores homologados.
 
 O host `ckan-dadosabertos.saude.gov.br` não resolveu no Windows
 (`DNS_ERROR_RCODE_NAME_ERROR`). A descoberta passou a consultar

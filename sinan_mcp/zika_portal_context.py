@@ -7,14 +7,15 @@ individual 2024 JSON/Parquet file, data-cutoff date, or applicable schema.
 from __future__ import annotations
 
 from .official_annual_resources import consultar_recursos_oficiais_ano
+from .zika_official_dictionary_reference import PDF_URL, RESOURCE_URL
 
 SCHEMA = "sinan-zika-2024-portal-context-v1"
 SOURCE_URL = "https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus"
 SOURCE_TITLE = "Sinan/Vírus Zika"
 DICT_LISTING_TITLE = "Dicionário de dados - Zika Vírus"
 DICT_LISTING_DATE = "2025-07-14"
-# The official public catalogue lists a Zika-specific dictionary item, but
-# this review has NOT recovered and audited its exact PDF resource or contents.
+# The official resource page and 8-page public PDF are now located.
+# No clinical 2024 data, checksum or whole-export scheme has been validated.
 
 
 def consultar_contexto_portal_zika_2024() -> dict:
@@ -51,7 +52,9 @@ def consultar_contexto_portal_zika_2024() -> dict:
         "recurso_de_dicionario_zika_listado_no_portal": True,
         "titulo_recurso_dicionario": DICT_LISTING_TITLE,
         "data_de_atualizacao_listada_do_dicionario": DICT_LISTING_DATE,
-        "url_exata_pdf_dicionario_zika_recuperada": None,
+        "url_exata_pdf_dicionario_zika_recuperada": PDF_URL,
+        "pagina_exata_recurso_dicionario_zika": RESOURCE_URL,
+        "pdf_inspecionado_visual_documentalmente": True,
         "conteudo_pdf_dicionario_zika_auditado": False,
         "dicionario_de_zika_aplicavel_ao_ano_2024_validado": False,
         "distribuicoes_anuais_catalogadas": 2,
@@ -63,9 +66,10 @@ def consultar_contexto_portal_zika_2024() -> dict:
         "status": "CONTEXTO_OFICIAL_DO_CONJUNTO_SEM_VALIDACAO_DO_ARQUIVO",
         "aviso": (
             "O portal descreve SINAN Net, atualização das séries e lista "
-            "um dicionário específico de Zika atualizado em 2025. "
-            "Não foram recuperados o PDF exato nem a data de corte do "
-            "arquivo 2024. Versão, esquema, autenticidade, coorte e "
+            "um dicionário específico de Zika cujo PDF foi localizado "
+            "e visualizado. Não foi estabelecida a data de corte nem a "
+            "compatibilidade com a exportação 2024. Versão, esquema, "
+            "autenticidade dos ZIPs, coorte e "
             "consolidação seguem pendentes. Nenhum dado clínico foi lido."
         ),
     }

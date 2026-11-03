@@ -156,6 +156,10 @@ def main() -> None:
         "identificar-dicionario-zika-portal",
         help="ADMIN: busca somente metadados do PDF Zika no HTML oficial sem baixar arquivos",
     )
+    cmd.add_parser(
+        "diagnosticar-pdf-oficial-zika",
+        help="Metadados já curados de página e PDF oficial Zika, sem abrir ZIPs de casos",
+    )
     readiness_template = cmd.add_parser(
         "preparar-checklist-roadmap",
         help="Criar checklist privado multiagravo/ano, todos os gates PENDENTES",
@@ -481,6 +485,12 @@ def main() -> None:
                   "SIM" if report["dicionario_especifico_zika_listado_no_portal"] else "NAO")
             print("PDF especifico Zika auditado:",
                   "SIM" if report["pdf_exato_zika_auditado"] else "NAO")
+            print("PDF especifico Zika localizado no portal:",
+                  "SIM" if report["pdf_especifico_zika_localizado_no_portal"] else "NAO")
+            print("PDF Zika inspecionado visualmente:",
+                  "SIM" if report["pdf_zika_inspecionado_visualmente"] else "NAO")
+            print("Campos numerados na fonte documental:",
+                  report["numero_campos_documentados_zika"])
             print("Data de corte exata do arquivo ZIKA/2024: NAO IDENTIFICADA")
         print("Topicos de revisao pendentes:", report["total_topicos_pendentes"])
         for entry in report["topicos_pendentes"]:
@@ -537,6 +547,22 @@ def main() -> None:
         print("PDF baixado: NAO; PDF auditado: NAO")
         print("Layout 2024 e data de corte confirmados: NAO")
         print("Indicadores homologados: 0; publicacao autorizada: NAO")
+        print("Status:", report["status"])
+    elif args.comando == "diagnosticar-pdf-oficial-zika":
+        from .zika_official_dictionary_reference import diagnosticar_pdf_oficial_zika
+        report = diagnosticar_pdf_oficial_zika()
+        print("PDF OFICIAL ZIKA LOCALIZADO; NAO E CONFRONTO DE ZIKABR24.")
+        print("UUID documento:", report["id_recurso_dicionario"])
+        print("Pagina oficial:", report["url_recurso_governamental"])
+        print("Documento PDF:", report["url_pdf_governamental"])
+        print("Paginas no PDF:", report["numero_de_paginas_visualizado"])
+        print("Campos numerados no documento:",
+              report["numero_de_campos_numerados_no_documento"])
+        print("Inspecao visual da fonte: SIM")
+        print("Checksum oficial do PDF publicado: NAO")
+        print("Confronto com esquema do arquivo ZIKA/2024: NAO")
+        print("Indicadores reais homologados: 0")
+        print("Publicacao autorizada: NAO")
         print("Status:", report["status"])
     elif args.comando == "preparar-checklist-roadmap":
         from .roadmap_readiness import preparar_checklist_local
