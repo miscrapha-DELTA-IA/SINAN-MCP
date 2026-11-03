@@ -1,19 +1,19 @@
 {
   "schema_version": "sinan-official-year-evidence-v1",
-  "catalog_revision": "2026-11-02-r1",
-  "verified_portal_links_on": "2026-11-02",
+  "catalog_revision": "2026-11-03-r2",
+  "verified_portal_links_on": "2026-11-03",
   "scope": "evidencia_documental_de_fontes_oficiais_sem_atestado_de_compatibilidade_ano",
   "entries": [
     {
-      "agravo_alias_interno": "TUBE",
+      "agravo_alias_interno": "ANIM",
       "ano_do_arquivo_pretendido": 2024,
-      "sistema_documentado": "SINAN NET",
+      "sistema_documentado": "SINAN NET (referência documental histórica)",
       "documento": {
-        "titulo": "Dicionário de Dados — SINAN NET — Versão 5.0 — Tuberculose",
+        "titulo": "Dicionário de Dados — Acidentes por animais peçonhentos — SINAN NET",
         "instituicao_publicadora": "Ministério da Saúde — Portal SINAN",
-        "edicao_documental": "SINAN NET 5.0; nome do arquivo indica 23_07_2020",
-        "pagina_oficial": "https://portalsinan.saude.gov.br/tuberculose",
-        "url_documento": "https://portalsinan.saude.gov.br/images/documentos/Agravos/Tuberculose/DICI_DADOS_NET_Tuberculose_23_07_2020.pdf",
+        "edicao_documental": "SINAN NET 5.0; referência revisada em julho/2010",
+        "pagina_oficial": "https://portalsinan.saude.gov.br/acidente-por-animais-peconhentos",
+        "url_documento": "https://portalsinan.saude.gov.br/images/documentos/Agravos/AAP/DIC_DADOS_Animais_Pedonhentos_v5.pdf",
         "tipo": "pdf_dicionario",
         "integridade_binaria_publicada_por_autoridade": null
       },
@@ -33,7 +33,69 @@
         "aprovacao_epidemiologica_independente": false,
         "aprovacao_para_publicar": false
       },
-      "limitacoes": "Documento de versão NET 5.0 localizado em página do Portal SINAN. A documentação referenciada não constitui prova de que o arquivo TUBE de 2024 utiliza exatamente esse layout ou que sua situação de consolidação seja final."
+      "limitacoes": "Documento histórico oficial referenciado para Acidentes por animais peçonhentos. A existência e a edição deste PDF NÃO estabelecem compatibilidade com o arquivo 2024, existência de distribuição anual exata, sistema de origem, data de corte, consolidação, validade do indicador nem autorização de análise ou divulgação."
+    },
+    {
+      "agravo_alias_interno": "CHIK",
+      "ano_do_arquivo_pretendido": 2024,
+      "sistema_documentado": "SINAN ONLINE (Dengue/Chikungunya)",
+      "documento": {
+        "titulo": "Dicionário de Dados — SINAN Online — Dengue e Chikungunya (inclui CHIK)",
+        "instituicao_publicadora": "Ministério da Saúde — Portal SINAN",
+        "edicao_documental": "SINAN Online 3.0; histórico de revisão com datas em 2014–2015",
+        "pagina_oficial": "https://portalsinan.saude.gov.br/chikungunya",
+        "url_documento": "https://portalsinan.saude.gov.br/images/documentos/Agravos/Dengue/DIC_DADOS_ONLINE.pdf",
+        "tipo": "pdf_dicionario",
+        "integridade_binaria_publicada_por_autoridade": null
+      },
+      "acesso_dados": {
+        "pagina_oficial": "https://www.gov.br/saude/pt-br/acesso-a-informacao/sic/dados-em-transparencia-ativa/svsa/agravos-de-notificacoes/agravos-de-notificacoes",
+        "arquivo_exato_2024": null,
+        "codigo_download_confirmado": null,
+        "checksum_arquivo_publicado_por_autoridade": null,
+        "status_consolidacao_2024": null,
+        "sistema_origem_no_ano_confirmado": false
+      },
+      "validacoes": {
+        "link_de_dicionario_oficial_localizado": true,
+        "arquivo_anual_identificado_independentemente": false,
+        "dicionario_aplicavel_ao_ano_confirmado": false,
+        "esquema_comparado_ao_arquivo_2024": false,
+        "aprovacao_epidemiologica_independente": false,
+        "aprovacao_para_publicar": false
+      },
+      "limitacoes": "O Portal SINAN lista expressamente o dicionário comum SINAN Online 3.0 para Dengue e Chikungunya e remete ao mesmo PDF; ele descreve categorias específicas de CHIK. A compatibilidade e a edição do arquivo CHIK de 2024, o sistema de origem e a situação preliminar/final continuam NÃO verificadas."
+    },
+    {
+      "agravo_alias_interno": "COQU",
+      "ano_do_arquivo_pretendido": 2024,
+      "sistema_documentado": "SINAN NET (referência documental histórica)",
+      "documento": {
+        "titulo": "Dicionário de Dados — Coqueluche — SINAN NET",
+        "instituicao_publicadora": "Ministério da Saúde — Portal SINAN",
+        "edicao_documental": "SINAN NET 5.0; referência revisada em fevereiro/2012",
+        "pagina_oficial": "https://portalsinan.saude.gov.br/coqueluche",
+        "url_documento": "https://portalsinan.saude.gov.br/images/documentos/Agravos/Coqueluche/DIC_DADOS_Coqueluche_v5.pdf",
+        "tipo": "pdf_dicionario",
+        "integridade_binaria_publicada_por_autoridade": null
+      },
+      "acesso_dados": {
+        "pagina_oficial": "https://www.gov.br/saude/pt-br/acesso-a-informacao/sic/dados-em-transparencia-ativa/svsa/agravos-de-notificacoes/agravos-de-notificacoes",
+        "arquivo_exato_2024": null,
+        "codigo_download_confirmado": null,
+        "checksum_arquivo_publicado_por_autoridade": null,
+        "status_consolidacao_2024": null,
+        "sistema_origem_no_ano_confirmado": false
+      },
+      "validacoes": {
+        "link_de_dicionario_oficial_localizado": true,
+        "arquivo_anual_identificado_independentemente": false,
+        "dicionario_aplicavel_ao_ano_confirmado": false,
+        "esquema_comparado_ao_arquivo_2024": false,
+        "aprovacao_epidemiologica_independente": false,
+        "aprovacao_para_publicar": false
+      },
+      "limitacoes": "Documento histórico oficial referenciado para Coqueluche. A existência e a edição deste PDF NÃO estabelecem compatibilidade com o arquivo 2024, existência de distribuição anual exata, sistema de origem, data de corte, consolidação, validade do indicador nem autorização de análise ou divulgação."
     },
     {
       "agravo_alias_interno": "DENG",
@@ -67,15 +129,15 @@
       "limitacoes": "O dicionário SINAN Online 3.0 trata conjuntamente Dengue e Chikungunya e contém histórico de revisões de 2015. Sua correspondência com o arquivo nacional DENG de 2024 e o sistema de origem utilizado nesse período ainda não foram estabelecidos."
     },
     {
-      "agravo_alias_interno": "CHIK",
+      "agravo_alias_interno": "HANS",
       "ano_do_arquivo_pretendido": 2024,
-      "sistema_documentado": "SINAN ONLINE (Dengue/Chikungunya)",
+      "sistema_documentado": "SINAN NET (referência documental histórica)",
       "documento": {
-        "titulo": "Dicionário de Dados — SINAN Online — Dengue e Chikungunya (inclui CHIK)",
+        "titulo": "Dicionário de Dados — Hanseníase — SINAN NET",
         "instituicao_publicadora": "Ministério da Saúde — Portal SINAN",
-        "edicao_documental": "SINAN Online 3.0; histórico de revisão com datas em 2014–2015",
-        "pagina_oficial": "https://portalsinan.saude.gov.br/chikungunya",
-        "url_documento": "https://portalsinan.saude.gov.br/images/documentos/Agravos/Dengue/DIC_DADOS_ONLINE.pdf",
+        "edicao_documental": "SINAN NET 5.0; documento histórico, edição aplicável a 2024 não confirmada",
+        "pagina_oficial": "https://portalsinan.saude.gov.br/hanseniase",
+        "url_documento": "https://portalsinan.saude.gov.br/images/documentos/Agravos/Hanseniase/DIC_DADOS_Hanseniase_v5.pdf",
         "tipo": "pdf_dicionario",
         "integridade_binaria_publicada_por_autoridade": null
       },
@@ -95,7 +157,224 @@
         "aprovacao_epidemiologica_independente": false,
         "aprovacao_para_publicar": false
       },
-      "limitacoes": "O Portal SINAN lista expressamente o dicionário comum SINAN Online 3.0 para Dengue e Chikungunya e remete ao mesmo PDF; ele descreve categorias específicas de CHIK. A compatibilidade e a edição do arquivo CHIK de 2024, o sistema de origem e a situação preliminar/final continuam NÃO verificadas."
+      "limitacoes": "Documento histórico oficial referenciado para Hanseníase. A existência e a edição deste PDF NÃO estabelecem compatibilidade com o arquivo 2024, existência de distribuição anual exata, sistema de origem, data de corte, consolidação, validade do indicador nem autorização de análise ou divulgação."
+    },
+    {
+      "agravo_alias_interno": "HEPA",
+      "ano_do_arquivo_pretendido": 2024,
+      "sistema_documentado": "SINAN NET (referência documental histórica)",
+      "documento": {
+        "titulo": "Dicionário de Dados — Hepatites virais — SINAN NET",
+        "instituicao_publicadora": "Ministério da Saúde — Portal SINAN",
+        "edicao_documental": "SINAN NET 5.0; referência revisada em julho/2010",
+        "pagina_oficial": "https://portalsinan.saude.gov.br/hepatites-virais",
+        "url_documento": "https://portalsinan.saude.gov.br/images/documentos/Agravos/Hepatites%20Virais/DIC_DADOS_Hepatite_v5.pdf",
+        "tipo": "pdf_dicionario",
+        "integridade_binaria_publicada_por_autoridade": null
+      },
+      "acesso_dados": {
+        "pagina_oficial": "https://www.gov.br/saude/pt-br/acesso-a-informacao/sic/dados-em-transparencia-ativa/svsa/agravos-de-notificacoes/agravos-de-notificacoes",
+        "arquivo_exato_2024": null,
+        "codigo_download_confirmado": null,
+        "checksum_arquivo_publicado_por_autoridade": null,
+        "status_consolidacao_2024": null,
+        "sistema_origem_no_ano_confirmado": false
+      },
+      "validacoes": {
+        "link_de_dicionario_oficial_localizado": true,
+        "arquivo_anual_identificado_independentemente": false,
+        "dicionario_aplicavel_ao_ano_confirmado": false,
+        "esquema_comparado_ao_arquivo_2024": false,
+        "aprovacao_epidemiologica_independente": false,
+        "aprovacao_para_publicar": false
+      },
+      "limitacoes": "Documento histórico oficial referenciado para Hepatites virais. A existência e a edição deste PDF NÃO estabelecem compatibilidade com o arquivo 2024, existência de distribuição anual exata, sistema de origem, data de corte, consolidação, validade do indicador nem autorização de análise ou divulgação."
+    },
+    {
+      "agravo_alias_interno": "LEIV",
+      "ano_do_arquivo_pretendido": 2024,
+      "sistema_documentado": "SINAN NET (referência documental histórica)",
+      "documento": {
+        "titulo": "Dicionário de Dados — Leishmaniose visceral — SINAN NET",
+        "instituicao_publicadora": "Ministério da Saúde — Portal SINAN",
+        "edicao_documental": "SINAN NET 5.0; referência revisada em julho/2010",
+        "pagina_oficial": "https://portalsinan.saude.gov.br/leishmaniose-visceral",
+        "url_documento": "https://portalsinan.saude.gov.br/images/documentos/Agravos/Leishmaniose%20Visceral/DIC_DADOS_LV_v5.pdf",
+        "tipo": "pdf_dicionario",
+        "integridade_binaria_publicada_por_autoridade": null
+      },
+      "acesso_dados": {
+        "pagina_oficial": "https://www.gov.br/saude/pt-br/acesso-a-informacao/sic/dados-em-transparencia-ativa/svsa/agravos-de-notificacoes/agravos-de-notificacoes",
+        "arquivo_exato_2024": null,
+        "codigo_download_confirmado": null,
+        "checksum_arquivo_publicado_por_autoridade": null,
+        "status_consolidacao_2024": null,
+        "sistema_origem_no_ano_confirmado": false
+      },
+      "validacoes": {
+        "link_de_dicionario_oficial_localizado": true,
+        "arquivo_anual_identificado_independentemente": false,
+        "dicionario_aplicavel_ao_ano_confirmado": false,
+        "esquema_comparado_ao_arquivo_2024": false,
+        "aprovacao_epidemiologica_independente": false,
+        "aprovacao_para_publicar": false
+      },
+      "limitacoes": "Documento histórico oficial referenciado para Leishmaniose visceral. A existência e a edição deste PDF NÃO estabelecem compatibilidade com o arquivo 2024, existência de distribuição anual exata, sistema de origem, data de corte, consolidação, validade do indicador nem autorização de análise ou divulgação."
+    },
+    {
+      "agravo_alias_interno": "LTAN",
+      "ano_do_arquivo_pretendido": 2024,
+      "sistema_documentado": "SINAN NET (referência documental histórica)",
+      "documento": {
+        "titulo": "Dicionário de Dados — Leishmaniose tegumentar americana — SINAN NET",
+        "instituicao_publicadora": "Ministério da Saúde — Portal SINAN",
+        "edicao_documental": "SINAN NET 5.0; referência revisada em julho/2010",
+        "pagina_oficial": "https://portalsinan.saude.gov.br/leishmaniose-tegumentar-americana",
+        "url_documento": "https://portalsinan.saude.gov.br/images/documentos/Agravos/Leishmaniose%20Tegumentar%20Americana/DIC_DADOS_LTA_v5.pdf",
+        "tipo": "pdf_dicionario",
+        "integridade_binaria_publicada_por_autoridade": null
+      },
+      "acesso_dados": {
+        "pagina_oficial": "https://www.gov.br/saude/pt-br/acesso-a-informacao/sic/dados-em-transparencia-ativa/svsa/agravos-de-notificacoes/agravos-de-notificacoes",
+        "arquivo_exato_2024": null,
+        "codigo_download_confirmado": null,
+        "checksum_arquivo_publicado_por_autoridade": null,
+        "status_consolidacao_2024": null,
+        "sistema_origem_no_ano_confirmado": false
+      },
+      "validacoes": {
+        "link_de_dicionario_oficial_localizado": true,
+        "arquivo_anual_identificado_independentemente": false,
+        "dicionario_aplicavel_ao_ano_confirmado": false,
+        "esquema_comparado_ao_arquivo_2024": false,
+        "aprovacao_epidemiologica_independente": false,
+        "aprovacao_para_publicar": false
+      },
+      "limitacoes": "Documento histórico oficial referenciado para Leishmaniose tegumentar americana. A existência e a edição deste PDF NÃO estabelecem compatibilidade com o arquivo 2024, existência de distribuição anual exata, sistema de origem, data de corte, consolidação, validade do indicador nem autorização de análise ou divulgação."
+    },
+    {
+      "agravo_alias_interno": "MENI",
+      "ano_do_arquivo_pretendido": 2024,
+      "sistema_documentado": "SINAN NET (referência documental histórica)",
+      "documento": {
+        "titulo": "Dicionário de Dados — Meningite — SINAN NET",
+        "instituicao_publicadora": "Ministério da Saúde — Portal SINAN",
+        "edicao_documental": "SINAN NET 5.0; referência revisada em julho/2010",
+        "pagina_oficial": "https://portalsinan.saude.gov.br/meningite",
+        "url_documento": "https://portalsinan.saude.gov.br/images/documentos/Agravos/Meningite/DIC_DADOS_Meningite_v5.pdf",
+        "tipo": "pdf_dicionario",
+        "integridade_binaria_publicada_por_autoridade": null
+      },
+      "acesso_dados": {
+        "pagina_oficial": "https://www.gov.br/saude/pt-br/acesso-a-informacao/sic/dados-em-transparencia-ativa/svsa/agravos-de-notificacoes/agravos-de-notificacoes",
+        "arquivo_exato_2024": null,
+        "codigo_download_confirmado": null,
+        "checksum_arquivo_publicado_por_autoridade": null,
+        "status_consolidacao_2024": null,
+        "sistema_origem_no_ano_confirmado": false
+      },
+      "validacoes": {
+        "link_de_dicionario_oficial_localizado": true,
+        "arquivo_anual_identificado_independentemente": false,
+        "dicionario_aplicavel_ao_ano_confirmado": false,
+        "esquema_comparado_ao_arquivo_2024": false,
+        "aprovacao_epidemiologica_independente": false,
+        "aprovacao_para_publicar": false
+      },
+      "limitacoes": "Documento histórico oficial referenciado para Meningite. A existência e a edição deste PDF NÃO estabelecem compatibilidade com o arquivo 2024, existência de distribuição anual exata, sistema de origem, data de corte, consolidação, validade do indicador nem autorização de análise ou divulgação."
+    },
+    {
+      "agravo_alias_interno": "SIFC",
+      "ano_do_arquivo_pretendido": 2024,
+      "sistema_documentado": "SINAN NET (referência documental histórica)",
+      "documento": {
+        "titulo": "Dicionário de Dados — Sífilis congênita — SINAN NET",
+        "instituicao_publicadora": "Ministério da Saúde — Portal SINAN",
+        "edicao_documental": "SINAN NET 5.0; referência revisada em abril/2012",
+        "pagina_oficial": "https://portalsinan.saude.gov.br/sifilis-congenita",
+        "url_documento": "https://portalsinan.saude.gov.br/images/documentos/Agravos/Sifilis-Con/DIC_DADOS_Sifilis_Congenita_v5.pdf",
+        "tipo": "pdf_dicionario",
+        "integridade_binaria_publicada_por_autoridade": null
+      },
+      "acesso_dados": {
+        "pagina_oficial": "https://www.gov.br/saude/pt-br/acesso-a-informacao/sic/dados-em-transparencia-ativa/svsa/agravos-de-notificacoes/agravos-de-notificacoes",
+        "arquivo_exato_2024": null,
+        "codigo_download_confirmado": null,
+        "checksum_arquivo_publicado_por_autoridade": null,
+        "status_consolidacao_2024": null,
+        "sistema_origem_no_ano_confirmado": false
+      },
+      "validacoes": {
+        "link_de_dicionario_oficial_localizado": true,
+        "arquivo_anual_identificado_independentemente": false,
+        "dicionario_aplicavel_ao_ano_confirmado": false,
+        "esquema_comparado_ao_arquivo_2024": false,
+        "aprovacao_epidemiologica_independente": false,
+        "aprovacao_para_publicar": false
+      },
+      "limitacoes": "Documento histórico oficial referenciado para Sífilis congênita. A existência e a edição deste PDF NÃO estabelecem compatibilidade com o arquivo 2024, existência de distribuição anual exata, sistema de origem, data de corte, consolidação, validade do indicador nem autorização de análise ou divulgação."
+    },
+    {
+      "agravo_alias_interno": "TUBE",
+      "ano_do_arquivo_pretendido": 2024,
+      "sistema_documentado": "SINAN NET",
+      "documento": {
+        "titulo": "Dicionário de Dados — SINAN NET — Versão 5.0 — Tuberculose",
+        "instituicao_publicadora": "Ministério da Saúde — Portal SINAN",
+        "edicao_documental": "SINAN NET 5.0; nome do arquivo indica 23_07_2020",
+        "pagina_oficial": "https://portalsinan.saude.gov.br/tuberculose",
+        "url_documento": "https://portalsinan.saude.gov.br/images/documentos/Agravos/Tuberculose/DICI_DADOS_NET_Tuberculose_23_07_2020.pdf",
+        "tipo": "pdf_dicionario",
+        "integridade_binaria_publicada_por_autoridade": null
+      },
+      "acesso_dados": {
+        "pagina_oficial": "https://www.gov.br/saude/pt-br/acesso-a-informacao/sic/dados-em-transparencia-ativa/svsa/agravos-de-notificacoes/agravos-de-notificacoes",
+        "arquivo_exato_2024": null,
+        "codigo_download_confirmado": null,
+        "checksum_arquivo_publicado_por_autoridade": null,
+        "status_consolidacao_2024": null,
+        "sistema_origem_no_ano_confirmado": false
+      },
+      "validacoes": {
+        "link_de_dicionario_oficial_localizado": true,
+        "arquivo_anual_identificado_independentemente": false,
+        "dicionario_aplicavel_ao_ano_confirmado": false,
+        "esquema_comparado_ao_arquivo_2024": false,
+        "aprovacao_epidemiologica_independente": false,
+        "aprovacao_para_publicar": false
+      },
+      "limitacoes": "Documento de versão NET 5.0 localizado em página do Portal SINAN. A documentação referenciada não constitui prova de que o arquivo TUBE de 2024 utiliza exatamente esse layout ou que sua situação de consolidação seja final."
+    },
+    {
+      "agravo_alias_interno": "VIOL",
+      "ano_do_arquivo_pretendido": 2024,
+      "sistema_documentado": "SINAN NET (referência documental histórica)",
+      "documento": {
+        "titulo": "Dicionário de Dados — Violência interpessoal/autoprovocada — SINAN NET",
+        "instituicao_publicadora": "Ministério da Saúde — Portal SINAN",
+        "edicao_documental": "SINAN NET 5.0/Patch 5.1; referência revisada em junho/2015",
+        "pagina_oficial": "https://portalsinan.saude.gov.br/violencia-interpessoal-autoprovocada",
+        "url_documento": "https://portalsinan.saude.gov.br/images/documentos/Agravos/via/DIC_DADOS_NET_Violencias_v5.pdf",
+        "tipo": "pdf_dicionario",
+        "integridade_binaria_publicada_por_autoridade": null
+      },
+      "acesso_dados": {
+        "pagina_oficial": "https://www.gov.br/saude/pt-br/acesso-a-informacao/sic/dados-em-transparencia-ativa/svsa/agravos-de-notificacoes/agravos-de-notificacoes",
+        "arquivo_exato_2024": null,
+        "codigo_download_confirmado": null,
+        "checksum_arquivo_publicado_por_autoridade": null,
+        "status_consolidacao_2024": null,
+        "sistema_origem_no_ano_confirmado": false
+      },
+      "validacoes": {
+        "link_de_dicionario_oficial_localizado": true,
+        "arquivo_anual_identificado_independentemente": false,
+        "dicionario_aplicavel_ao_ano_confirmado": false,
+        "esquema_comparado_ao_arquivo_2024": false,
+        "aprovacao_epidemiologica_independente": false,
+        "aprovacao_para_publicar": false
+      },
+      "limitacoes": "Documento histórico oficial referenciado para Violência interpessoal/autoprovocada. A existência e a edição deste PDF NÃO estabelecem compatibilidade com o arquivo 2024, existência de distribuição anual exata, sistema de origem, data de corte, consolidação, validade do indicador nem autorização de análise ou divulgação."
     }
   ]
 }
