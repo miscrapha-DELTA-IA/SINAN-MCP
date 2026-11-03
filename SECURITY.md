@@ -49,3 +49,21 @@ Conservative count thresholds are **not a formal anonymization mechanism**. Othe
 - The offline release composition gate rejects multiple approved packages involving the same disease and UF, across years/versions/dimensions. A successful check **never authorizes publication** or establishes cross-release anonymity, external linkage safety, legitimate reviewer identity or legal authorization.
 - CI blocks tracked files in `data/` and common clinical/credential formats, but it is **only a path/extension check**, not a secret/PII content scan. Review the entire diff before merge; use organization-level secret scanning and restricted reviewer access.
 - The service has no production remote microdata OAuth, scope-based permissions, institutional review attestation, or privacy-budget infrastructure. **Do not expose private data remotely or auto-deploy real aggregate releases.** See [implementation and blocking gates](docs/ROADMAP_IMPLEMENTATION.md).
+
+
+## Evidências de fonte oficial por agravo e ano
+
+A referência a um documento hospedado pelo Portal SINAN **não** garante
+que esse dicionário seja aplicável ao arquivo de determinado ano. A
+curadoria `year_evidence_registry` falha fechada: nenhum campo em JSON
+pode promover documentação localizada a dataset autenticado, coorte
+validada ou autorização de publicação. Nenhum novo endpoint acessa
+SQLite, PySUS, arquivos privados ou rede.
+
+`confrontar-evidencia-ano` é CLI administrativa local. Um PDF com
+cabeçalho válido, nome igual e SHA-256 calculado localmente pode ser
+falsificado; o relatório explicitamente **não** comprova publicação
+ou identidade do arquivo. Conserve documentação e resultados sensíveis
+fora de issues, PRs e artefatos de CI. A cadeia de confiança exige
+revisores e provas externas autenticados antes de promover qualquer
+registro anual.
