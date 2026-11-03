@@ -1,6 +1,6 @@
 {
   "schema_version": "sinan-official-year-evidence-v1",
-  "catalog_revision": "2026-11-03-r2",
+  "catalog_revision": "2026-11-03-r3",
   "verified_portal_links_on": "2026-11-03",
   "scope": "evidencia_documental_de_fontes_oficiais_sem_atestado_de_compatibilidade_ano",
   "entries": [
@@ -375,6 +375,37 @@
         "aprovacao_para_publicar": false
       },
       "limitacoes": "Documento histórico oficial referenciado para Violência interpessoal/autoprovocada. A existência e a edição deste PDF NÃO estabelecem compatibilidade com o arquivo 2024, existência de distribuição anual exata, sistema de origem, data de corte, consolidação, validade do indicador nem autorização de análise ou divulgação."
+    },
+    {
+      "agravo_alias_interno": "ZIKA",
+      "ano_do_arquivo_pretendido": 2024,
+      "sistema_documentado": "SINAN Net (dicionário oficial Zika; aplicação a 2024 não verificada)",
+      "documento": {
+        "titulo": "Dicionário de Dados — ZIKA — SINAN Net",
+        "instituicao_publicadora": "Ministério da Saúde — Portal de Dados Abertos do SUS",
+        "edicao_documental": "PDF público dic_dados_zika.pdf, 8 páginas; 37 campos numerados; edição/compatibilidade anual não verificadas",
+        "pagina_oficial": "https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus/resource/58038262-c745-46ea-979b-8727eb08ec5c",
+        "url_documento": "https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/SINAN/Zikavirus/dic_dados_zika.pdf",
+        "tipo": "pdf_dicionario",
+        "integridade_binaria_publicada_por_autoridade": null
+      },
+      "acesso_dados": {
+        "pagina_oficial": "https://www.gov.br/saude/pt-br/acesso-a-informacao/sic/dados-em-transparencia-ativa/svsa/agravos-de-notificacoes/agravos-de-notificacoes",
+        "arquivo_exato_2024": null,
+        "codigo_download_confirmado": null,
+        "checksum_arquivo_publicado_por_autoridade": null,
+        "status_consolidacao_2024": null,
+        "sistema_origem_no_ano_confirmado": false
+      },
+      "validacoes": {
+        "link_de_dicionario_oficial_localizado": true,
+        "arquivo_anual_identificado_independentemente": false,
+        "dicionario_aplicavel_ao_ano_confirmado": false,
+        "esquema_comparado_ao_arquivo_2024": false,
+        "aprovacao_epidemiologica_independente": false,
+        "aprovacao_para_publicar": false
+      },
+      "limitacoes": "O PDF específico ZIKA/SINAN Net foi encontrado em página e S3 oficiais do Ministério da Saúde e contém 37 campos numerados. Não foi cotejado com as colunas das distribuições ZIKABR24 JSON/Parquet. Sem autenticação dos bytes de 2024, data de corte, consolidação, checksum oficial, parecer epidemiológico ou autorização de divulgação."
     }
   ]
 }
