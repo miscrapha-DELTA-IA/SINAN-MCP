@@ -392,3 +392,58 @@ def comparar_esquema_local(
         "publicacao_autorizada": False,
         "aviso": WARN,
     }
+
+
+def salvar_parecer_pendente_local(relatorio: dict, destino: str | Path) -> dict:
+    """Write owner-only REVIEW PACKAGE (not a signed independent decision).
+
+    Evidence + checklist are private and deliberately immutable on creation.
+    Nothing in this function can turn a review into an approved release.
+    """
+    if (not isinstance(relatorio, dict)
+            or relatorio.get("schema_version") != REPORT_SCHEMA
+            or relatorio.get("publicacao_autorizada") is not False
+            or relatorio.get("revisao_epidemiologica_independente") is not False):
+        raise ValueError("Relatório incompatível com o estado pendente")
+    out = Path(destino).expanduser()
+    if (out.is_symlink() or not out.parent.is_dir()
+            or out.parent.is_symlink() or out.suffix.lower() != ".json"):
+        raise ValueError("Destino privado JSON inválido")
+    result = {
+        "schema_version": "sinan-independent-epidemiology-review-pending-v1",
+        "observacao_estrutural": relatorio,
+        "verificacoes_pendentes": {
+            "identidade_e_origem_do_arquivo": "pendente",
+            "hash_publicado_pela_autoridade": "pendente",
+            "edicao_do_dicionario_aplicavel_ao_ano": "pendente",
+            "transcricao_completa_de_nomes_e_tipos": "pendente",
+            "dominios_e_codigos_de_categorias": "pendente",
+            "sistema_origem_e_data_de_corte": "pendente",
+            "qualidade_e_cobertura_de_notificacoes": "pendente",
+            "unidade_observacional_deduplicacao_e_coorte": "pendente",
+            "parecer_epidemiologico_independente": "pendente",
+            "privacidade_composicao_entre_publicacoes": "pendente",
+        },
+        "resultado_revisao": "NAO_AVALIADO",
+        "declaracao_nao_e_parecer_assinado": True,
+        "autorizacao_uso_cientifico": False,
+        "autorizacao_publicacao": False,
+        "aviso": WARN,
+    }
+    fd = os.open(str(out), os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as stream:
+            json.dump(result, stream, ensure_ascii=False, indent=2)
+            stream.write("\n")
+    except BaseException:
+        try:
+            out.unlink()
+        except OSError:
+            pass
+        raise
+    return {
+        "parecer_pendente_gerado_localmente": True,
+        "autorizacao_publicacao": False,
+        "total_etapas_pendentes": len(result["verificacoes_pendentes"]),
+        "aviso": WARN,
+    }
