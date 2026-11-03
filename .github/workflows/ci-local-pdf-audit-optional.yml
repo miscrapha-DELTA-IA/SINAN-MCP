@@ -25,6 +25,6 @@ jobs:
       - name: Prevent accidental sensitive repository content
         run: python scripts/check_sensitive_repo.py
       - name: Synthetic PDF/CSV/JSON tests only
-        run: python -m pytest -q tests/test_local_pdf_dictionary_candidate.py tests/test_local_dengue_dictionary_crosswalk.py tests/test_local_dengue_csv_extra_review.py tests/test_local_schema_review.py tests/test_public_mcp_contract.py
+        run: python -m pytest -q tests/test_local_pdf_dictionary_candidate.py tests/test_local_dengue_dictionary_crosswalk.py tests/test_local_dengue_csv_extra_review.py tests/test_local_dengue_spelling_review.py tests/test_local_schema_review.py tests/test_public_mcp_contract.py
       # NO download of government PDFs or patient datasets; never upload
       # review results as CI artifacts or publish codebook candidates.
