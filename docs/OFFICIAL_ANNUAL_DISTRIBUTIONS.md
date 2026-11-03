@@ -17,13 +17,14 @@ autenticado ou que um dicionário específico tenha sido validado.
 | ZIKA | 2024 | [ZIKABR24.parquet.zip](https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus/resource/41bfda2a-5826-4ef9-8913-497247e6c9ce) — 41bfda2a-5826-4ef9-8913-497247e6c9ce | Parquet compactado | NÃO |
 | TUBE | 2024 | Referência anual exata ainda não identificada por fonte primária equivalente nesta rodada | — | NÃO |
 
-**Diferença importante:** ZIKA/2024 possui duas referências de distribuição
-no índice, mas **nenhum dicionário específico de Zika curado e validado**
-para esse arquivo. O Portal SINAN oferece o dicionário de Notificação
-Individual (comum a diversos agravos), que não equivale a um dicionário
-específico da estrutura de Zika. A documentação de SIFA também permanece
-sem dicionário específico curado. Esses casos não podem ser promovidos
-automaticamente a compatibilidade de esquema ou capacidade analítica.
+**Diferença importante:** ZIKA/2024 possui duas distribuições
+catalogadas e um [dicionário específico histórico do Sinan Net](https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus/resource/58038262-c745-46ea-979b-8727eb08ec5c)
+agora integrado ao registro documental. Isso **não** prova a
+aplicabilidade dos 37 campos numerados do PDF aos arquivos JSON/Parquet
+rotulados 2024. O dicionário genérico de Notificação Individual do
+Portal SINAN continua separado. SIFA permanece sem dicionário
+específico curado e sem distribuição anual primariamente identificada.
+Nenhum desses estados autoriza análises clínicas ou publicação.
 
 Atenção: **as URLs reais de distribuição estão no catálogo JSON**;
 o usuário deve conferir primeiro a página do recurso. Nenhum dado foi
