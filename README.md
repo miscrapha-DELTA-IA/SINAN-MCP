@@ -293,3 +293,6 @@ Os novos testes e a verificação CI de fronteira pública podem ser executados 
     py -3.11 scripts/check_sensitive_repo.py
 
 A implantação pública continua restrita a sinan_mcp.public_server, uma demonstração inteiramente sintética. **Não usar o serviço local legado com SINAN_PUBLIC_REAL_DATA=1 em ambiente público.**
+
+
+A configuração sintética do Render também é verificada por scripts/check_public_deployment.py na CI. Mudanças em render.yaml exigem atualização revisada desse snapshot; a checagem não substitui análise da configuração efetiva na plataforma.
