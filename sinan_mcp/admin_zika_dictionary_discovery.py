@@ -235,6 +235,13 @@ def classificar_falha_descoberta(exc: Exception) -> str:
             "FORMATO_DOCUMENTAL_DIVERGENTE",
             "PAGINA_OFICIAL_NAO_HTML",
             "REDIRECIONAMENTO_PAGINA_OFICIAL",
+            "BUILD_ID_NAO_LOCALIZADO_NA_PAGINA",
+            "BUILD_ID_INVALIDO",
+            "NEXTJS_JSON_EXCEDE_LIMITE",
+            "NEXTJS_METADADOS_INVALIDOS",
+            "NEXTJS_RESPONDEU_NAO_JSON",
+            "REDIRECIONAMENTO_NEXTJS_BLOQUEADO",
+            "NEXTJS_E_HTML_SEM_UUID_DOCUMENTAL_VALIDADO",
         }):
             return msg
         if "Dicionário Zika ausente ou ambíguo" in msg:
