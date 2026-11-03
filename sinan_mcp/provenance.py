@@ -72,13 +72,15 @@ def validate_manifest(doc: object) -> dict:
     if (not isinstance(doc, dict) or set(doc) != SOURCE_KEYS
             or doc.get("schema_version") != SCHEMA):
         raise ValueError("Esquema de manifesto incompatível")
-    if doc["agravo"] not in ALIAS:
+    if not isinstance(doc["agravo"], str) or doc["agravo"] not in ALIAS:
         raise ValueError("Agravo não consta do índice interno de referência")
     if type(doc["ano_arquivo"]) is not int or not 1980 <= doc["ano_arquivo"] <= 2100:
         raise ValueError("Ano de arquivo inválido")
-    if doc["tipo_ano"] not in YEAR_TYPES or doc["metodo"] not in METHODS:
+    if (not isinstance(doc["tipo_ano"], str) or doc["tipo_ano"] not in YEAR_TYPES
+            or not isinstance(doc["metodo"], str) or doc["metodo"] not in METHODS):
         raise ValueError("Tipo de ano ou método de obtenção não reconhecido")
-    if doc["situacao_declarada"] not in {"final", "preliminar", "desconhecido"}:
+    if (not isinstance(doc["situacao_declarada"], str)
+            or doc["situacao_declarada"] not in {"final", "preliminar", "desconhecido"}):
         raise ValueError("Situação declarada inválida")
     download_code = _safe_text(doc["codigo_download_declarado"], max_length=24)
     if not re.fullmatch(r"[A-Za-z0-9_-]{2,24}", download_code):
