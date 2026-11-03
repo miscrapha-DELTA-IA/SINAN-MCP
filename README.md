@@ -256,3 +256,8 @@ py -3.11 -m sinan_mcp --db .\data\sinan.sqlite3 preparar-agregado --agravo TUBE 
 ```
 
 O pacote real ainda não foi preparado no computador do operador, e nenhum dado real foi aprovado ou enviado para nuvem. A importação atual do arquivo TUBE 2024 tem `status=desconhecido`; isso **bloqueia** publicação antes da verificação oficial de consolidação. Consulte o [guia de publicação revisada](docs/AGGREGATE_PUBLICATION.md).
+
+### Revisão do primeiro confronto DENG/2024
+
+O primeiro cotejo entre o cabeçalho local de 121 campos e o rascunho DBF de 2015 identificou 9 candidatos ausentes. A inspeção visual do PDF determinou **1 falso positivo** (`A`, texto explicativo da página 14), deixando **8 campos efetivamente documentados em 2015**, sem demonstrar exigência para o CSV 2024. O extrator passou a excluir apenas esse caso específico; a transcrição continua não revisada e o CSV não foi disponibilizado no repositório. [Parecer documental de nove campos](docs/DENG_2024_SCHEMA_DIVERGENCE_REVIEW.md).
+
