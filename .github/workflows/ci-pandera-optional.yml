@@ -1,0 +1,28 @@
+name: Optional synthetic schema contracts (Pandera)
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  pandera-offline:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ['3.11', '3.12']
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python -m pip install -e ".[dev,quality]"
+      - name: Verify optional Pandera backend is actually installed
+        run: python -c "import pandera.pandas, pandas; print('Pandera ready')"
+      - name: Block private datasets in repo
+        run: python scripts/check_sensitive_repo.py
+      - name: Exercise schema-drift, semantics and public MCP regression tests
+        run: python -m pytest -q tests/test_schema_contracts.py tests/test_semantics.py tests/test_public_server.py
+      # All inputs are synthetic. Do not export clinical files as artifacts.
