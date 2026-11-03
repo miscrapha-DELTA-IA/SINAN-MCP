@@ -39,6 +39,15 @@ Comece pelo [protocolo detalhado](docs/LOCAL_DICTIONARY_SCHEMA_AUDIT.md). Exempl
 
 Há um registro separado de recursos individuais catalogados pelo Ministério da Saúde: **DENG/2024 em CSV e JSON**, **CHIK/2024 em JSON** e **ZIKA/2024 em JSON e Parquet**, cada um com a página oficial, UUID do recurso e nome do ZIP. O ZIKA ainda não tem dicionário específico curado para 2024. Para TUBE/2024, o registro ainda não contém distribuição anual primariamente confirmada.
 
+Para ZIKA/2024, a [conferência das páginas oficiais dos recursos](docs/ZIKA_2024_OFFICIAL_RESOURCE_IDENTITY.md)
+registrou UUID, formato, status administrativo e ID do conjunto comuns ao JSON
+e Parquet. A CLI `confrontar-identidade-zika-2024` coteja o snapshot
+documental offline com os ponteiros já curados, mas **não confirma bytes,
+datas de corte, layout, status epidemiológico nem disponibilidade da URL em
+tempo real**. O candidato `SIFABR24.dbc` encontrado em índice de terceiro
+ainda não foi autenticado por fonte primária, então SIFA permanece com
+0 distribuições anuais oficiais no índice.
+
 As ferramentas MCP `consultar_recursos_oficiais_ano` e `listar_recursos_oficiais_anuais` oferecem **somente metadados**, sem transferir dados. O planejador distingue recurso anual registrado de dicionário efetivamente aplicável; essa compatibilidade permanece não comprovada. Há também comando administrativo `conferir-zip-distribuicao` que verifica estrutura de um ZIP local sem abrir os registros e sem autenticar sua origem.
 
 Consulte [Registro de recursos anuais oficiais e limitações](docs/OFFICIAL_ANNUAL_DISTRIBUTIONS.md).
