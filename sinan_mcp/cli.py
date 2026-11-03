@@ -508,11 +508,11 @@ def main() -> None:
         print("Status:", report["status"])
     elif args.comando in ("identificar-dicionario-zika-portal",
                             "identificar-dicionario-zika-ckan"):
-        from .admin_zika_portal_html import descobrir_dicionario_zika_pagina
+        from .admin_zika_portal_html import descobrir_dicionario_zika_portal
         from .admin_zika_dictionary_discovery import classificar_falha_descoberta
         from urllib.error import HTTPError, URLError
         try:
-            report = descobrir_dicionario_zika_pagina()
+            report = descobrir_dicionario_zika_portal()
         except (ValueError, OSError, UnicodeError, HTTPError, URLError) as exc:
             reason = classificar_falha_descoberta(exc)
             parser.exit(
