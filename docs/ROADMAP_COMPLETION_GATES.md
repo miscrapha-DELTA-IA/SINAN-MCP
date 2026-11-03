@@ -82,3 +82,21 @@ Confirmação da fonte e versão oficiais; evidência de consolidação; dicion�
 - **Dados aptos para pesquisa local determinada**: fonte, ano, dicionário, qualidade, protocolos e autorização de tratamento verificados.
 - **Agregados aptos para publicação**: etapa posterior com análise cumulativa de privacidade, pareceres, autorização e infraestrutura revisada.
 - **Multiagravo**: cumprimento verificável da sequência acima por agravo/ano/indicador, não uma lista nominal de doenças.
+
+
+## Vincular a auditoria documental local já existente (DENG/2024)
+
+O primeiro diagnóstico exibindo `7 de 7 pendentes` é normal porque o checklist nasce sem anexos, e **não apaga o trabalho documental anterior**. O comando administrativo `vincular-evidencia-dengue-roadmap` registra o SHA-256 do parecer privado já gerado pela comparação do PDF de 22 páginas com o **cabeçalho** CSV 2024, sem copiar o PDF, ZIP ou o próprio parecer para outro repositório. Esta operação:
+
+- Aceita somente checklist DENG/2024 com UUID CSV anual curado e gate `dicionario_esquema` vazio; só aceita parecer crosswalk DENG/2024 ainda **PENDENTE**, com `autorizacao_analise_real = false`, `publicacao_autorizada = false`, `dominios_categoricos_verificados = false` e `linhas_de_pacientes_lidas = 0`.
+- Confere formato, recurso, data/ano, SHA-256 locais documentais e coerência das contagens, sem ler CSV ou registros reais. Só lê os metadados de um **arquivo JSON local de parecer**.
+- Cria arquivo JSON **novo** na mesma pasta privada, sem modificar o checklist/parecer originais nem imprimir nomes de campos. Armazena somente SHA-256 dos **bytes do parecer**, não seu conteúdo.
+- Atualiza o estado do gate de `PENDENTE` para `EVIDENCIA_LOCAL_NAO_VALIDADA`. O diagnóstico passa a informar **6 frentes sem evidência e 1 com evidência local NÃO VALIDADA**. O relatório continua negando aprovação científica, acesso remoto e publicação.
+
+Exemplo Windows PowerShell 5.1 (branch do PR #10 e arquivos já existentes em `data/`):
+
+    py -3.11 -m pytest -q tests/test_local_roadmap_evidence.py tests/test_roadmap_readiness.py
+    py -3.11 -m sinan_mcp vincular-evidencia-dengue-roadmap --checklist .\data\roadmap-DENG-2024.json --parecer-esquema .\data\parecer-pendente-dengue-crosswalk-2024.json --saida .\data\roadmap-DENG-2024-com-evidencia.json
+    py -3.11 -m sinan_mcp diagnosticar-checklist-roadmap --arquivo .\data\roadmap-DENG-2024-com-evidencia.json
+
+**Não** concluir automaticamente que um gate está aprovado: um estado com evidência local é uma pendência organizada. A revisão de esquemas só contou nomes, ainda sem fonte autenticada, interpretação de UF, confirmação da nomenclatura CLINC_CHIK/CLINIC_CHIK, tipos, domínio CLASSI_FIN e parecer epidemiológico independente.
