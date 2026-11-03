@@ -28,6 +28,11 @@ from .query_planner import (
     matriz_capacidades as _capabilities,
     planejar_consulta_agravo as _plan_query,
 )
+from .semantics import (
+    vocabulario_semantico as _semantic_vocabulary,
+    planejar_medida_epidemiologica as _semantic_plan,
+    semantica_demo as _synthetic_semantics,
+)
 
 PUBLIC_VERSION = "0.4.0a4"
 WARNING = (
@@ -157,6 +162,25 @@ def planejar_consulta_agravo(
 
 
 @mcp.tool()
+def vocabulario_semantico() -> dict[str, Any]:
+    """Define unidades, eixos temporais, medidas e denominadores sem consultar dados."""
+    return _semantic_vocabulary()
+
+
+@mcp.tool()
+def planejar_medida_epidemiologica(
+    agravo: str, ano_do_arquivo: int, unidade_observacional: str,
+    eixo_temporal: str, tipo_medida: str, denominador: str | None = None,
+    fonte_denominador: str | None = None,
+) -> dict[str, Any]:
+    """Planeja uma medida com semântica controlada; nunca executa cálculo real."""
+    return _semantic_plan(
+        agravo, ano_do_arquivo, unidade_observacional, eixo_temporal,
+        tipo_medida, denominador, fonte_denominador,
+    )
+
+
+@mcp.tool()
 def descrever_campos() -> dict[str, Any]:
     """Explica variáveis do protótipo e a necessidade de validação científica."""
     return {
@@ -198,6 +222,7 @@ def contar_notificacoes(agravo: str, ano_inicio: int | None = None,
             ],
         },
         "proveniencia": _result_meta(),
+        "semantica": _synthetic_semantics(proporcao=False),
         "aviso": WARNING,
     }
 
@@ -225,6 +250,7 @@ def proporcao_abandono_tuberculose(ano_inicio: int | None = None,
         "tipo": "simulacao_nao_oficial_de_abandono",
         "resultado": {"dados": data, "agrupar_por": por},
         "proveniencia": _result_meta(),
+        "semantica": _synthetic_semantics(proporcao=True),
         "aviso": WARNING,
     }
 
