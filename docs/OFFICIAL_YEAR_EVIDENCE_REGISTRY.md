@@ -6,24 +6,38 @@ Foram identificados documentos primários do Ministério da Saúde no Portal
 SINAN. A indicação "oficial" vale para a página e o documento referenciado,
 não para o arquivo de dados pretendido em determinado ano.
 
-## Fontes verificadas no portal em 02/11/2026
+## Fontes localizadas no portal em 02–03/11/2026
 
 | Agravo e ano pretendido | Referência documental | Edição | Correspondência com dados de 2024 |
 |---|---|---|---|
 | TUBE / 2024 | [Dicionário de tuberculose](https://portalsinan.saude.gov.br/images/documentos/Agravos/Tuberculose/DICI_DADOS_NET_Tuberculose_23_07_2020.pdf) | SINAN NET 5.0; nome PDF indica 2020 | NÃO verificada |
 | DENG / 2024 | [Dicionário Dengue/Chikungunya](https://portalsinan.saude.gov.br/images/documentos/Agravos/Dengue/DIC_DADOS_ONLINE.pdf) | SINAN Online 3.0, histórico 2014–2015 | NÃO verificada |
 | CHIK / 2024 | [Dicionário Dengue/Chikungunya](https://portalsinan.saude.gov.br/images/documentos/Agravos/Dengue/DIC_DADOS_ONLINE.pdf) | SINAN Online 3.0, histórico 2014–2015 | NÃO verificada |
+| HANS / 2024 | [Dicionário Hanseníase](https://portalsinan.saude.gov.br/images/documentos/Agravos/Hanseniase/DIC_DADOS_Hanseniase_v5.pdf) | SINAN NET 5.0; edição histórica | NÃO verificada |
+| SIFC / 2024 | [Dicionário Sífilis congênita](https://portalsinan.saude.gov.br/images/documentos/Agravos/Sifilis-Con/DIC_DADOS_Sifilis_Congenita_v5.pdf) | SINAN NET 5.0; abril/2012 | NÃO verificada |
+| HEPA / 2024 | [Dicionário Hepatites virais](https://portalsinan.saude.gov.br/images/documentos/Agravos/Hepatites%20Virais/DIC_DADOS_Hepatite_v5.pdf) | SINAN NET 5.0; julho/2010 | NÃO verificada |
+| MENI / 2024 | [Dicionário Meningite](https://portalsinan.saude.gov.br/images/documentos/Agravos/Meningite/DIC_DADOS_Meningite_v5.pdf) | SINAN NET 5.0; julho/2010 | NÃO verificada |
+| VIOL / 2024 | [Dicionário Violências interpessoais/autoprovocadas](https://portalsinan.saude.gov.br/images/documentos/Agravos/via/DIC_DADOS_NET_Violencias_v5.pdf) | SINAN NET 5.0/Patch 5.1; junho/2015 | NÃO verificada |
+| LEIV / 2024 | [Dicionário Leishmaniose visceral](https://portalsinan.saude.gov.br/images/documentos/Agravos/Leishmaniose%20Visceral/DIC_DADOS_LV_v5.pdf) | SINAN NET 5.0; julho/2010 | NÃO verificada |
+| LTAN / 2024 | [Dicionário Leishmaniose tegumentar americana](https://portalsinan.saude.gov.br/images/documentos/Agravos/Leishmaniose%20Tegumentar%20Americana/DIC_DADOS_LTA_v5.pdf) | SINAN NET 5.0; julho/2010 | NÃO verificada |
+| ANIM / 2024 | [Dicionário Acidentes por animais peçonhentos](https://portalsinan.saude.gov.br/images/documentos/Agravos/AAP/DIC_DADOS_Animais_Pedonhentos_v5.pdf) | SINAN NET 5.0; julho/2010 | NÃO verificada |
+| COQU / 2024 | [Dicionário Coqueluche](https://portalsinan.saude.gov.br/images/documentos/Agravos/Coqueluche/DIC_DADOS_Coqueluche_v5.pdf) | SINAN NET 5.0; fevereiro/2012 | NÃO verificada |
 
 As páginas oficiais são https://portalsinan.saude.gov.br/tuberculose e
 https://portalsinan.saude.gov.br/dengue e
-https://portalsinan.saude.gov.br/chikungunya. O Ministério da Saúde explica
+https://portalsinan.saude.gov.br/chikungunya. Para os outros nove agravos com
+PDF específico localizado, os endereços oficiais estão incorporados à matriz
+versionada. Os demais dois aliases (ZIKA e SIFA) continuam SEM dicionário
+**específico** curado neste registro: a existência de ficha genérica no
+portal não deve ser contabilizada como dicionário específico de 2024.
+O Ministério da Saúde explica
 a obtenção de dados por agravo e ano em:
 https://www.gov.br/saude/pt-br/acesso-a-informacao/sic/dados-em-transparencia-ativa/svsa/agravos-de-notificacoes/agravos-de-notificacoes .
 
 Essa orientação remete aos dicionários de Docs_TAB_SINAN.zip. Não foram
 confirmados nesta etapa o arquivo nacional de 2024, checksum publicado
 pela autoridade, status final, data de corte ou versão de dicionário
-vinculada ao arquivo TUBE, DENG ou CHIK de 2024.
+vinculada aos arquivos anuais de qualquer dos 12 agravos com dicionário localizado. Os três recursos anuais já catalogados continuam sendo 2 de DENG e 1 de CHIK; nenhum recurso novo foi validado nesta revisão.
 
 Uma evidência documental localizada não garante correção para determinado
 ano. O SINAN NET, SINAN ONLINE e outros sistemas podem empregar layouts
