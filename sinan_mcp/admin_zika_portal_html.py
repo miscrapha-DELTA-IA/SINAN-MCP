@@ -241,7 +241,7 @@ def descobrir_dicionario_zika_pagina(html=None):
 # https://github.com/AlertaDengue/PySUS/blob/main/pysus/api/saude/next_data.py
 # https://github.com/AlertaDengue/PySUS/blob/main/pysus/api/saude/catalog.py
 # No internal hostname, redirect or arbitrary URL is trusted.
-BUILD_ID = re.compile(r"[A-Za-z0-9_-]{8,128}\\Z")
+BUILD_ID = re.compile(r"[A-Za-z0-9_-]{8,128}\Z")
 
 
 def _extract_build_id(html):
