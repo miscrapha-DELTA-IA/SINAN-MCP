@@ -12,6 +12,7 @@ import pytest
 pymupdf = pytest.importorskip("pymupdf")
 pytest.importorskip("reportlab")
 from reportlab.lib.pagesizes import A4, landscape
+from reportlab.lib import colors
 from reportlab.platypus import Table
 from reportlab.pdfgen import canvas
 
@@ -32,7 +33,7 @@ def _pdf_with_table(path: Path):
     ]
     tab = Table(content, colWidths=[45, 140, 105, 70, 105, 150, 150], rowHeights=[35, 50, 60, 50])
     tab.setStyle([
-        ("GRID", (0, 0), (-1, -1), 0.5, (0, 0, 0)),
+        ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
     ])
     w, h = tab.wrap(width, height)
     tab.drawOn(c, 40, height - h - 40)
