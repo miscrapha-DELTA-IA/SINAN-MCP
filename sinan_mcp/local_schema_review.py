@@ -118,7 +118,8 @@ def validate_candidate(candidate: object) -> dict:
     sha = candidate["pdf_sha256_local_observado"]
     if not isinstance(sha, str) or not SHA.fullmatch(sha):
         raise ValueError("Checksum local de PDF ausente ou inválido")
-    if candidate["cobertura"] not in ALLOWED_COVERAGE:
+    if (not isinstance(candidate["cobertura"], str)
+            or candidate["cobertura"] not in ALLOWED_COVERAGE):
         raise ValueError("Cobertura da transcrição inválida")
     if row["distribution_format"] == "CSV":
         if (candidate["csv_encoding"] not in ("utf-8-sig", "latin-1", "cp1252")
@@ -290,7 +291,7 @@ def _json_keys(stream, contract: dict) -> tuple[set[str], int, bool]:
                 seen.add(value)
                 if len(seen) > 2000:
                     raise ValueError("JSON excede limite de campos distintos")
-            if in_root_record and prefix.startswith(row_prefix + ".") and event in (
+            if in_root_record and prefix != row_prefix and event in (
                 "start_array", "start_map",
             ):
                 nested = True
