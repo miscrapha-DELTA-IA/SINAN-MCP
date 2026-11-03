@@ -53,7 +53,7 @@ REVIEWED_FALSE_POSITIVES = frozenset({("A", 14)})
 
 def _scan_official_pdf_draft(pdf_path: str | Path) -> tuple[list[dict], dict]:
     try:
-        import fitz
+        import pymupdf as fitz
     except ImportError:
         raise RuntimeError(
             "Extração PDF opcional ausente: pip install -e '.[pdfaudit]'"
