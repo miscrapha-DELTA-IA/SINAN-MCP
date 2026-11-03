@@ -503,15 +503,23 @@ def main() -> None:
         print("Acesso real e publicacao autorizados: NAO")
         print("Status:", report["status"])
     elif args.comando == "identificar-dicionario-zika-ckan":
-        from .admin_zika_dictionary_discovery import identificar_dicionario_zika_no_ckan
+        from .admin_zika_dictionary_discovery import (
+            identificar_dicionario_zika_no_ckan, classificar_falha_descoberta,
+        )
         from urllib.error import HTTPError, URLError
         try:
             report = identificar_dicionario_zika_no_ckan()
-        except (ValueError, OSError, UnicodeError, HTTPError, URLError):
+        except (ValueError, OSError, UnicodeError, HTTPError, URLError) as exc:
+            cause = classificar_falha_descoberta(exc)
             parser.exit(
-                2, "DICIONARIO ZIKA NAO LOCALIZADO COM EVIDENCIA SUFICIENTE. "
-                "Endpoint CKAN pode estar inacessivel. Consulte a pagina oficial "
-                "do conjunto e nao invente PDF/UUID.\n"
+                2,
+                "DICIONARIO ZIKA NAO LOCALIZADO COM EVIDENCIA SUFICIENTE.\n"
+                "Causa tecnica: " + cause + "\n"
+                "Nenhum UUID ou PDF foi presumido. Para consulta alternativa, "
+                "abra o conjunto oficial Sinan/Virus Zika ou siga o guia do "
+                "MS na modalidade DOCUMENTACAO (Docs_TAB_SINAN.zip).\n"
+                "PDF auditado: NAO; layout 2024 validado: NAO; "
+                "publicacao autorizada: NAO.\n"
             )
         print("METADADOS DE DICIONARIO ZIKA NO CKAN; PDF NAO AUDITADO.")
         print("UUID recurso:", report["recurso_uuid_documentado"])
