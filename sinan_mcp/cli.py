@@ -59,6 +59,23 @@ def main() -> None:
     )
     verify.add_argument("arquivo", type=Path)
     verify.add_argument("--sha256", required=True, help="SHA-256 externo aprovado")
+    sourceproof = cmd.add_parser(
+        "verificar-proveniencia", help="Conferir hash de arquivo LOCAL e manifesto de origem declarado"
+    )
+    sourceproof.add_argument("manifesto", type=Path)
+    sourceproof.add_argument("arquivo", type=Path, help="Arquivo de dados local; conteúdo nunca é enviado")
+    quality = cmd.add_parser(
+        "auditar-qualidade", help="Relatório privado de qualidade da projeção já importada"
+    )
+    quality.add_argument("--agravo", required=True)
+    quality.add_argument("--ano", required=True, type=int)
+    composition = cmd.add_parser(
+        "verificar-composicao", help="Bloqueio de releases sobrepostos, SEM publicar"
+    )
+    composition.add_argument(
+        "--pacote", nargs=2, action="append", required=True,
+        metavar=("CAMINHO_JSON", "SHA256"), help="Repetir para cada pacote aprovado"
+    )
     diagnostic = cmd.add_parser("diagnosticar-base", help="Relatório LOCAL de completude (administrativo)")
     diagnostic.add_argument("--agravo", required=True)
     diagnostic.add_argument("--ano", required=True, type=int)
@@ -167,6 +184,31 @@ def main() -> None:
         print("Agravo:", scope["agravo"], "ano do arquivo:", scope["ano_do_arquivo"],
               "UF:", scope["uf"], "dimensão:", scope["dimensao"])
         print("Nenhum dado foi publicado ou enviado à nuvem.")
+    elif args.comando == "verificar-proveniencia":
+        import json
+        from .provenance import verify_local_file
+        try:
+            report = verify_local_file(args.manifesto, args.arquivo)
+        except (OSError, ValueError) as exc:
+            parser.exit(2, "PROVENIÊNCIA NÃO VERIFICADA — " + str(exc) + "\n")
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+    elif args.comando == "auditar-qualidade":
+        import json
+        from .quality_gate import audit_projected_snapshot
+        try:
+            report = audit_projected_snapshot(args.db, agravo=args.agravo, ano=args.ano)
+        except (OSError, ValueError) as exc:
+            parser.exit(2, "AUDITORIA LOCAL INDISPONÍVEL — " + str(exc) + "\n")
+        print("AVISO: RELATÓRIO SENSÍVEL LOCAL; NÃO COMPARTILHAR/ENVIAR AO MCP.")
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+    elif args.comando == "verificar-composicao":
+        import json
+        from .release_composition import assess_release_set
+        try:
+            report = assess_release_set([(path, sha) for path, sha in args.pacote])
+        except (OSError, ValueError) as exc:
+            parser.exit(2, "COMPOSIÇÃO NÃO ADMITIDA — " + str(exc) + "\n")
+        print(json.dumps(report, ensure_ascii=False, indent=2))
     elif args.comando == "diagnosticar-base":
         import json
         print(json.dumps(diagnosticar_base(args.db, args.agravo, args.ano), ensure_ascii=False, indent=2))
