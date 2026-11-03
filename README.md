@@ -37,7 +37,7 @@ Comece pelo [protocolo detalhado](docs/LOCAL_DICTIONARY_SCHEMA_AUDIT.md). Exempl
 
 ## Distribuições oficiais de 2024 identificadas no Portal de Dados Abertos
 
-Há um registro separado de recursos individuais catalogados pelo Ministério da Saúde: **DENG/2024 em CSV e JSON**, **CHIK/2024 em JSON** e **ZIKA/2024 em JSON e Parquet**, cada um com a página oficial, UUID do recurso e nome do ZIP. O ZIKA ainda não tem dicionário específico curado para 2024. Para TUBE/2024, o registro ainda não contém distribuição anual primariamente confirmada.
+Há um registro separado de recursos individuais catalogados pelo Ministério da Saúde: **DENG/2024 em CSV e JSON**, **CHIK/2024 em JSON** e **ZIKA/2024 em JSON e Parquet**, cada um com a página oficial, UUID do recurso e nome do ZIP. O ZIKA tem dicionário histórico específico localizado no portal, mas **não foi comprovada sua aplicabilidade ao arquivo de 2024**. Para TUBE/2024, o registro ainda não contém distribuição anual primariamente confirmada.
 
 A descrição oficial do conjunto [Sinan/Vírus Zika](https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus)
 indica **SINAN Net**, prazo textual de 60 dias para encerramento, histórico
@@ -53,8 +53,8 @@ A fonte contém **8 páginas e 37 campos numerados**. O comando
 expõe a referência curada offline. **Nenhuma correspondência de
 esquema com ZIKABR24 foi realizada**: continuam pendentes corte, checksum,
 consolidação, parecer e autorização. A referência adicional ainda não foi
-integrada ao índice multiagravo anterior de 12 dicionários, que permanece
-com 5 distribuições anuais e zero indicadores homologados.
+integrada ao índice multiagravo com **13 documentos específicos localizados**,
+5 distribuições anuais catalogadas e zero indicadores homologados.
 
 O host `ckan-dadosabertos.saude.gov.br` não resolveu no Windows
 (`DNS_ERROR_RCODE_NAME_ERROR`). A descoberta passou a consultar
@@ -91,7 +91,7 @@ Consulte [Registro de recursos anuais oficiais e limitações](docs/OFFICIAL_ANN
 
 ## Registro curado de fontes e dicionários por agravo/ano (sem dados reais)
 
-O índice de evidências documentais foi iniciado com **TUBE/2024**, **DENG/2024** e **CHIK/2024**, sendo posteriormente ampliado para 12 agravos com dicionário histórico específico (nenhum com aplicabilidade anual comprovada). Consulte: [registro de fontes por ano e limitações](docs/OFFICIAL_YEAR_EVIDENCE_REGISTRY.md).
+O índice de evidências documentais foi iniciado com **TUBE/2024**, **DENG/2024** e **CHIK/2024**, sendo posteriormente ampliado para **13 agravos** com dicionário histórico específico (nenhum com aplicabilidade anual comprovada). Consulte: [registro de fontes por ano e limitações](docs/OFFICIAL_YEAR_EVIDENCE_REGISTRY.md).
 
 Para ZIKA e SIFA, o [diagnóstico transversal](docs/SHARED_NOTIFICATION_DOCUMENTATION.md) diferencia **o vínculo direto do PDF comum da Notificação Individual na página de Zika** da **hipótese de vinculação documental desse PDF a sífilis adquirida**. O Guia de Vigilância em Saúde (MS, 2024, pág. impressa 506) confirma a **orientação de Notificação/Conclusão para sífilis adquirida em adultos**, sem validar layout da exportação SIFA/2024. Comando local: `py -3.11 -m sinan_mcp diagnosticar-documentacao-transversal --ano 2024`. A [matriz documental SIFA/ZIKA de 2024](docs/SIFA_ZIKA_2024_DOCUMENTARY_CROSSWALK.md) lista 10 temas pendentes sem ler arquivos clínicos: `py -3.11 -m sinan_mcp planejar-confronto-documental-2024 --agravo SIFA`. Nenhuma referência compartilhada incrementa a contagem de dicionários específicos ou autoriza uso real.
 
@@ -332,7 +332,7 @@ Para verificar no próprio computador a diferença entre **referência de agravo
     py -3.11 -m sinan_mcp diagnosticar-cobertura-multiagravo --ano 2024
     py -3.11 -m sinan_mcp diagnosticar-cobertura-multiagravo --ano 2024 --agravo CHIK
 
-Na curadoria desta branch, o índice possui 14 agravos de referência, 5 distribuições catalogadas em 2024 (2 DENG, 1 CHIK, 2 ZIKA), 12 agravos com dicionários históricos específicos localizados e **zero indicadores reais homologados**. A confirmação de layout, versão e coorte continua pendente por agravo/ano. O índice não substitui o catálogo nacional nem estabelece suporte operacional universal.
+Na curadoria desta branch, o índice possui 14 agravos de referência, 5 distribuições catalogadas em 2024 (2 DENG, 1 CHIK, 2 ZIKA), **13 agravos** com dicionários históricos específicos localizados e **zero indicadores reais homologados**. A confirmação de layout, versão e coorte continua pendente por agravo/ano. O índice não substitui o catálogo nacional nem estabelece suporte operacional universal.
 
 Os novos testes e a verificação CI de fronteira pública podem ser executados com:
 
