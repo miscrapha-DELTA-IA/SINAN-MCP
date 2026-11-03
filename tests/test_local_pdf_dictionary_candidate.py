@@ -8,7 +8,7 @@ import sys
 
 import pytest
 
-fitz = pytest.importorskip("fitz")
+fitz = pytest.importorskip("pymupdf")
 pytest.importorskip("reportlab")
 from reportlab.pdfgen import canvas
 
