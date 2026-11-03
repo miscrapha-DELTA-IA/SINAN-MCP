@@ -18,7 +18,7 @@ from reportlab.pdfgen import canvas
 
 from sinan_mcp.local_dengue_dictionary_crosswalk import (
     _table_rows, _only_documented_crosswalk, _pdf_local_hash,
-    examinar_pdf_dengue_local,
+    examinar_pdf_dengue_local, _hipoteses_documentais_de_escopo,
 )
 
 
@@ -97,3 +97,38 @@ def test_cli_help_available_without_pdf_dependency():
     assert p.returncode == 0, p.stderr
     assert "--contrato-2015" in p.stdout
     assert "--parecer-pendente" in p.stdout
+
+
+def test_clinic_chik_absence_is_only_a_hypothesis_not_an_exemption():
+    result = _hipoteses_documentais_de_escopo(
+        {"CLINIC_CHIK", "CS_RACA"}, {"CS_RACA"}
+    )
+    assert len(result) == 1
+    assert result[0]["campo_documentado"] == "CLINIC_CHIK"
+    assert result[0]["pagina_pdf"] == 13
+    assert result[0]["sequencia_documental"] == 73
+    assert result[0]["escopo_condicional_documentado"] == "Chikungunya"
+    assert result[0]["motivo_da_ausencia_no_csv"] == "NAO_DETERMINADO"
+    assert result[0]["dispensa_justificada"] is False
+    assert result[0]["validacao_independente"] == "PENDENTE"
+
+
+def test_no_scope_assumption_when_clinic_chik_is_present():
+    assert _hipoteses_documentais_de_escopo(
+        {"CLINIC_CHIK", "CS_RACA"}, {"CLINIC_CHIK", "CS_RACA"}
+    ) == []
+
+
+def test_no_scope_assumption_for_other_missing_and_never_echo_unknown_csv_names():
+    result = _hipoteses_documentais_de_escopo(
+        {"CS_RACA", "HOSPITAL"}, {"CS_RACA", "UNKNOWN_HEADER_99"}
+    )
+    assert result == []
+    # The same unknown header must never be included in the public-document
+    # hypothesis, and the existing private crosswalk still only counts extras.
+    crosswalk = _only_documented_crosswalk(
+        {"CS_RACA", "HOSPITAL"}, {"HOSPITAL"},
+        {"CS_RACA", "UNKNOWN_HEADER_99"},
+    )
+    assert crosswalk["quantidade_csv_fora_pdf_atual"] == 1
+    assert "UNKNOWN_HEADER_99" not in str(crosswalk)
