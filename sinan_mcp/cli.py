@@ -148,6 +148,10 @@ def main() -> None:
         "confrontar-identidade-zika-2024",
         help="Conferir snapshot offline de UUID/formato/pacote do portal, nao de ZIP",
     )
+    cmd.add_parser(
+        "identificar-dicionario-zika-ckan",
+        help="ADMIN: busca somente metadados da ficha PDF Zika no CKAN oficial; sem baixar PDF",
+    )
     readiness_template = cmd.add_parser(
         "preparar-checklist-roadmap",
         help="Criar checklist privado multiagravo/ano, todos os gates PENDENTES",
@@ -497,6 +501,30 @@ def main() -> None:
         print("Arquivos binarios acessados: 0; campos clinicos lidos: 0")
         print("Layout 2024 e consolidacao comprovados: NAO")
         print("Acesso real e publicacao autorizados: NAO")
+        print("Status:", report["status"])
+    elif args.comando == "identificar-dicionario-zika-ckan":
+        from .admin_zika_dictionary_discovery import identificar_dicionario_zika_no_ckan
+        from urllib.error import HTTPError, URLError
+        try:
+            report = identificar_dicionario_zika_no_ckan()
+        except (ValueError, OSError, UnicodeError, HTTPError, URLError):
+            parser.exit(
+                2, "DICIONARIO ZIKA NAO LOCALIZADO COM EVIDENCIA SUFICIENTE. "
+                "Endpoint CKAN pode estar inacessivel. Consulte a pagina oficial "
+                "do conjunto e nao invente PDF/UUID.\n"
+            )
+        print("METADADOS DE DICIONARIO ZIKA NO CKAN; PDF NAO AUDITADO.")
+        print("UUID recurso:", report["recurso_uuid_documentado"])
+        print("Pagina oficial do recurso:", report["pagina_recurso_oficial"])
+        print("Formato:", report["formato"])
+        print("URL PDF em caminho permitido:",
+              "SIM" if report["url_pdf_validada_estruturalmente"] else "NAO")
+        if report["url_pdf_validada_estruturalmente"]:
+            print("URL documental candidata:",
+                  report["pdf_url_apenas_se_host_e_caminho_permitidos"])
+        print("PDF baixado: NAO; PDF auditado: NAO")
+        print("Layout 2024 e data de corte confirmados: NAO")
+        print("Indicadores homologados: 0; publicacao autorizada: NAO")
         print("Status:", report["status"])
     elif args.comando == "preparar-checklist-roadmap":
         from .roadmap_readiness import preparar_checklist_local
