@@ -264,6 +264,11 @@ def preparar_pacote_revisao_dengue_local(
     plan, raw = _read_json_private(plano_path)
     if hashlib.sha256(raw).hexdigest() != plan_hash:
         raise ValueError("Plano mudou durante a verificacao")
+    if (plan.get("unidade_observacional") != "NAO_DEFINIDA"
+            or plan.get("coorte_definida_independentemente") is not False
+            or plan.get("revisao_clinica_independente") != "PENDENTE"
+            or plan.get("data_cutoff_confirmada") is not False):
+        raise ValueError("Plano cientifico declara conclusao ainda nao comprovada")
     simulation_hash = _simulation_digest(simulacao_path, plan_hash)
     zip_hash = plan["zip_sha256_local"]
     if not isinstance(zip_hash, str) or not SHA.fullmatch(zip_hash):
