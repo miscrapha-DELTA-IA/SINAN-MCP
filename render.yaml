@@ -11,5 +11,7 @@ services:
     healthCheckPath: /health
     autoDeploy: false
     envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.17"
       - key: SINAN_PUBLIC_REAL_DATA
         value: "0"
