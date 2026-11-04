@@ -1,0 +1,37 @@
+{
+  "schema_version": "sinan-public-mcp-contract-v1",
+  "nature": "synthetic-only",
+  "live_data_available": false,
+  "patient_records_available": false,
+  "supports_arbitrary_sql": false,
+  "health_path": "/health",
+  "mcp_path": "/mcp",
+  "protocol": "streamable-http",
+  "fixture": {
+    "agravo": "TUBE",
+    "file_year": 2024,
+    "uf": "PI",
+    "rows": 120,
+    "provenance": "synthetic-in-code/v1"
+  },
+  "public_tools": [
+    "sobre_o_servidor",
+    "listar_bases",
+    "listar_agravos",
+    "listar_fontes_oficiais",
+    "pesquisar_agravos",
+    "descrever_agravo",
+    "descrever_campos",
+    "metodologia_abandono_tuberculose",
+    "contar_notificacoes",
+    "proporcao_abandono_tuberculose"
+  ],
+  "blocked_tool_prefixes": [
+    "importar",
+    "diagnosticar",
+    "auditar",
+    "query_sql",
+    "executar_sql",
+    "preparar"
+  ]
+}
