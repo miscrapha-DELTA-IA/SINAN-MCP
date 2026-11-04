@@ -14,3 +14,5 @@ Estado: confirmação de workspace e de configuração efetiva ainda pendentes. 
 10. Guardar evidência não sensível do inventário, SHA e resultado. Nunca realizar deploy, reinício, nova variável ou conexão de banco como parte desta auditoria.
 
 Gate: diferença inesperada bloqueia publicação até revisão. Uma versão privada ou base real jamais pode substituir o serviço demonstrativo.
+
+Observação de compatibilidade: a versão proposta é Python 3.11.17, declarada em .python-version e no Blueprint; no serviço real, PYTHON_VERSION do ambiente tem precedência e deve ser conferida sem revelar valores secretos. Não instalar um lockfile gerado para Python 3.11 em um Python padrão 3.14.

@@ -35,3 +35,7 @@ Status: proposta de hardening versionada. Nenhuma configuração de produção �
 
 ## 5. Limites desta proposta
 Nenhuma suíte automatizada certifica anonimização, disponibilidade contra ataque ou equivalência de indicadores oficiais. Mesmo com hash-pin e teste de rede, só existe validação funcional do software. O caminho privado de pesquisa nunca deverá ser incorporado ao serviço público. Consulte os checklists de GitHub e Render neste diretório.
+
+### Versão do interpretador
+
+O manifesto proposto fixa Python 3.11.17 para ser compatível com os lockfiles resolvidos sob Python 3.11. Serviços novos da Render podem escolher outro padrão se não houver pin. Conferir qualquer variável PYTHON_VERSION preexistente, que prevalece sobre .python-version; não presumir que mudar o repositório alterou o processo já implantado.
