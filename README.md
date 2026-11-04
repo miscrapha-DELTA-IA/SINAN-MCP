@@ -181,6 +181,7 @@ Security concerns should be reported privately to maintainers, without including
 | [Condition catalogue](docs/MULTI_AGRAVO_CATALOG.md) | Scope, sources and internal aliases |
 | [Epidemiological interpretation](docs/EPIDEMIOLOGY.md) | Definitions, denominators and limitations |
 | [Public preview and disclosure](docs/PUBLIC_DISCLOSURE.md) | Synthetic-data boundary and service notice |
+| [Technical E2E and deployment baseline](docs/TECHNICAL_CONSOLIDATION_E2E.md) | Public MCP contract, tests and verified Render revision |
 | [Local research and release safeguards](docs/AGGREGATE_PUBLICATION.md) | Candidate aggregates and independent review requirements |
 | [Predictive fairness protocol](docs/FAIRNESS_PROTOCOL.md) | Exploratory offline assessment and limitations |
 | [Security policy](SECURITY.md) | Data handling, threat boundaries and deployment precautions |
