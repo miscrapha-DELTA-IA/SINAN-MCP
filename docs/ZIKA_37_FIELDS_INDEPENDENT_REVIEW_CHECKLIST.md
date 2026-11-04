@@ -145,7 +145,10 @@ converter esse checklist em homologação científica.
 
 O comando `preparar-roteiro-revisor-zika --saida roteiro.md`
 gera um roteiro Markdown *a partir de metadados documentais públicos*,
-com 37 linhas, sete ressalvas e links para as páginas do PDF. Ele não
+com 37 linhas, sete ressalvas e links para as páginas do PDF.
+Também apresenta 12 resumos de categorias citadas no catálogo e
+sete perguntas sobre regras condicionais, para conferência humana;
+nenhuma é validada ou aplicada a ZIKABR24. Ele não
 lê as notas do checklist privado, nem marca campos como conferidos.
 Veja o [fluxo de entrega a avaliador externo](ZIKA_EXTERNAL_REVIEWER_HANDOFF.md).
 
