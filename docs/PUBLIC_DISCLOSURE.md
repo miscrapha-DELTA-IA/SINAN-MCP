@@ -21,3 +21,7 @@ Read-only health check: https://sinan-mcp-public-preview.onrender.com/health
 ## Catálogo de múltiplos agravos (v0.4.0a4, sujeito a implantação)
 
 O catálogo possui referências e aliases internos para várias doenças e agravos, além de páginas de consulta oficiais. A presença de uma doença na busca não representa uma base carregada, um código oficial PySUS verificado ou estatísticas de notificação disponíveis. Só as ferramentas de demonstração de TB retornam contagens **totalmente fictícias**. A coleta de tabelas reais exige uma cadeia separada de validação científica, documentação de proveniência, proteção estatística e aprovação independente antes da publicação.
+
+## Operational safeguards and current limits
+
+The proposed server-side request throttling is global to a single process, not per user, and not a replacement for provider/edge abuse controls. Retention goals and alert thresholds described in [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) are proposals until settings in the actual hosting workspace are verified. No live Render deployment is implied by a GitHub PR or by passing CI tests.

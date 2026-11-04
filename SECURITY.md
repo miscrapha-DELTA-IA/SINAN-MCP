@@ -40,3 +40,7 @@ Conservative count thresholds are **not a formal anonymization mechanism**. Othe
 ## Official table candidates (v0.4.0a4)
 
 `preparar-tabela-oficial` is a **local-only** conservative schema/disclosure check for a user-provided preaggregated table. It does not access source websites, attest that values are authentic, validate the declared source SHA-256 against an export, or publish values. Its output remains an UNAPPROVED candidate inside gitignored `data/review-packages/`, not consumed by either public MCP service. Independent source reconciliation, cross-release disclosure risk and authorization are required before any public use.
+
+## Segurança operacional da demonstração pública — proposta 2026-11-04
+
+O PR de hardening propõe um orçamento global por processo (300 req/min), concorrência máxima de 16 chamadas MCP, HTTP 429 com Retry-After, deploy com lockfile e auditoria de dependências, sem depender de X-Forwarded-For para identidade. Esses limites não substituem proteção na borda, autenticação de uma futura instância com dados sensíveis ou auditoria externa. A Render atual permanece inalterada até autorização específica. Consultar [runbook operacional](docs/SECURITY_OPERATIONS.md), [proteção de branch](docs/BRANCH_PROTECTION.md) e [checklist Render](docs/RENDER_SECURITY_VERIFICATION.md).
