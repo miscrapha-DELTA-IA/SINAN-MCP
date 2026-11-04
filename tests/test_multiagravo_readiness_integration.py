@@ -26,7 +26,7 @@ def test_2024_registry_coverage_not_equivalent_to_research_approval():
     assert entries["DENG"]["formatos_catalogados"] == ["CSV", "JSON"]
     assert entries["CHIK"]["distribuicoes_anuais_catalogadas"] == 1
     assert entries["CHIK"]["formatos_catalogados"] == ["JSON"]
-    assert entries["ZIKA"]["documento_oficial_localizado"] is False
+    assert entries["ZIKA"]["documento_oficial_localizado"] is True
     assert entries["ZIKA"]["distribuicoes_anuais_catalogadas"] == 2
     assert entries["ZIKA"]["formatos_catalogados"] == ["JSON", "PARQUET"]
     assert entries["SIFA"]["documento_oficial_localizado"] is False
@@ -88,7 +88,7 @@ def test_cli_produces_only_metadata_counters(tmp_path):
     assert "DENG documento: SIM distribuicoes: 2" in ok.stdout
     assert "CHIK documento: SIM distribuicoes: 1" in ok.stdout
     assert "TUBE documento: SIM distribuicoes: 0" in ok.stdout
-    assert "ZIKA documento: NAO distribuicoes: 2" in ok.stdout
+    assert "ZIKA documento: SIM distribuicoes: 2" in ok.stdout
     assert not private_path.exists()
     invalid = subprocess.run(cmd + ["--agravo", "FAKE"],
                              capture_output=True, text=True, timeout=30)
