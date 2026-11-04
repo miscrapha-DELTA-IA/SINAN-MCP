@@ -7,7 +7,11 @@ roteiro Markdown para um **segundo conferente humano** revisar o
 A versão é gerada apenas a partir do
 [`zika_pdf_37_fields_candidate.json`](../sinan_mcp/registry/zika_pdf_37_fields_candidate.json),
 que continua sendo uma transcrição candidata. Contém 37 linhas de campos,
-sete ressalvas e links diretos às páginas do PDF.
+sete ressalvas e links diretos às páginas do PDF. A edição revisada
+acrescenta um **anexo com 12 campos de códigos categóricos visíveis**
+na transcrição e **sete perguntas condicionais sem resposta**. São
+somente pistas documentais a conferir: não são tabelas de domínio
+homologadas nem regras de processamento de casos.
 **Não** importa o checklist privado criado em etapas anteriores e não
 transfere as notas manuscritas do operador.
 
