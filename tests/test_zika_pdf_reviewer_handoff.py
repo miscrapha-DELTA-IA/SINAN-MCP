@@ -46,7 +46,7 @@ def test_ambiguous_duplication_is_not_silently_resolved():
     assert "#page=5" in markdown
     assert "NDUPLIC_N" not in markdown or "deduplicação" in markdown.lower()
     assert "não autentica" in markdown.lower()
-    assert "não valida" in markdown.lower()
+    assert "**não** valida" in markdown.lower()
 
 
 def test_new_markdown_is_public_doc_only_and_never_overwritten(tmp_path):
