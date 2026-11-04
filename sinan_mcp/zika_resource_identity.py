@@ -66,7 +66,7 @@ def confrontar_snapshot_portal_zika_2024(
         raise ValueError("Snapshot documental exige exatamente dois recursos")
     annual = consultar_recursos_oficiais_ano("ZIKA", 2024)
     if (annual["quantidade_recursos_catalogados"] != 2
-            or annual["documento_de_dicionario_localizado"]
+            or not annual["documento_de_dicionario_localizado"]
             or annual["arquivo_binario_verificado"]
             or annual["publicacao_autorizada"]
             or annual["microdados_acessados"]):

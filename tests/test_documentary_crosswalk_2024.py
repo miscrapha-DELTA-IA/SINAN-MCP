@@ -63,9 +63,11 @@ def test_zika_crosswalk_tracks_two_resources_without_verifying_content():
     assert p["orientacao_ministerial_2024_sobre_a_ficha"] is False
     assert p["instrumento_de_notificacao_orientado"] is None
     assert p["vinculo_direto_do_pdf_na_pagina_do_agravo"] is True
-    assert len(p["referencias_documentais"]) == 4
+    assert p["dicionario_especifico_curado"] is True
+    assert len(p["referencias_documentais"]) == 5
     assert {x["id"] for x in p["referencias_documentais"]} == {
         "dicionario_geral_2018", "pagina_oficial_zika",
+        "dicionario_especifico_zika",
         "distribuicao_catalogada_1", "distribuicao_catalogada_2"
     }
     assert all(x["aplica_automaticamente_ao_arquivo_2024"] is False
@@ -129,7 +131,7 @@ def test_public_contract_and_multidisease_counters_do_not_change():
     from sinan_mcp.multiagravo_readiness import diagnosticar_cobertura_multiagravo
     result = diagnosticar_cobertura_multiagravo(2024)
     assert result["agravos_referenciados"] == 14
-    assert result["agravos_com_documentacao_localizada"] == 12
+    assert result["agravos_com_documentacao_localizada"] == 13
     assert result["distribuicoes_catalogadas"] == 5
     assert result["dados_clinicos_consultados"] is False
     assert result["publicacao_automatica"] is False

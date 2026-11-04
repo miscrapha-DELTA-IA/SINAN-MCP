@@ -84,7 +84,7 @@ dinâmico ou parâmetro de autorização. O retorno só contém fontes
 públicas curadas, contadores de **referências** e tarefas pendentes.
 Não importa SQLite, PySUS ou cliente de rede e não está no MCP público.
 
-**Contagem multiagravo inalterada:** 14 aliases, 12 dicionários específicos
+**Contagem multiagravo atualizada exclusivamente na documentação:** 14 aliases, 13 dicionários específicos
 históricos localizados, 5 recursos anuais catalogados, 0 indicadores
 homologados. Nenhum ZIP foi baixado, nenhum caso individual foi lido e
 nenhuma publicação foi habilitada.

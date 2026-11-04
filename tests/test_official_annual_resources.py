@@ -39,7 +39,7 @@ def test_official_resource_ids_and_unchanged_publishing_pages():
     zika = resources.consultar_recursos_oficiais_ano("ZIKA", 2024)
     assert zika["estado"] == "recurso_anual_identificado_no_catalogo"
     assert zika["quantidade_recursos_catalogados"] == 2
-    assert zika["documento_de_dicionario_localizado"] is False
+    assert zika["documento_de_dicionario_localizado"] is True
     assert not zika["compatibilidade_dicionario_ano_verificada"]
     assert {x["resource_id"] for x in zika["recursos"]} == {
         ZIKA_JSON_ID, ZIKA_PARQUET_ID,
@@ -102,7 +102,7 @@ def test_planner_keeps_document_vs_distribution_vs_data_validity_separate():
     lambda x: x["records"][0].update(
         resource_id="not-a-uuid"),
     lambda x: x["records"][-1].update(
-        link_documental_do_dicionario_identificado=True),
+        link_documental_do_dicionario_identificado=False),
     lambda x: x["records"][-1].update(
         distribution_url="https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/SINAN/Zikavirus/json/%2e%2e/z.zip"),
     lambda x: x["records"][-1].update(
@@ -236,7 +236,7 @@ def test_cli_metadata_read_does_not_create_private_db(tmp_path):
 
 def test_zika_only_metadata_and_no_2024_disease_specific_dictionary():
     metadata = resources.consultar_recursos_oficiais_ano("ZIKA", 2024)
-    assert metadata["documento_de_dicionario_localizado"] is False
+    assert metadata["documento_de_dicionario_localizado"] is True
     assert metadata["microdados_acessados"] is False
     assert metadata["analise_epidemiologica_autorizada"] is False
     assert metadata["publicacao_autorizada"] is False

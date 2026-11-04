@@ -22,7 +22,7 @@ def consultar_contexto_portal_zika_2024() -> dict:
     """Describe separately official catalogue statements vs unverified file."""
     annual = consultar_recursos_oficiais_ano("ZIKA", 2024)
     if (annual["quantidade_recursos_catalogados"] != 2
-            or annual["documento_de_dicionario_localizado"]
+            or not annual["documento_de_dicionario_localizado"]
             or annual["arquivo_binario_verificado"]
             or annual["publicacao_autorizada"]):
         raise ValueError("Catálogo ZIKA/2024 não satisfaz invariantes documentais")

@@ -98,7 +98,7 @@ def test_public_multiagravo_counters_and_public_server_unchanged():
     from sinan_mcp import public_server, zika_official_dictionary_reference
     result = diagnosticar_cobertura_multiagravo(2024)
     assert result["agravos_referenciados"] == 14
-    assert result["agravos_com_documentacao_localizada"] == 12
+    assert result["agravos_com_documentacao_localizada"] == 13
     assert result["distribuicoes_catalogadas"] == 5
     assert result["publicacao_automatica"] is False
     assert "zika_official_dictionary_reference" not in inspect.getsource(public_server)

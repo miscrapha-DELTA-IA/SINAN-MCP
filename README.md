@@ -37,7 +37,7 @@ Comece pelo [protocolo detalhado](docs/LOCAL_DICTIONARY_SCHEMA_AUDIT.md). Exempl
 
 ## Distribuições oficiais de 2024 identificadas no Portal de Dados Abertos
 
-Há um registro separado de recursos individuais catalogados pelo Ministério da Saúde: **DENG/2024 em CSV e JSON**, **CHIK/2024 em JSON** e **ZIKA/2024 em JSON e Parquet**, cada um com a página oficial, UUID do recurso e nome do ZIP. O ZIKA ainda não tem dicionário específico curado para 2024. Para TUBE/2024, o registro ainda não contém distribuição anual primariamente confirmada.
+Há um registro separado de recursos individuais catalogados pelo Ministério da Saúde: **DENG/2024 em CSV e JSON**, **CHIK/2024 em JSON** e **ZIKA/2024 em JSON e Parquet**, cada um com a página oficial, UUID do recurso e nome do ZIP. O ZIKA tem dicionário histórico específico localizado no portal, mas **não foi comprovada sua aplicabilidade ao arquivo de 2024**. Para TUBE/2024, o registro ainda não contém distribuição anual primariamente confirmada.
 
 A descrição oficial do conjunto [Sinan/Vírus Zika](https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus)
 indica **SINAN Net**, prazo textual de 60 dias para encerramento, histórico
@@ -52,9 +52,8 @@ A fonte contém **8 páginas e 37 campos numerados**. O comando
 `py -3.11 -m sinan_mcp diagnosticar-pdf-oficial-zika`
 expõe a referência curada offline. **Nenhuma correspondência de
 esquema com ZIKABR24 foi realizada**: continuam pendentes corte, checksum,
-consolidação, parecer e autorização. A referência adicional ainda não foi
-integrada ao índice multiagravo anterior de 12 dicionários, que permanece
-com 5 distribuições anuais e zero indicadores homologados.
+consolidação, parecer e autorização. A referência agora está **integrada ao índice multiagravo**: **13 documentos específicos localizados**,
+5 distribuições anuais catalogadas e zero indicadores homologados.
 
 O host `ckan-dadosabertos.saude.gov.br` não resolveu no Windows
 (`DNS_ERROR_RCODE_NAME_ERROR`). A descoberta passou a consultar
@@ -64,17 +63,17 @@ sem depender da API CKAN. Use
 o comando antigo com sufixo `-ckan` foi mantido como alias, mas agora
 usa o mesmo portal HTML. O procedimento pode retornar evidência
 insuficiente se o UUID não estiver presente em JSON/links embutidos;
-isso não implica ausência do documento. O PDF continua não auditado.
+isso não implica ausência do documento. O PDF foi examinado visualmente,
+mas seu esquema ainda não foi cotejado com os arquivos ZIKABR24.
 
-Para descobrir o UUID específico do **dicionário de Zika** sem baixar PDF
-ou microdados, há um comando administrativo opcional de catálogo CKAN:
-`py -3.11 -m sinan_mcp identificar-dicionario-zika-ckan`.
+A descoberta opcional de metadados usa
+`py -3.11 -m sinan_mcp identificar-dicionario-zika-portal`.
+O alias `identificar-dicionario-zika-ckan` é mantido para
+compatibilidade e **não usa mais o hostname CKAN inexistente**.
 A [documentação da descoberta](docs/ZIKA_DICTIONARY_CKAN_DISCOVERY.md)
-explica o endpoint oficial candidato, as restrições de rede e a saída
-segura quando a API está indisponível. O sucesso identifica no máximo
-a ficha documental; **não** altera flags de compatibilidade ZIKA/2024,
-corte, validação científica ou autorização. O dicionário listado no
-portal continua **não auditado** até obter o PDF exato.
+explica a API de hidratação Next.js e as falhas seguras.
+O dicionário PDF foi localizado e examinado como documento, mas **não**
+foi confirmado como layout dos registros ZIKABR24 nem homologado para 2024.
 
 Para ZIKA/2024, a [conferência das páginas oficiais dos recursos](docs/ZIKA_2024_OFFICIAL_RESOURCE_IDENTITY.md)
 registrou UUID, formato, status administrativo e ID do conjunto comuns ao JSON
@@ -91,11 +90,11 @@ Consulte [Registro de recursos anuais oficiais e limitações](docs/OFFICIAL_ANN
 
 ## Registro curado de fontes e dicionários por agravo/ano (sem dados reais)
 
-O índice de evidências documentais foi iniciado com **TUBE/2024**, **DENG/2024** e **CHIK/2024**, sendo posteriormente ampliado para 12 agravos com dicionário histórico específico (nenhum com aplicabilidade anual comprovada). Consulte: [registro de fontes por ano e limitações](docs/OFFICIAL_YEAR_EVIDENCE_REGISTRY.md).
+O índice de evidências documentais foi iniciado com **TUBE/2024**, **DENG/2024** e **CHIK/2024**, sendo posteriormente ampliado para **13 agravos** com dicionário histórico específico (nenhum com aplicabilidade anual comprovada). Consulte: [registro de fontes por ano e limitações](docs/OFFICIAL_YEAR_EVIDENCE_REGISTRY.md).
 
 Para ZIKA e SIFA, o [diagnóstico transversal](docs/SHARED_NOTIFICATION_DOCUMENTATION.md) diferencia **o vínculo direto do PDF comum da Notificação Individual na página de Zika** da **hipótese de vinculação documental desse PDF a sífilis adquirida**. O Guia de Vigilância em Saúde (MS, 2024, pág. impressa 506) confirma a **orientação de Notificação/Conclusão para sífilis adquirida em adultos**, sem validar layout da exportação SIFA/2024. Comando local: `py -3.11 -m sinan_mcp diagnosticar-documentacao-transversal --ano 2024`. A [matriz documental SIFA/ZIKA de 2024](docs/SIFA_ZIKA_2024_DOCUMENTARY_CROSSWALK.md) lista 10 temas pendentes sem ler arquivos clínicos: `py -3.11 -m sinan_mcp planejar-confronto-documental-2024 --agravo SIFA`. Nenhuma referência compartilhada incrementa a contagem de dicionários específicos ou autoriza uso real.
 
-Os documentos correspondentes são hospedados no Portal SINAN, mas suas edições identificadas são de 2020 (NET 5.0, tuberculose, conforme nome do PDF) e 2014–2015 (ONLINE 3.0, dengue/chikungunya). **Não há confirmação de que sejam os layouts exatos dos arquivos de 2024.** O índice registra links documentais localizados, não uma base anual validada.
+Vários documentos históricos são hospedados no Portal SINAN, enquanto o dicionário de Zika está no Portal de Dados Abertos do SUS. Edições identificadas de outros documentos incluem 2020 (NET 5.0, tuberculose, conforme nome do PDF) e 2014–2015 (ONLINE 3.0, dengue/chikungunya). **Não há confirmação de que sejam os layouts exatos dos arquivos de 2024.** O índice registra links documentais localizados, não uma base anual validada.
 
 Novas tools somente de metadados: `listar_evidencias_documentais` e `consultar_evidencia_agravo_ano`. O planejador multiagravo inclui a evidência anual apenas quando o agravo e ano estão identificados. Anos não verificados não herdam dicionários de outros anos. Monitoramento administrativo `monitorar-documento-ano` consulta apenas HEAD em URL curada (sem baixar documento ou dados) e não valida a edição anual. Ferramenta administrativa opcional `confrontar-evidencia-ano` calcula hashes de arquivos fornecidos localmente, mas não autentica origem ou autoriza publicação.
 
@@ -332,7 +331,7 @@ Para verificar no próprio computador a diferença entre **referência de agravo
     py -3.11 -m sinan_mcp diagnosticar-cobertura-multiagravo --ano 2024
     py -3.11 -m sinan_mcp diagnosticar-cobertura-multiagravo --ano 2024 --agravo CHIK
 
-Na curadoria desta branch, o índice possui 14 agravos de referência, 5 distribuições catalogadas em 2024 (2 DENG, 1 CHIK, 2 ZIKA), 12 agravos com dicionários históricos específicos localizados e **zero indicadores reais homologados**. A confirmação de layout, versão e coorte continua pendente por agravo/ano. O índice não substitui o catálogo nacional nem estabelece suporte operacional universal.
+Na curadoria desta branch, o índice possui 14 agravos de referência, 5 distribuições catalogadas em 2024 (2 DENG, 1 CHIK, 2 ZIKA), **13 agravos** com dicionários históricos específicos localizados e **zero indicadores reais homologados**. A confirmação de layout, versão e coorte continua pendente por agravo/ano. O índice não substitui o catálogo nacional nem estabelece suporte operacional universal.
 
 Os novos testes e a verificação CI de fronteira pública podem ser executados com:
 

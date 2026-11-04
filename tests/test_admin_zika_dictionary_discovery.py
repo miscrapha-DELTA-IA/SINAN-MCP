@@ -166,7 +166,7 @@ def test_existing_offline_readiness_is_unmodified():
     from sinan_mcp.zika_portal_context import consultar_contexto_portal_zika_2024
     snapshot = diagnosticar_cobertura_multiagravo(2024)
     assert snapshot["agravos_referenciados"] == 14
-    assert snapshot["agravos_com_documentacao_localizada"] == 12
+    assert snapshot["agravos_com_documentacao_localizada"] == 13
     assert snapshot["distribuicoes_catalogadas"] == 5
     assert snapshot["publicacao_automatica"] is False
     ctx = consultar_contexto_portal_zika_2024()

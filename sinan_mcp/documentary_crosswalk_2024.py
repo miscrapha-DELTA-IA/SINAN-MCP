@@ -40,7 +40,9 @@ def planejar_confronto_documental_2024(agravo: str) -> dict[str, Any]:
     official = consultar_recursos_oficiais_ano(agravo, year)
     disease_doc = consultar_evidencia_agravo_ano(agravo, year)
     n = official["quantidade_recursos_catalogados"]
-    if (disease_doc["link_dicionario_oficial_localizado"]
+    if (disease_doc["autorizacao_de_publicacao"]
+            or disease_doc["compatibilidade_dicionario_ano_verificada"]
+            or official["analise_epidemiologica_autorizada"]
             or transversal["compatibilidade_com_arquivo_anual_demonstrada"]
             or official["arquivo_binario_verificado"]
             or official["publicacao_autorizada"]):
@@ -70,6 +72,14 @@ def planejar_confronto_documental_2024(agravo: str) -> dict[str, Any]:
             },
         ))
     else:
+        if not disease_doc["link_dicionario_oficial_localizado"]:
+            raise ValueError("Dicionário específico ZIKA esperado no registro")
+        sources.append({
+            "id": "dicionario_especifico_zika",
+            "natureza": "pdf_especifico_zika_localizado_sem_validar_edicao_2024",
+            "url": disease_doc["evidencia_documental"]["documento_url"],
+            "aplica_automaticamente_ao_arquivo_2024": False,
+        })
         sources.append({
             "id": "pagina_oficial_zika",
             "natureza": "ligacao_direta_ao_dicionario_geral_na_pagina_do_agravo",
@@ -148,7 +158,7 @@ def planejar_confronto_documental_2024(agravo: str) -> dict[str, Any]:
             if identity_snapshot is not None else None
         ),
         "metadados_site_reconsultados_na_execucao": False,
-        "dicionario_especifico_curado": False,
+        "dicionario_especifico_curado": disease_doc["link_dicionario_oficial_localizado"],
         "orientacao_ministerial_2024_sobre_a_ficha": (
             transversal["orientacao_especifica_de_notificacao_no_guia_2024"]
         ),

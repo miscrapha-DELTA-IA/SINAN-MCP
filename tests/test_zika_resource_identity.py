@@ -106,7 +106,7 @@ def test_multidisease_diagnostic_and_sifa_official_counts_unaffected():
     from sinan_mcp.official_annual_resources import consultar_recursos_oficiais_ano
     report = diagnosticar_cobertura_multiagravo(2024)
     assert report["agravos_referenciados"] == 14
-    assert report["agravos_com_documentacao_localizada"] == 12
+    assert report["agravos_com_documentacao_localizada"] == 13
     assert report["distribuicoes_catalogadas"] == 5
     assert consultar_recursos_oficiais_ano("SIFA", 2024)[
         "quantidade_recursos_catalogados"
