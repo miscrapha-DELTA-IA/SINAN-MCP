@@ -33,7 +33,7 @@ O catálogo oficial Sinan/Dengue também identifica um **dicionário de dados at
 
 Uma prova de conceito administrativa e offline permite criar um contrato de campos DBF a partir de um PDF local e comparar sua transcrição com o cabeçalho do ZIP CSV, ou com uma amostra de chaves de um ZIP JSON por streaming opcional. O comparador produz um relatório privado de divergências com estado de revisão pendente e **não executa análises reais**.
 
-Comece pelo [protocolo detalhado](docs/LOCAL_DICTIONARY_SCHEMA_AUDIT.md). Exemplo local: `py -3.11 -m sinan_mcp preparar-modelo-esquema --help` e `py -3.11 -m sinan_mcp comparar-esquema-privado --help`. Para JSON, instale o extra opcional `schemaaudit` com ijson. Não envie ZIP/PDF de trabalho ou relatórios privados ao servidor ou ao GitHub.
+Para ZIKA/2024, o [modelo documental específico de nove campos](docs/ZIKA_2024_SCHEMA_TEMPLATE_SAFE_PREPARATION.md) prepara apenas um candidato privado de esquema, usa `json_layout=nao_determinado`, recusa Parquet e não toca em ZIKABR24 real. Comece pelo [protocolo detalhado](docs/LOCAL_DICTIONARY_SCHEMA_AUDIT.md). Exemplo local: `py -3.11 -m sinan_mcp preparar-modelo-esquema --help` e `py -3.11 -m sinan_mcp comparar-esquema-privado --help`. Para JSON, instale o extra opcional `schemaaudit` com ijson. Não envie ZIP/PDF de trabalho ou relatórios privados ao servidor ou ao GitHub.
 
 ## Distribuições oficiais de 2024 identificadas no Portal de Dados Abertos
 

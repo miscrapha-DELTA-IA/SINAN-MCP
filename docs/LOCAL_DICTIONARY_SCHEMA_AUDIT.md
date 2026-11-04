@@ -50,6 +50,21 @@ O comando mostra apenas estado e contagens; o relatório completo é salvo exclu
 
 Para JSON DENG e CHIK, o contrato exige indicar explicitamente array_of_objects ou ndjson conforme o layout real. Não adivinhar nem aceitar silenciosamente formatos diferentes. O plugin ijson é opcional e instalado apenas para verificação JSON.
 
+## Atualização ZIKA/2024 — não reutilizar campos de Dengue
+
+O gerador de modelo agora usa **nove exemplos próprios do PDF Zika**
+quando recebe o UUID `264978ca-f795-4940-b5d3-ebc21e7d1c7c`.
+Os 37 campos numerados no documento não foram transcritos integralmente.
+O candidato usa `json_layout=nao_determinado`. Mesmo que o campo
+seja editado para um layout específico, o comparador ainda bloqueia
+**qualquer confronto com ZIKABR24**, independentemente do conteúdo do ZIP,
+até autorização institucional e revisão independente.
+Para `41bfda2a-5826-4ef9-8913-497247e6c9ce` (Parquet), o gerador
+e o validador recusam a operação porque o formato não é suportado.
+
+Consulte [preparação documental ZIKA sem leitura de arquivos de casos](ZIKA_2024_SCHEMA_TEMPLATE_SAFE_PREPARATION.md).
+A comparação real com ZIP de pacientes segue sem autorização nesta etapa.
+
 ## Leitura científica do relatório
 
 - Se um campo do trecho transcrito estiver ausente, há divergência de esquema para revisão.

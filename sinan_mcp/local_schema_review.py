@@ -38,6 +38,8 @@ MAX_PDF_BYTES = 40 * 1024 * 1024
 MAX_CSV_HEADER_BYTES = 128 * 1024
 MAX_JSON_READ_BYTES = 16 * 1024 * 1024
 MAX_JSON_RECORDS = 64
+# These three examples apply ONLY to Dengue/Chikungunya. Zika uses its own
+# human-reviewed PDF excerpts; the samples are not a full official schema.
 EXAMPLE_FIELDS = (
     {"name": "ID_AGRAVO", "pdf_page_1_based": 2},
     {"name": "DT_INVEST", "pdf_page_1_based": 2},
@@ -105,6 +107,11 @@ def validate_candidate(candidate: object) -> dict:
             or candidate["situacao_transcricao"] != "manual_nao_revisada"):
         raise ValueError("Contrato candidato inválido ou indevidamente aprovado")
     row = _resource(candidate["resource_id"])
+    if row["distribution_format"] not in ("CSV", "JSON"):
+        raise ValueError(
+            "Comparador privado ainda nao suporta PARQUET; nao converter "
+            "ou tratar os bytes como JSON"
+        )
     if (candidate["agravo"] != row["agravo_alias_interno"]
             or type(candidate["ano_rotulado_no_portal"]) is not int
             or candidate["ano_rotulado_no_portal"] != row["ano_rotulado_no_portal"]
@@ -128,7 +135,11 @@ def validate_candidate(candidate: object) -> dict:
             raise ValueError("Codificação ou delimitador CSV não permitido")
     elif (candidate["csv_encoding"] is not None
           or candidate["csv_delimiter"] is not None
-          or candidate["json_layout"] not in ("array_of_objects", "ndjson")):
+          or candidate["json_layout"] not in (
+              "array_of_objects", "ndjson",
+              "nao_determinado" if row["agravo_alias_interno"] == "ZIKA"
+              else "array_of_objects",
+          )):
         raise ValueError("Layout de JSON fora do protocolo local")
     fields = candidate["campos_dbf"]
     if (not isinstance(fields, list) or not 1 <= len(fields) <= MAX_FIELDS):
@@ -167,8 +178,27 @@ def _prepare_template_dict(resource_id: str, pdf: str | Path) -> dict:
     )["evidencia_documental"]
     if evidence is None:
         raise ValueError("Não existe dicionário documental curado para este ano")
-    sha = _local_pdf_hash(pdf, expected_url=evidence["documento_url"])
     fmt = row["distribution_format"]
+    if fmt not in ("CSV", "JSON"):
+        raise ValueError("Modelo de esquema para PARQUET ainda nao implementado")
+    agravo = row["agravo_alias_interno"]
+    if agravo == "ZIKA":
+        from .zika_official_dictionary_reference import (
+            VISIBLE_FIELD_EXAMPLES, PDF_URL,
+        )
+        if evidence["documento_url"] != PDF_URL:
+            raise ValueError("Fonte PDF Zika difere da referência oficial")
+        fields = [
+            {"name": name.upper(), "pdf_page_1_based": page}
+            for name, page, _field_type in VISIBLE_FIELD_EXAMPLES
+        ]
+        json_layout = "nao_determinado"  # Never infer 2024 export topology.
+    elif agravo in ("DENG", "CHIK"):
+        fields = [dict(item) for item in EXAMPLE_FIELDS]
+        json_layout = "array_of_objects" if fmt == "JSON" else None
+    else:
+        raise ValueError("Modelo de exemplos indisponivel para este agravo")
+    sha = _local_pdf_hash(pdf, expected_url=evidence["documento_url"])
     template = {
         "schema_version": SCHEMA,
         "agravo": row["agravo_alias_interno"],
@@ -179,11 +209,10 @@ def _prepare_template_dict(resource_id: str, pdf: str | Path) -> dict:
         "format": fmt,
         "csv_encoding": "utf-8-sig" if fmt == "CSV" else None,
         "csv_delimiter": "," if fmt == "CSV" else None,
-        "json_layout": "array_of_objects" if fmt == "JSON" else None,
+        "json_layout": json_layout,
         "cobertura": "excerto_parcial",
-        # PDF page 2 displays these three DBF column identifiers for
-        # Dengue/Chikungunya; NOT an exhaustive annual dictionary.
-        "campos_dbf": [dict(x) for x in EXAMPLE_FIELDS],
+        # Source-specific excerpt only; NEVER the full annual schema.
+        "campos_dbf": fields,
         "situacao_transcricao": "manual_nao_revisada",
     }
     return validate_candidate(template)
@@ -320,6 +349,16 @@ def comparar_esquema_local(
     expected = load_candidate(contrato)
     if expected["resource_id"] != resource_id:
         raise ValueError("Contrato e recurso anual não correspondem")
+    if expected["agravo"] == "ZIKA":
+        if expected["json_layout"] == "nao_determinado":
+            raise ValueError(
+                "Layout JSON ZIKA/2024 nao identificado; comparacao bloqueada"
+            )
+        raise ValueError(
+            "Comparacao ZIKABR24 bloqueada ate revisao de proveniencia, "
+            "edicao, privacidade e autorizacao institucional; mudar o "
+            "contrato manualmente nao concede acesso aos registros"
+        )
     actual_pdf_sha = _local_pdf_hash(
         pdf, expected_url=expected["dictionary_url"]
     )
