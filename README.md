@@ -33,12 +33,17 @@ O catálogo oficial Sinan/Dengue também identifica um **dicionário de dados at
 
 Uma prova de conceito administrativa e offline permite criar um contrato de campos DBF a partir de um PDF local e comparar sua transcrição com o cabeçalho do ZIP CSV, ou com uma amostra de chaves de um ZIP JSON por streaming opcional. O comparador produz um relatório privado de divergências com estado de revisão pendente e **não executa análises reais**.
 
-Para Zika há agora também uma
+Para Zika há agora uma
 [transcrição candidata dos 37 campos do PDF](docs/ZIKA_PDF_37_FIELDS_DOCUMENTARY_TRANSCRIPTION.md),
 com páginas, tipos, domínios resumidos e ressalvas, gerada sem dados
 de pacientes. Inspecione-a com
 `py -3.11 -m sinan_mcp conferir-transcricao-zika-pdf --detalhar`.
-**Essa transcrição não é o esquema verificado de ZIKABR24**;
+Para organizar a **conferência humana privada** dos 37 campos e
+sete ressalvas, use o [roteiro de revisão documental sem autenticação
+de parecer](docs/ZIKA_37_FIELDS_INDEPENDENT_REVIEW_CHECKLIST.md).
+Os comandos `preparar-revisao-documental-zika` e
+`diagnosticar-revisao-documental-zika` não assinam, aprovam ou acessam
+dados anuais. **A transcrição não é o esquema verificado de ZIKABR24**;
 ainda não possui segunda revisão independente e os 10 tópicos
 científicos continuam pendentes.
 
