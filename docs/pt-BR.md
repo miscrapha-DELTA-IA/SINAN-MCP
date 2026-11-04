@@ -183,6 +183,7 @@ Vulnerabilidades devem ser comunicadas privadamente aos mantenedores, sem inclui
 | [Catálogo de agravos](MULTI_AGRAVO_CATALOG.md) | Escopo, fontes e identificadores internos |
 | [Interpretação epidemiológica](EPIDEMIOLOGY.md) | Definições, denominadores e limitações |
 | [Demonstração pública e privacidade](PUBLIC_DISCLOSURE.md) | Limites dos dados sintéticos e aviso do serviço |
+| [Consolidação técnica e testes MCP](TECHNICAL_CONSOLIDATION_E2E.md) | Contrato público, testes e versão confirmada do Render |
 | [Pesquisa local e divulgação responsável](AGGREGATE_PUBLICATION.md) | Agregados candidatos e requisitos de revisão independente |
 | [Protocolo de equidade preditiva](FAIRNESS_PROTOCOL.md) | Auditoria exploratória local e limitações |
 | [Política de segurança](../SECURITY.md) | Tratamento de dados e segurança operacional |
