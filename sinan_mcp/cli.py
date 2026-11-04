@@ -188,6 +188,11 @@ def main() -> None:
     zika_edit.add_argument("--campo", required=True)
     zika_edit.add_argument("--avaliacao", required=True)
     zika_edit.add_argument("--nota", required=True)
+    handoff = cmd.add_parser(
+        "preparar-roteiro-revisor-zika",
+        help="Gerar roteiro Markdown de 37 campos e 7 ressalvas de fonte publica; SEM parecer",
+    )
+    handoff.add_argument("--saida", required=True, type=Path)
 
     readiness_template = cmd.add_parser(
         "preparar-checklist-roadmap",
@@ -686,6 +691,24 @@ def main() -> None:
               report["ressalvas_por_declaracao_do_operador"]["PENDENTE"])
         print("Parecer independente autenticado: NAO")
         print("Campos de ZIKABR24 lidos: 0")
+        print("Indicadores homologados: 0; publicacao autorizada: NAO")
+    elif args.comando == "preparar-roteiro-revisor-zika":
+        from .zika_pdf_reviewer_handoff import preparar_roteiro_revisor_zika
+        try:
+            report = preparar_roteiro_revisor_zika(args.saida)
+        except (OSError, ValueError, UnicodeError, RuntimeError):
+            parser.exit(
+                2, "ROTEIRO EXTERNO ZIKA NAO CRIADO: escolha um novo arquivo .md "
+                "fora do Git. Nenhum parecer foi assinado.\\n"
+            )
+        print("ROTEIRO PARA REVISOR PREPARADO; NENHUMA REVISAO AUTENTICADA.")
+        print("Campos documentais para conferir:",
+              report["campos_publicos_para_conferencia"])
+        print("Ressalvas documentais para conferir:",
+              report["ressalvas_publicas_para_conferencia"])
+        print("Notas privadas do operador lidas: NAO")
+        print("Campos ZIKABR24 lidos: 0")
+        print("Parecer independente autenticado: NAO")
         print("Indicadores homologados: 0; publicacao autorizada: NAO")
     elif args.comando == "preparar-checklist-roadmap":
         from .roadmap_readiness import preparar_checklist_local
