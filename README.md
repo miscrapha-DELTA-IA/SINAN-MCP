@@ -1,18 +1,20 @@
 <div align="center">
 
-# SINAN MCP
+<h1>SINAN MCP</h1>
 
-### An open research interface for epidemiological data, built around provenance.
+<h3>An open research interface for epidemiological data, built around provenance.</h3>
 
-**Explore official SINAN references. Prototype with synthetic data. Keep sensitive research workflows separate.**
+<p><strong>Explore official SINAN references. Prototype with synthetic data. Keep sensitive research workflows separate.</strong></p>
 
-[![CI](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/workflows/ci.yml)
-[![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-24527a?logo=python&logoColor=white)](pyproject.toml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-0f766e)](LICENSE)
-[![Stage: Research Alpha](https://img.shields.io/badge/Stage-Research%20Alpha-6d28d9)](#project-status)
-[![Protocol: MCP](https://img.shields.io/badge/Protocol-MCP-334155)](https://modelcontextprotocol.io/)
+<p>
+  <a href="https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/workflows/ci.yml/badge.svg?branch=main" /></a>
+  <a href="pyproject.toml"><img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-24527a?logo=python&amp;logoColor=white" /></a>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-0f766e" /></a>
+  <a href="#project-status"><img alt="Stage: Research Alpha" src="https://img.shields.io/badge/Stage-Research%20Alpha-6d28d9" /></a>
+  <a href="https://modelcontextprotocol.io/"><img alt="Protocol: MCP" src="https://img.shields.io/badge/Protocol-MCP-334155" /></a>
+</p>
 
-**[Get started](#get-started)** · **[Explore the architecture](#architecture)** · **[Public demo](#public-synthetic-preview)** · **[Documentation](#documentation)** · **[Português](docs/pt-BR.md)**
+<p><a href="#get-started">Get started</a> · <a href="#architecture">Explore the architecture</a> · <a href="#public-synthetic-preview">Public demo</a> · <a href="#documentation">Documentation</a> · <a href="docs/pt-BR.md">Português</a></p>
 
 </div>
 
@@ -29,31 +31,9 @@ Brazil's *Sistema de Informação de Agravos de Notificação* (SINAN) is a cruc
 
 The goal is not to hide scientific uncertainty behind a chatbot. It is to **make uncertainty, provenance and access boundaries explicit** while building reusable open-source tooling for researchers.
 
-<table>
-<tr>
-<td width="33%" valign="top">
-
-**Discover**
-
-Find curated references to notifiable conditions, official portals and supporting documentation.
-
-</td>
-<td width="33%" valign="top">
-
-**Prototype**
-
-Explore a read-only MCP demonstration with deliberately fictional tuberculosis records.
-
-</td>
-<td width="33%" valign="top">
-
-**Investigate**
-
-Use separate local tools for imports, diagnostics and experimental methods, subject to human review.
-
-</td>
-</tr>
-</table>
+| **Discover** | **Prototype** | **Investigate** |
+|:---|:---|:---|
+| Find curated references to notifiable conditions, official portals and supporting documentation. | Explore a read-only MCP demonstration with deliberately fictional tuberculosis records. | Use separate local tools for imports, diagnostics and experimental methods, subject to human review. |
 
 ## What is available
 
