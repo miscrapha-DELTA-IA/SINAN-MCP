@@ -43,7 +43,13 @@ sete ressalvas, use o [roteiro de revisão documental sem autenticação
 de parecer](docs/ZIKA_37_FIELDS_INDEPENDENT_REVIEW_CHECKLIST.md).
 Os comandos `preparar-revisao-documental-zika` e
 `diagnosticar-revisao-documental-zika` não assinam, aprovam ou acessam
-dados anuais. **A transcrição não é o esquema verificado de ZIKABR24**;
+dados anuais.
+O comando `registrar-observacao-revisao-zika` permite registrar uma
+declaração do operador sobre um campo ou ressalva em **nova versão
+do arquivo privado**, sem sobrescrever o original, sem ler registros
+e sem autenticar parecer. Confira o
+[procedimento de revisão humana](docs/ZIKA_37_FIELDS_INDEPENDENT_REVIEW_CHECKLIST.md)
+antes de declarar qualquer campo como conferido. **A transcrição não é o esquema verificado de ZIKABR24**;
 ainda não possui segunda revisão independente e os 10 tópicos
 científicos continuam pendentes.
 
