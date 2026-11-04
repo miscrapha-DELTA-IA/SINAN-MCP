@@ -1,0 +1,517 @@
+{
+  "schema_version": "sinan-zika-pdf-37-fields-documentary-candidate-v1",
+  "source_title": "Sinan Net — Dicionário de Dados — ZIKA",
+  "source_resource_id": "58038262-c745-46ea-979b-8727eb08ec5c",
+  "source_package_id": "4557ba96-7d52-4a56-bd6f-f99a5af09f77",
+  "source_page": "https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus/resource/58038262-c745-46ea-979b-8727eb08ec5c",
+  "source_pdf": "https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/SINAN/Zikavirus/dic_dados_zika.pdf",
+  "source_pages": 8,
+  "fields_numbered_in_pdf": 37,
+  "field_count_transcribed_from_visible_pdf": 37,
+  "transcription_status": "transcricao_documental_candidata_sem_revisao_independente",
+  "domain_status": "dominios_documentais_parcialmente_resumidos_nao_homologados",
+  "source_bytes_official_sha256_verified": false,
+  "documentary_second_reviewer_authenticated": false,
+  "year_2024_schema_compared": false,
+  "year_2024_data_accessed": false,
+  "year_2024_cutoff_confirmed": false,
+  "indicators_approved": 0,
+  "publication_authorized": false,
+  "transcription_issues": [
+    {
+      "campo": "nu_idade_n",
+      "motivo": "O primeiro digito codifica unidade (hora/dia/mes/ano); nao representar como anos sem conversao revisada."
+    },
+    {
+      "campo": "nduplic_n",
+      "motivo": "Celula de categorias no PDF apresenta linha de duplicidade sem numero legivel; caracteristicas mencionam 1 e 2. Recusar mapa automatico de codigos."
+    },
+    {
+      "campo": "in_vincula",
+      "motivo": "Tipo documental char(6) apesar das categorias visiveis 0/1; nao alterar largura por inferencia."
+    },
+    {
+      "campo": "cs_escol_n",
+      "motivo": "Formas de codigo com um e dois digitos, alem de ignorado/branco; nao assumir padrao unico."
+    },
+    {
+      "campo": "id_rg_resi",
+      "motivo": "Caracteristica textual se refere a municipio de notificacao na linha de regional de residencia; requer revisao de origem."
+    },
+    {
+      "campo": "tp_sistema",
+      "motivo": "Dicionario lista Sinan Net/Online, mas nao certifica qual gerou cada registro de ZIKABR24."
+    },
+    {
+      "campo": "classi_fin",
+      "motivo": "Classificacao final do documento nao implica definicao de caso ou consolidacao epidemiologica de 2024."
+    }
+  ],
+  "fields": [
+    {
+      "seq": 1,
+      "campo": "tp_not",
+      "tipo_documental": "char(1)",
+      "pagina_pdf": 1,
+      "grupo_proposto": "notificacao",
+      "significado_resumido": "Tipo de notificação",
+      "dominio_descritor": "categorias_listadas",
+      "codigos_citados": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 2,
+      "campo": "id_agravo",
+      "tipo_documental": "char(5)",
+      "pagina_pdf": 1,
+      "grupo_proposto": "notificacao",
+      "significado_resumido": "Código do agravo notificado",
+      "dominio_descritor": "tabela_agravos_cid10",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 3,
+      "campo": "dt_notific",
+      "tipo_documental": "date(8)",
+      "pagina_pdf": 1,
+      "grupo_proposto": "notificacao",
+      "significado_resumido": "Data da notificação",
+      "dominio_descritor": "data_dd_mm_aaaa",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 4,
+      "campo": "sem_not",
+      "tipo_documental": "char(6)",
+      "pagina_pdf": 1,
+      "grupo_proposto": "notificacao",
+      "significado_resumido": "Semana epidemiológica da notificação",
+      "dominio_descritor": "semana_epidemiologica_aaaass",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 5,
+      "campo": "nu_ano",
+      "tipo_documental": "char(4)",
+      "pagina_pdf": 1,
+      "grupo_proposto": "notificacao",
+      "significado_resumido": "Ano da notificação",
+      "dominio_descritor": "ano_aaaa",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 6,
+      "campo": "sg_uf_not",
+      "tipo_documental": "char(2)",
+      "pagina_pdf": 2,
+      "grupo_proposto": "notificacao",
+      "significado_resumido": "UF da unidade notificadora",
+      "dominio_descritor": "tabela_ibge",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 7,
+      "campo": "id_municip",
+      "tipo_documental": "char(6)",
+      "pagina_pdf": 2,
+      "grupo_proposto": "notificacao",
+      "significado_resumido": "Município da unidade notificadora",
+      "dominio_descritor": "tabela_ibge",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 8,
+      "campo": "id_regiona",
+      "tipo_documental": "char(8)",
+      "pagina_pdf": 2,
+      "grupo_proposto": "notificacao",
+      "significado_resumido": "Regional de saúde da notificação",
+      "dominio_descritor": "tabela_regional_sistema",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 9,
+      "campo": "id_unidade",
+      "tipo_documental": "char(7)",
+      "pagina_pdf": 2,
+      "grupo_proposto": "notificacao",
+      "significado_resumido": "Unidade notificadora",
+      "dominio_descritor": "tabela_cnes",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 10,
+      "campo": "dt_sin_pri",
+      "tipo_documental": "date(8)",
+      "pagina_pdf": 2,
+      "grupo_proposto": "notificacao",
+      "significado_resumido": "Data de primeiros sintomas ou diagnóstico",
+      "dominio_descritor": "data_dd_mm_aaaa",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 11,
+      "campo": "sem_pri",
+      "tipo_documental": "char(6)",
+      "pagina_pdf": 2,
+      "grupo_proposto": "notificacao",
+      "significado_resumido": "Semana epidemiológica de primeiros sintomas",
+      "dominio_descritor": "semana_epidemiologica_aaaass",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 12,
+      "campo": "ano_nasc",
+      "tipo_documental": "char(4)",
+      "pagina_pdf": 2,
+      "grupo_proposto": "pessoa",
+      "significado_resumido": "Ano de nascimento",
+      "dominio_descritor": "ano_aaaa",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 13,
+      "campo": "nu_idade_n",
+      "tipo_documental": "num(4)",
+      "pagina_pdf": 3,
+      "grupo_proposto": "pessoa",
+      "significado_resumido": "Idade com unidade de medida codificada",
+      "dominio_descritor": "idade_codificada_unidade_primeiro_digito",
+      "codigos_citados": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 14,
+      "campo": "cs_sexo",
+      "tipo_documental": "char(1)",
+      "pagina_pdf": 3,
+      "grupo_proposto": "pessoa",
+      "significado_resumido": "Sexo informado",
+      "dominio_descritor": "categorias_listadas",
+      "codigos_citados": [
+        "M",
+        "F",
+        "I"
+      ],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 15,
+      "campo": "cs_gestant",
+      "tipo_documental": "char(1)",
+      "pagina_pdf": 3,
+      "grupo_proposto": "pessoa",
+      "significado_resumido": "Gestação e trimestre",
+      "dominio_descritor": "categorias_listadas",
+      "codigos_citados": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "9"
+      ],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 16,
+      "campo": "cs_raca",
+      "tipo_documental": "char(1)",
+      "pagina_pdf": 4,
+      "grupo_proposto": "pessoa",
+      "significado_resumido": "Raça/cor autodeclarada",
+      "dominio_descritor": "categorias_listadas",
+      "codigos_citados": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "9"
+      ],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 17,
+      "campo": "cs_escol_n",
+      "tipo_documental": "char(2)",
+      "pagina_pdf": 4,
+      "grupo_proposto": "pessoa",
+      "significado_resumido": "Escolaridade",
+      "dominio_descritor": "codigos_heterogeneos_revisao",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 18,
+      "campo": "sg_uf",
+      "tipo_documental": "char(2)",
+      "pagina_pdf": 4,
+      "grupo_proposto": "residencia",
+      "significado_resumido": "UF de residência",
+      "dominio_descritor": "tabela_ibge",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 19,
+      "campo": "id_mn_resi",
+      "tipo_documental": "char(6)",
+      "pagina_pdf": 5,
+      "grupo_proposto": "residencia",
+      "significado_resumido": "Município de residência",
+      "dominio_descritor": "tabela_ibge",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 20,
+      "campo": "id_rg_resi",
+      "tipo_documental": "char(8)",
+      "pagina_pdf": 5,
+      "grupo_proposto": "residencia",
+      "significado_resumido": "Regional de saúde de residência",
+      "dominio_descritor": "tabela_regional_sistema",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 21,
+      "campo": "id_pais",
+      "tipo_documental": "char(4)",
+      "pagina_pdf": 5,
+      "grupo_proposto": "residencia",
+      "significado_resumido": "País de residência",
+      "dominio_descritor": "tabela_paises",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 22,
+      "campo": "nduplic_n",
+      "tipo_documental": "char(1)",
+      "pagina_pdf": 5,
+      "grupo_proposto": "controle_notificacoes",
+      "significado_resumido": "Marcador de não listar ou não contar duplicidade",
+      "dominio_descritor": "codigos_ambiguidade_pagina",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 23,
+      "campo": "in_vincula",
+      "tipo_documental": "char(6)",
+      "pagina_pdf": 5,
+      "grupo_proposto": "controle_notificacoes",
+      "significado_resumido": "Vinculação de notificações",
+      "dominio_descritor": "categorias_listadas",
+      "codigos_citados": [
+        "0",
+        "1"
+      ],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 24,
+      "campo": "dt_invest",
+      "tipo_documental": "date(8)",
+      "pagina_pdf": 5,
+      "grupo_proposto": "investigacao",
+      "significado_resumido": "Início da investigação",
+      "dominio_descritor": "data_dd_mm_aaaa",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 25,
+      "campo": "id_ocupa_n",
+      "tipo_documental": "char(6)",
+      "pagina_pdf": 5,
+      "grupo_proposto": "investigacao",
+      "significado_resumido": "Ocupação ou ramo de atividade",
+      "dominio_descritor": "tabela_ocupacoes",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 26,
+      "campo": "classi_fin",
+      "tipo_documental": "char(2)",
+      "pagina_pdf": 6,
+      "grupo_proposto": "desfecho_investigacao",
+      "significado_resumido": "Classificação final após investigação",
+      "dominio_descritor": "categorias_listadas",
+      "codigos_citados": [
+        "1",
+        "2",
+        "9"
+      ],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 27,
+      "campo": "criterio",
+      "tipo_documental": "char(2)",
+      "pagina_pdf": 6,
+      "grupo_proposto": "desfecho_investigacao",
+      "significado_resumido": "Critério de confirmação ou descarte",
+      "dominio_descritor": "categorias_listadas",
+      "codigos_citados": [
+        "1",
+        "2",
+        "3"
+      ],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 28,
+      "campo": "tpautocto",
+      "tipo_documental": "char(1)",
+      "pagina_pdf": 6,
+      "grupo_proposto": "autoctonia",
+      "significado_resumido": "Autoctonia em relação à residência",
+      "dominio_descritor": "categorias_listadas",
+      "codigos_citados": [
+        "1",
+        "2",
+        "3"
+      ],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 29,
+      "campo": "coufinf",
+      "tipo_documental": "char(2)",
+      "pagina_pdf": 6,
+      "grupo_proposto": "autoctonia",
+      "significado_resumido": "UF provável da infecção",
+      "dominio_descritor": "tabela_ibge",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 30,
+      "campo": "copaisinf",
+      "tipo_documental": "char(4)",
+      "pagina_pdf": 7,
+      "grupo_proposto": "autoctonia",
+      "significado_resumido": "País provável da infecção",
+      "dominio_descritor": "tabela_paises",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 31,
+      "campo": "comuninf",
+      "tipo_documental": "char(6)",
+      "pagina_pdf": 7,
+      "grupo_proposto": "autoctonia",
+      "significado_resumido": "Município provável da infecção",
+      "dominio_descritor": "tabela_ibge",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 32,
+      "campo": "doenca_tra",
+      "tipo_documental": "char(1)",
+      "pagina_pdf": 7,
+      "grupo_proposto": "desfecho_investigacao",
+      "significado_resumido": "Relação da doença com o trabalho",
+      "dominio_descritor": "categorias_listadas",
+      "codigos_citados": [
+        "1",
+        "2",
+        "9"
+      ],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 33,
+      "campo": "evolucao",
+      "tipo_documental": "char(1)",
+      "pagina_pdf": 8,
+      "grupo_proposto": "encerramento",
+      "significado_resumido": "Evolução do caso",
+      "dominio_descritor": "categorias_listadas",
+      "codigos_citados": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "9"
+      ],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 34,
+      "campo": "dt_obito",
+      "tipo_documental": "date(8)",
+      "pagina_pdf": 8,
+      "grupo_proposto": "encerramento",
+      "significado_resumido": "Data do óbito",
+      "dominio_descritor": "data_dd_mm_aaaa",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 35,
+      "campo": "dt_encerra",
+      "tipo_documental": "date(8)",
+      "pagina_pdf": 8,
+      "grupo_proposto": "encerramento",
+      "significado_resumido": "Data do encerramento",
+      "dominio_descritor": "data_dd_mm_aaaa",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 36,
+      "campo": "dt_digita",
+      "tipo_documental": "date(8)",
+      "pagina_pdf": 8,
+      "grupo_proposto": "encerramento",
+      "significado_resumido": "Data de primeira digitação",
+      "dominio_descritor": "data_dd_mm_aaaa",
+      "codigos_citados": [],
+      "validado_no_arquivo_2024": false
+    },
+    {
+      "seq": 37,
+      "campo": "tp_sistema",
+      "tipo_documental": "char(1)",
+      "pagina_pdf": 8,
+      "grupo_proposto": "sistema_origem",
+      "significado_resumido": "Sistema de origem do registro",
+      "dominio_descritor": "categorias_listadas",
+      "codigos_citados": [
+        "1",
+        "2"
+      ],
+      "validado_no_arquivo_2024": false
+    }
+  ]
+}

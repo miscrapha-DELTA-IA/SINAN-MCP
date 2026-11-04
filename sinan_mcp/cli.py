@@ -160,6 +160,14 @@ def main() -> None:
         "diagnosticar-pdf-oficial-zika",
         help="Metadados já curados de página e PDF oficial Zika, sem abrir ZIPs de casos",
     )
+    zika_fields = cmd.add_parser(
+        "conferir-transcricao-zika-pdf",
+        help="ADMIN: conferir 37 campos documentais do PDF Zika sem dados de 2024",
+    )
+    zika_fields.add_argument(
+        "--detalhar", action="store_true",
+        help="Exibir os 37 identificadores e a pagina documental; sem registros",
+    )
     readiness_template = cmd.add_parser(
         "preparar-checklist-roadmap",
         help="Criar checklist privado multiagravo/ano, todos os gates PENDENTES",
@@ -491,6 +499,11 @@ def main() -> None:
                   "SIM" if report["pdf_zika_inspecionado_visualmente"] else "NAO")
             print("Campos numerados na fonte documental:",
                   report["numero_campos_documentados_zika"])
+            print("Campos transcritos em candidato documental:",
+                  report["numero_campos_pdf_transcritos_candidato_zika"])
+            print("Ressalvas de transcricao ainda pendentes:",
+                  report["numero_ressalvas_transcricao_pdf_zika"])
+            print("Revisao independente da transcricao: NAO")
             print("Data de corte exata do arquivo ZIKA/2024: NAO IDENTIFICADA")
         print("Topicos de revisao pendentes:", report["total_topicos_pendentes"])
         for entry in report["topicos_pendentes"]:
@@ -563,6 +576,32 @@ def main() -> None:
         print("Confronto com esquema do arquivo ZIKA/2024: NAO")
         print("Indicadores reais homologados: 0")
         print("Publicacao autorizada: NAO")
+        print("Status:", report["status"])
+    elif args.comando == "conferir-transcricao-zika-pdf":
+        from .zika_pdf_37_field_curation import carregar_transcricao_zika_pdf
+        try:
+            report = carregar_transcricao_zika_pdf()
+        except (ValueError, OSError, UnicodeError):
+            parser.exit(2, "TRANSCRICAO DOCUMENTAL ZIKA RECUSADA: catalogo invalido.\\n")
+        print("TRANSCRICAO DOCUMENTAL CANDIDATA ZIKA; NAO E ESQUEMA ZIKABR24.")
+        print("Campos documentais transcritos:", report["documentary_fields_transcribed"])
+        print("Paginas conferidas:", report["source_pdf_page_count"])
+        print("Ressalvas pendentes:", len(report["issues_requiring_independent_review"]))
+        print("Hash do catalogo local (NAO do PDF oficial):",
+              report["local_catalog_sha256_not_official_pdf_hash"])
+        if args.detalhar:
+            for row in report["documentary_field_rows"]:
+                print(
+                    f'{row["seq"]:02d} pagina {row["pagina_pdf"]}: '
+                    f'{row["campo"]} [{row["tipo_documental"]}] '
+                    f'- {row["significado_resumido"]}; '
+                    f'dominio_documental={row["dominio_descritor"]}'
+                )
+        print("Campos reais ZIKABR24 lidos: 0")
+        print("Revisao independente homologada: NAO")
+        print("Compatibilidade com esquema 2024: NAO")
+        print("Regras de duplicidade homologadas: NAO")
+        print("Indicadores homologados: 0; publicacao autorizada: NAO")
         print("Status:", report["status"])
     elif args.comando == "preparar-checklist-roadmap":
         from .roadmap_readiness import preparar_checklist_local

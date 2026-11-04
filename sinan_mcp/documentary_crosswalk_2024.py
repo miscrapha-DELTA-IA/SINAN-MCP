@@ -13,6 +13,7 @@ from .year_evidence_registry import consultar_evidencia_agravo_ano
 from .zika_resource_identity import confrontar_snapshot_portal_zika_2024
 from .zika_portal_context import consultar_contexto_portal_zika_2024
 from .zika_official_dictionary_reference import diagnosticar_pdf_oficial_zika
+from .zika_pdf_37_field_curation import carregar_transcricao_zika_pdf
 
 SCHEMA = "sinan-2024-documentary-crosswalk-plan-v1"
 SUPPORTED = frozenset(("ZIKA", "SIFA"))
@@ -106,6 +107,9 @@ def planejar_confronto_documental_2024(agravo: str) -> dict[str, Any]:
     zika_pdf = (
         diagnosticar_pdf_oficial_zika() if agravo == "ZIKA" else None
     )
+    transcription = (
+        carregar_transcricao_zika_pdf() if agravo == "ZIKA" else None
+    )
     topics = [{
         "topico": code,
         "questao_de_revisao": description,
@@ -146,6 +150,18 @@ def planejar_confronto_documental_2024(agravo: str) -> dict[str, Any]:
         "numero_campos_documentados_zika": (
             zika_pdf["numero_de_campos_numerados_no_documento"]
             if zika_pdf is not None else 0
+        ),
+        "numero_campos_pdf_transcritos_candidato_zika": (
+            transcription["documentary_fields_transcribed"]
+            if transcription is not None else 0
+        ),
+        "transcricao_pdf_zika_sem_revisao_independente": (
+            not transcription["documentary_second_reviewer_authenticated"]
+            if transcription is not None else False
+        ),
+        "numero_ressalvas_transcricao_pdf_zika": (
+            len(transcription["issues_requiring_independent_review"])
+            if transcription is not None else 0
         ),
         "corte_exato_do_arquivo_2024_conhecido": False,
         "origem_dos_bytes_2024_autenticada": False,
