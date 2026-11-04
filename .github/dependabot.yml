@@ -1,0 +1,20 @@
+# Version updates create pull requests; they never change Render directly.
+# Review lockfile/hash updates and the synthetic-only public contract before merge.
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: "America/Fortaleza"
+    open-pull-requests-limit: 5
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: "America/Fortaleza"
+    open-pull-requests-limit: 5
