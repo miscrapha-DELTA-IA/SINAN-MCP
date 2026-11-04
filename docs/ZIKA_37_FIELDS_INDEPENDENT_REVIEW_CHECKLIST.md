@@ -140,3 +140,47 @@ continua sem ler arquivo anual. Não há etapa automática para
 converter esse checklist em homologação científica.
 
 **Status final esperado: `CHECKLIST_OPERADOR_SEM_PARECER_INDEPENDENTE`.**
+
+## Registro de observações pelo PowerShell (sem editar JSON)
+
+Após abrir o [PDF ministerial](https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/SINAN/Zikavirus/dic_dados_zika.pdf)
+e conferir **de fato** a linha correspondente, é possível registrar
+uma declaração documental individual no checklist privado. **Não execute
+um exemplo com status `CONFERIDO_MANUALMENTE` sem realizar a conferência.**
+
+A ferramenta cria uma **nova versão** na mesma pasta privada,
+preserva integralmente o arquivo original e recusa sobrescrita,
+mudanças no catálogo e autenticação de parecer. Exemplo de registro
+honesto de campo ainda pendente, **sem alegar que foi conferido**:
+
+```powershell
+$privado = Join-Path $env:USERPROFILE "Documents\SINAN-MCP-Privado\ZIKA"
+$origem = Join-Path $privado "revisao-documental-zika-37-campos.json"
+$nova = Join-Path $privado "revisao-documental-zika-v2.json"
+
+py -3.11 -m sinan_mcp registrar-observacao-revisao-zika `
+  --arquivo $origem --saida $nova `
+  --tipo campo --campo nduplic_n `
+  --avaliacao PENDENTE `
+  --nota "Aguardando segunda leitura da categoria na pagina 5"
+
+py -3.11 -m sinan_mcp diagnosticar-revisao-documental-zika --arquivo $nova
+```
+
+**Observação:** marcar `PENDENTE` não reduz a contagem de pendências;
+isto é esperado. Somente após inspeção humana real, um operador poderá
+declarar `CONFERIDO_MANUALMENTE`, `DIVERGENCIA_DOCUMENTAL` ou
+`ILEGIVEL` para um campo; divergência ou ilegibilidade exige nota.
+Para registrar uma das **sete ressalvas**, use
+`--tipo ressalva --campo nduplic_n` com
+`--avaliacao OBSERVACAO_DOCUMENTADA` ou
+`DIVERGENCIA_IDENTIFICADA`, sempre com justificativa.
+Os comandos aceitam a opção `PENDENTE` para manter assuntos abertos.
+
+A saída é apenas uma contagem de declarações do operador; **não**
+é parecer independente autenticado. O programa não confirma que
+o PDF foi realmente aberto. Não copie as notas privadas para
+issues, pull requests, chats ou servidor MCP.
+
+Se `revisao-documental-zika-v2.json` já existir, escolha outro
+nome de saída; o comando nunca sobrescreve versões anteriores.

@@ -178,6 +178,17 @@ def main() -> None:
         help="Conferir somente o estado de checklist privado; SEM autenticar revisor",
     )
     zika_check.add_argument("--arquivo", required=True, type=Path)
+    zika_edit = cmd.add_parser(
+        "registrar-observacao-revisao-zika",
+        help="Registrar declaracao em NOVA versao privada sem editar a origem, nunca homologar",
+    )
+    zika_edit.add_argument("--arquivo", required=True, type=Path)
+    zika_edit.add_argument("--saida", required=True, type=Path)
+    zika_edit.add_argument("--tipo", choices=["campo", "ressalva"], required=True)
+    zika_edit.add_argument("--campo", required=True)
+    zika_edit.add_argument("--avaliacao", required=True)
+    zika_edit.add_argument("--nota", required=True)
+
     readiness_template = cmd.add_parser(
         "preparar-checklist-roadmap",
         help="Criar checklist privado multiagravo/ano, todos os gates PENDENTES",
@@ -648,6 +659,34 @@ def main() -> None:
         print("Topicos cientificos pendentes: 10")
         print("Indicadores homologados: 0; publicacao autorizada: NAO")
         print("Status:", report["status"])
+    elif args.comando == "registrar-observacao-revisao-zika":
+        from .zika_pdf_review_annotation import registrar_observacao_documental_zika
+        try:
+            report = registrar_observacao_documental_zika(
+                args.arquivo, args.saida,
+                tipo=args.tipo, campo=args.campo,
+                avaliacao=args.avaliacao, nota=args.nota,
+            )
+        except (OSError, ValueError, UnicodeError, RuntimeError):
+            parser.exit(
+                2, "OBSERVACAO NAO REGISTRADA. Confira estado permitido, "
+                "nota documental, arquivo original e destino privado novo.\n"
+            )
+        print("NOVA VERSAO PRIVADA CRIADA; ARQUIVO ORIGINAL PRESERVADO.")
+        print("Campos documentais:", report["campos_documentais_total"])
+        print("Pendentes:",
+              report["campos_por_declaracao_do_operador"]["PENDENTE"])
+        print("Conferidos declarados pelo operador:",
+              report["campos_por_declaracao_do_operador"]["CONFERIDO_MANUALMENTE"])
+        print("Divergencias declaradas pelo operador:",
+              report["campos_por_declaracao_do_operador"]["DIVERGENCIA_DOCUMENTAL"])
+        print("Ilegiveis declarados pelo operador:",
+              report["campos_por_declaracao_do_operador"]["ILEGIVEL"])
+        print("Ressalvas pendentes:",
+              report["ressalvas_por_declaracao_do_operador"]["PENDENTE"])
+        print("Parecer independente autenticado: NAO")
+        print("Campos de ZIKABR24 lidos: 0")
+        print("Indicadores homologados: 0; publicacao autorizada: NAO")
     elif args.comando == "preparar-checklist-roadmap":
         from .roadmap_readiness import preparar_checklist_local
         try:
