@@ -499,6 +499,11 @@ def main() -> None:
                   "SIM" if report["pdf_zika_inspecionado_visualmente"] else "NAO")
             print("Campos numerados na fonte documental:",
                   report["numero_campos_documentados_zika"])
+            print("Campos transcritos em candidato documental:",
+                  report["numero_campos_pdf_transcritos_candidato_zika"])
+            print("Ressalvas de transcricao ainda pendentes:",
+                  report["numero_ressalvas_transcricao_pdf_zika"])
+            print("Revisao independente da transcricao: NAO")
             print("Data de corte exata do arquivo ZIKA/2024: NAO IDENTIFICADA")
         print("Topicos de revisao pendentes:", report["total_topicos_pendentes"])
         for entry in report["topicos_pendentes"]:
