@@ -274,7 +274,8 @@ def start() -> None:
     # A future multi-instance deployment requires an edge/distributed limiter.
     uvicorn.run(
         app, host="0.0.0.0", port=port, workers=1,
-        proxy_headers=False, server_header=False, timeout_keep_alive=5,
+        proxy_headers=False, server_header=False, access_log=False,
+        timeout_keep_alive=5,
     )
 
 
