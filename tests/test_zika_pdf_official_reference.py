@@ -63,6 +63,9 @@ def test_reference_only_updates_documentary_crosswalk_subfields():
     assert zika["pdf_especifico_zika_localizado_no_portal"] is True
     assert zika["pdf_zika_inspecionado_visualmente"] is True
     assert zika["numero_campos_documentados_zika"] == 37
+    assert zika["numero_campos_pdf_transcritos_candidato_zika"] == 37
+    assert zika["transcricao_pdf_zika_sem_revisao_independente"] is True
+    assert sifa["numero_campos_pdf_transcritos_candidato_zika"] == 0
     assert zika["pdf_exato_zika_auditado"] is False  # no 2024 field-level audit
     assert zika["corte_exato_do_arquivo_2024_conhecido"] is False
     assert sifa["pdf_especifico_zika_localizado_no_portal"] is False
