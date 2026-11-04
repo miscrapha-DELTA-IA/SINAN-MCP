@@ -102,6 +102,7 @@ def test_public_starts_only_with_host_allowlist(monkeypatch):
     assert "https://chatgpt.com" in security.allowed_origins
     assert captured["uvicorn_settings"]["workers"] == 1
     assert captured["uvicorn_settings"]["proxy_headers"] is False
+    assert captured["uvicorn_settings"]["access_log"] is False
 
 
 def test_public_mcp_tools_no_private_admin_routes():
