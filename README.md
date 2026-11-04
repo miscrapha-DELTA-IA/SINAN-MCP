@@ -1,212 +1,240 @@
+<div align="center">
+
 # SINAN MCP
 
-**Uma interface de ferramentas MCP para educação epidemiológica e estudos exploratórios sobre a estrutura do SINAN.**
+### An open research interface for epidemiological data, built around provenance.
 
-> v0.4.0-alpha.4 · Independente, não afiliado ao Ministério da Saúde/DATASUS · Não indicado para decisões clínicas.
+**Explore official SINAN references. Prototype with synthetic data. Keep sensitive research workflows separate.**
 
-## Alcance: múltiplos agravos, não somente tuberculose
+[![CI](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/workflows/ci.yml)
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-24527a?logo=python&logoColor=white)](pyproject.toml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-0f766e)](LICENSE)
+[![Stage: Research Alpha](https://img.shields.io/badge/Stage-Research%20Alpha-6d28d9)](#project-status)
+[![Protocol: MCP](https://img.shields.io/badge/Protocol-MCP-334155)](https://modelcontextprotocol.io/)
 
-**Objetivo:** navegar, pesquisar e eventualmente consultar agregados aprovados de múltiplas doenças e agravos de notificação registrados no SINAN. **Não significa qualquer doença da medicina nem qualquer código CID.** A lista de agravos notificáveis e os sistemas de origem mudam; para alguns temas há bases em sistemas diferentes do SINAN.
+**[Get started](#get-started)** · **[Explore the architecture](#architecture)** · **[Public demo](#public-synthetic-preview)** · **[Documentation](#documentation)** · **[Português](docs/pt-BR.md)**
 
-O índice de referência possui atualmente **14 aliases internos de agravos** (TB, dengue, hanseníase, hepatites virais, sífilis, meningite, violências, etc.). Isso é um **índice exemplificativo, não a lista nacional exaustiva e não um mapa validado de códigos PySUS**. A pesquisa de referências **não contém contagens reais**, não comprova importação e não significa que um indicador foi validado.
-
-- `pesquisar_agravos(termo, limite)`: busca por texto e nome, inclusive sem acentos.
-- `descrever_agravo(codigo_interno)`: estado de implementação, limites e links oficiais.
-- `listar_fontes_oficiais()`: páginas oficiais verificadas do MS, DATASUS/TABNET e Portal SINAN. Esses links são pontos de entrada, não arquivos de valores previamente auditados.
-- `contar_notificacoes` e `proporcao_abandono_tuberculose`: **continuam limitadas ao exemplo inventado de TUBE/2024/PI no servidor público**, não a notificações reais.
-- A CLI `preparar-tabela-oficial` confere um JSON local de tabulação já agregada, produz um candidato privado e **nunca publica diretamente**. Verificações de formato e de células mínimas não autenticam os dados junto ao DATASUS.
-- Os agregados reais dependerão de tabelas pré-computadas, documentação por agravo/ano e revisão independente antes de disponibilização; nenhum banco individual é acessado na modalidade pública.
-
-Consulte [escopo e fontes do catálogo](docs/MULTI_AGRAVO_CATALOG.md).
-
-## Two intentionally separate distributions
-
-| Mode | Entry point | Data | Intended use |
-|---|---|---|---|
-| **Public HTTPS preview** | `python -m sinan_mcp.public_server` | Referências para múltiplos agravos; **120 registros TB fictícios apenas como demonstração**; sem SQLite ou SINAN real | Descoberta de fontes, educação e demonstração do protocolo |
-| **Private/local research** | `python -m sinan_mcp --db ./data/sinan-demo.sqlite3 servir` | User-selected local SQLite; real data only under safeguards | Private protocol integration and research |
-
-**The public deployment is not a live SINAN statistics source.** Any actual real-data output requires a separately validated, pre-aggregated dataset and independent privacy/security review. The 113,012 real TB 2024 records imported into the user's Windows were **not** copied to the public server.
-
-## Instância pública em operação (somente dados sintéticos)
-
-- **MCP Streamable HTTP:** [https://sinan-mcp-public-preview.onrender.com/mcp](https://sinan-mcp-public-preview.onrender.com/mcp)
-- **Saúde:** [https://sinan-mcp-public-preview.onrender.com/health](https://sinan-mcp-public-preview.onrender.com/health)
-- **Hospedagem:** Render, instância gratuita isolada, autoDeploy desativado
-- **Validação externa:** [Public HTTPS MCP smoke — GitHub Actions](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/workflows/public-live-smoke.yml)
-- **Estado dos dados:** EXCLUSIVAMENTE 120 registros demonstrativos fictícios TUBE/2024/PI. **Não é uma API de estatísticas oficiais.**
-
-No ChatGPT, crie um conector/servidor MCP personalizado por **URL HTTPS** (não por túnel), use o endereço `/mcp` acima e escolha sem autenticação apenas para esta instância de demonstração sem dados privados. A instalação local de pesquisa permanece separada. A publicação no Plugin Directory depende de revisão e aceite próprios da plataforma.
-
-A instância gratuita pode suspender após inatividade, causando latência na primeira chamada. O operador deve considerar monitoramento e custo/cotas antes da divulgação ampla.
-
-## Publishing today: safe public preview
-
-See [public launch checklist](docs/PUBLIC_LAUNCH.md), [public privacy notice](docs/PUBLIC_DISCLOSURE.md), and [Render blueprint](render.yaml). The service starts only with a hosting-provided hostname:
-
-```sh
-python -m pip install -e .
-SINAN_PUBLIC_HOST=example-mcp.your-domain.com PORT=10000 python -m sinan_mcp.public_server
-```
-
-`/health` is a non-sensitive uptime check; `/mcp` is the stateless Streamable HTTP endpoint. **Never configure a public server to load `data/sinan.sqlite3` or to run `sinan_mcp.server`.** The private local server remains available independently.
-
-For private usage, continue below.
+</div>
 
 ---
 
+> [!IMPORTANT]
+> **Research alpha — not an official SINAN/DATASUS product.** The public MCP preview exposes **fictional tuberculosis records**, not live SINAN statistics. Its catalogue links are references, not validated datasets or approved epidemiological indicators. Do not use this project for clinical decisions, official reporting or public-health interventions.
 
+## Why SINAN MCP?
 
-Python 3.11+ (Windows, macOS or Linux):
+Brazil's *Sistema de Informação de Agravos de Notificação* (SINAN) is a crucial source for public-health research. Working responsibly with surveillance information requires more than downloading a dataset: the source, notification system, data dictionary, reporting year, case definition and disclosure risks all matter.
 
-```sh
-python -m venv .venv
-# Windows: .\.venv\Scripts\Activate.ps1
-# macOS/Linux: source .venv/bin/activate
-python -m pip install -e '.[dev]'
-python -m sinan_mcp demo
+**SINAN MCP** explores how the **Model Context Protocol (MCP)** can support better-documented workflows around that complexity.
+
+The goal is not to hide scientific uncertainty behind a chatbot. It is to **make uncertainty, provenance and access boundaries explicit** while building reusable open-source tooling for researchers.
+
+<table>
+<tr>
+<td width="33%" valign="top">
+
+**Discover**
+
+Find curated references to notifiable conditions, official portals and supporting documentation.
+
+</td>
+<td width="33%" valign="top">
+
+**Prototype**
+
+Explore a read-only MCP demonstration with deliberately fictional tuberculosis records.
+
+</td>
+<td width="33%" valign="top">
+
+**Investigate**
+
+Use separate local tools for imports, diagnostics and experimental methods, subject to human review.
+
+</td>
+</tr>
+</table>
+
+## What is available
+
+| Capability | Current implementation | Important boundary |
+|---|---|---|
+| **Source discovery** | Official-source links and a catalogue with **14 internal condition aliases** | Catalogue entries do not prove that a usable dataset exists |
+| **MCP interface** | Python-based tools for metadata, descriptions and synthetic examples | Public service never queries the local research database |
+| **Synthetic demonstration** | Deterministic fictional TUBE/2024/PI records | Not real notifications, incidence, prevalence or patient counts |
+| **Local research toolkit** | Administrative commands for file discovery, ingestion and data diagnostics | Must run in a controlled local environment |
+| **Research methods** | Experimental local fairness and aggregate-review utilities | No officially validated predictive model or indicator is provided |
+| **Documentation and tests** | Python test suite, CI matrix, security guidance and contribution policy | Passing tests is not a scientific, privacy or security certification |
+
+A disease name appearing in the catalogue does **not** mean all its historical files, dictionaries or indicators are supported. See [catalogue scope](docs/MULTI_AGRAVO_CATALOG.md).
+
+## Architecture
+
+The public demonstration and the private research workflow are intentionally separate.
+
+\`\`\`mermaid
+flowchart TB
+  subgraph PUBLIC["Public MCP preview — synthetic only"]
+    A["MCP client"] --> B["Read-only public_server.py"]
+    B --> C["Source references<br/>and condition catalogue"]
+    B --> D["Fictional TB demonstration"]
+  end
+
+  subgraph LOCAL["Private research — local operator"]
+    E["Researcher / data steward"] --> F["Administrative CLI / local MCP"]
+    F --> G["Local SQLite and research files"]
+    F --> H["Quality checks and<br/>experimental audits"]
+  end
+
+  H -. "Requires separate human assessment" .-> I["Scientific, provenance<br/>and privacy review"]
+  I -. "Not an automatic release" .-> J["Potential approved outputs"]
+
+  classDef public fill:#eaf5f7,stroke:#0e7490,color:#0f172a;
+  classDef local fill:#f2ecff,stroke:#7c3aed,color:#1f1637;
+  classDef gate fill:#f8fafc,stroke:#64748b,color:#0f172a;
+  class B,C,D public;
+  class F,G,H local;
+  class I,J gate;
+\`\`\`
+
+**The public service has no route to private SQLite files, PySUS ingestion or row-level records.** Its demonstration data are generated by the application itself. Local operations require separate choices and controls. A future real-data publication workflow is **not** enabled merely by importing files or obtaining a test result.
+
+## Get started
+
+Requires **Python 3.11+** and Git. These commands create **synthetic demonstration data**, not an official SINAN dataset.
+
+<details open>
+<summary><strong>Windows PowerShell</strong></summary>
+
+\`\`\`powershell
+git clone https://github.com/miscrapha-DELTA-IA/SINAN-MCP.git
+cd SINAN-MCP
+
+py -3.11 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
+.\.venv\Scripts\python.exe -m sinan_mcp demo
+.\.venv\Scripts\python.exe -m pytest -q
+\`\`\`
+
+</details>
+
+<details>
+<summary><strong>macOS / Linux</strong></summary>
+
+\`\`\`bash
+git clone https://github.com/miscrapha-DELTA-IA/SINAN-MCP.git
+cd SINAN-MCP
+
+python3.11 -m venv .venv
+.venv/bin/python -m pip install -e ".[dev]"
+.venv/bin/python -m sinan_mcp demo
+.venv/bin/python -m pytest -q
+\`\`\`
+
+</details>
+
+### Run a local MCP demonstration
+
+After creating the synthetic database:
+
+\`\`\`bash
 python -m sinan_mcp --db ./data/sinan-demo.sqlite3 servir
-```
+\`\`\`
 
-The example creates **fictional records only** in a separate `sinan-demo.sqlite3` file. The server waits on stdin for an MCP host. Use an absolute Python interpreter path and absolute `--db` path in your client. Examples are provided under [`examples/`](examples/). Claude Desktop, Cursor and other clients require their own supported MCP configuration; **Cowork/gateway support has not been verified**.
+This command starts the **local stdio MCP server**. Configure your chosen MCP client to launch it with the appropriate absolute Python and database paths. Do **not** expose the local server on a public network. See the [Windows ChatGPT connector guide](docs/CHATGPT_TUNNEL_WINDOWS.md) and [security policy](SECURITY.md).
 
-Try asking: *"On the synthetic TUBE dataset, show the race/color distribution in PI for the 2024 file and explain the provenance and limitations."*
+## Public synthetic preview
 
-## Scientific scope (pilot)
-
-- **Two pilot diseases:** TUBE and DENG. Disease-year codebooks still need validation.
-- **Remote discovery without microdata download:** `python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024` lists PySUS files without loading records. Requires `.[ingest]`.
-- **Batch-wise ingestion:** PySUS downloads a FileBag or uses a bounded Windows SQL-catalog fallback and streams Parquet/CSV records, avoiding national dataframes in RAM. Local Windows ingestion of TUBE 2024 has been user-confirmed for 113,012 projected records; this does not validate epidemiologic definitions.
-- **Administrator-only fairness audit:** `auditar-equidade` evaluates a local held-out prediction CSV, entirely outside the MCP surface. See [fairness protocol](docs/FAIRNESS_PROTOCOL.md).
-- **Privacy-first MCP/REST:** Real-data numeric queries require explicit opt-in and pass a conservative cross-table small-cell guard; otherwise only the synthetic demo is queryable. See [security](SECURITY.md).
-- **Administrator-only quality audit:** `diagnosticar-base` measures missing or ignored fields locally; not available to LLM tools.
-
-See [scientific interpretation](docs/EPIDEMIOLOGY.md).
-
-## Tools
-
-| MCP tool | Function |
+| Resource | Endpoint |
 |---|---|
-| `listar_bases` | Dataset snapshots (no local filenames or record totals) |
-| `descrever_campos` | Variable definitions and caveats |
-| `contar_notificacoes` | Counts for one UF + one file-year, by `sexo` or `raca_cor` |
-| `proporcao_abandono_tuberculose` | Exploratory outcome ratio, **not** an official indicator |
-| `listar_agravos` | Curated pilot disease catalogue and scope |
-| `metodologia_abandono_tuberculose` | Formula and scientific limitations (not an official indicator) |
+| **MCP Streamable HTTP** | [sinan-mcp-public-preview.onrender.com/mcp](https://sinan-mcp-public-preview.onrender.com/mcp) |
+| **Service health check** | [sinan-mcp-public-preview.onrender.com/health](https://sinan-mcp-public-preview.onrender.com/health) |
+| **Public-service rules** | [Launch and privacy disclosure](docs/PUBLIC_DISCLOSURE.md) |
 
-For numeric tools, provide `ano_inicio=ano_fim=2024`, `uf="PI"`, `por="raca_cor"` (or `sexo`). Public tools intentionally deny municipality filters, totals, date ranges and other cross-cutting groupings. Responses include `resultado`, `proveniencia`, `politica` and `limitacoes`. Small cells are suppressed. These restrictions **reduce but do not eliminate** statistical disclosure risk; *no formal anonymization guarantee exists.* No row-level or arbitrary SQL tools are exposed.
+The preview is hosted separately, with **synthetic records only**, and may take time to respond after inactivity on free hosting. Endpoint availability can change; a link is not an uptime guarantee.
 
-**Public release safeguard:** Since v0.3.0a3 the server refuses numeric MCP/REST queries against real imported snapshots unless an administrator deliberately sets `SINAN_PUBLIC_REAL_DATA=1` on the **server** process. This also affects previously functioning local REST real-data queries. Even with opt-in, an entire year/UF partition is withheld when too small or when cross-table comparison could reveal subcells of fewer than 10. Do **not** enable opt-in for remote use without an independent disclosure assessment. Synthetic demo remains enabled.
+**Examples of public MCP tools**
 
-**Scientific caveats:** `ano` is the **imported file-year**, not necessarily the notification, diagnosis or closure year. Counts are records, not incidence or unique patients. The exploratory TB abandonment ratio computes `(SITUA_ENCE=2 or 10)/(SITUA_ENCE=1,2,10)`; without a formally validated case cohort and longitudinal deduplication it **must not be described as the Ministry's official treatment abandonment indicator**.
+\`\`\`text
+pesquisar_agravos("tuberculose", limite=5)
+descrever_agravo("TUBE")
+listar_fontes_oficiais()
+listar_agravos()
+\`\`\`
 
-### Windows: empty PySUS catalog
+The public demonstration also includes narrow numeric examples for a **fictional** TUBE/2024/PI dataset. Any returned counts must be interpreted solely as software demonstration output, never as evidence about real populations.
 
-If PySUS returns no files in your local environment, `descobrir-pysus` defaults to `--source auto`: it checks the PySUS mirror and, only when the mirror is empty/unreachable, requests discovery from the original DATASUS source. The result reports individual attempts and **never downloads health records**. A `nao_confirmado` result means the availability could not be established, **not** that the dataset does not exist. To troubleshoot independently use `--source catalog` and `--source origin`. The ingestion command deliberately retains a required, explicit source policy (`catalog` by default), so switching data providers cannot happen silently.
+## Project status
 
-## Local ingestion (administrative operation, not an MCP tool)
+This is a **research prototype**, not a completed epidemiological data service.
 
-```sh
-python -m sinan_mcp importar-csv ./dataset.csv --agravo TUBE --ano 2024 --status desconhecido
-python -m pip install -e '.[ingest]'
-python -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --source auto
-python -m sinan_mcp importar-pysus --agravo TUBE --ano 2024 --source catalog --status desconhecido
-python -m sinan_mcp diagnosticar-base --agravo TUBE --ano 2024
-```
+| Workstream | Current status |
+|---|---|
+| Public reference catalogue and synthetic MCP demo | **Implemented** |
+| Local import, diagnostics and experimental analysis | **Prototype** |
+| Real-data metrics approved for public release | **None** |
+| Independent epidemiological and privacy validation | **Required** |
+| General-purpose disease coverage | **Not established** |
+| Clinical or government use | **Out of scope** |
 
-`--source catalog` may use a PySUS mirror; `--source origin` selects the upstream origin. Verify actual availability, codebooks, year, source and preliminary/final status independently. The SQLite projection excludes direct identifiers but retains quasi-identifiers; keep it private. One imported snapshot per agravo/file-year is retained; reimport replaces the former snapshot. The optional PySUS component has separate copyleft license obligations; assess them before redistributing combined distributions.
+**Active research track: Zika dictionary curation.** A candidate transcription of **37 fields from an eight-page public PDF** and **seven documented ambiguities** is under review in [PRs #25–#28](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/pull/28). Those changes are **draft work, not part of the default branch**, and they do **not** validate the ZIKA/2024 annual data export. Independent documentary review remains pending.
 
-## Local REST adapter
+Read the [epidemiological interpretation guide](docs/EPIDEMIOLOGY.md) before using any aggregate or exploratory measure in research.
 
-```sh
-python -m sinan_mcp --db ./data/sinan-demo.sqlite3 servir --rest --port 8001
-```
+## Security and research ethics
 
-Routes: `GET /health`, `GET /v1/bases`, `GET /v1/campos`, `GET /v1/agravos`, `GET /v1/metodologia/tb`, `POST /v1/contagens`, `POST /v1/tb/abandono`.
+The project is designed to distinguish **reference discovery**, **local scientific work** and **potential publication**.
 
-```json
-{"agravo":"TUBE","ano_inicio":2024,"ano_fim":2024,"uf":"PI","por":"raca_cor"}
-```
+- **No patient records in GitHub or CI.** Tests use synthetic fixtures.
+- **No real clinical dataset in the public preview.** No public row-level interface or arbitrary SQL.
+- **Private datasets remain the operator's responsibility.** Local projections may contain quasi-identifiers; a reduced set of fields is not proof of anonymization.
+- **Small-cell suppression is not a privacy guarantee.** Linkage and differencing risks require independent assessment.
+- **No automatic endorsement.** Importing a file, checking a hash or reviewing a dictionary does not certify an epidemiological result.
 
-MCP over local Streamable HTTP: `python -m sinan_mcp servir --http --port 8000` (`/mcp`). **Do not expose local REST/MCP endpoints publicly.** Remote use requires auth, transport security and formal statistical disclosure controls.
+Security concerns should be reported privately to maintainers, without including sensitive health information. See [SECURITY.md](SECURITY.md).
 
-## Validation and documentation
+## Documentation
 
-```sh
-python -m pip install -e '.[dev]'
-python -m pytest -q
-```
+| Start here | What you will find |
+|---|---|
+| [Português: início rápido](docs/pt-BR.md) | Guia introdutório em português |
+| [Condition catalogue](docs/MULTI_AGRAVO_CATALOG.md) | Scope, sources and internal aliases |
+| [Epidemiological interpretation](docs/EPIDEMIOLOGY.md) | Definitions, denominators and limitations |
+| [Public preview and disclosure](docs/PUBLIC_DISCLOSURE.md) | Synthetic-data boundary and service notice |
+| [Local research and release safeguards](docs/AGGREGATE_PUBLICATION.md) | Candidate aggregates and independent review requirements |
+| [Predictive fairness protocol](docs/FAIRNESS_PROTOCOL.md) | Exploratory offline assessment and limitations |
+| [Security policy](SECURITY.md) | Data handling, threat boundaries and deployment precautions |
+| [Contributing](CONTRIBUTING.md) | How to propose changes with reproducible evidence |
+| [Historical technical notes](docs/TECHNICAL_README_ARCHIVE.md) | Archived detailed implementation context; not current validation status |
 
-Includes synthetic core/REST/privacy tests and an **in-memory real MCP client** integration test when the v2 SDK is installed. Live PySUS downloads and desktop-client operation are not verified in this offline environment. The optional PySUS dependency and Parquet tests can be checked via the manually triggered `PySUS optional integration` workflow without downloading real records. CI checks supported Python/OS combinations after installation.
+## Roadmap
 
-- [Guia em português](docs/pt-BR.md) · [Security](SECURITY.md) · [Contributing](CONTRIBUTING.md)
-- [Official SINAN portal](https://portalsinan.saude.gov.br/) · [PySUS docs](https://pysus.readthedocs.io/en/stable/quickstart.html) · [MCP Python SDK](https://py.sdk.modelcontextprotocol.io/)
+- [x] Public, isolated, synthetic-only MCP demonstration
+- [x] Source-reference catalogue for multiple notifiable conditions
+- [x] Local administrative tooling and automated tests
+- [ ] Independently reviewed, year-specific data dictionaries
+- [ ] Reproducible source and release provenance across supported conditions
+- [ ] Independently assessed privacy and epidemiological publication gates
+- [ ] Research-grade evaluation of reliability, usability and limitations
 
-MIT-licensed original code; not an official DATASUS/SINAN service.
+These are **research milestones**, not delivery commitments or claims that real epidemiological services will be released.
 
-## Windows / empty PySUS catalogs
+## Contributing
 
-If both catalog and origin return `nao_confirmado`, the public PySUS 2.11.x implementation does **not** provide two independent backend checks: both use DuckLake catalog metadata. Test with a new isolated **metadata-only** cache and an HTTPS HEAD diagnostic:
+Contributions are especially welcome in documentation, reproducible tests, epidemiological semantics, dictionary curation, data provenance, privacy engineering and MCP interoperability.
 
-```powershell
-py -3.11 -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --cache-novo --diagnostico
-```
+1. Read [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md).
+2. Start with an issue describing the use case, source or reproducible problem.
+3. Submit focused changes using **synthetic fixtures only**; document scientific assumptions and limitations.
 
-`--cache-novo` changes `PYSUS_CACHEPATH` **only for this process**, creates a new cache under the project's ignored `data/` folder, and leaves the original PySUS cache untouched. The PySUS library may download public **catalog databases** for discovery; it does not download SINAN patient records because `download=False` is passed to the file fetcher. The HTTPS HEAD checks the public metadata index and reports status codes without printing credentials or local paths.
+If the project is useful for your work, **star the repository**, share it with collaborators and help improve its scientific rigor. Stars support discovery; they are not evidence of scientific validity.
 
-If the fresh catalog is empty but HTTPS responds, keep the diagnostic output for investigation (a connection to the catalog file does **not** prove that the dataset index is correctly populated). If HTTPS fails, check local DNS, corporate proxies or firewall restrictions; avoid disabling TLS certificate verification. Do not import real health records as a debugging step.
+## License and attribution
 
-### Windows PySUS 2.11.x catalog-query compatibility
+Original project code is licensed under the [MIT License](LICENSE). Optional third-party dependencies may carry separate licensing obligations.
 
-A reproducible issue occurs on Windows: PySUS may return empty FileBags despite successfully downloading the DuckLake catalog, which contains the expected TUBE/DENG file records. Linux discovery succeeds with the same catalog. The project now uses a **metadata-only SQL fallback**, strictly parameterized and restricted to public SINAN FTP Parquet file names, when ordinary discovery returns empty. This is an experimental compatibility workaround, **not** direct FTP access or validation that the complete data file is reachable. It does not automatically change the source of any clinical data ingestion.
+**Independent open-source research project. Not affiliated with, endorsed by or operated by Brazil's Ministry of Health, DATASUS or SINAN.**
 
-Try after updating your git clone:
-
-```powershell
-git pull origin main
-py -3.11 -m sinan_mcp descobrir-pysus --agravo TUBE --ano 2024 --diagnostico
-py -3.11 -m sinan_mcp descobrir-pysus --agravo DENG --ano 2024 --diagnostico
-```
-
-Use `--cache-novo` only to isolate further cache problems. If the discovery reports `origem: "ducklake_sql_local/ftp-mirror"`, the **metadata-only** fallback was activated. The regular `importar-pysus` command still depends on the upstream PySUS download mechanism and may need a separate Windows compatibility fix.
-
-## v0.3.0a2 — Windows safe import (experimental)
-
-File discovery via DuckLake SQL has been tested on Windows, but discovery alone is **not** a downloaded or epidemiologically validated dataset. To preview the public FTP-mirror Parquet file size and expected checksum (no clinical data transferred):
-
-```powershell
-py -3.11 -m sinan_mcp planejar-pysus --agravo TUBE --ano 2024
-```
-
-Only if the file size, storage and access policies are appropriate, **explicitly** import into your own private database:
-
-```powershell
-py -3.11 -m sinan_mcp --db .\data\sinan.sqlite3 importar-pysus --agravo TUBE --ano 2024 --source catalog --status desconhecido
-py -3.11 -m sinan_mcp --db .\data\sinan.sqlite3 diagnosticar-base --agravo TUBE --ano 2024
-```
-
-When PySUS returns an empty `FileBag` on Windows, the importer now resolves **only** the selected FTP-mirror files from the local public DuckLake catalog, downloads them over certificate-verified HTTPS with a fixed host, checks reported byte lengths and available SHA-256 digests, and streams only selected records into a local SQLite projection. Temporary raw Parquet files are removed on normal completion, but backups, OS cache, unexpected interruptions and the SQLite quasi-identifiers can still carry privacy risk; follow applicable institutional safeguards. No patients or raw files are sent to GitHub/CI, and public MCP/REST tools cannot trigger ingestion.
-
-Do **not** infer that a catalog entry guarantees the file is available, that remote bytes match the recorded metadata, or that the TB exploratory proportion is a certified official metric. Full real-data import is **not yet verified**. `--source origin` refuses an empty PySUS result rather than silently switching to the catalog mirror. The importer enforces a 2 GiB limit per file and 3 GiB aggregate catalog size; large datasets may require a dedicated ingestion plan.
-
-## ChatGPT Secure MCP Tunnel (Windows)
-
-See [`docs/CHATGPT_TUNNEL_WINDOWS.md`](docs/CHATGPT_TUNNEL_WINDOWS.md). A private tunnel does not anonymize tool responses. Initial connector testing MUST use `sinan-demo.sqlite3`.
-
-## Offline predictive fairness assessment (experimental)
-
-```powershell
-py -3.11 -m sinan_mcp auditar-equidade .\predicoes_teste.csv --grupo raca_cor --coorte 2022-2023 --limiar 0.5 --bootstrap 200
-```
-
-The **locally held-out** CSV must include only `y_true` (0/1), `y_score` (predicted LTFU probability 0–1) and `raca_cor` or `sexo`; extra columns are ignored by the auditor but should not be exported unnecessarily. Never upload it to ChatGPT or Git. This command audits predictions **already created elsewhere**; it cannot train or validate a TB model on the current seven-field projection. See [research protocol](docs/FAIRNESS_PROTOCOL.md).
-
-## Reprodutibilidade de agregados reais — candidato local e revisão obrigatória
-
-A ferramenta **`preparar-agregado`** lê somente o SQLite local e gera uma tabela demográfica candidata sob `data/review-packages/`, sem publicar nada. O módulo opcional **`sinan_mcp.approved_server`** é um servidor SEPARADO para apenas pacotes estáticos com revisões registradas e checksum travado. Ele não é o servidor público atualmente hospedado.
-
-```powershell
-py -3.11 -m sinan_mcp --db .\data\sinan.sqlite3 preparar-agregado --agravo TUBE --ano 2024 --uf PI --por raca_cor
-```
-
-O pacote real ainda não foi preparado no computador do operador, e nenhum dado real foi aprovado ou enviado para nuvem. A importação atual do arquivo TUBE 2024 tem `status=desconhecido`; isso **bloqueia** publicação antes da verificação oficial de consolidação. Consulte o [guia de publicação revisada](docs/AGGREGATE_PUBLICATION.md).
+<div align="center">
+  <sub>Built for reproducibility, transparency and responsible epidemiological research.</sub>
+</div>
