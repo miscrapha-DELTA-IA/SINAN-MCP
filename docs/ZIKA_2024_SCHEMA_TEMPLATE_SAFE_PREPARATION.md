@@ -7,6 +7,14 @@ O PDF possui 37 campos numerados, mas **nove exemplos não constituem
 uma transcrição integral**, e nenhuma compatibilidade com a distribuição
 ZIKABR24 foi verificada. Nenhum registro de paciente é necessário.
 
+**Transcrição documental posterior:** o catálogo
+[`ZIKA_PDF_37_FIELDS_DOCUMENTARY_TRANSCRIPTION.md`](ZIKA_PDF_37_FIELDS_DOCUMENTARY_TRANSCRIPTION.md)
+agora contém uma proposta de transcrição dos **37 identificadores**
+visíveis no PDF, com tipos, páginas, domínios descritos e sete
+ressalvas documentais pendentes. **Ela não modifica automaticamente
+o contrato privado anterior**, que permanece como excerto de nove
+campos até revisão independente. Nenhum dado de ZIKABR24 foi lido.
+
 ## O que foi implementado
 
 O comando administrativo existente `preparar-modelo-esquema` agora
