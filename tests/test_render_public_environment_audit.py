@@ -1,0 +1,107 @@
+"""Offline tests of the Render config audit. Never contact Render or use keys."""
+from __future__ import annotations
+
+import json
+
+from scripts import audit_render_public_environment as audit
+
+
+def clean_service():
+    return {
+        "id": audit.SERVICE_ID, "ownerId": audit.WORKSPACE_ID,
+        "name": audit.SERVICE_NAME, "branch": "main",
+        "repo": "https://github.com/miscrapha-DELTA-IA/SINAN-MCP",
+        "type": "web_service", "autoDeploy": "no", "autoDeployTrigger": "off",
+        "notifyOnFail": "default",
+        "serviceDetails": {
+            "plan": "free", "numInstances": 1, "healthCheckPath": "/health",
+            "envSpecificDetails": {
+                "buildCommand": audit.EXPECTED_BUILD,
+                "startCommand": audit.EXPECTED_START,
+            },
+        },
+    }
+
+
+def direct_env(**overrides):
+    values = {
+        "PYTHON_VERSION": "3.11.17",
+        "SINAN_PUBLIC_REAL_DATA": "0",
+        "SINAN_PUBLIC_HOST": audit.PUBLIC_HOST,
+    }
+    values.update(overrides)
+    return [{"envVar": {"key": key, "value": value}, "cursor": str(i)}
+            for i, (key, value) in enumerate(values.items())]
+
+
+def result_map(service=None, variables=None, secret_files=None, groups=None):
+    return dict(audit.assessment(
+        clean_service() if service is None else service,
+        direct_env() if variables is None else variables,
+        [] if secret_files is None else secret_files,
+        [] if groups is None else groups,
+    ))
+
+
+def test_synthetic_service_config_passes_technical_gates_but_not_unverified_controls():
+    status = result_map()
+    assert status["specific synthetic service identity"] == "PASS"
+    assert status["direct environment key allowlist"] == "PASS"
+    assert status["no direct secret files"] == "PASS"
+    assert status["no linked environment groups"] == "PASS"
+    assert status["logs retention and delivery verified"] == "REVIEW"
+    assert status["failure notifications destination"] == "REVIEW"
+
+
+def test_disallowed_direct_environment_does_not_print_name_or_value(capsys):
+    private_key = "SECRET_DATABASE_DSN"
+    private_value = "PRIVATE_CREDENTIAL_NEVER_LOG_THIS"
+    status = result_map(variables=direct_env(**{private_key: private_value}))
+    print(status)
+    printed = capsys.readouterr().out
+    assert status["direct environment key allowlist"] == "FAIL"
+    assert private_key not in printed
+    assert private_value not in printed
+
+
+def test_real_data_flag_and_wrong_python_pin_fail_closed():
+    result = result_map(variables=direct_env(SINAN_PUBLIC_REAL_DATA="1", PYTHON_VERSION="3.14.0"))
+    assert result["real-data opt-in disabled"] == "FAIL"
+    assert result["explicit Python 3.11.17 runtime pin"] == "FAIL"
+
+
+def test_secret_files_and_linked_groups_are_blockers_without_reading_content():
+    result = result_map(
+        secret_files=[{"secretFile": {"name": "private.pem", "content": "SECRET"}}],
+        groups=[{"serviceLinks": [{"id": audit.SERVICE_ID}], "name": "private-group"}],
+    )
+    assert result["no direct secret files"] == "FAIL"
+    assert result["no linked environment groups"] == "FAIL"
+
+
+def test_unlinked_groups_do_not_fail_the_service_but_link_shape_is_checked():
+    result = result_map(groups=[{"serviceLinks": [{"id": "srv-other"}]}])
+    assert result["no linked environment groups"] == "PASS"
+    assert result_map(groups=[{}])["no linked environment groups"] == "FAIL"
+
+
+def test_rate_concurrency_and_public_host_fail_on_invalid_values():
+    result = result_map(variables=direct_env(
+        SINAN_PUBLIC_RATE_PER_MINUTE="12000", SINAN_PUBLIC_MAX_IN_FLIGHT="128",
+        SINAN_PUBLIC_HOST="other.example.com",
+    ))
+    assert result["MCP request budget at most 300/min"] == "FAIL"
+    assert result["MCP concurrency at most 16"] == "FAIL"
+    assert result["approved public hostname"] == "FAIL"
+
+
+def test_pagination_fail_closed_when_cursor_missing(monkeypatch):
+    monkeypatch.setattr(audit, "api_get", lambda path, token: [
+        {"envVar": {"key": "PYTHON_VERSION", "value": "3.11.17"}} for _ in range(100)
+    ])
+    try:
+        audit.api_list("/services/id/env-vars", "never-output")
+    except audit.AuditUnavailable as exc:
+        assert "pagination" in str(exc)
+    else:
+        raise AssertionError("Missing cursor should not silently pass")

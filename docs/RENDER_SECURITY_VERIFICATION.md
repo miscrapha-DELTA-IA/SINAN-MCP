@@ -63,3 +63,23 @@ A tabela anterior registra uma **fotografia anterior à implantação** e não d
 **Sem atestado administrativo:** nomes/valores completos de variáveis e environment groups, efetiva vinculação ou ausência de discos/bancos, controle de acesso a dados externos, retenção/logs em provedor, alertas, proteção por origem na borda, e validação institucional de fontes reais. Não se deve declarar esses controles como auditados.
 
 A action [Public HTTPS MCP smoke](../.github/workflows/public-live-smoke.yml) executa uma sondagem periódica somente leitura (06h17/18h17 BRT, melhor esforço). A sonda não monitora diretamente versões/SHAs da Render nem substitui uma revisão humana. Ver [issue #43](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/issues/43).
+
+## Verificação local adicional de variáveis, grupos e secret files — somente leitura
+
+O conector Render atualmente disponível **não** possui método de listagem de env vars/arquivos secretos/env groups. O serviço já foi testado como estritamente sintético, mas isso não certifica o seu ambiente. A API oficial disponibiliza endpoints de leitura para as variáveis diretamente configuradas, secret files e grupos ligados. **Alguns retornam valores sensíveis**; nunca copiar respostas API, executar chamadas com output verboso ou colar tokens no chat.
+
+Para executar localmente em Windows, após atualizar seu clone da branch `main`:
+
+```powershell
+py -3.11 scripts/audit_render_public_environment.py
+```
+
+O script solicita a chave de API **sem exibir o texto**, caso `RENDER_API_KEY` não esteja definida, e realiza somente chamadas GET para o serviço esperado. Prefira uma chave escopada exclusivamente para leitura se disponível; **nunca** armazene a chave no repositório, nos workflows CI, em mensagens ou em arquivo de configuração. Revogue uma chave temporária após a auditoria. Não há upload de relatório nem impressão de valores.
+
+O script emite exclusivamente `PASS`, `FAIL` ou `REVIEW` em categorias predefinidas, sem nomes de variáveis não permitidas, nome ou conteúdo de secret file, nome de env group ou corpo de erro HTTP. Falha de API ou paginação incompleta bloqueiam a certificação. `REVIEW` indica verificação humana pendente, e **não** ausência de problema.
+
+As verificações incluem isolamento do serviço correto, `autoDeploy=no`, `healthCheckPath=/health`, build com hashes, comando sintético, versão Python 3.11.17, flag de dados reais desligada, hostname autorizado, limites conservadores, **zero arquivos secretos diretos e zero grupos vinculados**. Variáveis inesperadas exigem revisão sem revelar seus nomes; listas de grupos vinculados devem estar vazias, já que poderiam fornecer segredos por herança. APIs de configuração não demonstram qual código foi de fato executado — correlacionar sempre com o SHA Live e a sonda HTTPS pós-deploy.
+
+**Não checado pelo script:** existência de credenciais em sistemas externos, retenção e conteúdo dos logs de proxy, destinos reais de email/Slack, regras avançadas de proteção na borda e homologação epidemiológica. São etapas separadas do [issue #43](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/issues/43).
+
+Referências oficiais da Render: [env vars do serviço](https://api-docs.render.com/reference/get-env-vars-for-service), [secret files do serviço](https://api-docs.render.com/reference/list-secret-files-for-service), [environment groups](https://api-docs.render.com/reference/list-env-groups), [notificações](https://render.com/docs/notifications).
