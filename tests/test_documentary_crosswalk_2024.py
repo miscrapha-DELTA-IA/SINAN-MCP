@@ -64,6 +64,9 @@ def test_zika_crosswalk_tracks_two_resources_without_verifying_content():
     assert p["instrumento_de_notificacao_orientado"] is None
     assert p["vinculo_direto_do_pdf_na_pagina_do_agravo"] is True
     assert p["dicionario_especifico_curado"] is True
+    assert p["numero_campos_pdf_transcritos_candidato_zika"] == 37
+    assert p["transcricao_pdf_zika_sem_revisao_independente"] is True
+    assert p["numero_ressalvas_transcricao_pdf_zika"] >= 6
     assert len(p["referencias_documentais"]) == 5
     assert {x["id"] for x in p["referencias_documentais"]} == {
         "dicionario_geral_2018", "pagina_oficial_zika",
@@ -125,6 +128,8 @@ def test_cli_runs_offline_and_does_not_create_a_private_database(tmp_path):
     assert zika.returncode == 0, zika.stderr
     assert "Distribuicoes anuais catalogadas: 2" in zika.stdout
     assert "Orientacao ministerial 2024 da ficha: NAO" in zika.stdout
+    assert "Campos transcritos em candidato documental: 37" in zika.stdout
+    assert "Revisao independente da transcricao: NAO" in zika.stdout
 
 
 def test_public_contract_and_multidisease_counters_do_not_change():
