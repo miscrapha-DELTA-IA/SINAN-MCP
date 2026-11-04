@@ -41,14 +41,14 @@ jobs:
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: '3.11'
-      - name: Generate Windows-specific hashed lock for review
+      - name: Verify versioned Windows-specific hashed lock
         shell: pwsh
         run: |
           python -m pip install "pip-tools==7.6.2" "pip-audit==2.10.1"
           python -m piptools compile --generate-hashes --no-header --no-annotate --output-file=requirements-public-windows.lock pyproject.toml
-          Write-Output "WINDOWS_LOCK_BEGIN"
-          Get-Content requirements-public-windows.lock
-          Write-Output "WINDOWS_LOCK_END"
+          if ($LASTEXITCODE -ne 0) { throw "Windows lock resolution failed" }
+          git diff --exit-code -- requirements-public-windows.lock
+          if ($LASTEXITCODE -ne 0) { throw "Windows runtime lock drift" }
       - name: Verify locked public runtime on Windows
         run: |
           python -m pip install --require-hashes --no-deps -r requirements-public-windows.lock
