@@ -14,7 +14,7 @@
   <a href="https://modelcontextprotocol.io/"><img alt="Protocol: MCP" src="https://img.shields.io/badge/Protocol-MCP-334155" /></a>
 </p>
 
-<p><a href="#get-started">Get started</a> · <a href="#architecture">Explore the architecture</a> · <a href="#public-synthetic-preview">Public demo</a> · <a href="#documentation">Documentation</a> · <a href="docs/pt-BR.md">Português</a></p>
+<p><a href="#get-started">Get started</a> · <a href="#architecture">Explore the architecture</a> · <a href="#public-synthetic-preview">Public demo</a> · <a href="#documentation">Documentation</a> · <a href="docs/pt-BR.md">Read in Portuguese</a></p>
 
 </div>
 
@@ -177,7 +177,7 @@ Security concerns should be reported privately to maintainers, without including
 
 | Start here | What you will find |
 |---|---|
-| [Português: início rápido](docs/pt-BR.md) | Guia introdutório em português |
+| [Complete Portuguese README](docs/pt-BR.md) | Full project overview in Portuguese |
 | [Condition catalogue](docs/MULTI_AGRAVO_CATALOG.md) | Scope, sources and internal aliases |
 | [Epidemiological interpretation](docs/EPIDEMIOLOGY.md) | Definitions, denominators and limitations |
 | [Public preview and disclosure](docs/PUBLIC_DISCLOSURE.md) | Synthetic-data boundary and service notice |
