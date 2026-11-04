@@ -14,7 +14,7 @@
   <a href="https://modelcontextprotocol.io/"><img alt="Protocolo MCP" src="https://img.shields.io/badge/Protocol-MCP-334155" /></a>
 </p>
 
-<p><a href="#comece-aqui">Comece aqui</a> · <a href="#arquitetura">Arquitetura</a> · <a href="#demonstração-pública-sintética">Demonstração pública</a> · <a href="#documentação">Documentação</a> · <a href="../README.md">English version</a></p>
+<p><a href="#comece-aqui">Comece aqui</a> · <a href="#arquitetura">Arquitetura</a> · <a href="#demonstração-pública-sintética">Demonstração pública</a> · <a href="#documentação">Documentação</a> · <a href="../README.md">Versão em inglês</a></p>
 
 </div>
 
@@ -179,7 +179,7 @@ Vulnerabilidades devem ser comunicadas privadamente aos mantenedores, sem inclui
 
 | Comece por aqui | Conteúdo |
 |---|---|
-| [English: complete README](../README.md) | Apresentação completa em inglês |
+| [Versão completa em inglês](../README.md) | Apresentação completa em inglês |
 | [Catálogo de agravos](MULTI_AGRAVO_CATALOG.md) | Escopo, fontes e identificadores internos |
 | [Interpretação epidemiológica](EPIDEMIOLOGY.md) | Definições, denominadores e limitações |
 | [Demonstração pública e privacidade](PUBLIC_DISCLOSURE.md) | Limites dos dados sintéticos e aviso do serviço |
@@ -206,7 +206,7 @@ São **marcos de pesquisa**, não promessas de entrega nem indicação de que ha
 Contribuições são bem-vindas em documentação, testes reprodutíveis, semântica epidemiológica, curadoria de dicionários, proveniência, engenharia de privacidade e interoperabilidade MCP.
 
 1. Leia [CONTRIBUTING.md](../CONTRIBUTING.md) e [SECURITY.md](../SECURITY.md).
-2. Abra uma issue descrevendo o caso de uso, a fonte ou um problema reproduzível.
+2. Abra uma solicitação (issue) descrevendo o caso de uso, a fonte ou um problema reproduzível.
 3. Envie alterações específicas usando **apenas exemplos sintéticos**, documentando pressupostos e limitações científicas.
 
 Se o projeto for útil, **marque o repositório com uma estrela**, compartilhe com colaboradores e ajude a melhorar seu rigor científico. Estrelas favorecem a descoberta do projeto, mas não demonstram validade científica.
