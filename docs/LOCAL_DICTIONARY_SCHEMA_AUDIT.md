@@ -55,8 +55,10 @@ Para JSON DENG e CHIK, o contrato exige indicar explicitamente array_of_objects 
 O gerador de modelo agora usa **nove exemplos próprios do PDF Zika**
 quando recebe o UUID `264978ca-f795-4940-b5d3-ebc21e7d1c7c`.
 Os 37 campos numerados no documento não foram transcritos integralmente.
-O candidato usa `json_layout=nao_determinado`, bloqueando comparação de
-dados enquanto esse layout não for pesquisado e definido.
+O candidato usa `json_layout=nao_determinado`. Mesmo que o campo
+seja editado para um layout específico, o comparador ainda bloqueia
+**qualquer confronto com ZIKABR24**, independentemente do conteúdo do ZIP,
+até autorização institucional e revisão independente.
 Para `41bfda2a-5826-4ef9-8913-497247e6c9ce` (Parquet), o gerador
 e o validador recusam a operação porque o formato não é suportado.
 
