@@ -126,16 +126,41 @@ O script invoca `/health`, o protocolo MCP via HTTPS,
 referências de múltiplos agravos, solicitações inválidas e
 a rejeição de origem HTTP não permitida.
 
-Só registre **teste remoto aprovado** após executar o script com sucesso.
-Em 2026-11-04, o operador confirmou com o **script anterior**:
-`/health`, inicialização MCP, dez ferramentas, base sintética,
-120 registros fictícios, referências oficiais e rejeição de origem
-HTTP não autorizada, concluindo com `PUBLIC HTTPS MCP SMOKE SUCCESS`.
-Esse teste cobriu o serviço ativo, mas **não executou** as novas
-verificações de parâmetros e ferramentas proibidos da versão
-consolidada em `main`. É necessário rodar o script atualizado na
-cópia isolada para completar a verificação. A aprovação não equivale
-a certificação científica ou de privacidade.
+
+### Registro do teste HTTPS ampliado — 2026-11-04
+
+**Resultado informado pelo operador no PowerShell:** `PUBLIC HTTPS MCP SMOKE SUCCESS`,
+após execução de `scripts/probe_public_https.py` atualizado contra
+`https://sinan-mcp-public-preview.onrender.com`.
+
+O log apresentado registrou:
+
+- `PASS HTTPS /health: synthetic-only`
+- `PASS MCP initialize`
+- `PASS MCP tools/list: 10 read-only reference/demo tools`
+- `PASS MCP tool metadata: synthetic-only, no admin or real data`
+- `PASS MCP listar_bases: no real datasets`
+- `PASS MCP contar_notificacoes: 120 explicitly fictional records`
+- `PASS MCP catalogue: multi-disease references, zero real data`
+- `PASS MCP source links: official navigation metadata only`
+- `PASS MCP rejected invalid/administrative calls`
+- `PASS MCP rejects unapproved Origin`
+- `PUBLIC HTTPS MCP SMOKE SUCCESS`
+
+**Rastreabilidade:** o arquivo `scripts/probe_public_https.py` da `main`
+na data do registro usou o contrato versionado
+`docs/public-mcp-contract-v1.json`. A Render informou como implantação
+ativa `678e15523bb13ec2f36778ffe879c479dff2b3bf`; a publicação
+automática continua desativada. O resultado foi **reportado pelo operador**,
+não é um laudo de auditoria externa nem prova de paridade entre a
+`main` e o binário implantado.
+
+**Interpretação:** as verificações remotas planejadas do contrato
+público passaram na execução informada. A execução dos novos testes
+locais no Windows, na pasta isolada `SINAN-MCP-E2E`, **ainda não foi
+comprovada pelo log recebido**, embora a CI do PR #31 tenha passado
+no Linux e no Windows. O serviço público segue sem autorização para
+consultas reais ou publicação de indicadores clínicos.
 
 ## Critérios mínimos antes de uma atualização no Render
 
