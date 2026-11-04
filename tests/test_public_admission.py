@@ -111,3 +111,23 @@ def test_invalid_environment_never_disables_guard(monkeypatch, value):
     monkeypatch.setenv("SINAN_PUBLIC_RATE_PER_MINUTE", value)
     with pytest.raises(ValueError):
         bounded_int_env("SINAN_PUBLIC_RATE_PER_MINUTE", 300, 12000)
+
+
+
+def test_periodic_counters_never_include_client_metadata(caplog):
+    import logging
+    now = [0.0]
+    guard = PublicAdmissionGuard(_ok, requests_per_minute=1, clock=lambda: now[0])
+
+    async def scenario():
+        client = [(b"x-forwarded-for", b"SECRET_PRIVATE_CLIENT_IDENTIFIER")]
+        assert (await _request(guard, headers=client))[0] == 200
+        assert (await _request(guard, headers=client))[0] == 429
+        now[0] = 60.0
+        assert (await _request(guard, headers=client))[0] == 200
+
+    with caplog.at_level(logging.WARNING, logger="sinan_mcp.public_admission"):
+        asyncio.run(scenario())
+    assert "rate_rejected=1" in caplog.text
+    assert "accepted=2" in caplog.text
+    assert "SECRET_PRIVATE_CLIENT_IDENTIFIER" not in caplog.text
