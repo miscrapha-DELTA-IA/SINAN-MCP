@@ -48,3 +48,10 @@ O manifesto proposto fixa Python 3.11.17 para ser compatível com os lockfiles r
 - Consulte [Actions](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/workflows/public-live-smoke.yml) e habilite notificações de falha do GitHub se desejar alertas. Um workflow agendado **não garante que uma notificação será entregue**. Considerar solução externa de monitoramento mais adiante se for necessário SLA ou alerta imediato.
 - Um erro pode representar atraso de cold start do plano Free, indisponibilidade da rede, mudança de contrato ainda não implantada ou falha do serviço. Antes de qualquer medida, conferir SHA Live e logs da Render, repetir sonda manualmente e comparar com a revisão anterior.
 - Proteção de borda por origem, monitoramento de 5xx/429 e retenção sanitizada continuam **não comprovados**. O serviço em `.onrender.com` não está automaticamente protegido pela zona Cloudflare de um domínio de terceiros.
+
+## 7. Rejeições esperadas versus erros de aplicação
+
+- Parâmetros de ferramenta fora do contrato sintético devem gerar `ToolError` previsto pelo SDK MCP 2.3.0, com `isError=true`; não constituem falhas 5xx da aplicação nem devem emitir traceback.
+- Rejeitar parâmetros de município, agravo não habilitado, ano ou agrupamento fora da demonstração permanece obrigatório. A mensagem de erro usa apenas uma explicação fixa e **não repete** argumentos ou identificadores enviados pelo cliente.
+- Falhas realmente imprevistas continuam sendo registradas com traceback pelo SDK; não suprimir logs de crash por configuração global para esconder problemas reais.
+- Após integrar uma correção na `main`, a mudança só alcança a Render mediante deploy manual controlado, com sonda HTTPS pós-deploy. Não misturar sinal verde de CI com mudança automaticamente publicada.

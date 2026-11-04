@@ -3,9 +3,11 @@ from __future__ import annotations
 
 import asyncio
 import inspect
+import logging
 import os
 
 import pytest
+from mcp.server.mcpserver.exceptions import ToolError
 
 from sinan_mcp import public_server as public
 
@@ -51,8 +53,39 @@ def test_public_values_are_labelled_fictional():
     ("TUBE", True, True, "PI", None, "sexo"),
 ])
 def test_no_real_or_arbitrary_query(bad):
-    with pytest.raises(ValueError, match="Exemplo público restrito"):
+    with pytest.raises(ToolError, match="Exemplo público restrito"):
         public.contar_notificacoes(*bad)
+
+
+
+def test_public_mcp_rejected_queries_are_tool_errors_not_unexpected_crashes(caplog):
+    """Denied fictional-query variants must not generate exception tracebacks."""
+    from mcp import Client
+
+    async def probe():
+        async with Client(public.mcp, raise_exceptions=True) as client:
+            for args in (
+                {"agravo": "DENG", "ano_inicio": 2024, "ano_fim": 2024, "uf": "PI"},
+                {"agravo": "TUBE", "ano_inicio": 2024, "ano_fim": 2024,
+                 "uf": "PI", "municipio": "221100"},
+            ):
+                response = await client.call_tool("contar_notificacoes", args)
+                assert response.is_error is True
+                text = " ".join(
+                    getattr(block, "text", "") for block in response.content
+                )
+                assert "Exemplo público restrito" in text
+                assert "Error executing tool contar_notificacoes:" in text
+                # Rejected client parameters must never be echoed to a model.
+                assert "221100" not in text
+                assert "DENG" not in text
+
+    with caplog.at_level(logging.INFO):
+        asyncio.run(probe())
+
+    assert "raised an unexpected exception" not in caplog.text
+    assert "Traceback (most recent call last)" not in caplog.text
+    assert "221100" not in caplog.text
 
 
 def test_public_host_configuration_fail_closed(monkeypatch):
