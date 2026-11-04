@@ -90,6 +90,17 @@ def test_operator_can_declare_json_topology_but_no_approval_is_granted(tmp_path)
     assert validate_candidate(candidate)["situacao_transcricao"] == "manual_nao_revisada"
     candidate["json_layout"] = "array_of_objects"
     assert validate_candidate(candidate)["cobertura"] == "excerto_parcial"
+    # Even with a manually selected topology, the comparison must reject
+    # ZIKABR24 before reading any ZIP or clinical record.
+    for chosen_layout in ("ndjson", "array_of_objects"):
+        candidate["json_layout"] = chosen_layout
+        contract = tmp_path / ("manual-" + chosen_layout + ".json")
+        contract.write_text(json.dumps(candidate), encoding="utf-8")
+        with pytest.raises(ValueError, match="Comparacao ZIKABR24 bloqueada"):
+            comparar_esquema_local(
+                ZIKA_JSON_ID, tmp_path / "NO_CLINICAL_FILE.zip", pdf, contract
+            )
+        assert not (tmp_path / "NO_CLINICAL_FILE.zip").exists()
     candidate["situacao_transcricao"] = "aprovada"
     with pytest.raises(ValueError):
         validate_candidate(candidate)
