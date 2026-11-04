@@ -44,6 +44,12 @@ de parecer](docs/ZIKA_37_FIELDS_INDEPENDENT_REVIEW_CHECKLIST.md).
 Os comandos `preparar-revisao-documental-zika` e
 `diagnosticar-revisao-documental-zika` não assinam, aprovam ou acessam
 dados anuais.
+Para entregar a transcrição candidata a um conferente externo,
+use `py -3.11 -m sinan_mcp preparar-roteiro-revisor-zika --saida caminho.md`.
+O [dossiê de conferência externa](docs/ZIKA_EXTERNAL_REVIEWER_HANDOFF.md)
+contém **37 campos, sete ressalvas e páginas do PDF**, sem copiar
+notas do operador e sem autenticar parecer.
+
 O comando `registrar-observacao-revisao-zika` permite registrar uma
 declaração do operador sobre um campo ou ressalva em **nova versão
 do arquivo privado**, sem sobrescrever o original, sem ler registros
