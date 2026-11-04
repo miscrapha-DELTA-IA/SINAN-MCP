@@ -176,9 +176,9 @@ O operador executou a suíte na **cópia isolada** do repositório,
 
 **Conclusão restrita:** as verificações funcionais previstas para a fase
 de consolidação técnica foram aprovadas nas execuções compartilhadas.
-Não houve erros relatados; os seis testes ignorados não são tratados
-como aprovados, e o motivo de cada `skip` não foi demonstrado pelo
-resumo do terminal. O registro consiste em evidência informada pelo
+Não houve erros relatados. Os seis testes ignorados **não** são tratados
+como aprovados; as dependências opcionais ausentes foram identificadas no
+log posterior, conforme a seção abaixo. O registro consiste em evidência informada pelo
 operador, não em atestado independente nem em uma medição de
 confiabilidade contínua. O resultado também não demonstra equivalência
 entre o código da branch `main` e a versão implantada no Render.
@@ -188,6 +188,64 @@ homologação de dados por agravo/ano, auditoria de segurança externa,
 validação de privacidade e aprovação institucional de publicação.
 Qualquer atualização futura do Render continua sujeita aos critérios
 abaixo, sem alteração automática do serviço.
+
+## Cobertura opcional de importação — seis skips identificados
+
+O comando `pytest -q -rs` executado pelo operador em 2026-11-04
+relatou **102 testes aprovados e seis ignorados**. A causa é a ausência
+de dependências opcionais no ambiente `.[dev]`, não um teste falhando:
+
+| Importação ausente | Quantidade ignorada | Localizações indicadas pelo pytest |
+|---|---:|---|
+| `duckdb` | 3 | `test_catalog_import.py:43`; `test_ingest_pysus.py:233` e `:255` |
+| `pyarrow` | 2 | `test_catalog_import.py:66`; `test_ingest_pysus.py:116` |
+| `pysus` | 1 | `test_catalog_import.py:104` |
+| **Total** | **6** | Nenhum desses cenários foi executado nessa suíte |
+
+O `pyproject.toml` separa `.[dev]` (testes/MCP) de
+`.[ingest]` (PySUS/PyArrow e bibliotecas de importação). `duckdb`
+não está declarado nos grupos atuais; pode ser adicionado explicitamente
+ao **ambiente isolado de testes**, sem mudar o conjunto de dependências
+mínimas do servidor público.
+
+No checkout dedicado `SINAN-MCP-E2E`, rode:
+
+```powershell
+$dest = Join-Path $env:USERPROFILE "Downloads\SINAN-MCP-E2E"
+$python = Join-Path $dest ".venv\Scripts\python.exe"
+Set-Location -LiteralPath $dest
+
+& $python -m pip install -e ".[dev,ingest]" duckdb
+if ($LASTEXITCODE -ne 0) { throw "Falha na instalacao opcional." }
+
+& $python -m pip check
+if ($LASTEXITCODE -ne 0) { throw "Dependencias inconsistentes." }
+
+$oldCache = $env:PYSUS_CACHEPATH
+$cache = Join-Path $dest "data\pysus-test-cache"
+New-Item -ItemType Directory -Force -Path $cache | Out-Null
+$env:PYSUS_CACHEPATH = $cache
+
+try {
+    & $python -m pytest -q -rs
+    if ($LASTEXITCODE -ne 0) { throw "Suite opcional nao passou." }
+}
+finally {
+    if ($null -eq $oldCache) {
+        Remove-Item Env:PYSUS_CACHEPATH -ErrorAction SilentlyContinue
+    }
+    else {
+        $env:PYSUS_CACHEPATH = $oldCache
+    }
+}
+```
+
+Os testes dessa suíte usam dados artificiais e simulações, mas instalar
+bibliotecas opcionais **não concede permissão** para carregar microdados
+reais. Não execute comandos de importação administrativa nesta etapa.
+Registre os resultados novos, incluindo eventuais `skips` ou erros
+de dependência. A aprovação da CI não implica automaticamente que
+cada teste de importação opcional tenha sido executado no Windows local.
 
 ## Critérios mínimos antes de uma atualização no Render
 
