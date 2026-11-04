@@ -80,8 +80,7 @@ if (Test-Path -LiteralPath $dest) {
     throw "Pasta de testes ja existe. Escolha outro destino sem apagar arquivos."
 }
 
-git clone --branch main --single-branch ``
-    "https://github.com/miscrapha-DELTA-IA/SINAN-MCP.git" $dest
+git clone --branch main --single-branch "https://github.com/miscrapha-DELTA-IA/SINAN-MCP.git" $dest
 if ($LASTEXITCODE -ne 0) { throw "Falha ao clonar o repositorio." }
 
 Set-Location -LiteralPath $dest
