@@ -696,10 +696,16 @@ def main() -> None:
         from .zika_pdf_reviewer_handoff import preparar_roteiro_revisor_zika
         try:
             report = preparar_roteiro_revisor_zika(args.saida)
+        except FileExistsError:
+            parser.exit(
+                2, "ROTEIRO JA EXISTE; ARQUIVO ORIGINAL PRESERVADO. "
+                "Escolha outro nome de arquivo .md.\n"
+            )
         except (OSError, ValueError, UnicodeError, RuntimeError):
             parser.exit(
-                2, "ROTEIRO EXTERNO ZIKA NAO CRIADO: escolha um novo arquivo .md "
-                "fora do Git. Nenhum parecer foi assinado.\\n"
+                2, "ROTEIRO EXTERNO ZIKA NAO CRIADO: confira se a pasta "
+                "existe, se o destino termina em .md e se fica fora do Git. "
+                "Nenhum parecer foi assinado.\n"
             )
         print("ROTEIRO PARA REVISOR PREPARADO; NENHUMA REVISAO AUTENTICADA.")
         print("Campos documentais para conferir:",
