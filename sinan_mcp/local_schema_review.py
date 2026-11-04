@@ -349,10 +349,15 @@ def comparar_esquema_local(
     expected = load_candidate(contrato)
     if expected["resource_id"] != resource_id:
         raise ValueError("Contrato e recurso anual não correspondem")
-    if expected["format"] == "JSON" and expected["json_layout"] == "nao_determinado":
+    if expected["agravo"] == "ZIKA":
+        if expected["json_layout"] == "nao_determinado":
+            raise ValueError(
+                "Layout JSON ZIKA/2024 nao identificado; comparacao bloqueada"
+            )
         raise ValueError(
-            "Layout JSON ZIKA/2024 nao identificado: revisar manualmente "
-            "array_of_objects ou ndjson antes de qualquer comparacao privada"
+            "Comparacao ZIKABR24 bloqueada ate revisao de proveniencia, "
+            "edicao, privacidade e autorizacao institucional; mudar o "
+            "contrato manualmente nao concede acesso aos registros"
         )
     actual_pdf_sha = _local_pdf_hash(
         pdf, expected_url=expected["dictionary_url"]
