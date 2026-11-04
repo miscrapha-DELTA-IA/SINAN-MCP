@@ -20,8 +20,18 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install real optional PySUS dependencies
-        run: python -m pip install -e ".[dev,ingest]"
-      - name: Run entire offline test suite including discovery and review gates
-        run: python -m pytest -q
+      - name: Install optional PySUS, PyArrow, DuckDB and test dependencies
+        run: python -m pip install -e ".[dev,ingest]" duckdb
+      - name: Verify dependency integrity
+        run: python -m pip check
+      - name: Prepare isolated PySUS cache and verify optional imports
+        env:
+          PYSUS_CACHEPATH: ${{ runner.temp }}/sinan-mcp-pysus-ci
+        run: python -c "import os; from pathlib import Path; Path(os.environ['PYSUS_CACHEPATH']).mkdir(parents=True, exist_ok=True); import duckdb, pyarrow, pysus; print('Optional ingest imports available')"
+      - name: Run full synthetic offline suite with all optional paths
+        env:
+          PYSUS_CACHEPATH: ${{ runner.temp }}/sinan-mcp-pysus-ci
+        run: python -m pytest -q -rs --junitxml=optional-ingest-test-results.xml
+      - name: Reject skipped tests or reduced test coverage
+        run: python -c "import xml.etree.ElementTree as ET; root=ET.parse('optional-ingest-test-results.xml').getroot(); suites=list(root.iter('testsuite')); total=sum(int(x.get('tests', '0')) for x in suites); skipped=sum(int(x.get('skipped', '0')) for x in suites); assert total >= 108 and skipped == 0, f'Expected >=108 tests and zero skips; observed {total} tests, {skipped} skipped'; print(f'Optional offline ingest suite verified: {total} tests, 0 skips')"
       # No clinical files, no remote microdata downloads, no data artifacts.
