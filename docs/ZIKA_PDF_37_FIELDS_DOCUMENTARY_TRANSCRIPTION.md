@@ -83,6 +83,13 @@ epidemiológica independente todas as regras condicionais de preenchimento
 encerramento). Essas regras aparecem no PDF, mas não foram transformadas
 em lógica computacional nem testadas contra 2024.
 
+## Checklist privado de conferência
+
+O [roteiro de revisão documental dos 37 campos](ZIKA_37_FIELDS_INDEPENDENT_REVIEW_CHECKLIST.md)
+permite criar arquivo privado com 37 verificações e sete ressalvas,
+registrando notas e divergências declaradas pelo operador. Não
+autentica revisores nem altera os dez tópicos científicos pendentes.
+
 ## CLI administrativa offline
 
 ```powershell
