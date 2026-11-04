@@ -61,22 +61,54 @@ de ameaças, observabilidade, controle de abuso ou análise institucional.**
 Esses testes usam o protocolo por meio do cliente MCP do SDK, mas
 **não verificam rede/TLS real**; a etapa remota permanece separada.
 
-## Executar em Windows PowerShell 5.1
+## Executar em Windows PowerShell 5.1 — checkout isolado e seguro
+
+**Não reutilize** a pasta `SINAN-MCP-ZIKA-2024` para testar a `main`:
+o checkout de Zika pode ter branches empilhadas e nenhuma branch
+`main` local. Nesse cenário, `git switch main` falha e
+`git pull --ff-only origin main` tenta atualizar a branch de Zika,
+que pode divergir. Os scripts novos então não aparecem no diretório
+atual, embora já estejam publicados no GitHub.
+
+Use uma **segunda cópia limpa**, em outra pasta. O exemplo recusa
+um destino já existente e não altera sua pesquisa:
 
 ```powershell
-cd "$env:USERPROFILE\Downloads\SINAN-MCP-ZIKA-2024"
-git fetch origin test/mcp-public-local-e2e-baseline
-git switch test/mcp-public-local-e2e-baseline
+$dest = Join-Path $env:USERPROFILE "Downloads\SINAN-MCP-E2E"
 
-py -3.11 -m pip install -e ".[dev]"
-py -3.11 scripts/check_public_contract.py
-py -3.11 -m pytest -q tests/test_mcp_end_to_end_contract.py
-py -3.11 -m pytest -q
+if (Test-Path -LiteralPath $dest) {
+    throw "Pasta de testes ja existe. Escolha outro destino sem apagar arquivos."
+}
+
+git clone --branch main --single-branch "https://github.com/miscrapha-DELTA-IA/SINAN-MCP.git" $dest
+if ($LASTEXITCODE -ne 0) { throw "Falha ao clonar o repositorio." }
+
+Set-Location -LiteralPath $dest
+git branch --show-current
+git log -1 --format="%h %s"
+
+py -3.11 -m venv .venv
+if ($LASTEXITCODE -ne 0) { throw "Falha ao criar ambiente Python." }
+
+$python = Join-Path $dest ".venv\Scripts\python.exe"
+& $python -m pip install -e ".[dev]"
+if ($LASTEXITCODE -ne 0) { throw "Falha ao instalar dependencias." }
+
+& $python scripts/check_public_contract.py
+if ($LASTEXITCODE -ne 0) { throw "Contrato publico nao validado." }
+
+& $python -m pytest -q tests/test_mcp_end_to_end_contract.py
+if ($LASTEXITCODE -ne 0) { throw "Falha no teste MCP end-to-end." }
+
+& $python -m pytest -q
+if ($LASTEXITCODE -ne 0) { throw "Falha na suite completa." }
 ```
 
-A branch acima é independente dos PRs científicos Zika e não realiza
-merge, publicação ou acesso a dados reais. Caso haja alterações locais
-não salvas, preserve-as antes de trocar de branch.
+O primeiro comando `git branch --show-current` deve imprimir `main`.
+Os arquivos `scripts/check_public_contract.py` e
+`tests/test_mcp_end_to_end_contract.py` devem existir. Os testes
+usam apenas um SQLite temporário com registros fictícios. A pasta
+original de Zika é preservada e nenhuma mudança é enviada ao Render.
 
 ## Teste HTTPS remoto (somente leitura)
 
@@ -95,8 +127,15 @@ referências de múltiplos agravos, solicitações inválidas e
 a rejeição de origem HTTP não permitida.
 
 Só registre **teste remoto aprovado** após executar o script com sucesso.
-A antiga verificação de HTTPS passou para uma versão anterior do Render;
-não constitui prova automática da versão implantada hoje.
+Em 2026-11-04, o operador confirmou com o **script anterior**:
+`/health`, inicialização MCP, dez ferramentas, base sintética,
+120 registros fictícios, referências oficiais e rejeição de origem
+HTTP não autorizada, concluindo com `PUBLIC HTTPS MCP SMOKE SUCCESS`.
+Esse teste cobriu o serviço ativo, mas **não executou** as novas
+verificações de parâmetros e ferramentas proibidos da versão
+consolidada em `main`. É necessário rodar o script atualizado na
+cópia isolada para completar a verificação. A aprovação não equivale
+a certificação científica ou de privacidade.
 
 ## Critérios mínimos antes de uma atualização no Render
 
@@ -108,5 +147,5 @@ não constitui prova automática da versão implantada hoje.
 - [ ] Registrar SHA, horário, resultado do smoke e possíveis divergências
 - [ ] Definir plano de reversão e acompanhar logs/erros sem dados sensíveis
 
-**Este PR não faz deploy, não altera o serviço Render e não publica
+**Este procedimento não faz deploy, não altera o serviço Render e não publica
 dados SINAN reais.**
