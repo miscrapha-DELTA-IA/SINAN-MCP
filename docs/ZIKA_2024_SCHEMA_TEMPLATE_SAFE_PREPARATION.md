@@ -19,11 +19,12 @@ A saída permanece `cobertura=excerto_parcial`,
 
 **A estrutura do JSON ZIKABR24 é desconhecida**: por isso o
 novo modelo usa `json_layout=nao_determinado`. O comparador privado
-recusa acesso ao ZIP enquanto um pesquisador não examinar e registrar
-explicitamente se o formato é `array_of_objects` ou `ndjson` em
-ambiente autorizado. Não é uma autorização automática para leitura de
-dados reais após alterar o campo: a identidade, edição, corte,
-privacidade e parecer epidemiológico seguem pendentes.
+recusa o acesso ao ZIP enquanto o layout for indeterminado **e também
+o recusa se alguém alterar manualmente o campo para `array_of_objects`
+ou `ndjson`**: ZIKABR24 permanece expressamente bloqueado até haver
+revisão independente de proveniência, edição, corte, privacidade e
+autorização institucional. A edição do candidato **não desbloqueia
+leitura de registros reais**.
 
 O recurso ZIKA/2024 **Parquet**
 `41bfda2a-5826-4ef9-8913-497247e6c9ce`
