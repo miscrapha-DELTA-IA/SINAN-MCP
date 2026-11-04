@@ -7,6 +7,7 @@ No user identifiers, IP addresses, request bodies or health data are stored.
 """
 from __future__ import annotations
 
+import logging
 import math
 import os
 import threading
@@ -14,6 +15,8 @@ import time
 from collections.abc import Callable
 
 from starlette.responses import JSONResponse
+
+LOGGER = logging.getLogger('sinan_mcp.public_admission')
 
 DEFAULT_RATE_PER_MINUTE = 300
 DEFAULT_MAX_IN_FLIGHT = 16
@@ -56,6 +59,10 @@ class PublicAdmissionGuard:
         self._tokens = float(requests_per_minute)
         self._updated = clock()
         self._in_flight = 0
+        self._accepted_window = 0
+        self._rate_rejected_window = 0
+        self._concurrent_rejected_window = 0
+        self._last_report = self._updated
 
     async def __call__(self, scope, receive, send) -> None:
         # Lifespan must always be forwarded: the MCP session manager lives there.
@@ -65,6 +72,7 @@ class PublicAdmissionGuard:
 
         admitted = False
         retry_after = 1
+        report = None
         with self._lock:
             now = self._clock()
             elapsed = max(0.0, now - self._updated)
@@ -74,15 +82,38 @@ class PublicAdmissionGuard:
                 self._tokens + elapsed * (self.requests_per_minute / 60.0),
             )
             if self._in_flight >= self.max_in_flight:
+                self._concurrent_rejected_window += 1
                 retry_after = 1
             elif self._tokens < 1.0:
+                self._rate_rejected_window += 1
                 retry_after = max(
                     1, math.ceil((1.0 - self._tokens) * 60.0 / self.requests_per_minute)
                 )
             else:
                 self._tokens -= 1.0
                 self._in_flight += 1
+                self._accepted_window += 1
                 admitted = True
+
+            # Emit only interval totals; no addresses, headers or request data.
+            if now - self._last_report >= 60:
+                report = (
+                    self._accepted_window,
+                    self._rate_rejected_window,
+                    self._concurrent_rejected_window,
+                    self._in_flight,
+                )
+                self._accepted_window = 0
+                self._rate_rejected_window = 0
+                self._concurrent_rejected_window = 0
+                self._last_report = now
+
+        if report is not None:
+            LOGGER.log(
+                logging.WARNING if report[1] or report[2] else logging.INFO,
+                'public_admission accepted=%d rate_rejected=%d concurrency_rejected=%d in_flight=%d',
+                *report,
+            )
 
         if not admitted:
             response = JSONResponse(
