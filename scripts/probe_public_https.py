@@ -6,11 +6,16 @@ from __future__ import annotations
 
 import json
 import os
+from pathlib import Path
 import sys
 import time
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
+CONTRACT = json.loads(
+    (Path(__file__).resolve().parents[1] / "docs" / "public-mcp-contract-v1.json")
+    .read_text(encoding="utf-8")
+)
 BASE = os.environ.get("SINAN_PUBLIC_SMOKE_URL", "").rstrip("/")
 if not BASE.startswith("https://") or not BASE.endswith(".onrender.com"):
     raise SystemExit("SINAN_PUBLIC_SMOKE_URL must be an explicit approved HTTPS Render hostname")
@@ -78,13 +83,18 @@ def main():
 
     tools = rpc("tools/list", {})["result"]["tools"]
     names = {t["name"] for t in tools}
-    assert names == {
-        "sobre_o_servidor", "listar_bases", "listar_agravos", "descrever_campos",
-        "metodologia_abandono_tuberculose", "contar_notificacoes",
-        "proporcao_abandono_tuberculose",
-        "listar_fontes_oficiais", "pesquisar_agravos", "descrever_agravo",
-    }
+    assert names == set(CONTRACT["public_tools"]), (
+        "Public MCP tool inventory differs from versioned synthetic contract",
+        sorted(names),
+    )
     print("PASS MCP tools/list: 10 read-only reference/demo tools")
+
+    server = tool("sobre_o_servidor", {})
+    assert server["dados_reais_disponiveis"] is False
+    assert server["acesso_microdados"] is False
+    assert server["ferramentas_de_escrita"] is False
+    assert server["modalidade"] == "publica_somente_leitura_sintetica"
+    print("PASS MCP tool metadata: synthetic-only, no admin or real data")
 
     bases = tool("listar_bases", {})
     assert bases["dados_reais_disponiveis"] is False
@@ -112,6 +122,26 @@ def main():
     assert all(f["possui_valores_importados_neste_mcp"] is False
                for f in sources["fontes"])
     print("PASS MCP source links: official navigation metadata only")
+
+    for invalid in [
+        ("contar_notificacoes", {
+            "agravo": "DENG", "ano_inicio": 2024, "ano_fim": 2024,
+            "uf": "PI", "por": "raca_cor",
+        }),
+        ("contar_notificacoes", {
+            "agravo": "TUBE", "ano_inicio": 2024, "ano_fim": 2024,
+            "uf": "PI", "municipio": "221100", "por": "sexo",
+        }),
+        ("importar-pysus", {}),
+    ]:
+        rejected = rpc("tools/call", {
+            "name": invalid[0], "arguments": invalid[1],
+        })
+        assert ("error" in rejected or
+                rejected.get("result", {}).get("isError") is True), (
+                    "Unsafe tool call was not rejected", invalid[0]
+                )
+    print("PASS MCP rejected invalid/administrative calls")
 
     try:
         rpc("tools/list", {}, origin="https://evil.example.org")
