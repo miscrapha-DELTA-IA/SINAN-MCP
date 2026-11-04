@@ -65,7 +65,8 @@ def api_list(path: str, token: str):
         query = {"limit": 100}
         if cursor is not None:
             query["cursor"] = cursor
-        page = api_get(path + "?" + urlencode(query), token)
+        separator = "&" if "?" in path else "?"
+        page = api_get(path + separator + urlencode(query), token)
         if not isinstance(page, list):
             raise AuditUnavailable("Render API returned an unexpected list shape")
         result.extend(page)
