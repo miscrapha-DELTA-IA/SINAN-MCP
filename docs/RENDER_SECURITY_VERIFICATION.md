@@ -62,4 +62,4 @@ A tabela anterior registra uma **fotografia anterior à implantação** e não d
 
 **Sem atestado administrativo:** nomes/valores completos de variáveis e environment groups, efetiva vinculação ou ausência de discos/bancos, controle de acesso a dados externos, retenção/logs em provedor, alertas, proteção por origem na borda, e validação institucional de fontes reais. Não se deve declarar esses controles como auditados.
 
-A action [Public HTTPS MCP smoke](../.github/workflows/public-live-smoke.yml), quando integrada à main, acrescentará sondagem periódica somente leitura (06h17/18h17 BRT, melhor esforço). A sonda não monitora diretamente versões/SHAs da Render nem substitui uma revisão humana. Ver [issue #43](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/issues/43).
+A action [Public HTTPS MCP smoke](../.github/workflows/public-live-smoke.yml) executa uma sondagem periódica somente leitura (06h17/18h17 BRT, melhor esforço). A sonda não monitora diretamente versões/SHAs da Render nem substitui uma revisão humana. Ver [issue #43](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/issues/43).
