@@ -247,6 +247,34 @@ Registre os resultados novos, incluindo eventuais `skips` ou erros
 de dependência. A aprovação da CI não implica automaticamente que
 cada teste de importação opcional tenha sido executado no Windows local.
 
+## Verificação posterior com dependências opcionais — 2026-11-04
+
+**Resultado final comunicado pelo operador no PowerShell 5.1**, em
+`C:\Users\rapha\Downloads\SINAN-MCP-E2E`, após instalar as
+dependências opcionais `.[dev,ingest]` e `duckdb`:
+
+| Verificação | Evidência apresentada |
+|---|---|
+| Integridade das dependências | `pip check`: `No broken requirements found.` |
+| Preparação | `PYSUS_CACHEPATH` definido temporariamente em `data\pysus-test-cache` |
+| Suíte completa | `pytest -q -rs`: **108 passed in 20.97s** |
+| Testes ignorados | **0** |
+| Falhas relatadas | **0** |
+
+A execução posterior resolve os **seis skips do ambiente `.[dev]`**
+documentados acima. O resultado anterior de 102 aprovados / 6
+ignorados foi preservado como histórico da configuração mínima. O aviso
+de atualização do `pip` não é um erro de dependência.
+
+**Marco técnico alcançado:** verificação funcional planejada do MCP
+sintético aprovada na CI e no Windows local, com cobertura das seis
+rotas opcionais anteriormente ignoradas e teste HTTPS remoto ampliado
+com sucesso informado pelo operador. Trata-se de **testes funcionais
+com dados e simulações artificiais**, não de medição de cobertura
+de código, ensaio de carga, auditoria externa de segurança ou validação
+científica de dados SINAN reais. A implantação no Render continua com
+SHA próprio, diferente da `main`, sem atualização automática.
+
 ## Critérios mínimos antes de uma atualização no Render
 
 - [ ] Conferir SHA do commit a implantar e suas revisões
