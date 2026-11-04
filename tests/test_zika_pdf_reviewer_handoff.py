@@ -114,3 +114,39 @@ def test_markdown_escape_rejects_controls_and_pipe_injection():
         handoff._cell("field\nnew")
     with pytest.raises(ValueError):
         handoff._cell("x" * 501)
+
+
+def test_handoff_adds_twelve_visible_code_rows_without_duplication_guess():
+    markdown = handoff.montar_roteiro_revisor_zika()
+    section = markdown.split(
+        "## Anexo — categorias visíveis transcritas (não homologadas)", 1
+    )[1].split("## Perguntas sobre regras condicionais", 1)[0]
+    lines = [x for x in section.splitlines() if x.startswith("| `")]
+    assert len(lines) == 12
+    assert "| `cs_sexo` |" in section
+    assert "| `cs_raca` |" in section
+    assert "| `tp_sistema` |" in section
+    assert "| `nduplic_n` |" not in section
+    assert "nduplic_n" in section
+    assert "NÃO foi inferido" in section
+    assert "não homologadas" in markdown
+    assert "NÃO demonstram ausência" in markdown
+
+
+def test_handoff_conditional_questions_are_all_unchecked_and_source_linked():
+    md = handoff.montar_roteiro_revisor_zika()
+    section = md.split(
+        "## Perguntas sobre regras condicionais — sem implementação", 1
+    )[1].split("## Registro externo", 1)[0]
+    assert section.count("- [ ]") == 7
+    for page in (2, 3, 5, 6, 8):
+        assert f"#page={page}" in section
+    for field in (
+        "dt_sin_pri", "nu_idade_n", "cs_gestant", "id_rg_resi",
+        "nduplic_n", "in_vincula", "classi_fin", "tpautocto",
+        "evolucao", "dt_obito", "dt_encerra",
+    ):
+        assert field in section
+    assert "não estabelecem" in section
+    assert "ZIKABR24" in section
+    assert "[x]" not in section.lower()
