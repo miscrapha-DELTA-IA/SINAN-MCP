@@ -156,11 +156,38 @@ não é um laudo de auditoria externa nem prova de paridade entre a
 `main` e o binário implantado.
 
 **Interpretação:** as verificações remotas planejadas do contrato
-público passaram na execução informada. A execução dos novos testes
-locais no Windows, na pasta isolada `SINAN-MCP-E2E`, **ainda não foi
-comprovada pelo log recebido**, embora a CI do PR #31 tenha passado
-no Linux e no Windows. O serviço público segue sem autorização para
-consultas reais ou publicação de indicadores clínicos.
+público passaram na execução informada. A execução local de Windows foi
+posteriormente comprovada pelos resultados apresentados abaixo. O serviço
+público segue sem autorização para consultas reais ou publicação de
+indicadores clínicos.
+
+### Registro do teste local no Windows — 2026-11-04
+
+O operador executou a suíte na **cópia isolada** do repositório,
+`SINAN-MCP-E2E`, utilizando o interpretador do ambiente virtual
+`.venv\\Scripts\\python.exe` e informou os seguintes resultados:
+
+| Comando | Resultado comunicado |
+|---|---|
+| `scripts/check_public_contract.py` | `PUBLIC CONTRACT PASS: 10 MCP tools, synthetic-only; no deployment` |
+| `pytest -q tests/test_mcp_end_to_end_contract.py` | **3 aprovados**, em 3,39 s |
+| `pytest -q` | **102 aprovados, seis ignorados (skipped)**, em 13,20 s |
+| `scripts/probe_public_https.py` | `PUBLIC HTTPS MCP SMOKE SUCCESS`, incluindo rejeição de chamadas inválidas e de origem HTTP não autorizada |
+
+**Conclusão restrita:** as verificações funcionais previstas para a fase
+de consolidação técnica foram aprovadas nas execuções compartilhadas.
+Não houve erros relatados; os seis testes ignorados não são tratados
+como aprovados, e o motivo de cada `skip` não foi demonstrado pelo
+resumo do terminal. O registro consiste em evidência informada pelo
+operador, não em atestado independente nem em uma medição de
+confiabilidade contínua. O resultado também não demonstra equivalência
+entre o código da branch `main` e a versão implantada no Render.
+
+**Permanecem fora do escopo:** revisão científica de dicionários,
+homologação de dados por agravo/ano, auditoria de segurança externa,
+validação de privacidade e aprovação institucional de publicação.
+Qualquer atualização futura do Render continua sujeita aos critérios
+abaixo, sem alteração automática do serviço.
 
 ## Critérios mínimos antes de uma atualização no Render
 
