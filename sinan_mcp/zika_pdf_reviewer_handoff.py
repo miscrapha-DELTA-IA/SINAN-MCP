@@ -95,6 +95,62 @@ def montar_roteiro_revisor_zika() -> str:
         )
     chunks.extend([
         "",
+        "## Anexo — categorias visíveis transcritas (não homologadas)",
+        "",
+        "Este anexo apresenta códigos explicitamente citados na transcrição",
+        "candidata. Listas vazias ou parciais NÃO demonstram ausência",
+        "de outros códigos no PDF ou em arquivos exportados em 2024.",
+        "Não usar para validação automática de valores ou pacientes.",
+        "",
+        "| Campo | Página | Domínio documental resumido | Códigos citados | Conferência externa |",
+        "|---|---|---|---|---|",
+    ])
+    for row in source["documentary_field_rows"]:
+        if not row["codigos_citados"]:
+            continue
+        page = row["pagina_pdf"]
+        chunks.append(
+            f"| `{_cell(row['campo'])}` | [{page}]({url}#page={page}) | "
+            f"`{_cell(row['dominio_descritor'])}` | "
+            f"`{_cell(', '.join(row['codigos_citados']))}` | [ ] |"
+        )
+    chunks.extend([
+        "",
+        "**Atenção: `nduplic_n` não tem mapa de categorias homologado.**",
+        "No PDF, a página 5 mostra 0/branco, 1 e uma linha sem numeral",
+        "visível para outra situação; a descrição menciona categorias 1 e 2.",
+        "O código ausente NÃO foi inferido.",
+        "",
+        "## Perguntas sobre regras condicionais — sem implementação",
+        "",
+        "Responder exclusivamente após examinar o PDF oficial e citar",
+        "as células consultadas. As perguntas abaixo não estabelecem",
+        "regras de validação para `ZIKABR24`.",
+        "",
+        f"- [ ] [Página 2]({url}#page=2): a descrição de `dt_sin_pri`",
+        "  determina data anterior ou igual à notificação? Qual o contexto",
+        "  de preenchimento indicado para agravos agudos?",
+        f"- [ ] [Página 3]({url}#page=3): como `nu_idade_n` codifica",
+        "  horas, dias, meses e anos? A condição de escolaridade é",
+        "  apresentada como regra do sistema, não como regra do estudo?",
+        f"- [ ] [Página 3]({url}#page=3): quais condições de `cs_sexo`",
+        "  e idade controlam `cs_gestant`, e quais categorias aparecem?",
+        f"- [ ] [Página 5]({url}#page=5): a descrição de `id_rg_resi`",
+        "  fala de residência, mas sua característica menciona notificação?",
+        "  A distinção pode ser preservada sem tentar resolver a contradição?",
+        f"- [ ] [Página 5]({url}#page=5): como o PDF diferencia",
+        "  `nduplic_n` de `in_vincula`, e quais limites a célula",
+        "  ilegível impõe ao mapeamento de duplicidades?",
+        f"- [ ] [Páginas 6–7]({url}#page=6): quais dependências",
+        "  do texto relacionam `classi_fin`, `tpautocto` e",
+        "  `coufinf`/`copaisinf`/`comuninf`?",
+        f"- [ ] [Página 8]({url}#page=8): quais condições o PDF",
+        "  descreve para `evolucao`, `dt_obito` e `dt_encerra`?",
+        "  A sequência temporal mencionada precisa de análise externa?",
+        "",
+    ])
+    chunks.extend([
+        "",
         "## Registro externo — preencher exclusivamente após conferência",
         "",
         "- Identificação do avaliador e vínculo institucional: __________________",
