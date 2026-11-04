@@ -15,6 +15,7 @@ from collections import Counter
 from typing import Any
 
 from mcp.server import MCPServer
+from mcp.server.mcpserver.exceptions import ToolError
 from mcp.server.transport_security import TransportSecuritySettings
 from starlette.responses import JSONResponse
 
@@ -58,7 +59,10 @@ def _check(agravo: str, ano_inicio: int | None, ano_fim: int | None,
             or type(ano_fim) is not int or ano_fim != 2024
             or uf != "PI" or municipio is not None
             or por not in {"raca_cor", "sexo"}):
-        raise ValueError(
+        # Invalid public query is an anticipated denial, not an application crash.
+        # The pinned MCP SDK sends ToolError as is_error=True without a traceback.
+        # Do not include rejected arguments (which are untrusted) in this message.
+        raise ToolError(
             "Exemplo público restrito a TUBE, ano_inicio=ano_fim=2024, "
             "uf=PI, municipio omitido e por=sexo ou raca_cor. "
             "Não há datasets reais disponíveis."
