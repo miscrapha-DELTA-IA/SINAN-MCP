@@ -141,6 +141,17 @@ converter esse checklist em homologação científica.
 
 **Status final esperado: `CHECKLIST_OPERADOR_SEM_PARECER_INDEPENDENTE`.**
 
+## Dossiê de conferência externa separado do checklist privado
+
+O comando `preparar-roteiro-revisor-zika --saida roteiro.md`
+gera um roteiro Markdown *a partir de metadados documentais públicos*,
+com 37 linhas, sete ressalvas e links para as páginas do PDF.
+Também apresenta 12 resumos de categorias citadas no catálogo e
+sete perguntas sobre regras condicionais, para conferência humana;
+nenhuma é validada ou aplicada a ZIKABR24. Ele não
+lê as notas do checklist privado, nem marca campos como conferidos.
+Veja o [fluxo de entrega a avaliador externo](ZIKA_EXTERNAL_REVIEWER_HANDOFF.md).
+
 ## Registro de observações pelo PowerShell (sem editar JSON)
 
 Após abrir o [PDF ministerial](https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/SINAN/Zikavirus/dic_dados_zika.pdf)
