@@ -71,25 +71,38 @@ def test_public_host_configuration_fail_closed(monkeypatch):
 
 
 def test_public_starts_only_with_host_allowlist(monkeypatch):
+    import uvicorn
+    from sinan_mcp.public_admission import PublicAdmissionGuard
+
     monkeypatch.setenv("SINAN_PUBLIC_HOST", "sinan-public.example.org")
     monkeypatch.setenv("PORT", "10000")
     captured = {}
+    def fake_app(**kwargs):
+        captured["mcp_settings"] = kwargs
+        return object()
+    def fake_run(app, **kwargs):
+        captured["guard"] = app
+        captured["uvicorn_settings"] = kwargs
 
-    def fake_run(**kwargs):
-        captured.update(kwargs)
-
-    monkeypatch.setattr(public.mcp, "run", fake_run)
+    monkeypatch.setattr(public.mcp, "streamable_http_app", fake_app)
+    monkeypatch.setattr(uvicorn, "run", fake_run)
     public.start()
-    assert captured["transport"] == "streamable-http"
-    assert captured["stateless_http"] is True
-    assert captured["json_response"] is True
-    assert captured["max_request_body_size"] <= 16384
-    assert captured["streamable_http_path"] == "/mcp"
-    assert captured["host"] == "0.0.0.0"
-    security = captured["transport_security"]
+    assert isinstance(captured["guard"], PublicAdmissionGuard)
+    assert captured["guard"].requests_per_minute == 300
+    assert captured["guard"].max_in_flight == 16
+    mcp = captured["mcp_settings"]
+    assert mcp["stateless_http"] is True
+    assert mcp["json_response"] is True
+    assert mcp["max_request_body_size"] <= 16384
+    assert mcp["streamable_http_path"] == "/mcp"
+    assert mcp["host"] == "0.0.0.0"
+    security = mcp["transport_security"]
     assert security.enable_dns_rebinding_protection is True
     assert "sinan-public.example.org" in security.allowed_hosts
     assert "https://chatgpt.com" in security.allowed_origins
+    assert captured["uvicorn_settings"]["workers"] == 1
+    assert captured["uvicorn_settings"]["proxy_headers"] is False
+    assert captured["uvicorn_settings"]["access_log"] is False
 
 
 def test_public_mcp_tools_no_private_admin_routes():

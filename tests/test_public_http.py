@@ -111,6 +111,24 @@ def test_public_http_end_to_end_and_host_origin_rejection(protocol):
         with pytest.raises(HTTPError) as wrong_origin:
             call("tools/list", {}, origin="https://evil.example.org")
         assert wrong_origin.value.code == 403
+
+        # The SDK must reject oversized JSON before tool dispatch.
+        oversized = json.dumps({
+            "jsonrpc": "2.0", "id": 99, "method": "tools/list",
+            "params": {"padding": "X" * 17_000},
+        }).encode("utf-8")
+        request = Request(
+            address + "/mcp", data=oversized, method="POST",
+            headers={
+                "Host": "sinan-public.example.org",
+                "Accept": "application/json, text/event-stream",
+                "Content-Type": "application/json",
+                "MCP-Protocol-Version": protocol,
+            },
+        )
+        with pytest.raises(HTTPError) as too_large:
+            urlopen(request, timeout=4)
+        assert too_large.value.code == 413
     finally:
         child.terminate()
         try:

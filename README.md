@@ -219,3 +219,7 @@ Original project code is licensed under the [MIT License](LICENSE). Optional thi
 <div align="center">
   <sub>Built for reproducibility, transparency and responsible epidemiological research.</sub>
 </div>
+
+### Public preview security operations
+
+A separate draft security-hardening effort defines per-process admission controls, cross-platform dependency checks, incident procedures and pre-deployment gates. It does **not** deploy any code or enable real SINAN data. Read [operational safeguards](docs/SECURITY_OPERATIONS.md), [branch protection](docs/BRANCH_PROTECTION.md) and [Render verification checklist](docs/RENDER_SECURITY_VERIFICATION.md).

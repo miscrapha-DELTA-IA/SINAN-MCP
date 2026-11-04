@@ -1,0 +1,57 @@
+name: Public synthetic runtime security audit
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '18 8 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: '3.11'
+      - name: Install pinned audit and lock generation tools
+        run: python -m pip install "pip-tools==7.6.2" "pip-audit==2.10.1"
+      - name: Verify versioned hashed runtime lock
+        run: |
+          python -m piptools compile --generate-hashes --no-header --no-annotate --output-file=requirements-public.lock pyproject.toml
+          git diff --exit-code -- requirements-public.lock
+      - name: Verify package integrity and dependency compatibility
+        run: |
+          python -m pip install --require-hashes --no-deps -r requirements-public.lock
+          python -m pip install --no-deps -e .
+          python -m pip check
+      - name: Reject known vulnerable runtime packages
+        run: python -m pip_audit -r requirements-public.lock --strict
+  windows-runtime:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: '3.11'
+      - name: Verify versioned Windows-specific hashed lock
+        shell: pwsh
+        run: |
+          python -m pip install "pip-tools==7.6.2" "pip-audit==2.10.1"
+          python -m piptools compile --generate-hashes --no-header --no-annotate --output-file=requirements-public-windows.lock pyproject.toml
+          if ($LASTEXITCODE -ne 0) { throw "Windows lock resolution failed" }
+          git diff --exit-code -- requirements-public-windows.lock
+          if ($LASTEXITCODE -ne 0) { throw "Windows runtime lock drift" }
+      - name: Verify locked public runtime on Windows
+        run: |
+          python -m pip install --require-hashes --no-deps -r requirements-public-windows.lock
+          python -m pip install --no-deps -e .
+          python -m pip check
+          python -m pip_audit -r requirements-public-windows.lock --strict

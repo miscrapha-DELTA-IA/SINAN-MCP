@@ -16,8 +16,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: "3.11"
       - name: Install optional PySUS, PyArrow, DuckDB and test dependencies
@@ -35,5 +35,5 @@ jobs:
         run: python -m pytest -q -rs --junitxml=optional-ingest-test-results.xml
       - name: Reject skipped tests or reduced test coverage
         run: >-
-          python -c "import xml.etree.ElementTree as ET; root=ET.parse('optional-ingest-test-results.xml').getroot(); suites=list(root.iter('testsuite')); total=sum(int(x.get('tests', '0')) for x in suites); skipped=sum(int(x.get('skipped', '0')) for x in suites); assert total >= 108 and skipped == 0, f'Expected >=108 tests and zero skips; observed {total} tests, {skipped} skipped'; print(f'Optional offline ingest suite verified: {total} tests, 0 skips')"
+          python -c "import xml.etree.ElementTree as ET; root=ET.parse('optional-ingest-test-results.xml').getroot(); suites=list(root.iter('testsuite')); total=sum(int(x.get('tests', '0')) for x in suites); skipped=sum(int(x.get('skipped', '0')) for x in suites); assert total >= 117 and skipped == 0, f'Expected >=117 tests and zero skips; observed {total} tests, {skipped} skipped'; print(f'Optional offline ingest suite verified: {total} tests, 0 skips')"
       # No clinical files, no remote microdata downloads, no data artifacts.

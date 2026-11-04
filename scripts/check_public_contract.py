@@ -14,6 +14,9 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "docs" / "public-mcp-contract-v1.json"
 PUBLIC = ROOT / "sinan_mcp" / "public_server.py"
+ADMISSION = ROOT / "sinan_mcp" / "public_admission.py"
+PUBLIC_LOCK = ROOT / "requirements-public.lock"
+PYTHON_VERSION = ROOT / ".python-version"
 DEPLOYMENT = ROOT / "render.yaml"
 DOC = ROOT / "docs" / "PUBLIC_LAUNCH.md"
 
@@ -71,11 +74,34 @@ def check() -> list[str]:
                 }:
                     problems.append("Import privado no entrypoint publico: " + str(node.module))
 
+    if not ADMISSION.is_file():
+        problems.append("Controle de admissao do MCP publico ausente")
+    else:
+        guard = ADMISSION.read_text(encoding="utf-8")
+        if "class PublicAdmissionGuard:" not in guard or "status_code=429" not in guard:
+            problems.append("Limites de taxa/concorrencia do MCP publico ausentes")
+    if "mcp.streamable_http_app(" not in source or "PublicAdmissionGuard(" not in source:
+        problems.append("Servidor publico sem o middleware de admissao ASGI")
+    if "mcp.run(" in source or "proxy_headers=False" not in source:
+        problems.append("Servidor publico iniciou sem limitador ou confiou em headers proxy")
+    if not PYTHON_VERSION.is_file() or PYTHON_VERSION.read_text(encoding="utf-8").strip() != "3.11.17":
+        problems.append("Python publico nao fixado na versao 3.11.17")
+    if not PUBLIC_LOCK.is_file():
+        problems.append("Lockfile de dependencias publicas ausente")
+    else:
+        lock = PUBLIC_LOCK.read_text(encoding="utf-8")
+        if "mcp==2.3.0" not in lock or "--hash=sha256:" not in lock:
+            problems.append("Lockfile publico sem versao e hashes obrigatorios")
+
     deploy = DEPLOYMENT.read_text(encoding="utf-8")
     if "startCommand: python -m sinan_mcp.public_server" not in deploy:
         problems.append("Manifesto Render nao inicia o entrypoint sintetico")
     if "autoDeploy: false" not in deploy:
         problems.append("Manifesto Render habilitou deploy automatico")
+    if 'key: PYTHON_VERSION' not in deploy or 'value: "3.11.17"' not in deploy:
+        problems.append("Blueprint Render sem Python 3.11.17")
+    if "--require-hashes --no-deps -r requirements-public.lock" not in deploy:
+        problems.append("Manifesto Render nao utiliza dependencias imutaveis")
     if 'value: "0"' not in deploy or "SINAN_PUBLIC_REAL_DATA" not in deploy:
         problems.append("Manifesto Render nao bloqueia dados reais explicitamente")
     guide = DOC.read_text(encoding="utf-8")

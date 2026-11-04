@@ -238,16 +238,44 @@ def start() -> None:
     port = int(os.getenv("PORT", "10000"))
     if not 1024 <= port <= 65535:
         raise ValueError("PORT inválida")
-    # The MCP SDK itself enforces Host and Origin allowlists.
+    import uvicorn
+
+    from .public_admission import (
+        DEFAULT_MAX_IN_FLIGHT,
+        DEFAULT_RATE_PER_MINUTE,
+        PublicAdmissionGuard,
+        bounded_int_env,
+    )
+
+    # Preserve the SDK's Host/Origin validation and MCP session-manager lifespan.
     transport_security = TransportSecuritySettings(
         enable_dns_rebinding_protection=True,
         allowed_hosts=[host, host + ":*"],
         allowed_origins=["https://chatgpt.com", "https://chat.openai.com"],
     )
-    mcp.run(
-        transport="streamable-http", host="0.0.0.0", port=port,
-        streamable_http_path="/mcp", stateless_http=True, json_response=True,
-        max_request_body_size=16384, transport_security=transport_security,
+    mcp_app = mcp.streamable_http_app(
+        host="0.0.0.0",
+        streamable_http_path="/mcp",
+        stateless_http=True,
+        json_response=True,
+        max_request_body_size=16384,
+        transport_security=transport_security,
+    )
+    app = PublicAdmissionGuard(
+        mcp_app,
+        requests_per_minute=bounded_int_env(
+            "SINAN_PUBLIC_RATE_PER_MINUTE", DEFAULT_RATE_PER_MINUTE, 12000
+        ),
+        max_in_flight=bounded_int_env(
+            "SINAN_PUBLIC_MAX_IN_FLIGHT", DEFAULT_MAX_IN_FLIGHT, 128
+        ),
+    )
+    # One worker keeps the in-memory guard globally consistent for this instance.
+    # A future multi-instance deployment requires an edge/distributed limiter.
+    uvicorn.run(
+        app, host="0.0.0.0", port=port, workers=1,
+        proxy_headers=False, server_header=False, access_log=False,
+        timeout_keep_alive=5,
     )
 
 

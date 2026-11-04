@@ -6,10 +6,12 @@ services:
     name: sinan-mcp-public-preview
     runtime: python
     plan: free
-    buildCommand: python -m pip install -e .
+    buildCommand: python -m pip install --require-hashes --no-deps -r requirements-public.lock && python -m pip install --no-deps -e .
     startCommand: python -m sinan_mcp.public_server
     healthCheckPath: /health
     autoDeploy: false
     envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.17"
       - key: SINAN_PUBLIC_REAL_DATA
         value: "0"
