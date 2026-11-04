@@ -164,7 +164,7 @@ def test_cli_existing_handoff_distinguishes_preservation_from_invalid_path(tmp_p
                          text=True, timeout=30)
     assert run.returncode == 2
     assert "ROTEIRO JA EXISTE; ARQUIVO ORIGINAL PRESERVADO" in run.stderr
-    assert r"\\n" not in run.stderr
+    assert r"\n" not in run.stderr
     assert run.stderr.endswith("\n")
     assert existing.read_text(encoding="utf-8") == "roteiro anterior preservado"
 
@@ -176,5 +176,5 @@ def test_cli_existing_handoff_distinguishes_preservation_from_invalid_path(tmp_p
     assert bad.returncode == 2
     assert "ROTEIRO EXTERNO ZIKA NAO CRIADO" in bad.stderr
     assert "ROTEIRO JA EXISTE" not in bad.stderr
-    assert r"\\n" not in bad.stderr
+    assert r"\n" not in bad.stderr
     assert not invalid.exists()
