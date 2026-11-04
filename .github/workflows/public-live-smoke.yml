@@ -17,7 +17,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Probe Render health and seven public MCP tools, no real records
+      - name: Probe Render health and 10 contracted MCP tools, no real records
         env:
           SINAN_PUBLIC_SMOKE_URL: https://sinan-mcp-public-preview.onrender.com
         run: python scripts/probe_public_https.py
