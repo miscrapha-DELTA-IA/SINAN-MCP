@@ -10,7 +10,9 @@ New Render web service `sinan-mcp-public-preview` deployed in a dedicated Free i
 
 - Verified HTTPS health URL: https://sinan-mcp-public-preview.onrender.com/health
 - Verified public MCP URL: https://sinan-mcp-public-preview.onrender.com/mcp
-- Git revision running: `43307f28f6831b6b43a533fa85ee624eab97fc18` (`v0.4.0a1`).
+- Original deployment revision (2026-11-02): `43307f28f6831b6b43a533fa85ee624eab97fc18` (`v0.4.0a1`).
+- **Latest live deploy reported by Render on 2026-11-04:** `678e15523bb13ec2f36778ffe879c479dff2b3bf` (manual/API deploy finished 2026-11-02 22:08 UTC). This is not the current GitHub `main` revision; the service has auto-deploy disabled.
+- The earlier success of the live smoke probe establishes functionality for a historical deployment only. A fresh live smoke verification is still needed for the current deployed commit; the CI tests of a newer branch do not update Render.
 - Independently verified by GitHub Actions workflow `public-live-smoke.yml` (success run `41506993125`): /health, MCP initialize, tools/list, listar_bases, contar_notificacoes and forbidden-Origin HTTP 403.
 - Main CI at revision `01b758112a6db71309e87273254ca6ce2e0379ac` also passed. Changes after the deployment do not update the running service automatically.
 
@@ -35,7 +37,7 @@ Public release is independent of access to the operator's local SINAN SQLite. Th
    - `RENDER_EXTERNAL_HOSTNAME`: Render-supplied public hostname. The server fails closed without `RENDER_EXTERNAL_HOSTNAME` or explicit `SINAN_PUBLIC_HOST`.
    - No databases, disks, secrets, `SINAN_DB_PATH` or real health datasets attached.
 3. Confirm `https://<actual-render-host>/health` returns `{"status":"ok","deployment":"synthetic-only",...}`.
-4. Confirm `https://<actual-render-host>/mcp` accepts MCP Streamable HTTP calls and lists only the seven public, read-only tools. Do not invent the URL until an actual deployment returns one.
+4. Confirm `https://<actual-render-host>/mcp` accepts MCP Streamable HTTP calls and lists only the ten public, read-only tools. Do not invent the URL until an actual deployment returns one.
 5. Verify `Host` and `Origin` rejection: hostname allowlisted by `TransportSecuritySettings`; unexpected `Host` → HTTP 421; unapproved `Origin` → HTTP 403. Browser origins `https://chatgpt.com` and `https://chat.openai.com` are allowed; other clients without Origin can connect normally.
 6. Verify synthetically-labelled results and failure of `agravo=DENG`, other dates/UFs, municipality and arbitrary dimensions. The server does not support real epidemiologic queries.
 7. Monitor deploy health, error logs, response time, throughput and quotas. Set up rate limiting/edge abuse protection on the hosting account before broad announcement.
