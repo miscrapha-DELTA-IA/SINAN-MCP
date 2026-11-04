@@ -150,3 +150,31 @@ def test_handoff_conditional_questions_are_all_unchecked_and_source_linked():
     assert "não estabelecem" in section
     assert "ZIKABR24" in section
     assert "[x]" not in section.lower()
+
+
+
+def test_cli_existing_handoff_distinguishes_preservation_from_invalid_path(tmp_path):
+    existing = tmp_path / "zika-v2.md"
+    existing.write_text("roteiro anterior preservado", encoding="utf-8")
+    cmd = [
+        sys.executable, "-m", "sinan_mcp",
+        "preparar-roteiro-revisor-zika", "--saida", str(existing),
+    ]
+    run = subprocess.run(cmd, cwd=tmp_path, capture_output=True,
+                         text=True, timeout=30)
+    assert run.returncode == 2
+    assert "ROTEIRO JA EXISTE; ARQUIVO ORIGINAL PRESERVADO" in run.stderr
+    assert r"\\n" not in run.stderr
+    assert run.stderr.endswith("\n")
+    assert existing.read_text(encoding="utf-8") == "roteiro anterior preservado"
+
+    invalid = tmp_path / "nao_existe" / "novo.md"
+    bad = subprocess.run(
+        cmd[:-1] + [str(invalid)], cwd=tmp_path,
+        capture_output=True, text=True, timeout=30,
+    )
+    assert bad.returncode == 2
+    assert "ROTEIRO EXTERNO ZIKA NAO CRIADO" in bad.stderr
+    assert "ROTEIRO JA EXISTE" not in bad.stderr
+    assert r"\\n" not in bad.stderr
+    assert not invalid.exists()
