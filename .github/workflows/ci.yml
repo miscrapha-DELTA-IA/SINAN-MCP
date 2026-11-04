@@ -25,3 +25,30 @@ jobs:
       - name: Full offline test suite
         run: python -m pytest -q
       - run: python -m sinan_mcp demo
+
+  optional-ingest:
+    name: Offline ingest extras (${{ matrix.os }}, Python 3.11)
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install development and optional ingest dependencies
+        run: python -m pip install -e ".[dev,ingest]" duckdb
+      - name: Verify dependency integrity
+        run: python -m pip check
+      - name: Prepare isolated PySUS cache and check optional imports
+        env:
+          PYSUS_CACHEPATH: ${{ runner.temp }}/sinan-mcp-pysus-ci
+        run: python -c "import os; from pathlib import Path; Path(os.environ['PYSUS_CACHEPATH']).mkdir(parents=True, exist_ok=True); import duckdb, pyarrow, pysus; print('Optional ingest imports available')"
+      - name: Full synthetic offline suite with optional ingest
+        env:
+          PYSUS_CACHEPATH: ${{ runner.temp }}/sinan-mcp-pysus-ci
+        run: python -m pytest -q -rs --junitxml=optional-ingest-test-results.xml
+      - name: Fail if optional tests were skipped or coverage shrank
+        run: python -c "import xml.etree.ElementTree as ET; root=ET.parse('optional-ingest-test-results.xml').getroot(); suites=list(root.iter('testsuite')); total=sum(int(x.get('tests', '0')) for x in suites); skipped=sum(int(x.get('skipped', '0')) for x in suites); assert total >= 108 and skipped == 0, f'Expected >=108 tests and zero skips; observed {total} tests, {skipped} skipped'; print(f'Optional ingest suite verified; {total} tests, 0 skips')"
