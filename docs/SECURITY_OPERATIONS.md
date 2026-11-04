@@ -1,9 +1,9 @@
 # Operação segura do SINAN MCP público
 
-Status: proposta de hardening versionada. Nenhuma configuração de produção é presumida como aplicada. O serviço público permanece estritamente sintético.
+Status: hardening sintético implantado em 2026-11-04 na Render (SHA 3ac1db9dd4bb81b3bf685356528da4572c4f0c3d), com sonda HTTPS pós-deploy aprovada. A implantação NÃO certifica configuração de alertas, retenção de logs, variáveis privadas, proteção de borda nem uso de bases reais.
 
 ## 1. Limites de entrada e arquitetura
-- No código proposto, o limite global por processo é 300 requisições HTTP ao /mcp por minuto, usando token bucket com reposição contínua e recusa 429 com Retry-After.
+- No código atualmente implantado, o limite global por processo é 300 requisições HTTP ao /mcp por minuto, usando token bucket com reposição contínua e recusa 429 com Retry-After.
 - Até 16 requisições /mcp em processamento simultâneo. Inteiros inválidos ou zero são rejeitados no startup.
 - O /health não consome o orçamento MCP, para manter sondas de vida; isso exige proteção adicional na borda contra excesso de sondagens.
 - Não confiar em X-Forwarded-For nem identificar usuários pelos headers enviados pelo cliente. O controle é por processo, NÃO é rate limit individual, compartilhado entre máquinas ou garantia contra DDoS.
@@ -11,7 +11,7 @@ Status: proposta de hardening versionada. Nenhuma configuração de produção �
 - Apenas 10 ferramentas públicas previstas no contrato, base TUBE 2024/PI com 120 registros ficcionais, sem arquivos/SQL, escrita, banco de pesquisa ou credenciais privadas.
 
 ## 2. Observabilidade sem revelar dados
-- O middleware poderá emitir apenas contagens agregadas por período: aceitas, rejeitadas por taxa, rejeitadas por concorrência e em processamento.
+- O middleware emite contagens agregadas por intervalo de 60 segundos **quando chega outra solicitação MCP**: aceitas, rejeitadas por taxa, rejeitadas por concorrência e em processamento. Ausência de linha de telemetria não comprova disponibilidade nem ausência de requisições.
 - O uvicorn deverá operar com log de acesso individual desativado. Evitar imprimir payloads MCP, argumentos de ferramentas, IPs, cookies, tokens, pacientes, caminhos privados ou variáveis secretas.
 - A telemetria da aplicação não controla automaticamente os logs do proxy ou da Render. Conferir acesso, retenção e conteúdo no workspace correto.
 - Metas de alerta, ainda NÃO configuradas/confirmadas: health indisponível por 5 minutos; 5xx acima de 2% por 5 minutos; 429 acima de 10% por 10 minutos; p95 de /mcp acima de 3 s por 10 minutos; mudança inesperada no inventário de ferramentas.
@@ -39,3 +39,12 @@ Nenhuma suíte automatizada certifica anonimização, disponibilidade contra ata
 ### Versão do interpretador
 
 O manifesto proposto fixa Python 3.11.17 para ser compatível com os lockfiles resolvidos sob Python 3.11. Serviços novos da Render podem escolher outro padrão se não houver pin. Conferir qualquer variável PYTHON_VERSION preexistente, que prevalece sobre .python-version; não presumir que mudar o repositório alterou o processo já implantado.
+
+## 6. Verificação contínua, separada de deploy
+
+- A action [Public HTTPS MCP smoke](../.github/workflows/public-live-smoke.yml) executa a sonda somente leitura `scripts/probe_public_https.py` **duas vezes por dia**, aproximadamente às 06h17 e 18h17 no horário de Fortaleza (UTC-3), além de aceitar execução manual. Agendamentos do GitHub são sujeitos a atraso ou ausência de execução.
+- A sonda usa o host público explicitamente fixado no workflow. Verifica `/health`, initialize, inventário exato de 10 ferramentas, dados 100% sintéticos, contagem fictícia 120 e rejeição de operações proibidas/Origin estranho. Nenhum download de microdados, token ou acesso ao servidor privado.
+- O workflow usa apenas `contents: read`, sem segredos ou deploy, com concorrência limitada para não sobrepor execuções. Um resultado **vermelho** indica investigação necessária; não aciona automaticamente reinicialização, escalonamento de recursos, publicação nem rollback.
+- Consulte [Actions](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/workflows/public-live-smoke.yml) e habilite notificações de falha do GitHub se desejar alertas. Um workflow agendado **não garante que uma notificação será entregue**. Considerar solução externa de monitoramento mais adiante se for necessário SLA ou alerta imediato.
+- Um erro pode representar atraso de cold start do plano Free, indisponibilidade da rede, mudança de contrato ainda não implantada ou falha do serviço. Antes de qualquer medida, conferir SHA Live e logs da Render, repetir sonda manualmente e comparar com a revisão anterior.
+- Proteção de borda por origem, monitoramento de 5xx/429 e retenção sanitizada continuam **não comprovados**. O serviço em `.onrender.com` não está automaticamente protegido pela zona Cloudflare de um domínio de terceiros.
