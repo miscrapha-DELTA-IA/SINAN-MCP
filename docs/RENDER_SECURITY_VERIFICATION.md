@@ -41,3 +41,25 @@ Workspace confirmado pelo operador: **My Workspace**. Serviço inspecionado: `si
 **Não verificado:** nomes e conteúdo das variáveis de ambiente em produção, anexos externos de banco/disco ou caminhos privados, status real de alertas, política de retenção, limites de edge por origem, controles DNS/TLS, versão efetiva de Python no runtime e comportamento HTTPS atual por chamadas MCP reais. A leitura API disponível não dá cobertura suficiente desses controles.
 
 **Gates de implantação futura:** (a) confirmar, pela interface autorizada, que não há banco ou segredos de pesquisa e que o runtime usa Python 3.11.17; (b) configurar healthCheckPath como /health e estabelecer alertas e retenção; (c) manter autoDeploy desativado e o comando de servidor público sintético; (d) só após revisão do diff e CI, executar um deploy manual autorizado; (e) rodar a sonda HTTP após o deploy e, em falha, reverter manualmente ao SHA sintético anterior. Não confundir revisão de repositório, deploy e aprovação institucional.
+
+## Implantação e sonda HTTPS pós-deploy — 2026-11-04
+
+A tabela anterior registra uma **fotografia anterior à implantação** e não descreve a configuração atual. Inspeção do serviço e logs/eventos Render concluída novamente após atualização.
+
+| Verificação de produção | Evidência observada |
+| --- | --- |
+| Serviço e workspace | `sinan-mcp-public-preview` em `My Workspace`; id `srv-dbkdt4g8v5cc73f33cfg` |
+| SHA Live | `3ac1db9dd4bb81b3bf685356528da4572c4f0c3d` |
+| Deploy | `dep-dblj5kon74is73a9idj0`, concluído em `2026-11-04T13:28:50Z` como `Live` |
+| Build | `python -m pip install --require-hashes --no-deps -r requirements-public.lock && python -m pip install --no-deps -e .`; build concluído |
+| Start | `python -m sinan_mcp.public_server`; startup do Uvicorn concluído |
+| Health check | `/health` salvo na configuração efetiva; HTTPS `/health` validado |
+| AutoDeploy | `no`, preservado; o deploy foi acionado manualmente |
+| Proteção de branch | `SINAN-MCP-Main-Protection` ativo com oito checks obrigatórios |
+| Validação HTTPS | [GitHub Actions run 41805947076, tentativa 2](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/41805947076), job `126603928099`, sucesso após a implantação |
+| Contrato validado | Initialize; dez tools sem escrita; `listar_bases` sem dados reais; 120 registros fictícios TUBE/2024/PI; rejeição de operações administrativas e Origin não autorizado |
+| Rollback de referência | SHA `678e15523bb13ec2f36778ffe879c479dff2b3bf` (revisão sintética anterior) |
+
+**Sem atestado administrativo:** nomes/valores completos de variáveis e environment groups, efetiva vinculação ou ausência de discos/bancos, controle de acesso a dados externos, retenção/logs em provedor, alertas, proteção por origem na borda, e validação institucional de fontes reais. Não se deve declarar esses controles como auditados.
+
+A action [Public HTTPS MCP smoke](../.github/workflows/public-live-smoke.yml), quando integrada à main, acrescentará sondagem periódica somente leitura (06h17/18h17 BRT, melhor esforço). A sonda não monitora diretamente versões/SHAs da Render nem substitui uma revisão humana. Ver [issue #43](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/issues/43).
