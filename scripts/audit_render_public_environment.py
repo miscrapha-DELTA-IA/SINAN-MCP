@@ -188,12 +188,31 @@ def assessment(service: dict, vars_list: list, secret_files: list, env_groups: l
         raise AuditUnavailable("Render environment group response has unknown structure")
     links = 0
     invalid_groups = False
-    for group in env_groups:
-        if not isinstance(group, dict) or not isinstance(group.get("serviceLinks"), list):
+    for entry in env_groups:
+        # Some paginated Render responses may contain {envGroup: ..., cursor: ...}
+        # rather than a plain group object. Never interpret an unrecognized
+        # shape as evidence that a group is absent.
+        if not isinstance(entry, dict):
             invalid_groups = True
             continue
-        for link in group["serviceLinks"]:
-            if isinstance(link, dict) and link.get("id") == SERVICE_ID:
+        group = entry.get("envGroup", entry)
+        if not isinstance(group, dict):
+            invalid_groups = True
+            continue
+        # Restrict the audit to the workspace explicitly selected by operator.
+        # Missing ownerId is not proof of ownership or of safe separation.
+        if group.get("ownerId") != WORKSPACE_ID:
+            invalid_groups = True
+            continue
+        service_links = group.get("serviceLinks")
+        if not isinstance(service_links, list):
+            invalid_groups = True
+            continue
+        for link in service_links:
+            if not isinstance(link, dict) or not isinstance(link.get("id"), str):
+                invalid_groups = True
+                continue
+            if link["id"] == SERVICE_ID:
                 links += 1
     put(
         "environment group membership metadata",

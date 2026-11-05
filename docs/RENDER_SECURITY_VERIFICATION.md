@@ -83,3 +83,11 @@ As verificações incluem isolamento do serviço correto, `autoDeploy=no`, `heal
 **Não checado pelo script:** existência de credenciais em sistemas externos, retenção e conteúdo dos logs de proxy, destinos reais de email/Slack, regras avançadas de proteção na borda e homologação epidemiológica. São etapas separadas do [issue #43](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/issues/43).
 
 Referências oficiais da Render: [env vars do serviço](https://api-docs.render.com/reference/get-env-vars-for-service), [secret files do serviço](https://api-docs.render.com/reference/list-secret-files-for-service), [environment groups](https://api-docs.render.com/reference/list-env-groups), [notificações](https://render.com/docs/notifications).
+
+## Formatos da API de environment groups e evidência do operador — 2026-11-05
+
+A referência oficial `GET /v1/env-groups` documenta objetos com `ownerId` e `serviceLinks` (lista de vínculos por ID): https://api-docs.render.com/reference/list-env-groups . Algumas respostas de paginação podem conter itens `{"envGroup": {...}, "cursor": "..."}`; o auditor local reconhece ambas as estruturas, sem reportar nomes, valores de grupos ou conteúdo de arquivos secretos. A rotina verifica a propriedade do workspace selecionado e cada ID de `serviceLinks`. Quando não consegue validar a estrutura ou o proprietário, registra `REVIEW`, **nunca `PASS` automático**. Um vínculo do serviço efetivamente encontrado permanece `FAIL`.
+
+O operador confirmou a seção `Linked Environment Groups` vazia no painel do serviço. A auditoria anterior retornou `REVIEW` para metadados; esta alteração é **correção do verificador local**, não alteração da Render. Rodar a versão atualizada do script somente leitura e examinar apenas estados `PASS/FAIL/REVIEW`; a não publicação de valores de ambiente continua obrigatória.
+
+Mesmo `PASS` para ausência de grupos não significa autorização de dados SINAN reais, nem certifica bancos externos ou logs de terceiros.
