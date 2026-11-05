@@ -28,7 +28,7 @@ from .official_sources import (
     descrever_agravo as _describe_condition,
 )
 
-PUBLIC_VERSION = "0.4.0a5"
+PUBLIC_VERSION = "0.4.0a6"
 WARNING = (
     "EXEMPLO INTEGRALMENTE SINTÉTICO. Os números NÃO são do SINAN real, "
     "não representam pacientes, notificações oficiais, incidência ou risco."
@@ -149,7 +149,7 @@ def pesquisar_agravos(termo: str = "", limite: int = 20) -> dict[str, Any]:
 
 @mcp.tool(annotations=PUBLIC_TOOL_ANNOTATIONS)
 def descrever_agravo(codigo_interno: str) -> dict[str, Any]:
-    """Devolve evidência por agravo e checklist científico sem homologação presumida."""
+    """Devolve fontes PDF e campos documentais Zika/TB, sem esquema 2024 homologado."""
     return _describe_condition(codigo_interno)
 
 
