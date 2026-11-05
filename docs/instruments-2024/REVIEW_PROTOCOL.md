@@ -1,4 +1,4 @@
-# Pacote de validação documental — Zika 2024 e tuberculose 2024
+# Validação documental | Zika e tuberculose (2024)
 
 **Data-base da verificação:** 05/11/2026 · **Escopo:** somente documentos públicos, sem registros individuais.  
 [Centro de documentação](../README.md) · [Guia para revisores externos](EXTERNAL_REVIEW.md) · [Matriz CSV](field_matrix.csv) · [Manifesto JSON](source_manifest.json)
@@ -22,7 +22,7 @@ Este documento registra **evidência de integridade documental**, não a homolog
 O [guia de revisão externa](EXTERNAL_REVIEW.md) explica, em linguagem acessível, o procedimento para avaliação de clareza/usabilidade, conferência biomédica parcial e parecer metodológico. Ele inclui **links diretos**, campos selecionados, roteiro e modelo de devolutiva. Uma avaliação de usabilidade não substitui um parecer científico independente.
 
 
-## Conclusão atual, rigorosamente delimitada
+## Escopo documental e limitações
 
 - **Zika:** disponível no catálogo oficial do Ministério da Saúde um [dicionário SINAN Net de Zika](https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus/resource/58038262-c745-46ea-979b-8727eb08ec5c), PDF de **8 páginas**; a página do recurso informa arquivo de dados atualizado em **22/03/2024** e metadados alterados em **14/07/2025**. O documento, porém, não traz um identificador de versão de layout suficientemente preciso para afirmar que a extração de 2024 usa esse esquema integralmente.
 - **Zika — ficha/instrucional:** o [Portal SINAN Zika](https://portalsinan.saude.gov.br/zika) remete à ficha **genérica de notificação/conclusão SINAN NET**, seu instrucional e ao dicionário de notificação individual. Não confundir a ficha de conclusão com um instrumento específico de investigação de Zika. O dicionário comum é versão **5.0**, revisto em **novembro de 2018**, e possui **23 páginas**.
@@ -84,13 +84,13 @@ O workflow [`instruments-2024-audit.yml`](../../.github/workflows/instruments-20
 
 **Proveniência da evidência:** [GitHub Actions — Official Zika TB PDF evidence audit, execução 41994351476](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/41994351476). O evento de download de 5 de novembro de 2026 confirmou cabeçalho HTTP 200, PDF e paginação. Essa medição da integridade de bytes recebidos é um *lock* de release reprodutível, não certificação do órgão produtor, nem substitui a confrontação com o arquivo de distribuição 2024.
 
-## Checagem automatizada de concordância com a página impressa
+## Verificação automatizada de ocorrência dos identificadores
 
 A [CI de verificação das páginas](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/41994975411) confirmou, com os **mesmos hashes bloqueados** dos sete PDFs, que os códigos de campo transcritos na matriz estão presentes no texto extraído da **página indicada**: 37/37 entradas de Zika, 15/15 campos críticos de TB e 5/5 campos comuns, perfazendo **57/57 ocorrências de código de campo**. Esse teste usa `pypdf==5.9.0` e normalização de letras, algarismos e separadores.
 
 **Limite indispensável:** é uma checagem automática de presença textual do identificador na página, **não** revisão de rótulo, descrição semântica, tipagem DBF, codificação de valores, obrigatoriedade, coorte, validade temporal ou mapeamento para um arquivo de 2024. Em especial, tokens curtos podem ocorrer em mais de um contexto; um revisor deverá conferir cada linha visualmente e registrar a versão/arquivo efetivamente analisados. Não transformar `57/57` em concordância homologada de esquema SINAN 2024.
 
-## Revisão independente — protocolo de homologação
+## Avaliação científica independente
 
 Preencher [`independent_review_template.json`](independent_review_template.json) **somente após** as avaliações humanas efetivas. É proibido atribuir nomes, assinaturas, conflito de interesse ou aprovação fictícios. Três pareceres distintos e verificáveis:
 
@@ -100,16 +100,10 @@ Preencher [`independent_review_template.json`](independent_review_template.json)
 
 Para cada pessoa: identificação e afiliação verdadeiras, declaração de conflito, evidência das páginas/campos inspecionados, decisão (`APPROVED`, `CHANGES_REQUIRED` ou `REJECTED`), data, vínculo para parecer autenticável e hashes dos PDFs lidos. O responsável pelo repositório registra o PR de revisão com diff e encaminha aos revisores independentes. **Um check automático ou a leitura pelo próprio autor não substitui o parecer.**
 
-**Poderemos liberar apenas a curadoria documental**, se as regras de ausência de dados e alegações científicas forem mantidas; usar dados reais e indicadores exige autorização, compatibilidade comprovada da release 2024 e processos separados, nunca por alteração simples deste manifesto.
+A curadoria documental pode ser divulgada com as limitações declaradas. Dados reais e indicadores exigem autorização específica, compatibilidade documental com a distribuição de 2024 e avaliação científica e de privacidade em processo separado.
 
-## Critérios objetivos para a etapa seguinte
+## Registro de revisão e rastreabilidade
 
-- [x] URLs e versões aparentes dos sete instrumentos/dicionários oficiais localizados.
-- [x] Matriz de metadados de 57 linhas, sem valores de pacientes.
-- [x] SHA-256, tamanho e páginas **verificados sobre bytes recebidos de sete URLs oficiais**, fixados no manifesto pelo [workflow GitHub Actions 41994351476](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/41994351476). Isso **não** comprova assinatura digital do emissor, versão oficial aplicável a 2024 ou revisão humana.
-- [x] Códigos de 57/57 linhas **localizados automaticamente nas páginas declaradas** dos PDFs com hash bloqueado, [CI 41994975411](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/41994975411). Checagem de ocorrência textual, **não** aprovação semântica.
-- [ ] Confronto **humano independente** de todas as linhas da matriz com PDFs bloqueados, inclusive rótulos, tipos, categorias e contexto.
-- [ ] Divergências entre dicionário comum, específico e arquivo 2024 resolvidas em instrumento apropriado.
-- [ ] Três pareceres humanos independentes, incluindo privacidade.
-- [ ] Aprovação científica de definições de caso, coleta, datas, regras de vinculação e encerramento.
-- [ ] Permissão para uso de dados reais ou publicação de números: **não autorizada** e fora do escopo atual.
+A auditoria de 5 de novembro de 2026 confirmou **a integridade dos bytes de sete PDFs oficiais** e a ocorrência textual de **57 identificadores** nas páginas declaradas. Essas verificações não validam categorias, definições epidemiológicas ou equivalência com a distribuição SINAN 2024.
+
+As **tarefas pendentes** e o recebimento de pareceres independentes estão concentrados na [issue científica #62](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/issues/62). Este documento permanece como registro de fontes, método, resultados e limitações, sem listas de tarefas de desenvolvimento.
