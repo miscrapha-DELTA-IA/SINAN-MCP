@@ -28,7 +28,7 @@ from .official_sources import (
     descrever_agravo as _describe_condition,
 )
 
-PUBLIC_VERSION = "0.4.0a4"
+PUBLIC_VERSION = "0.4.0a5"
 WARNING = (
     "EXEMPLO INTEGRALMENTE SINTÉTICO. Os números NÃO são do SINAN real, "
     "não representam pacientes, notificações oficiais, incidência ou risco."
@@ -143,13 +143,13 @@ def listar_fontes_oficiais() -> dict[str, Any]:
 
 @mcp.tool(annotations=PUBLIC_TOOL_ANNOTATIONS)
 def pesquisar_agravos(termo: str = "", limite: int = 20) -> dict[str, Any]:
-    """Encontra agravos em índice EXEMPLIFICATIVO; sem download nem dados individuais."""
+    """Pesquisa sinônimos e páginas oficiais datadas; sem consultas HTTP ou dados individuais."""
     return _search_conditions(termo, limite)
 
 
 @mcp.tool(annotations=PUBLIC_TOOL_ANNOTATIONS)
 def descrever_agravo(codigo_interno: str) -> dict[str, Any]:
-    """Distingue código interno, documentação, validação e disponibilidade."""
+    """Devolve evidência por agravo e checklist científico sem homologação presumida."""
     return _describe_condition(codigo_interno)
 
 
