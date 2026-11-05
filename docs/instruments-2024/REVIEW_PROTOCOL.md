@@ -43,7 +43,7 @@ Exemplos de alto risco:
 [`source_manifest.json`](source_manifest.json) fixa **sete URLs exatas**, números de páginas e versões identificadas. [`scripts/audit_instruments_2024.py`](../../scripts/audit_instruments_2024.py) faz:
 
 - **Padrão offline:** valida URLs permitidas, documentação e matriz sem abrir a internet.
-- Com `--fetch`: baixa somente os sete PDFs explicitamente fixados, recusa qualquer redirecionamento, limite de 12 MiB por arquivo, MIME PDF, assinatura inicial `%PDF-`, marcador terminal `%%EOF`, e usa `pdfinfo` do Poppler para conferir páginas.
+- Com `--fetch`: baixa somente os sete PDFs explicitamente fixados, recusa qualquer redirecionamento, limite de 12 MiB por arquivo, MIME PDF, assinatura inicial `%PDF-`, marcador terminal `%%EOF`, e usa `pypdf==5.9.0` fixado na CI para conferir páginas.
 - Calcula **SHA-256 e bytes da resposta obtida**, carimbo UTC e nome do documento. Descarta bytes temporários e exporta somente o JSON de proveniência/hash para a CI.
 - A **integridade dos bytes obtidos** não equivale à assinatura digital do órgão emissor, autenticidade histórica, prova de exaustividade ou conformidade com a versão 2024.
 - Repetições devem comparar os hashes: mudança inesperada requer diff de PDF, atualização de matriz e reaprovação. Não atualizar hash "esperado" automaticamente para fazê-lo passar.
