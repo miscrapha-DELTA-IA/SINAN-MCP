@@ -1,0 +1,785 @@
+{
+  "schema_version": "sinan-public-instruments-2024-v1",
+  "scope": "SOMENTE_METADADOS_DOCUMENTAIS_PUBLICOS_SEM_MICRODADOS",
+  "compiled_from": [
+    "docs/instruments-2024/source_manifest.json",
+    "docs/instruments-2024/field_matrix.csv"
+  ],
+  "verification_run": "https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/41995297093",
+  "curated_at": "2026-11-05",
+  "year_2024_means": "ANO_ALVO_DA_PESQUISA_NAO_VERSAO_DOS_DOCUMENTOS",
+  "actual_2024_dataset_schema_validated": false,
+  "independent_scientific_review_approved": false,
+  "real_data_access": false,
+  "description": "Os 7 PDFs oficiais tiveram bytes SHA-256 e paginas verificados; 57 codigos de campo foram localizados nas paginas dos PDFs. Sem confronto do layout 2024, sem revisao humana independente ou dados epidemiologicos.",
+  "diseases": {
+    "ZIKA": {
+      "status": "PDFS_E_CODIGOS_LOCALIZADOS_SEM_HOMOLOGACAO_DO_ANO_2024",
+      "ano_alvo": 2024,
+      "documentos": [
+        {
+          "id": "ZIKA-DIC",
+          "tipo": "dicionario_especifico",
+          "url_pdf": "https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/SINAN/Zikavirus/dic_dados_zika.pdf",
+          "url_origem": "https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus/resource/58038262-c745-46ea-979b-8727eb08ec5c",
+          "versao_observada": "Sem número de versão explícito na capa",
+          "relacao_com_2024": "2024 dataset has separate reference; 2024 compatibility unverified",
+          "paginas": 8,
+          "sha256_pdf": "80b50522c67f550ee2c96aad315dddd524bf38b1c7fa1c40b2ee341cc41cdf0d",
+          "tamanho_bytes_pdf": 333298,
+          "integridade_bytes_verificada": true,
+          "assinatura_digital_da_fonte_verificada": false,
+          "correspondencia_com_arquivo_2024_validada": false,
+          "parecer_independente_aprovado": false
+        },
+        {
+          "id": "ZIKA-FICHA",
+          "tipo": "ficha_notificacao_conclusao",
+          "url_pdf": "https://portalsinan.saude.gov.br/images/documentos/Agravos/NINDIV/Ficha_conclusao_v5.pdf",
+          "url_origem": "https://portalsinan.saude.gov.br/zika",
+          "versao_observada": "Ficha Sinan NET, versão do modelo indicada no nome v5; rodapé 27/09/2005",
+          "relacao_com_2024": "Ficha comum, não específica nem homologada para dump ZIKA/2024",
+          "paginas": 1,
+          "sha256_pdf": "b87ebfd414502c21eb0e7e269b2329eaa66fd6fe1086913b9b46dbfb7f9a93e1",
+          "tamanho_bytes_pdf": 15666,
+          "integridade_bytes_verificada": true,
+          "assinatura_digital_da_fonte_verificada": false,
+          "correspondencia_com_arquivo_2024_validada": false,
+          "parecer_independente_aprovado": false
+        },
+        {
+          "id": "ZIKA-INSTR",
+          "tipo": "instrucional_ficha",
+          "url_pdf": "https://portalsinan.saude.gov.br/images/documentos/Agravos/NINDIV/Ficha_conclusao_v5_instr.pdf",
+          "url_origem": "https://portalsinan.saude.gov.br/zika",
+          "versao_observada": "Instrucional SINAN NET; rodapé 17/07/2006",
+          "relacao_com_2024": "Documento histórico de preenchimento; relação com exportação 2024 não validada",
+          "paginas": 3,
+          "sha256_pdf": "635578b83d7a5d3be21234ffabbe8a94e40deed21109dd157a5333b22f100997",
+          "tamanho_bytes_pdf": 84434,
+          "integridade_bytes_verificada": true,
+          "assinatura_digital_da_fonte_verificada": false,
+          "correspondencia_com_arquivo_2024_validada": false,
+          "parecer_independente_aprovado": false
+        },
+        {
+          "id": "COMMON-NINDIV",
+          "tipo": "dicionario_campos_comuns",
+          "url_pdf": "https://portalsinan.saude.gov.br/images/documentos/Agravos/NINDIV/DIC_DADOS_NET_Not_Individual_rev.pdf",
+          "url_origem": "https://portalsinan.saude.gov.br/zika",
+          "versao_observada": "SINAN NET v5.0, revisado em novembro de 2018",
+          "relacao_com_2024": "Comparar sem pressupor igualdade de nomes DBF com dicionário ZIKA 2024",
+          "paginas": 23,
+          "sha256_pdf": "db365c9632690ade275eb609badeada8033b042165605a734c5c242048ede221",
+          "tamanho_bytes_pdf": 608286,
+          "integridade_bytes_verificada": true,
+          "assinatura_digital_da_fonte_verificada": false,
+          "correspondencia_com_arquivo_2024_validada": false,
+          "parecer_independente_aprovado": false
+        }
+      ],
+      "total_documentos": 4,
+      "campos_documentais": [
+        {
+          "codigo": "tp_not",
+          "rotulo_documental": "Tipo de notificação",
+          "pagina_pdf": 1,
+          "tipo_resumido": "categorico",
+          "observacoes": "1,2,3,4",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "id_agravo",
+          "rotulo_documental": "Identificador do agravo",
+          "pagina_pdf": 1,
+          "tipo_resumido": "categorico",
+          "observacoes": "CID-10; extensão a validar",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "dt_notific",
+          "rotulo_documental": "Data da notificação",
+          "pagina_pdf": 1,
+          "tipo_resumido": "data",
+          "observacoes": "DD/MM/AAAA",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "sem_not",
+          "rotulo_documental": "Semana da notificação",
+          "pagina_pdf": 1,
+          "tipo_resumido": "texto",
+          "observacoes": "campo interno AAAASS",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "nu_ano",
+          "rotulo_documental": "Ano de notificação",
+          "pagina_pdf": 1,
+          "tipo_resumido": "texto",
+          "observacoes": "campo interno",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "sg_uf_not",
+          "rotulo_documental": "UF notificadora",
+          "pagina_pdf": 2,
+          "tipo_resumido": "texto",
+          "observacoes": "sigla UF",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "id_municip",
+          "rotulo_documental": "Município notificador",
+          "pagina_pdf": 2,
+          "tipo_resumido": "texto",
+          "observacoes": "código IBGE",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "id_regiona",
+          "rotulo_documental": "Regional notificadora",
+          "pagina_pdf": 2,
+          "tipo_resumido": "texto",
+          "observacoes": "código regional",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "id_unidade",
+          "rotulo_documental": "Unidade notificadora",
+          "pagina_pdf": 2,
+          "tipo_resumido": "texto",
+          "observacoes": "código CNES",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "dt_sin_pri",
+          "rotulo_documental": "Data dos primeiros sintomas",
+          "pagina_pdf": 2,
+          "tipo_resumido": "data",
+          "observacoes": "DD/MM/AAAA",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "sem_pri",
+          "rotulo_documental": "Semana primeiros sintomas",
+          "pagina_pdf": 2,
+          "tipo_resumido": "texto",
+          "observacoes": "campo interno",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "ano_nasc",
+          "rotulo_documental": "Ano de nascimento",
+          "pagina_pdf": 2,
+          "tipo_resumido": "texto",
+          "observacoes": "somente metadado do campo, não pessoa",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "nu_idade_n",
+          "rotulo_documental": "Idade declarada/codificada",
+          "pagina_pdf": 3,
+          "tipo_resumido": "numerico",
+          "observacoes": "código idade e unidade",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "cs_sexo",
+          "rotulo_documental": "Sexo cadastrado",
+          "pagina_pdf": 3,
+          "tipo_resumido": "categorico",
+          "observacoes": "M,F,I",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "cs_gestant",
+          "rotulo_documental": "Gestação",
+          "pagina_pdf": 3,
+          "tipo_resumido": "categorico",
+          "observacoes": "categorias gestacionais",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "cs_raca",
+          "rotulo_documental": "Raça/cor declarada",
+          "pagina_pdf": 4,
+          "tipo_resumido": "categorico",
+          "observacoes": "1,2,3,4,5,9",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "cs_escol_n",
+          "rotulo_documental": "Escolaridade",
+          "pagina_pdf": 4,
+          "tipo_resumido": "categorico",
+          "observacoes": "valores especiais e não se aplica",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "sg_uf",
+          "rotulo_documental": "UF residência",
+          "pagina_pdf": 4,
+          "tipo_resumido": "texto",
+          "observacoes": "sigla UF",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "id_mn_resi",
+          "rotulo_documental": "Município residência",
+          "pagina_pdf": 5,
+          "tipo_resumido": "texto",
+          "observacoes": "código IBGE",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "id_rg_resi",
+          "rotulo_documental": "Regional de residência",
+          "pagina_pdf": 5,
+          "tipo_resumido": "texto",
+          "observacoes": "código regional",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "id_pais",
+          "rotulo_documental": "País de residência",
+          "pagina_pdf": 5,
+          "tipo_resumido": "texto",
+          "observacoes": "código do país",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "nduplic_n",
+          "rotulo_documental": "Não listar/não contar",
+          "pagina_pdf": 5,
+          "tipo_resumido": "categorico",
+          "observacoes": "marcador de duplicidade; regra exige revisão",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "in_vincula",
+          "rotulo_documental": "Vinculação",
+          "pagina_pdf": 5,
+          "tipo_resumido": "categorico",
+          "observacoes": "indicador do sistema",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "dt_invest",
+          "rotulo_documental": "Data de investigação",
+          "pagina_pdf": 5,
+          "tipo_resumido": "data",
+          "observacoes": "DD/MM/AAAA",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "id_ocupa_n",
+          "rotulo_documental": "Ocupação",
+          "pagina_pdf": 5,
+          "tipo_resumido": "texto",
+          "observacoes": "CBO",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "classi_fin",
+          "rotulo_documental": "Classificação final",
+          "pagina_pdf": 6,
+          "tipo_resumido": "categorico",
+          "observacoes": "1 confirmado,2 descartado,9 ignorado",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "criterio",
+          "rotulo_documental": "Critério de confirmação",
+          "pagina_pdf": 6,
+          "tipo_resumido": "categorico",
+          "observacoes": "1 laboratorial,2 clínico-epidemiológico,3 investigação",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "tpautocto",
+          "rotulo_documental": "Autoctonia",
+          "pagina_pdf": 6,
+          "tipo_resumido": "categorico",
+          "observacoes": "1 sim,2 não,3 indeterminado",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "coufinf",
+          "rotulo_documental": "UF provável infecção",
+          "pagina_pdf": 6,
+          "tipo_resumido": "texto",
+          "observacoes": "condicional",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "copaisinf",
+          "rotulo_documental": "País provável infecção",
+          "pagina_pdf": 7,
+          "tipo_resumido": "texto",
+          "observacoes": "condicional",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "comuninf",
+          "rotulo_documental": "Município provável infecção",
+          "pagina_pdf": 7,
+          "tipo_resumido": "texto",
+          "observacoes": "condicional",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "doenca_tra",
+          "rotulo_documental": "Relacionada ao trabalho",
+          "pagina_pdf": 7,
+          "tipo_resumido": "categorico",
+          "observacoes": "1 sim,2 não,9 ignorado",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "evolucao",
+          "rotulo_documental": "Evolução do caso",
+          "pagina_pdf": 8,
+          "tipo_resumido": "categorico",
+          "observacoes": "1 cura,2 óbito agravo,3 outro óbito,9 ignorado",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "dt_obito",
+          "rotulo_documental": "Data de óbito",
+          "pagina_pdf": 8,
+          "tipo_resumido": "data",
+          "observacoes": "DD/MM/AAAA; condicional",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "dt_encerra",
+          "rotulo_documental": "Data de encerramento",
+          "pagina_pdf": 8,
+          "tipo_resumido": "data",
+          "observacoes": "DD/MM/AAAA; condicional",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "dt_digita",
+          "rotulo_documental": "Data de digitação",
+          "pagina_pdf": 8,
+          "tipo_resumido": "data",
+          "observacoes": "data primeira digitação",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "tp_sistema",
+          "rotulo_documental": "Tipo de sistema",
+          "pagina_pdf": 8,
+          "tipo_resumido": "categorico",
+          "observacoes": "1 Sinan Net,2 Sinan Online",
+          "documento_id": "ZIKA-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "TP_NOT",
+          "rotulo_documental": "Tipo de notificação",
+          "pagina_pdf": 1,
+          "tipo_resumido": "categorico",
+          "observacoes": "DBF comum x tp_not Zika: nomes internos distintos",
+          "documento_id": "COMMON-NINDIV",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "ID_AGRAVO",
+          "rotulo_documental": "Agravo",
+          "pagina_pdf": 1,
+          "tipo_resumido": "categorico",
+          "observacoes": "DBF comum x id_agravo Zika: verificar versão/width",
+          "documento_id": "COMMON-NINDIV",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "DT_NOTIFIC",
+          "rotulo_documental": "Data notificação",
+          "pagina_pdf": 2,
+          "tipo_resumido": "data",
+          "observacoes": "DBF comum x dt_notific Zika",
+          "documento_id": "COMMON-NINDIV",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "CS_SEXO",
+          "rotulo_documental": "Sexo",
+          "pagina_pdf": 4,
+          "tipo_resumido": "categorico",
+          "observacoes": "DBF comum x cs_sexo Zika",
+          "documento_id": "COMMON-NINDIV",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "CS_RACA",
+          "rotulo_documental": "Raça/cor",
+          "pagina_pdf": 5,
+          "tipo_resumido": "categorico",
+          "observacoes": "DBF comum x cs_raca Zika",
+          "documento_id": "COMMON-NINDIV",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        }
+      ],
+      "total_campos_documentais": 42,
+      "campos_do_agravo": 37,
+      "campos_de_notificacao_comum": 5,
+      "correspondencia_arquivo_sinan_2024_validada": false,
+      "revisao_independente_aprovada": false
+    },
+    "TUBE": {
+      "status": "PDFS_E_CODIGOS_LOCALIZADOS_SEM_HOMOLOGACAO_DO_ANO_2024",
+      "ano_alvo": 2024,
+      "documentos": [
+        {
+          "id": "COMMON-NINDIV",
+          "tipo": "dicionario_campos_comuns",
+          "url_pdf": "https://portalsinan.saude.gov.br/images/documentos/Agravos/NINDIV/DIC_DADOS_NET_Not_Individual_rev.pdf",
+          "url_origem": "https://portalsinan.saude.gov.br/zika",
+          "versao_observada": "SINAN NET v5.0, revisado em novembro de 2018",
+          "relacao_com_2024": "Comparar sem pressupor igualdade de nomes DBF com dicionário ZIKA 2024",
+          "paginas": 23,
+          "sha256_pdf": "db365c9632690ade275eb609badeada8033b042165605a734c5c242048ede221",
+          "tamanho_bytes_pdf": 608286,
+          "integridade_bytes_verificada": true,
+          "assinatura_digital_da_fonte_verificada": false,
+          "correspondencia_com_arquivo_2024_validada": false,
+          "parecer_independente_aprovado": false
+        },
+        {
+          "id": "TUBE-DIC",
+          "tipo": "dicionario_especifico",
+          "url_pdf": "https://portalsinan.saude.gov.br/images/documentos/Agravos/Tuberculose/DICI_DADOS_NET_Tuberculose_23_07_2020.pdf",
+          "url_origem": "https://portalsinan.saude.gov.br/tuberculose",
+          "versao_observada": "SINAN NET versão 5.0; URL contém 23_07_2020",
+          "relacao_com_2024": "Data do nome do PDF não comprova compatibilidade com exportação 2024",
+          "paginas": 22,
+          "sha256_pdf": "0e0aac57f975343917552225cfd920c88f096f99cba46968c5bca6f46c291b08",
+          "tamanho_bytes_pdf": 328708,
+          "integridade_bytes_verificada": true,
+          "assinatura_digital_da_fonte_verificada": false,
+          "correspondencia_com_arquivo_2024_validada": false,
+          "parecer_independente_aprovado": false
+        },
+        {
+          "id": "TUBE-FICHA",
+          "tipo": "ficha_notificacao_investigacao",
+          "url_pdf": "https://portalsinan.saude.gov.br/images/documentos/Agravos/Tuberculose/Tuberculose_v5.pdf",
+          "url_origem": "https://portalsinan.saude.gov.br/tuberculose",
+          "versao_observada": "SINAN NET v5; rodapé 02/10/2014",
+          "relacao_com_2024": "Ficha histórico-institucional, não valida estado do ano 2024",
+          "paginas": 1,
+          "sha256_pdf": "77b19f9d41d458bac7c749d25a0b5b6b90c542b0fd7377e371b401abf019ed23",
+          "tamanho_bytes_pdf": 26671,
+          "integridade_bytes_verificada": true,
+          "assinatura_digital_da_fonte_verificada": false,
+          "correspondencia_com_arquivo_2024_validada": false,
+          "parecer_independente_aprovado": false
+        },
+        {
+          "id": "TUBE-ACOMP",
+          "tipo": "ficha_acompanhamento",
+          "url_pdf": "https://portalsinan.saude.gov.br/images/documentos/Agravos/Tuberculose/Tuberculose_Acomp_v5.pdf",
+          "url_origem": "https://portalsinan.saude.gov.br/tuberculose",
+          "versao_observada": "SINAN NET v5; rodapé 09/01/2014",
+          "relacao_com_2024": "Instrumento distinto da ficha de investigação; exige vinculação, temporalidade e versão",
+          "paginas": 1,
+          "sha256_pdf": "b0e9d0ef283bb9525b5192eeca76ad611947d315929f383005a27769bec1867b",
+          "tamanho_bytes_pdf": 11927,
+          "integridade_bytes_verificada": true,
+          "assinatura_digital_da_fonte_verificada": false,
+          "correspondencia_com_arquivo_2024_validada": false,
+          "parecer_independente_aprovado": false
+        }
+      ],
+      "total_documentos": 4,
+      "campos_documentais": [
+        {
+          "codigo": "NU_PRONTUA",
+          "rotulo_documental": "Número de prontuário",
+          "pagina_pdf": 1,
+          "tipo_resumido": "identificador",
+          "observacoes": "não usar na análise externa",
+          "documento_id": "TUBE-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "TRATAMENTO",
+          "rotulo_documental": "Tipo de entrada",
+          "pagina_pdf": 1,
+          "tipo_resumido": "categorico",
+          "observacoes": "1 novo,2 recidiva,3 reingresso,4 não sabe,5 transferência,6 pós-óbito",
+          "documento_id": "TUBE-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "POP_LIBER",
+          "rotulo_documental": "População privada de liberdade",
+          "pagina_pdf": 2,
+          "tipo_resumido": "categorico",
+          "observacoes": "1 sim,2 não,9 ignorado",
+          "documento_id": "TUBE-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "POP_RUA",
+          "rotulo_documental": "População em situação de rua",
+          "pagina_pdf": 3,
+          "tipo_resumido": "categorico",
+          "observacoes": "1 sim,2 não,9 ignorado",
+          "documento_id": "TUBE-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "FORMA",
+          "rotulo_documental": "Forma clínica",
+          "pagina_pdf": 3,
+          "tipo_resumido": "categorico",
+          "observacoes": "1 pulmonar,2 extrapulmonar,3 ambas",
+          "documento_id": "TUBE-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "AGRAVAIDS",
+          "rotulo_documental": "Doença associada: AIDS",
+          "pagina_pdf": 5,
+          "tipo_resumido": "categorico",
+          "observacoes": "1 sim,2 não,9 ignorado",
+          "documento_id": "TUBE-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "AGRAVDIABE",
+          "rotulo_documental": "Doença associada: diabetes",
+          "pagina_pdf": 5,
+          "tipo_resumido": "categorico",
+          "observacoes": "1 sim,2 não,9 ignorado",
+          "documento_id": "TUBE-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "CULTURA_ES",
+          "rotulo_documental": "Cultura do diagnóstico",
+          "pagina_pdf": 8,
+          "tipo_resumido": "categorico",
+          "observacoes": "1 positiva,2 negativa,3 andamento,4 não realizada",
+          "documento_id": "TUBE-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "TESTE_MOLEC",
+          "rotulo_documental": "Teste molecular rápido TB",
+          "pagina_pdf": 8,
+          "tipo_resumido": "categorico",
+          "observacoes": "status de detecção e rifampicina",
+          "documento_id": "TUBE-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "DT_INIC_TR",
+          "rotulo_documental": "Data início tratamento",
+          "pagina_pdf": 9,
+          "tipo_resumido": "data",
+          "observacoes": "DD/MM/AAAA",
+          "documento_id": "TUBE-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "NU_COMU_ID",
+          "rotulo_documental": "Contatos identificados",
+          "pagina_pdf": 9,
+          "tipo_resumido": "numero",
+          "observacoes": "contagem individual no instrumento, NÃO publicar valores",
+          "documento_id": "TUBE-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "TRATSUP_AT",
+          "rotulo_documental": "Tratamento diretamente observado",
+          "pagina_pdf": 19,
+          "tipo_resumido": "categorico",
+          "observacoes": "1 sim,2 não,9 ignorado",
+          "documento_id": "TUBE-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "NU_CONT_EX",
+          "rotulo_documental": "Contatos examinados",
+          "pagina_pdf": 19,
+          "tipo_resumido": "numero",
+          "observacoes": "contagem individual no instrumento, NÃO publicar valores",
+          "documento_id": "TUBE-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "SITUA_ENCE",
+          "rotulo_documental": "Situação de encerramento",
+          "pagina_pdf": 19,
+          "tipo_resumido": "categorico",
+          "observacoes": "1 cura,2 abandono,10 abandono primário; outras categorias; coorte a validar",
+          "documento_id": "TUBE-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "DT_ENCERRA",
+          "rotulo_documental": "Data de encerramento",
+          "pagina_pdf": 22,
+          "tipo_resumido": "data",
+          "observacoes": "DD/MM/AAAA; depende do encerramento",
+          "documento_id": "TUBE-DIC",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "TP_NOT",
+          "rotulo_documental": "Tipo de notificação",
+          "pagina_pdf": 1,
+          "tipo_resumido": "categorico",
+          "observacoes": "DBF comum x tp_not Zika: nomes internos distintos",
+          "documento_id": "COMMON-NINDIV",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "ID_AGRAVO",
+          "rotulo_documental": "Agravo",
+          "pagina_pdf": 1,
+          "tipo_resumido": "categorico",
+          "observacoes": "DBF comum x id_agravo Zika: verificar versão/width",
+          "documento_id": "COMMON-NINDIV",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "DT_NOTIFIC",
+          "rotulo_documental": "Data notificação",
+          "pagina_pdf": 2,
+          "tipo_resumido": "data",
+          "observacoes": "DBF comum x dt_notific Zika",
+          "documento_id": "COMMON-NINDIV",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "CS_SEXO",
+          "rotulo_documental": "Sexo",
+          "pagina_pdf": 4,
+          "tipo_resumido": "categorico",
+          "observacoes": "DBF comum x cs_sexo Zika",
+          "documento_id": "COMMON-NINDIV",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        },
+        {
+          "codigo": "CS_RACA",
+          "rotulo_documental": "Raça/cor",
+          "pagina_pdf": 5,
+          "tipo_resumido": "categorico",
+          "observacoes": "DBF comum x cs_raca Zika",
+          "documento_id": "COMMON-NINDIV",
+          "correspondencia_arquivo_2024": "NAO_VERIFICADA",
+          "revisao_humana": "PENDENTE"
+        }
+      ],
+      "total_campos_documentais": 20,
+      "campos_do_agravo": 15,
+      "campos_de_notificacao_comum": 5,
+      "correspondencia_arquivo_sinan_2024_validada": false,
+      "revisao_independente_aprovada": false
+    }
+  }
+}

@@ -10,7 +10,8 @@ import re
 import unicodedata
 from difflib import SequenceMatcher
 
-from .documentary import obter_evidencias, resumo_documental, termos_relacionados
+from .documentary import (obter_evidencias, resumo_documental, termos_relacionados,
+                          obter_instrumentos_2024, resumo_instrumentos_2024)
 
 SCHEMA_VERSION = "sinan-sources-v1"
 NOTICE = (
@@ -91,6 +92,7 @@ def _condition_record(alias: str, name: str, stage: str) -> dict:
         "dicionario_ano_versao_confrontado": evidence["dicionario_ano_versao_confrontado"],
         "arquivo_real_importado": evidence["arquivos_reais_importados"],
         "termos_relacionados_para_busca": evidence["termos_relacionados"],
+        "resumo_instrumentos_2024": resumo_instrumentos_2024(alias),
     }
 
 
@@ -178,6 +180,7 @@ def descrever_agravo(codigo_interno: str) -> dict:
                 "tabulacao_oficial": dict(OFFICIAL_SOURCES[1]),
                 "evidencia_por_agravo": obter_evidencias(code),
                 "auditoria_documental": resumo_documental(),
+                "instrumentos_e_campos_documentais_2024": obter_instrumentos_2024(code),
                 "checklist_pesquisa_antes_de_calcular": [
                     {"etapa": "Identificar página oficial", "realizado": True,
                      "alcance": "Título e escopo de página institucional, não arquivo individual"},

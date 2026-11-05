@@ -112,7 +112,7 @@ def test_documentary_records_return_independent_copies():
 
 def test_public_tool_inventory_remains_unchanged_and_all_data_is_synthetic():
     assert public_server.listar_bases()["dados_reais_disponiveis"] is False
-    assert public_server.PUBLIC_VERSION == "0.4.0a5"
+    assert public_server.PUBLIC_VERSION == "0.4.0a6"
     assert public_server.contar_notificacoes("TUBE", 2024, 2024, "PI")[
         "proveniencia"]["fonte"] == "synthetic-in-code/v1"
 
@@ -135,3 +135,70 @@ def test_registry_rejects_non_official_domains_fail_closed(monkeypatch, tmp_path
             documentary._load_registry()
     finally:
         documentary._load_registry.cache_clear()
+
+
+@pytest.mark.parametrize("code,expected_fields", [("ZIKA", 42), ("TUBE", 20)])
+def test_public_instrument_documentation_has_hashed_pdf_refs_but_no_2024_data(code, expected_fields):
+    bundle = public_server.descrever_agravo(code)["instrumentos_e_campos_documentais_2024"]
+    assert bundle["ano_alvo"] == 2024
+    assert bundle["total_documentos"] == 4
+    assert len(bundle["campos_documentais"]) == expected_fields
+    assert bundle["total_campos_documentais"] == expected_fields
+    assert bundle["correspondencia_arquivo_sinan_2024_validada"] is False
+    assert bundle["revisao_independente_aprovada"] is False
+    assert all(x["integridade_bytes_verificada"] is True
+               and x["correspondencia_com_arquivo_2024_validada"] is False
+               and x["parecer_independente_aprovado"] is False
+               and len(x["sha256_pdf"]) == 64 for x in bundle["documentos"])
+    assert all(x["correspondencia_arquivo_2024"] == "NAO_VERIFICADA"
+               and x["revisao_humana"] == "PENDENTE" for x in bundle["campos_documentais"])
+    indexed = public_server.pesquisar_agravos(code)
+    found = next(r for r in indexed["resultados"] if r["codigo_interno"] == code)
+    assert found["resumo_instrumentos_2024"]["codigos_de_campo_localizados_na_pagina"] == expected_fields
+    assert found["resumo_instrumentos_2024"]["parecer_independente_aprovado"] is False
+
+
+def test_public_snapshot_exactly_tracks_offline_source_manifest_and_field_matrix():
+    import csv
+    from pathlib import Path
+
+    snapshot = json.loads(files("sinan_mcp").joinpath("public_instruments_2024.json")
+                          .read_text(encoding="utf-8"))
+    root = Path(__file__).resolve().parents[1]
+    original = json.loads((root / "docs/instruments-2024/source_manifest.json")
+                          .read_text(encoding="utf-8"))
+    with (root / "docs/instruments-2024/field_matrix.csv").open(encoding="utf-8") as f:
+        fields = list(csv.DictReader(f))
+    assert snapshot["actual_2024_dataset_schema_validated"] is False
+    assert snapshot["independent_scientific_review_approved"] is False
+    assert snapshot["real_data_access"] is False
+    assert len(fields) == 57
+    unique_docs = {}
+    for code in ("ZIKA", "TUBE"):
+        bundle = snapshot["diseases"][code]
+        expected = [r for r in fields if r["agravo"] in (code, "COMMON")]
+        assert len(bundle["campos_documentais"]) == len(expected)
+        for got, row in zip(bundle["campos_documentais"], expected):
+            assert got["codigo"] == row["campo_documental"]
+            assert got["pagina_pdf"] == int(row["pagina_pdf"])
+            assert got["documento_id"] == row["fonte_id"]
+            assert got["rotulo_documental"] == row["rotulo_documental"]
+            assert got["tipo_resumido"] == row["tipo_documental_resumido"]
+            assert got["observacoes"] == row["observacao_ou_codificacao"]
+        for doc in bundle["documentos"]:
+            unique_docs[doc["id"]] = doc
+            original_doc = next(d for d in original["files"] if d["id"] == doc["id"])
+            assert doc["url_pdf"] == original_doc["source_url"]
+            assert doc["sha256_pdf"] == original_doc["byte_integrity"]["sha256"]
+            assert doc["tamanho_bytes_pdf"] == original_doc["byte_integrity"]["bytes"]
+            assert doc["paginas"] == original_doc["expected_pages_from_pdf_preview"]
+    assert len(unique_docs) == 7
+    assert documentary.obter_instrumentos_2024("DENG") is None
+    assert public_server.descrever_agravo("DENG")["instrumentos_e_campos_documentais_2024"] is None
+
+
+def test_public_instruments_are_independent_read_only_copies():
+    first = documentary.obter_instrumentos_2024("ZIKA")
+    first["documentos"][0]["sha256_pdf"] = "0" * 64
+    second = documentary.obter_instrumentos_2024("ZIKA")
+    assert second["documentos"][0]["sha256_pdf"] != "0" * 64
