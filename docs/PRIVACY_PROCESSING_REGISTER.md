@@ -1,6 +1,6 @@
 # Registro preliminar de tratamento e teste de legítimo interesse — SINAN MCP público
 
-**Versão:** 2026-11-05. **Situação:** análise preparatória; **não** é aprovação do controlador, parecer jurídico ou homologação da ANPD. Antes do release, confirmar identidade do controlador, contato LGPD e contrato da infraestrutura. Abrange **somente** `sinan_mcp.public_server` em instância Render pública com dados sintéticos. Não utilizar este documento para justificar publicação de dados SINAN reais.
+**Versão:** 2026-11-05. **Situação:** análise preparatória; **não** é aprovação do controlador, parecer jurídico ou homologação da ANPD. Controlador identificado e contato LGPD autorizado em 05/11/2026; contratos, transferências internacionais e governança permanecem em revisão. Abrange **somente** `sinan_mcp.public_server` em instância Render pública com dados sintéticos. Não utilizar este documento para justificar publicação de dados SINAN reais.
 
 ## 1. Inventário de tratamentos (LGPD, art. 37)
 
@@ -9,7 +9,7 @@
 | Solicitações MCP anônimas | `termo`, `codigo_interno`, `agravo` e filtros restritos, dados enviados intencionalmente pelo cliente | Responder com catálogo estático e simulação sintética | Confirmar fundamento jurídico do tratamento técnico antes de publicar | Aplicação SINAN MCP na Render; cliente MCP separado | Processamento transitório; código não grava histórico nominal; dados enviados indevidamente podem aparecer em camadas externas |
 | Infraestrutura/rede e disponibilidade | Possível IP, timestamp, Host, Origin, User-Agent, caminho, status e identificadores técnicos | Entrega do serviço, segurança, diagnóstico e prevenção de abuso | Art. 7º, IX — legítimo interesse **sujeito ao teste documentado**; art. 7º, II quando obrigação legal concreta | Render e suboperadores, conforme contrato e DPA | Logs acessíveis na Render Hobby: documentação de **7 dias**; outros registros/categorias precisam ser contratualmente avaliados |
 | Controle de admissão | Contadores agregados em memória de chamadas aceitas/recusadas e concorrência, sem IP por cliente | Restringir saturação do serviço e registrar métricas agregadas | Não são necessariamente dados pessoais no fluxo atual; revisar se forem correlacionáveis a pessoas | Aplicação SINAN MCP | Memória volátil, reset em reinício; resumo de contadores nos logs de aplicação |
-| Suporte e direitos LGPD | Identificador e conteúdo mínimo do pedido enviados por canal **privado ainda não definido** | Exercer direitos, responder ao titular e documentar providências | Obrigação legal, quando aplicável (art. 7º, II) | Operador/contato confirmado | Prazo fundamentado na necessidade do atendimento, deveres legais e registros; ainda **não definido** |
+| Suporte e direitos LGPD | Identificador e conteúdo mínimo do pedido enviados ao canal privado **miscrapha@gmail.com**, autorizado para divulgação pelo controlador | Exercer direitos, responder ao titular e documentar providências | Obrigação legal, quando aplicável (art. 7º, II) | Operador/contato confirmado | Prazo fundamentado na necessidade do atendimento, deveres legais e registros; ainda **não definido** |
 | Auditoria e incidentes | Informações mínimas e sanitizadas sobre eventos técnicos | Investigar falhas e cumprir obrigação aplicável de comunicação | Segurança e obrigação legal, conforme o evento | Operador, Render, ANPD/titulares quando exigido | Registrar incidentes nos prazos aplicáveis; prazo legal para registro de incidente com dados pessoais pode diferir de logs comuns |
 
 **Não há coleta deliberada** de nome, CPF, credencial, cadastro, prontuário, diagnóstico pessoal, ficha de notificação ou dado financeiro no MCP externo. **Não** interpretar a base sintética como dado anonimizado de paciente: ela foi criada artificialmente e não veio de pessoas reais.
@@ -30,7 +30,7 @@ A aplicação não usa identificação por IP no limitador; utiliza um orçament
 - **Direitos dos titulares:** um canal privado, estável e acessível para solicitação é indispensável; um repositório GitHub público não basta.
 
 ### Conclusão **condicional**
-A hipótese de legítimo interesse para os **dados pessoais comuns mínimos de operação e segurança** é plausível somente se o controlador comprovar o interesse concreto, a necessidade, a ausência de alternativa menos intrusiva, as salvaguardas e o respeito aos direitos/expectativas dos titulares. **Ainda não houve assinatura do responsável**. Não usar a hipótese para dados pessoais sensíveis ou para finalidades novas.
+A hipótese de legítimo interesse para os **dados pessoais comuns mínimos de operação e segurança** é plausível somente se o controlador comprovar o interesse concreto, a necessidade, a ausência de alternativa menos intrusiva, as salvaguardas e o respeito aos direitos/expectativas dos titulares. **A identidade e o e-mail de contato foram expressamente autorizados pelo responsável em 05/11/2026; isso não constitui assinatura de aprovação da avaliação de legítimo interesse.** Não usar a hipótese para dados pessoais sensíveis ou para finalidades novas.
 
 ## 3. Transferência internacional e fornecedores
 
@@ -38,13 +38,13 @@ A hipótese de legítimo interesse para os **dados pessoais comuns mínimos de o
 
 ## 4. Parecer humano necessário
 
-- [ ] Controlador (identidade civil/jurídica e responsabilidade) identificado.
-- [ ] Canal privado de direitos em funcionamento, com procedimento de resposta e identidade proporcional.
+- [x] Controlador indicado: **Raphael Múcio Teixeira Cabral de Pina Bulhões Di Giorgio**, pessoa natural, com autorização expressa para identificação pública.
+- [x] Canal privado definido e autorizado para divulgação: **miscrapha@gmail.com**. [ ] Confirmar recebimento de mensagem de teste externa e documentar procedimento de resposta/validação proporcional.
 - [ ] Avaliação de pequeno porte/encarregado documentada, sem presunção.
 - [ ] Legitimate Interest Assessment validada/assinada e associada aos tratamentos realmente realizados.
 - [ ] DPA e eventual transferência internacional/suboperadores avaliados por documentação da conta Render.
 - [ ] Retenção efetiva para classes de dados do provedor e possíveis backups mapeada; prazo para pedidos e incidentes aprovado.
-- [ ] Política HTML revisada, sem campos `[PENDENTE]`, com data de vigência real, publicada por HTTPS e testada.
+- [x] Política HTML com controlador e e-mail preenchidos, sem campos `[PENDENTE]`. [ ] Confirmar implantação por HTTPS e data de início efetivo da vigência.
 
 ## Fontes
 [LGPD (Lei 13.709/2018)](https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm) · [ANPD guia de legítimo interesse](https://www.gov.br/anpd/pt-br/assuntos/noticias/anpd-lanca-guia-orientativo-sobre-legitimo-interesse) · [ANPD Resolução nº 19/2024](https://www.gov.br/anpd/pt-br/acesso-a-informacao/institucional/atos-normativos/regulamentacoes_anpd/resolucao-cd-anpd-no-19-de-23-de-agosto-de-2024) · [ANPD Resolução nº 2/2022](https://www.gov.br/anpd/pt-br/acesso-a-informacao/institucional/atos-normativos/regulamentacoes_anpd/resolucao-cd-anpd-no-2-de-27-de-janeiro-de-2022) · [Render logging](https://render.com/docs/logging).
