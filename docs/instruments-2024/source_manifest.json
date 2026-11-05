@@ -3,7 +3,7 @@
   "scope": "ONLY_PUBLIC_OFFICIAL_PDF_DOCUMENTATION_NO_REAL_RECORDS",
   "review_date": "2026-11-05",
   "status": "REVIEW_DOCUMENTS_NOT_DATA_2024",
-  "disclaimer": "Online preview was visually inspected from official endpoints, but a final source-byte hash is only confirmed by an independent bounded PDF download. Historic forms/dictionaries must not be declared current 2024 layout without a per-release archive/schema concordance. No human independent review has signed off.",
+  "disclaimer": "Seven named official PDF sources had exact bytes and page counts verified by a pinned-client GitHub Actions run, and are locked against silent changes. This does not establish publisher digital signature or 2024 data-schema equivalence. No microdados accessed and independent human scientific review remains pending.",
   "files": [
     {
       "id": "ZIKA-DIC",
@@ -15,10 +15,12 @@
       "version_observed": "Sem número de versão explícito na capa",
       "relationship_to_2024": "2024 dataset has separate reference; 2024 compatibility unverified",
       "byte_integrity": {
-        "verified": false,
-        "sha256": null,
-        "bytes": null,
-        "verified_at": null
+        "verified": true,
+        "sha256": "80b50522c67f550ee2c96aad315dddd524bf38b1c7fa1c40b2ee341cc41cdf0d",
+        "bytes": 333298,
+        "verified_at": "2026-11-05T08:26:21+00:00",
+        "provenance_run": "https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/41994351476",
+        "scope": "integridade_dos_bytes_de_pdf_nao_assinatura_nem_concordancia_com_dados_2024"
       },
       "field_crosswalk_to_2024_data": "NOT_VERIFIED",
       "independent_review": {
@@ -39,10 +41,12 @@
       "version_observed": "Ficha Sinan NET, versão do modelo indicada no nome v5; rodapé 27/09/2005",
       "relationship_to_2024": "Ficha comum, não específica nem homologada para dump ZIKA/2024",
       "byte_integrity": {
-        "verified": false,
-        "sha256": null,
-        "bytes": null,
-        "verified_at": null
+        "verified": true,
+        "sha256": "b87ebfd414502c21eb0e7e269b2329eaa66fd6fe1086913b9b46dbfb7f9a93e1",
+        "bytes": 15666,
+        "verified_at": "2026-11-05T08:26:22+00:00",
+        "provenance_run": "https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/41994351476",
+        "scope": "integridade_dos_bytes_de_pdf_nao_assinatura_nem_concordancia_com_dados_2024"
       },
       "field_crosswalk_to_2024_data": "NOT_VERIFIED",
       "independent_review": {
@@ -63,10 +67,12 @@
       "version_observed": "Instrucional SINAN NET; rodapé 17/07/2006",
       "relationship_to_2024": "Documento histórico de preenchimento; relação com exportação 2024 não validada",
       "byte_integrity": {
-        "verified": false,
-        "sha256": null,
-        "bytes": null,
-        "verified_at": null
+        "verified": true,
+        "sha256": "635578b83d7a5d3be21234ffabbe8a94e40deed21109dd157a5333b22f100997",
+        "bytes": 84434,
+        "verified_at": "2026-11-05T08:26:23+00:00",
+        "provenance_run": "https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/41994351476",
+        "scope": "integridade_dos_bytes_de_pdf_nao_assinatura_nem_concordancia_com_dados_2024"
       },
       "field_crosswalk_to_2024_data": "NOT_VERIFIED",
       "independent_review": {
@@ -87,10 +93,12 @@
       "version_observed": "SINAN NET v5.0, revisado em novembro de 2018",
       "relationship_to_2024": "Comparar sem pressupor igualdade de nomes DBF com dicionário ZIKA 2024",
       "byte_integrity": {
-        "verified": false,
-        "sha256": null,
-        "bytes": null,
-        "verified_at": null
+        "verified": true,
+        "sha256": "db365c9632690ade275eb609badeada8033b042165605a734c5c242048ede221",
+        "bytes": 608286,
+        "verified_at": "2026-11-05T08:26:25+00:00",
+        "provenance_run": "https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/41994351476",
+        "scope": "integridade_dos_bytes_de_pdf_nao_assinatura_nem_concordancia_com_dados_2024"
       },
       "field_crosswalk_to_2024_data": "NOT_VERIFIED",
       "independent_review": {
@@ -111,10 +119,12 @@
       "version_observed": "SINAN NET versão 5.0; URL contém 23_07_2020",
       "relationship_to_2024": "Data do nome do PDF não comprova compatibilidade com exportação 2024",
       "byte_integrity": {
-        "verified": false,
-        "sha256": null,
-        "bytes": null,
-        "verified_at": null
+        "verified": true,
+        "sha256": "0e0aac57f975343917552225cfd920c88f096f99cba46968c5bca6f46c291b08",
+        "bytes": 328708,
+        "verified_at": "2026-11-05T08:26:27+00:00",
+        "provenance_run": "https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/41994351476",
+        "scope": "integridade_dos_bytes_de_pdf_nao_assinatura_nem_concordancia_com_dados_2024"
       },
       "field_crosswalk_to_2024_data": "NOT_VERIFIED",
       "independent_review": {
@@ -135,10 +145,12 @@
       "version_observed": "SINAN NET v5; rodapé 02/10/2014",
       "relationship_to_2024": "Ficha histórico-institucional, não valida estado do ano 2024",
       "byte_integrity": {
-        "verified": false,
-        "sha256": null,
-        "bytes": null,
-        "verified_at": null
+        "verified": true,
+        "sha256": "77b19f9d41d458bac7c749d25a0b5b6b90c542b0fd7377e371b401abf019ed23",
+        "bytes": 26671,
+        "verified_at": "2026-11-05T08:26:28+00:00",
+        "provenance_run": "https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/41994351476",
+        "scope": "integridade_dos_bytes_de_pdf_nao_assinatura_nem_concordancia_com_dados_2024"
       },
       "field_crosswalk_to_2024_data": "NOT_VERIFIED",
       "independent_review": {
@@ -159,10 +171,12 @@
       "version_observed": "SINAN NET v5; rodapé 09/01/2014",
       "relationship_to_2024": "Instrumento distinto da ficha de investigação; exige vinculação, temporalidade e versão",
       "byte_integrity": {
-        "verified": false,
-        "sha256": null,
-        "bytes": null,
-        "verified_at": null
+        "verified": true,
+        "sha256": "b0e9d0ef283bb9525b5192eeca76ad611947d315929f383005a27769bec1867b",
+        "bytes": 11927,
+        "verified_at": "2026-11-05T08:26:29+00:00",
+        "provenance_run": "https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/41994351476",
+        "scope": "integridade_dos_bytes_de_pdf_nao_assinatura_nem_concordancia_com_dados_2024"
       },
       "field_crosswalk_to_2024_data": "NOT_VERIFIED",
       "independent_review": {
