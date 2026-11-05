@@ -27,7 +27,7 @@
 
 HTTP `/mcp` uses stateless mode and JSON responses, limits request bodies and allows only a configured Host and ChatGPT browser origins. Starting without a valid hostname fails closed; TLS termination is the responsibility of the hosting proxy. Anonymous access is acceptable **only because** this public preview has no user state, real records, private resources or write actions. Adding any such capability requires a new access-control design.
 
-The public release does not solve re-identification risks for a future dataset, perform differential privacy, certify official epidemiological metrics or make the private real-data feature flag appropriate for public use. See [public policy and launch gates](docs/PUBLIC_LAUNCH.md). A Render public service needs separate operational rate limiting, uptime/monitoring, retention policy and capacity planning.
+The public release does not solve re-identification risks for a future dataset, perform differential privacy, certify official epidemiological metrics or make the private real-data feature flag appropriate for public use. See [public policy and launch gates](docs/operations/PUBLIC_LAUNCH.md). A Render public service needs separate operational rate limiting, uptime/monitoring, retention policy and capacity planning.
 
 ## Precomputed real aggregates (under independent review)
 
@@ -35,7 +35,7 @@ The offline `release_pipeline` imports a strictly limited count table from a loc
 
 An independent `aggregate_contract` module validates a human-reviewed static JSON release, its pinned SHA-256 and a two-reviewer record; this validates structure and attestations but **does not verify anonymity, reviewer identities or authorization**. The separate optional `approved_server` imports only this contract, never SQLite, PySUS or the research server. It fails closed if no reviewed release + pinned hash is provided and is NOT configured or deployed to Render.
 
-Conservative count thresholds are **not a formal anonymization mechanism**. Other releases, temporal overlap, auxiliary datasets, data version differences and health-context sensitivity require expert disclosure review. No real package may be published without independent approval. See [aggregate publication guide](docs/AGGREGATE_PUBLICATION.md).
+Conservative count thresholds are **not a formal anonymization mechanism**. Other releases, temporal overlap, auxiliary datasets, data version differences and health-context sensitivity require expert disclosure review. No real package may be published without independent approval. See [aggregate publication guide](docs/research/AGGREGATE_PUBLICATION.md).
 
 ## Official table candidates (v0.4.0a4)
 
@@ -43,4 +43,4 @@ Conservative count thresholds are **not a formal anonymization mechanism**. Othe
 
 ## Segurança operacional da demonstração pública — implantada em 2026-11-04
 
-O PR #38 foi integrado e implantado somente na **instância de demonstração sintética**, SHA `3ac1db9dd4bb81b3bf685356528da4572c4f0c3d`. O servidor público dispõe de orçamento global por processo (300 req/min), concorrência máxima de 16 chamadas MCP, HTTP 429 com Retry-After e build com lockfile verificado por hashes; não confia em X-Forwarded-For para identificar clientes. A sonda HTTPS pós-deploy foi aprovada. Esses controles **não** substituem proteção na borda, auditoria independente, homologação de dados epidemiológicos ou acesso autenticado a uma hipotética instância com dados sensíveis. Variáveis e retenção de logs da Render ainda aguardam atestado administrativo. Consultar [runbook operacional](docs/SECURITY_OPERATIONS.md), [proteção de branch](docs/BRANCH_PROTECTION.md) e [checklist Render](docs/RENDER_SECURITY_VERIFICATION.md).
+O PR #38 foi integrado e implantado somente na **instância de demonstração sintética**, SHA `3ac1db9dd4bb81b3bf685356528da4572c4f0c3d`. O servidor público dispõe de orçamento global por processo (300 req/min), concorrência máxima de 16 chamadas MCP, HTTP 429 com Retry-After e build com lockfile verificado por hashes; não confia em X-Forwarded-For para identificar clientes. A sonda HTTPS pós-deploy foi aprovada. Esses controles **não** substituem proteção na borda, auditoria independente, homologação de dados epidemiológicos ou acesso autenticado a uma hipotética instância com dados sensíveis. Variáveis e retenção de logs da Render ainda aguardam atestado administrativo. Consultar [runbook operacional](docs/operations/SECURITY_OPERATIONS.md), [proteção de branch](docs/operations/BRANCH_PROTECTION.md) e [checklist Render](docs/operations/RENDER_SECURITY_VERIFICATION.md).

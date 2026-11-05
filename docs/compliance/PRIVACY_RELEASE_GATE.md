@@ -2,7 +2,7 @@
 
 **Escopo:** versão externa **100% sintética** de `sinan_mcp.public_server` no Render. Esta revisão **não** abrange o MCP privado, microdados, SQLite, PySUS ou autorização de resultados epidemiológicos reais.
 
-**Data de elaboração:** 05/11/2026. **Estado:** identidade e canal LGPD autorizados pelo controlador; política pronta para revisão técnica e publicação HTTPS, sujeita às ressalvas contratuais descritas abaixo. A vigência ocorre apenas no deploy da página pública. A versão legível e canônica está em [`sinan_mcp/public_privacy.html`](../sinan_mcp/public_privacy.html); após deploy, será servida em `https://sinan-mcp-public-preview.onrender.com/privacidade` e `/privacy`. Não usar a URL antes de a nova revisão alcançar o Render.
+**Data de elaboração:** 05/11/2026. **Estado:** identidade e canal LGPD autorizados pelo controlador; política pronta para revisão técnica e publicação HTTPS, sujeita às ressalvas contratuais descritas abaixo. A vigência ocorre apenas no deploy da página pública. A versão legível e canônica está em [`sinan_mcp/public_privacy.html`](../../sinan_mcp/public_privacy.html); após deploy, será servida em `https://sinan-mcp-public-preview.onrender.com/privacidade` e `/privacy`. Não usar a URL antes de a nova revisão alcançar o Render.
 
 ## Exigências para colocar a política em vigor
 
