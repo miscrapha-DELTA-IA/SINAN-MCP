@@ -64,6 +64,12 @@ O workflow [`instruments-2024-audit.yml`](../../.github/workflows/instruments-20
 
 **Proveniência da evidência:** [GitHub Actions — Official Zika TB PDF evidence audit, execução 41994351476](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/41994351476). O evento de download de 5 de novembro de 2026 confirmou cabeçalho HTTP 200, PDF e paginação. Essa medição da integridade de bytes recebidos é um *lock* de release reprodutível, não certificação do órgão produtor, nem substitui a confrontação com o arquivo de distribuição 2024.
 
+## Checagem automatizada de concordância com a página impressa
+
+A [CI de verificação das páginas](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/41994975411) confirmou, com os **mesmos hashes bloqueados** dos sete PDFs, que os códigos de campo transcritos na matriz estão presentes no texto extraído da **página indicada**: 37/37 entradas de Zika, 15/15 campos críticos de TB e 5/5 campos comuns, perfazendo **57/57 ocorrências de código de campo**. Esse teste usa `pypdf==5.9.0` e normalização de letras, algarismos e separadores.
+
+**Limite indispensável:** é uma checagem automática de presença textual do identificador na página, **não** revisão de rótulo, descrição semântica, tipagem DBF, codificação de valores, obrigatoriedade, coorte, validade temporal ou mapeamento para um arquivo de 2024. Em especial, tokens curtos podem ocorrer em mais de um contexto; um revisor deverá conferir cada linha visualmente e registrar a versão/arquivo efetivamente analisados. Não transformar `57/57` em concordância homologada de esquema SINAN 2024.
+
 ## Revisão independente — protocolo de homologação
 
 Preencher [`independent_review_template.json`](independent_review_template.json) **somente após** as avaliações humanas efetivas. É proibido atribuir nomes, assinaturas, conflito de interesse ou aprovação fictícios. Três pareceres distintos e verificáveis:
@@ -81,7 +87,8 @@ Para cada pessoa: identificação e afiliação verdadeiras, declaração de con
 - [x] URLs e versões aparentes dos sete instrumentos/dicionários oficiais localizados.
 - [x] Matriz de metadados de 57 linhas, sem valores de pacientes.
 - [x] SHA-256, tamanho e páginas **verificados sobre bytes recebidos de sete URLs oficiais**, fixados no manifesto pelo [workflow GitHub Actions 41994351476](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/41994351476). Isso **não** comprova assinatura digital do emissor, versão oficial aplicável a 2024 ou revisão humana.
-- [ ] Confronto independente **de todas** as linhas da matriz com PDFs com hash bloqueado.
+- [x] Códigos de 57/57 linhas **localizados automaticamente nas páginas declaradas** dos PDFs com hash bloqueado, [CI 41994975411](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/41994975411). Checagem de ocorrência textual, **não** aprovação semântica.
+- [ ] Confronto **humano independente** de todas as linhas da matriz com PDFs bloqueados, inclusive rótulos, tipos, categorias e contexto.
 - [ ] Divergências entre dicionário comum, específico e arquivo 2024 resolvidas em instrumento apropriado.
 - [ ] Três pareceres humanos independentes, incluindo privacidade.
 - [ ] Aprovação científica de definições de caso, coleta, datas, regras de vinculação e encerramento.
