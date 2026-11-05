@@ -74,14 +74,14 @@ def test_real_data_flag_and_wrong_python_pin_fail_closed():
 def test_secret_files_and_linked_groups_are_blockers_without_reading_content():
     result = result_map(
         secret_files=[{"secretFile": {"name": "private.pem", "content": "SECRET"}}],
-        groups=[{"serviceLinks": [{"id": audit.SERVICE_ID}], "name": "private-group"}],
+        groups=[{"ownerId": audit.WORKSPACE_ID, "serviceLinks": [{"id": audit.SERVICE_ID}], "name": "private-group"}],
     )
     assert result["no direct secret files"] == "FAIL"
     assert result["no linked environment groups"] == "FAIL"
 
 
 def test_unlinked_groups_do_not_fail_the_service_but_link_shape_is_checked():
-    result = result_map(groups=[{"serviceLinks": [{"id": "srv-other"}]}])
+    result = result_map(groups=[{"ownerId": audit.WORKSPACE_ID, "serviceLinks": [{"id": "srv-other"}]}])
     assert result["no linked environment groups"] == "PASS"
     assert result_map(groups=[{}])["environment group membership metadata"] == "REVIEW"
     assert result_map(groups=[{}])["no linked environment groups"] == "REVIEW"
@@ -125,7 +125,49 @@ def test_nonstandard_pythonunbuffered_value_needs_review_not_secret_logging(caps
 
 
 def test_genuine_linked_group_is_fail_not_ambiguous_review():
-    linked = [{"serviceLinks": [{"id": audit.SERVICE_ID}], "name": "never-print"}]
+    linked = [{"ownerId": audit.WORKSPACE_ID, "serviceLinks": [{"id": audit.SERVICE_ID}], "name": "never-print"}]
     status = result_map(groups=linked)
     assert status["environment group membership metadata"] == "PASS"
     assert status["no linked environment groups"] == "FAIL"
+
+
+def test_render_paginated_env_group_wrapper_is_normalized_before_membership():
+    safe_group = {"id": "evg-other", "ownerId": audit.WORKSPACE_ID,
+                  "serviceLinks": [{"id": "srv-other"}], "name": "DO_NOT_PRINT"}
+    wrapped = [{"envGroup": safe_group, "cursor": "c-1"}]
+    status = result_map(groups=wrapped)
+    assert status["environment group membership metadata"] == "PASS"
+    assert status["no linked environment groups"] == "PASS"
+
+
+def test_paginated_env_group_wrapper_with_real_link_fails_closed():
+    linked = {"ownerId": audit.WORKSPACE_ID,
+              "serviceLinks": [{"id": audit.SERVICE_ID}],
+              "name": "DO_NOT_PRINT"}
+    status = result_map(groups=[{"envGroup": linked, "cursor": "c-1"}])
+    assert status["environment group membership metadata"] == "PASS"
+    assert status["no linked environment groups"] == "FAIL"
+
+
+def test_malformed_group_owner_and_nested_link_do_not_cause_false_pass():
+    wrong_owner = {"ownerId": "tea-not-the-workspace", "serviceLinks": []}
+    missing_owner = {"serviceLinks": []}
+    malformed_link = {"ownerId": audit.WORKSPACE_ID,
+                      "serviceLinks": [{"wrong_id_key": audit.SERVICE_ID}]}
+    bad_wrapped = {"envGroup": []}
+    for group in (wrong_owner, missing_owner, malformed_link, bad_wrapped):
+        status = result_map(groups=[group])
+        assert status["environment group membership metadata"] == "REVIEW"
+        assert status["no linked environment groups"] == "REVIEW"
+
+
+def test_group_review_never_prints_names_or_nested_secrets(capsys):
+    malicious = {"ownerId": audit.WORKSPACE_ID,
+                 "envVars": [{"key": "PRIVATE_KEY", "value": "SECRET_NEVER_ECHO"}],
+                 "name": "PERSONAL_GROUP_NEVER_ECHO"}
+    status = result_map(groups=[{"envGroup": malicious}])
+    print(status)
+    output = capsys.readouterr().out
+    assert status["no linked environment groups"] == "REVIEW"
+    assert "SECRET_NEVER_ECHO" not in output
+    assert "PERSONAL_GROUP_NEVER_ECHO" not in output
