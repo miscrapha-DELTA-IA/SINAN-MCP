@@ -136,6 +136,13 @@ def fetch_one(document: dict, opener) -> dict:
     require(100 < len(raw) <= MAX_PDF_BYTES, "PDF exceeds strict byte bound or is empty")
     require(raw[:5] == b"%PDF-", "Source body is not a PDF")
     require(b"%%EOF" in raw[-2048:], "PDF seems truncated (no EOF marker)")
+    # Pinned after an independent GitHub Action fetch, so an upstream change
+    # cannot silently replace an accepted source version.
+    pinned = document["byte_integrity"]
+    computed_sha256 = hashlib.sha256(raw).hexdigest()
+    if pinned["verified"]:
+        require(len(raw) == pinned["bytes"] and computed_sha256 == pinned["sha256"],
+                "Official PDF bytes differ from pinned SHA-256; manual diff and review required")
     with tempfile.TemporaryDirectory(prefix="sinan-pdf-doc-only-") as tmp:
         path = Path(tmp) / "official-document.pdf"
         path.write_bytes(raw)
@@ -143,7 +150,7 @@ def fetch_one(document: dict, opener) -> dict:
     require(pages == document["expected_pages_from_pdf_preview"], "Page count changed")
     return {
         "id": document["id"], "url": url, "source_mime": header, "bytes": len(raw),
-        "sha256": hashlib.sha256(raw).hexdigest(), "pages": pages,
+        "sha256": computed_sha256, "pages": pages,
         "verified_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
         "method": "official_https_byte_download+pdf_magic+eof+pdfinfo",
         "independent_reviewer_approved": False,
