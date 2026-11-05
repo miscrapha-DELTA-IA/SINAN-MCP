@@ -1,0 +1,58 @@
+{
+  "schema_version": "scientific-independent-review-v1",
+  "scope": "Zika/TB documentary dictionaries and instruments targeting reference year 2024; NO case-level records",
+  "state": "AWAITING_INDEPENDENT_REVIEW",
+  "created_at": "2026-11-05",
+  "source_inventory": "source_manifest.json",
+  "field_matrix": "field_matrix.csv",
+  "review_requirements": [
+    {
+      "role": "independent_epidemiologist",
+      "reviewer_name": null,
+      "affiliation": null,
+      "declared_conflicts": null,
+      "reviewed_document_sha256": [],
+      "findings": [],
+      "decision": "PENDING",
+      "signed_at": null,
+      "evidence_url": null
+    },
+    {
+      "role": "independent_health_information_specialist",
+      "reviewer_name": null,
+      "affiliation": null,
+      "declared_conflicts": null,
+      "reviewed_document_sha256": [],
+      "findings": [],
+      "decision": "PENDING",
+      "signed_at": null,
+      "evidence_url": null
+    },
+    {
+      "role": "independent_privacy_reviewer",
+      "reviewer_name": null,
+      "affiliation": null,
+      "declared_conflicts": null,
+      "reviewed_document_sha256": [],
+      "findings": [],
+      "decision": "PENDING",
+      "signed_at": null,
+      "evidence_url": null
+    }
+  ],
+  "mandatory_gates": {
+    "official_source_pdf_integrity_verified": false,
+    "zika_37_fields_checked_with_page_evidence": false,
+    "tb_critical_fields_checked_with_page_evidence": false,
+    "common_vs_specific_dictionary_version_discrepancies_resolved": false,
+    "archive_2024_schema_independently_confronted": false,
+    "epidemiology_definition_case_and_year_approved": false,
+    "linkage_deduplication_reasons_documented": false,
+    "privacy_release_boundary_approved": false,
+    "all_independent_reviews_approved": false,
+    "authorized_for_real_datasets": false,
+    "authorized_for_public_epidemiological_indicators": false
+  },
+  "decision": "BLOCKED",
+  "notes": "Independent review is not performed by an AI draft, maintainer, automated CI, hash comparison or URL validation. Reviewer names, affiliations, signatures and evidence must reflect real humans after informed review. Permission to process real data is a separate institutional and legal gate."
+}
