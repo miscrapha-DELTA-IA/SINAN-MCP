@@ -58,6 +58,44 @@ def test_public_privacy_document_is_packaged_and_servable():
     asyncio.run(read_policy())
 
 
+@pytest.mark.parametrize("name,route,required", [
+    ("public_about.html", public.public_about, "Catálogo documental e simulações epidemiológicas"),
+    ("public_support.html", public.public_support, "Suporte e contato"),
+    ("public_terms.html", public.public_terms, "Termos de Uso"),
+])
+def test_public_listing_pages_packaged_and_readonly(name, route, required):
+    """Site, support and terms must work without DB, network or client state."""
+    from importlib.resources import files
+
+    html = files("sinan_mcp").joinpath(name).read_text(encoding="utf-8")
+    assert '<html lang="pt-BR">' in html
+    assert required in html
+    assert "miscrapha@gmail.com" in html
+    assert "Raphael Múcio Teixeira Cabral de Pina Bulhões Di Giorgio" in html
+    assert "/privacidade" in html and "/suporte" in html and "/termos" in html
+    assert "/sobre" in html
+    assert "SINAN MCP" in html
+    assert "<script" not in html.lower()
+    assert "<form" not in html.lower()
+    assert "[PENDENTE" not in html
+    async def fetch_static():
+        response = await route(None)
+        assert response.status_code == 200
+        assert response.body.decode("utf-8") == html
+        assert response.headers["content-type"].startswith("text/html")
+        assert response.headers["cache-control"] == "no-store"
+        assert response.headers["x-content-type-options"] == "nosniff"
+        assert "default-src 'none'" in response.headers["content-security-policy"]
+    asyncio.run(fetch_static())
+
+
+def test_public_static_page_allowlist_no_traversal():
+    with pytest.raises(ValueError, match="não permitida"):
+        public._static_public_page("../.env")
+    with pytest.raises(ValueError, match="não permitida"):
+        public._static_public_page("public_privacy.html")
+
+
 def test_public_values_are_labelled_fictional():
     base = public.listar_bases()
     assert base["dados_reais_disponiveis"] is False
