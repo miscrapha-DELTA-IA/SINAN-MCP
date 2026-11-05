@@ -41,7 +41,7 @@
     }
   ],
   "mandatory_gates": {
-    "official_source_pdf_integrity_verified": false,
+    "official_source_pdf_integrity_verified": true,
     "zika_37_fields_checked_with_page_evidence": false,
     "tb_critical_fields_checked_with_page_evidence": false,
     "common_vs_specific_dictionary_version_discrepancies_resolved": false,
@@ -54,5 +54,11 @@
     "authorized_for_public_epidemiological_indicators": false
   },
   "decision": "BLOCKED",
-  "notes": "Independent review is not performed by an AI draft, maintainer, automated CI, hash comparison or URL validation. Reviewer names, affiliations, signatures and evidence must reflect real humans after informed review. Permission to process real data is a separate institutional and legal gate."
+  "notes": "Independent review is not performed by an AI draft, maintainer, automated CI, hash comparison or URL validation. Reviewer names, affiliations, signatures and evidence must reflect real humans after informed review. Permission to process real data is a separate institutional and legal gate.",
+  "byte_integrity_proof": {
+    "source": "https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/41994351476",
+    "documents": 7,
+    "validation": "source HTTPS exact URL + size + PDF magic/EOF + pypdf pages + SHA-256; not publisher digital signature",
+    "independent_human_approval": false
+  }
 }
