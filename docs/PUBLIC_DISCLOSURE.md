@@ -18,6 +18,9 @@ Read-only health check: https://sinan-mcp-public-preview.onrender.com/health
 
 **Clinical disclaimer:** No diagnosis, treatment recommendation, individual-level risk score, clinical decision support or official epidemiological statistic is produced by this preview.
 
+**Service documentation:** The independent project publishes [about the product](https://sinan-mcp-public-preview.onrender.com/sobre), [user support](https://sinan-mcp-public-preview.onrender.com/suporte), [LGPD policy](https://sinan-mcp-public-preview.onrender.com/privacidade), and [service terms](https://sinan-mcp-public-preview.onrender.com/termos). The static pages require no user login and contain no tracking scripts or forms. See [listing and review limits](PUBLIC_LISTING_URLS.md): synthetic-only demos alone do **not** satisfy the OpenAI directory's quality gate.
+
+
 **Source and security reports:** https://github.com/miscrapha-DELTA-IA/SINAN-MCP — report security concerns privately without attaching patient records, keys or sensitive logs.
 
 ## Catálogo de múltiplos agravos (v0.4.0a4, demonstração sintética implantada)
