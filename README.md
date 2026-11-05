@@ -130,6 +130,7 @@ This command starts the **local stdio MCP server**. Configure your chosen MCP cl
 | **MCP Streamable HTTP** | [sinan-mcp-public-preview.onrender.com/mcp](https://sinan-mcp-public-preview.onrender.com/mcp) |
 | **Service health check** | [sinan-mcp-public-preview.onrender.com/health](https://sinan-mcp-public-preview.onrender.com/health) |
 | **Public-service rules** | [Launch and privacy disclosure](docs/PUBLIC_DISCLOSURE.md) |
+| **Privacy policy (under legal review)** | [Draft/activation checklist](docs/PRIVACY_RELEASE_GATE.md) · future public route: `/privacidade` |
 
 The preview is hosted separately, with **synthetic records only**, and may take time to respond after inactivity on free hosting. Endpoint availability can change; a link is not an uptime guarantee.
 
