@@ -59,7 +59,7 @@ A 200 response indicates local readiness, not necessarily that ChatGPT has insta
 
 With the client running, go to ChatGPT connectors/plugins and create a custom MCP server choosing **Tunnel** as connection type, selecting the provisioned tunnel. Configure a descriptive name, e.g., "SINAN MCP — synthetic pilot". Test `listar_bases` and `listar_agravos` through the actual connector. Ensure `listar_bases` reports **synthetic**, not an imported real snapshot.
 
-For now, the `sinan-local` profile must continue pointing to `sinan-demo.sqlite3`. Do not repoint it at `sinan.sqlite3` or set `SINAN_PUBLIC_REAL_DATA=1` without the privacy review documented in [SECURITY.md](../SECURITY.md). The new gate deliberately blocks real-data numeric MCP/REST calls by default.
+For now, the `sinan-local` profile must continue pointing to `sinan-demo.sqlite3`. Do not repoint it at `sinan.sqlite3` or set `SINAN_PUBLIC_REAL_DATA=1` without the privacy review documented in [SECURITY.md](../../SECURITY.md). The new gate deliberately blocks real-data numeric MCP/REST calls by default.
 
 ## Diagnostics
 

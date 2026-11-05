@@ -60,7 +60,7 @@ Preparar um importador independente de **tabelas oficiais pré-agregadas** com m
 
 A rotina `preparar-tabela-oficial` é distinta do importador PySUS de microdados. Exige um JSON criado localmente a partir de uma **tabulação obtida pelo responsável**, contendo `source.url`, `titulo_tabela`, `extracao_utc` em UTC, `sha256_arquivo_origem` (do arquivo original), `filtros_tabulacao`, `estado_consolidacao`; um `scope` com nome/código interno, UF, anos, **tipo de ano**, `registros_tabnet`, dimensão; e uma lista de células.
 
-Exemplo inteiramente fictício, **não extraído do DATASUS**: [`examples/tabnet_artificial.example.json`](../examples/tabnet_artificial.example.json). A URL é apenas um índice oficial; o checksum foi inventado. Nunca usar o exemplo como evidência real.
+Exemplo inteiramente fictício, **não extraído do DATASUS**: [`examples/tabnet_artificial.example.json`](../../examples/tabnet_artificial.example.json). A URL é apenas um índice oficial; o checksum foi inventado. Nunca usar o exemplo como evidência real.
 
 ```powershell
 cd "$HOME\Downloads\SINAN-MCP-GitHub"

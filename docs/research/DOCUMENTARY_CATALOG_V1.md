@@ -1,8 +1,8 @@
 # Catálogo documental com proveniência — v1.1
 
-[Centro de documentação](README.md) · [Revisão externa](instruments-2024/EXTERNAL_REVIEW.md) · [Evidências Zika/TB](instruments-2024/REVIEW_PROTOCOL.md)
+[Centro de documentação](../README.md) · [Revisão externa](../instruments-2024/EXTERNAL_REVIEW.md) · [Evidências Zika/TB](../instruments-2024/REVIEW_PROTOCOL.md)
 
-**Data-base da curadoria:** 05/11/2026 · **Versão pública do software:** `0.4.0a6` · **Fonte canônica estruturada:** [`sinan_mcp/documentary_registry.json`](../sinan_mcp/documentary_registry.json) · **Situação:** 14 temas curados / 17 URLs de páginas oficiais institucionais identificadas. **Dados reais carregados: zero.**
+**Data-base da curadoria:** 05/11/2026 · **Versão pública do software:** `0.4.0a6` · **Fonte canônica estruturada:** [`sinan_mcp/documentary_registry.json`](../../sinan_mcp/documentary_registry.json) · **Situação:** 14 temas curados / 17 URLs de páginas oficiais institucionais identificadas. **Dados reais carregados: zero.**
 
 ## O que é e o que não é uma evidência
 
@@ -39,7 +39,7 @@ A ligação `ZIKA` ao catálogo de dados abertos, **isoladamente**, não comprov
 
 A partir de `0.4.0a6`, as ferramentas existentes `pesquisar_agravos` e `descrever_agravo` também indicam a existência de um **pacote documental apenas para `ZIKA` e `TUBE`**, formado por **7 PDFs oficiais únicos**, páginas e SHA-256 obtidos em auditoria e campos de instrumentos sem valores de pacientes. O retorno completo inclui **37 códigos Zika + 5 códigos comuns** para Zika, **15 códigos TB + 5 comuns** para TB. Os cinco campos comuns são repetidos de forma documental, não correspondem a 62 linhas independentes.
 
-A prova automatizada de ocorrência dos códigos em suas páginas resultou em **57/57 tokens localizados** no [registro de auditoria e revisão independente pendente](instruments-2024/REVIEW_PROTOCOL.md). Não foi validada a interpretação semântica, tipagem de exportação, coerência de períodos e dados SINAN 2024; nenhuma revisão humana assinou parecer. O pacote é gerado a partir de `docs/instruments-2024/field_matrix.csv` e `source_manifest.json`, preservando testes cruzados com o JSON distribuído `sinan_mcp/public_instruments_2024.json`. O servidor MCP não faz download dos arquivos quando consultado.
+A prova automatizada de ocorrência dos códigos em suas páginas resultou em **57/57 tokens localizados** no [registro de auditoria e revisão independente pendente](../instruments-2024/REVIEW_PROTOCOL.md). Não foi validada a interpretação semântica, tipagem de exportação, coerência de períodos e dados SINAN 2024; nenhuma revisão humana assinou parecer. O pacote é gerado a partir de `docs/instruments-2024/field_matrix.csv` e `source_manifest.json`, preservando testes cruzados com o JSON distribuído `sinan_mcp/public_instruments_2024.json`. O servidor MCP não faz download dos arquivos quando consultado.
 
 ## Consultar e verificar uma referência
 
