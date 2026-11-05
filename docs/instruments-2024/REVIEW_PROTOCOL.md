@@ -1,6 +1,26 @@
 # Pacote de validação documental — Zika 2024 e tuberculose 2024
 
-**Criado:** 05/11/2026 • **Repositório:** SINAN-MCP • **Escopo:** apenas PDFs oficiais de documentação, **sem acesso a microdados**.
+**Data-base da verificação:** 05/11/2026 · **Escopo:** somente documentos públicos, sem registros individuais.  
+[Centro de documentação](../README.md) · [Guia para revisores externos](EXTERNAL_REVIEW.md) · [Matriz CSV](field_matrix.csv) · [Manifesto JSON](source_manifest.json)
+
+## Sobre o projeto e esta avaliação
+
+O **SINAN MCP** é um projeto independente e de código aberto que organiza referências documentais do Sistema de Informação de Agravos de Notificação e fornece uma demonstração pública de software com dados inteiramente fictícios. Não é um sistema do Ministério da Saúde, SINAN ou DATASUS.
+
+Este documento registra **evidência de integridade documental**, não a homologação de dados epidemiológicos. Destina-se a pesquisadores, revisores e responsáveis técnicos que precisam distinguir o que foi verificado do que ainda depende de julgamento profissional.
+
+| Controle | Resultado em 05/11/2026 | Limite |
+| --- | --- | --- |
+| PDFs oficiais, hash, tamanho e páginas | **7/7 conferidos automaticamente** | Sem assinatura criptográfica do emissor |
+| Códigos localizados na página citada | **57/57 ocorrências textuais** | Rótulos, tipos e contexto não validados por revisão humana |
+| Compatibilidade com distribuição SINAN 2024 | **Não verificada** | Não houve confronto de layout de release |
+| Três avaliações independentes | **Pendentes** | Sem pareceres, identidades ou decisões presumidas |
+| Uso de dados reais e publicação de indicadores | **Não autorizado** | Exige processo jurídico, científico e técnico separado |
+
+### Como participar da revisão
+
+O [guia de revisão externa](EXTERNAL_REVIEW.md) explica, em linguagem acessível, o procedimento para avaliação de clareza/usabilidade, conferência biomédica parcial e parecer metodológico. Ele inclui **links diretos**, campos selecionados, roteiro e modelo de devolutiva. Uma avaliação de usabilidade não substitui um parecer científico independente.
+
 
 ## Conclusão atual, rigorosamente delimitada
 
