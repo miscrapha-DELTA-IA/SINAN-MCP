@@ -42,6 +42,18 @@
     "annual_dictionaries_validated": 0,
     "real_files_imported": 0,
     "real_epidemiological_indicators_approved": 0,
-    "server_side_online_reference_fetching": false
+    "server_side_online_reference_fetching": false,
+    "instrument_validation_pack": {
+      "target_year": 2024,
+      "public_diseases": [
+        "ZIKA",
+        "TUBE"
+      ],
+      "source_pdfs_with_verified_sha256": 7,
+      "field_code_page_tokens_verified": 57,
+      "human_review_approved": false,
+      "data_2024_schema_concordance_approved": false,
+      "patient_data_included": false
+    }
   }
 }
