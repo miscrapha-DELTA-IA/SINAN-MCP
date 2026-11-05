@@ -17,6 +17,8 @@
 - [ ] **Teste de publicação:** PR revisado + todos os checks obrigatórios, deploy Render **manual** após autorização, verificação HTTPS 200 da página, `Content-Type:text/html`, CSP, nenhuma dependência externa, e smoke do MCP sintético sem regressões.
 - [ ] **Fluxo OpenAI:** preencher `privacyPolicyURL` com a URL HTTPS realmente publicada; não declarar aceitação no diretório antes do scanner e aprovação de submissão.
 
+O [registro preliminar de tratamentos e teste de balanceamento](PRIVACY_PROCESSING_REGISTER.md) documenta as operações conhecidas e as avaliações que ainda dependem de assinatura humana.
+
 ## Orientação de uso
 
 Até o fechamento dos itens acima, a página é uma **minuta auditável** e não substitui a política de privacidade final de uma publicação ampla. **Não fazer deploy desta revisão como se a política já estivesse formalmente aprovada.** Nenhum dado de paciente deve ser habilitado para tornar o texto válido.
