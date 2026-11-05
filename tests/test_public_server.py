@@ -35,6 +35,11 @@ def test_public_privacy_document_is_packaged_and_servable():
     assert "SINAN" in html and "sintética" in html
     assert "Render" in html and "7 dias" in html
     assert "LGPD" in html and "ANPD" in html
+    assert "Raphael Múcio Teixeira Cabral de Pina Bulhões Di Giorgio" in html
+    assert "miscrapha@gmail.com" in html
+    assert "[PENDENTE" not in html
+    assert "Minuta em validação" not in html
+    assert "a confirmar após revisão" not in html
     assert "dados técnicos" in html or "Metadados técnicos" in html
     assert "direitos" in html.lower()
     assert "transferência internacional" in html.lower()
