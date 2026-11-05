@@ -226,6 +226,46 @@ def proporcao_abandono_tuberculose(ano_inicio: int | None = None,
     }
 
 
+# Additional external-facing pages stay static, self-contained and read-only.
+# These routes never accept or persist submitted fields.
+def _static_public_page(filename: str) -> HTMLResponse:
+    if filename not in {"public_about.html", "public_support.html", "public_terms.html"}:
+        raise ValueError("Página pública não permitida")
+    html = files("sinan_mcp").joinpath(filename).read_text(encoding="utf-8")
+    return HTMLResponse(
+        html,
+        headers={
+            "Cache-Control": "no-store",
+            "X-Content-Type-Options": "nosniff",
+            "Content-Security-Policy": (
+                "default-src 'none'; style-src 'unsafe-inline'; "
+                "base-uri 'none'; frame-ancestors 'none'; form-action 'none'"
+            ),
+        },
+    )
+
+
+@mcp.custom_route("/sobre", methods=["GET"])
+@mcp.custom_route("/about", methods=["GET"])
+async def public_about(_request):
+    """Public independent-project website, no request data captured."""
+    return _static_public_page("public_about.html")
+
+
+@mcp.custom_route("/suporte", methods=["GET"])
+@mcp.custom_route("/support", methods=["GET"])
+async def public_support(_request):
+    """Public support details, no contact form or tracking."""
+    return _static_public_page("public_support.html")
+
+
+@mcp.custom_route("/termos", methods=["GET"])
+@mcp.custom_route("/terms", methods=["GET"])
+async def public_terms(_request):
+    """Public terms, scoped to synthetic-only preview."""
+    return _static_public_page("public_terms.html")
+
+
 @mcp.custom_route("/privacy", methods=["GET"])
 @mcp.custom_route("/privacidade", methods=["GET"])
 async def public_privacy(_request):

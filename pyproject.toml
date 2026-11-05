@@ -22,7 +22,7 @@ sinan-mcp = "sinan_mcp.cli:main"
 include = ["sinan_mcp*"]
 
 [tool.setuptools.package-data]
-sinan_mcp = ["public_privacy.html"]
+sinan_mcp = ["public_privacy.html", "public_about.html", "public_support.html", "public_terms.html"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

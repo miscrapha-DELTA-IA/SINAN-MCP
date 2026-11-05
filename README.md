@@ -130,7 +130,11 @@ This command starts the **local stdio MCP server**. Configure your chosen MCP cl
 | **MCP Streamable HTTP** | [sinan-mcp-public-preview.onrender.com/mcp](https://sinan-mcp-public-preview.onrender.com/mcp) |
 | **Service health check** | [sinan-mcp-public-preview.onrender.com/health](https://sinan-mcp-public-preview.onrender.com/health) |
 | **Public-service rules** | [Launch and privacy disclosure](docs/PUBLIC_DISCLOSURE.md) |
-| **Privacy policy / LGPD contact** | [Portuguese privacy policy](https://sinan-mcp-public-preview.onrender.com/privacidade) · [transparency and remaining checks](docs/PRIVACY_RELEASE_GATE.md) |
+| **Product information (`websiteURL`)** | [Sobre o projeto](https://sinan-mcp-public-preview.onrender.com/sobre) |
+| **User support (`supportURL`)** | [Suporte e contato](https://sinan-mcp-public-preview.onrender.com/suporte) |
+| **Privacy policy (`privacyPolicyURL`)** | [Política LGPD](https://sinan-mcp-public-preview.onrender.com/privacidade) · [conformidade em acompanhamento](docs/PRIVACY_RELEASE_GATE.md) |
+| **Service terms (`termsOfServiceURL`)** | [Termos de Uso](https://sinan-mcp-public-preview.onrender.com/termos) |
+| **Listing review preparation** | [URLs e requisitos ainda pendentes](docs/PUBLIC_LISTING_URLS.md) |
 
 The preview is hosted separately, with **synthetic records only**, and may take time to respond after inactivity on free hosting. Endpoint availability can change; a link is not an uptime guarantee.
 
