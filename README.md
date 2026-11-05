@@ -148,7 +148,7 @@ listar_fontes_oficiais()
 listar_agravos()
 ```
 
-**Evidence-tracked documentary catalogue (v1):** the 14 example condition entries now link to **17 individually identified institutional pages**, with source type, dated curation, limitations and a research checklist. Accent-tolerant search supports curated synonyms and typo suggestions; no clinical dictionary or real dataset has been verified or imported. See [documentary catalogue and provenance](docs/DOCUMENTARY_CATALOG_V1.md).
+**Zika/TB 2024 documentary validation (pending independent review):** [7 official PDF source identities, 57 field metadata rows, byte-integrity audit and 3-person review protocol](docs/instruments-2024/REVIEW_PROTOCOL.md). This pack contains no data records, has no approved 2024 dataset concordance, and is not authorization to publish epidemiological indicators.\n\n**Evidence-tracked documentary catalogue (v1):** the 14 example condition entries now link to **17 individually identified institutional pages**, with source type, dated curation, limitations and a research checklist. Accent-tolerant search supports curated synonyms and typo suggestions; no clinical dictionary or real dataset has been verified or imported. See [documentary catalogue and provenance](docs/DOCUMENTARY_CATALOG_V1.md).
 
 The public demonstration also includes narrow numeric examples for a **fictional** TUBE/2024/PI dataset. Any returned counts must be interpreted solely as software demonstration output, never as evidence about real populations.
 
