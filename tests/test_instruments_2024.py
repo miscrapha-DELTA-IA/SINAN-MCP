@@ -19,7 +19,11 @@ def test_locked_official_document_inventory_and_year_scope():
     assert {x["agravo"] for x in items} == {"ZIKA", "TUBE", "COMMON"}
     assert all(x["field_crosswalk_to_2024_data"] == "NOT_VERIFIED" for x in items)
     assert all(x["independent_review"]["decision"] == "PENDING" for x in items)
-    assert all(x["byte_integrity"]["verified"] is False for x in items)
+    assert all(x["byte_integrity"]["verified"] is True for x in items)
+    assert all(len(x["byte_integrity"]["sha256"]) == 64
+               and x["byte_integrity"]["bytes"] > 100
+               and x["byte_integrity"]["provenance_run"].endswith("41994351476")
+               for x in items)
 
 
 def test_matrix_full_zika_selected_tb_and_not_validated_for_actual_2024_schema():
@@ -65,11 +69,11 @@ def test_rejects_premature_human_approval(monkeypatch, tmp_path):
 
 def test_rejects_unsupported_byte_hash_claim(monkeypatch, tmp_path):
     manifest = json.loads(audit.MANIFEST.read_text(encoding="utf-8"))
-    manifest["files"][0]["byte_integrity"]["sha256"] = "f" * 64
+    manifest["files"][0]["byte_integrity"]["sha256"] = "BAD"
     changed = tmp_path / "unverified.json"
     changed.write_text(json.dumps(manifest), encoding="utf-8")
     monkeypatch.setattr(audit, "MANIFEST", changed)
-    with pytest.raises(audit.AuditError, match="must not have a claimed hash"):
+    with pytest.raises(audit.AuditError, match="valid SHA-256"):
         audit.inspect_manifest()
 
 
