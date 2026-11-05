@@ -197,7 +197,6 @@ Vulnerabilidades devem ser comunicadas privadamente aos mantenedores, sem inclui
 | [Protocolo de equidade preditiva](FAIRNESS_PROTOCOL.md) | Auditoria exploratória local e limitações |
 | [Política de segurança](../SECURITY.md) | Tratamento de dados e segurança operacional |
 | [Como contribuir](../CONTRIBUTING.md) | Como propor alterações com evidências reprodutíveis |
-| [Notas técnicas históricas](TECHNICAL_README_ARCHIVE.md) | Histórico de implementação; não comprova validações atuais |
 
 ## Próximas etapas
 
