@@ -106,11 +106,11 @@ def test_health_and_lifespan_forward_without_affecting_mcp_quota():
     assert "lifespan:" in scopes
 
 
-@pytest.mark.parametrize("value", ["0", "-1", "abc", "12001"])
+@pytest.mark.parametrize("value", ["0", "-1", "abc", "301", "12001"])
 def test_invalid_environment_never_disables_guard(monkeypatch, value):
     monkeypatch.setenv("SINAN_PUBLIC_RATE_PER_MINUTE", value)
     with pytest.raises(ValueError):
-        bounded_int_env("SINAN_PUBLIC_RATE_PER_MINUTE", 300, 12000)
+        bounded_int_env("SINAN_PUBLIC_RATE_PER_MINUTE", 300, 300)
 
 
 
@@ -131,3 +131,42 @@ def test_periodic_counters_never_include_client_metadata(caplog):
     assert "rate_rejected=1" in caplog.text
     assert "accepted=2" in caplog.text
     assert "SECRET_PRIVATE_CLIENT_IDENTIFIER" not in caplog.text
+
+
+@pytest.mark.parametrize("rate,concurrency", [
+    (301, 16), (12000, 16), (300, 17), (300, 128),
+])
+def test_public_guard_refuses_relaxed_limits_even_when_instantiated_directly(rate, concurrency):
+    with pytest.raises(ValueError):
+        PublicAdmissionGuard(_ok, requests_per_minute=rate, max_in_flight=concurrency)
+
+
+def test_stricter_limits_are_allowed_and_default_caps_are_preserved():
+    reduced = PublicAdmissionGuard(_ok, requests_per_minute=60, max_in_flight=3)
+    standard = PublicAdmissionGuard(_ok)
+    assert (reduced.requests_per_minute, reduced.max_in_flight) == (60, 3)
+    assert (standard.requests_per_minute, standard.max_in_flight) == (300, 16)
+
+
+@pytest.mark.parametrize("value", ["0", "-1", "x", "17"])
+def test_concurrency_env_cannot_raise_or_disable_protective_cap(monkeypatch, value):
+    monkeypatch.setenv("SINAN_PUBLIC_MAX_IN_FLIGHT", value)
+    with pytest.raises(ValueError):
+        bounded_int_env("SINAN_PUBLIC_MAX_IN_FLIGHT", 16, 16)
+
+
+def test_concurrent_admissions_release_slots_on_cancelled_request():
+    entered = asyncio.Event()
+    async def blocked(scope, receive, send):
+        entered.set()
+        await asyncio.Event().wait()
+    guard = PublicAdmissionGuard(blocked, requests_per_minute=5, max_in_flight=1)
+    async def scenario():
+        first = asyncio.create_task(_request(guard))
+        await entered.wait()
+        assert (await _request(guard))[0] == 429
+        first.cancel()
+        with pytest.raises(asyncio.CancelledError):
+            await first
+        assert guard._in_flight == 0
+    asyncio.run(scenario())

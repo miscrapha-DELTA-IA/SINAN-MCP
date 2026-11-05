@@ -5,6 +5,7 @@ Status: hardening sintético implantado em 2026-11-04 na Render (SHA 3ac1db9dd4b
 ## 1. Limites de entrada e arquitetura
 - No código atualmente implantado, o limite global por processo é 300 requisições HTTP ao /mcp por minuto, usando token bucket com reposição contínua e recusa 429 com Retry-After.
 - Até 16 requisições /mcp em processamento simultâneo. Inteiros inválidos ou zero são rejeitados no startup.
+- **Teto fail-closed:** este perfil público aceita configuração de 1 a 300 requisições/min e de 1 a 16 simultâneas, mas rejeita no startup valores superiores. A instância pública não pode ampliar silenciosamente esses limites por variável de ambiente; reduções conservadoras continuam permitidas.
 - O /health não consome o orçamento MCP, para manter sondas de vida; isso exige proteção adicional na borda contra excesso de sondagens.
 - Não confiar em X-Forwarded-For nem identificar usuários pelos headers enviados pelo cliente. O controle é por processo, NÃO é rate limit individual, compartilhado entre máquinas ou garantia contra DDoS.
 - O provedor/edge deverá impor limites por origem confiável e proteção de /health antes de qualquer ampliação relevante de usuários.
@@ -72,3 +73,10 @@ O manifesto proposto fixa Python 3.11.17 para ser compatível com os lockfiles r
 - O middleware público tem limites globais por processo de 300 requisições/minuto e 16 simultâneas. O endpoint `/health` não entra nesse orçamento, portanto precisa de mitigação no provedor em caso de abuso. Nunca inventar identificação de cliente a partir de headers `X-Forwarded-For` sem um proxy confiável definido.
 - Regras IP de entrada para serviços web exigem plano elegível da Render e não são equivalente a filtro L7. Não ativar uma regra restritiva nem forçar um domínio customizado sem plano de conectividade e validação de Host/Origin. Não aplicar proteções do domínio Cloudflare de outro projeto sobre o hostname Render.
 - No workspace Hobby, o destino `Email` e o nível `Only failure notifications` foram conferidos visualmente pelo operador. A entrega de e-mail **ainda não foi observada**; o serviço herda `notifyOnFail=default`. A retenção documentada de logs no plano Hobby é sete dias, e o conector retornou logs sanitizados da aplicação.
+
+## 9. Teto de admissão da demonstração pública
+
+- O código limita o valor máximo de `SINAN_PUBLIC_RATE_PER_MINUTE` a **300** e `SINAN_PUBLIC_MAX_IN_FLIGHT` a **16**, na inicialização e também na construção direta de `PublicAdmissionGuard`. Antes da alteração, a validação genérica permitia configurar valores de até 12.000/min e 128 simultâneas, embora o serviço efetivo usasse limites menores.
+- Esta proteção impede aumentos involuntários do orçamento global de /mcp, mas **não é** cota por usuário nem substitui um WAF e proteção da borda por origem.
+- Testes offline cobrem limites acima do máximo, configuração conservadora inferior, falha de inicialização sem abrir socket e liberação de slots em cancelamentos.
+- Uma mudança nesta camada só vale na Render **após deploy manual testado**; antes, a revisão publicada continua com os limites de configuração do código antigo. A variável atualmente observada no painel não foi modificada.
