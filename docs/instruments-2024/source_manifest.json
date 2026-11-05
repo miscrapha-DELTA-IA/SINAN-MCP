@@ -1,0 +1,177 @@
+{
+  "schema_version": "sinan-document-check-v1",
+  "scope": "ONLY_PUBLIC_OFFICIAL_PDF_DOCUMENTATION_NO_REAL_RECORDS",
+  "review_date": "2026-11-05",
+  "status": "REVIEW_DOCUMENTS_NOT_DATA_2024",
+  "disclaimer": "Online preview was visually inspected from official endpoints, but a final source-byte hash is only confirmed by an independent bounded PDF download. Historic forms/dictionaries must not be declared current 2024 layout without a per-release archive/schema concordance. No human independent review has signed off.",
+  "files": [
+    {
+      "id": "ZIKA-DIC",
+      "agravo": "ZIKA",
+      "kind": "dicionario_especifico",
+      "source_url": "https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/SINAN/Zikavirus/dic_dados_zika.pdf",
+      "source_landing": "https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus/resource/58038262-c745-46ea-979b-8727eb08ec5c",
+      "expected_pages_from_pdf_preview": 8,
+      "version_observed": "Sem número de versão explícito na capa",
+      "relationship_to_2024": "2024 dataset has separate reference; 2024 compatibility unverified",
+      "byte_integrity": {
+        "verified": false,
+        "sha256": null,
+        "bytes": null,
+        "verified_at": null
+      },
+      "field_crosswalk_to_2024_data": "NOT_VERIFIED",
+      "independent_review": {
+        "reviewer_id": null,
+        "date": null,
+        "decision": "PENDING",
+        "evidence": null
+      },
+      "allow_full_text_storage": false
+    },
+    {
+      "id": "ZIKA-FICHA",
+      "agravo": "ZIKA",
+      "kind": "ficha_notificacao_conclusao",
+      "source_url": "https://portalsinan.saude.gov.br/images/documentos/Agravos/NINDIV/Ficha_conclusao_v5.pdf",
+      "source_landing": "https://portalsinan.saude.gov.br/zika",
+      "expected_pages_from_pdf_preview": 1,
+      "version_observed": "Ficha Sinan NET, versão do modelo indicada no nome v5; rodapé 27/09/2005",
+      "relationship_to_2024": "Ficha comum, não específica nem homologada para dump ZIKA/2024",
+      "byte_integrity": {
+        "verified": false,
+        "sha256": null,
+        "bytes": null,
+        "verified_at": null
+      },
+      "field_crosswalk_to_2024_data": "NOT_VERIFIED",
+      "independent_review": {
+        "reviewer_id": null,
+        "date": null,
+        "decision": "PENDING",
+        "evidence": null
+      },
+      "allow_full_text_storage": false
+    },
+    {
+      "id": "ZIKA-INSTR",
+      "agravo": "ZIKA",
+      "kind": "instrucional_ficha",
+      "source_url": "https://portalsinan.saude.gov.br/images/documentos/Agravos/NINDIV/Ficha_conclusao_v5_instr.pdf",
+      "source_landing": "https://portalsinan.saude.gov.br/zika",
+      "expected_pages_from_pdf_preview": 3,
+      "version_observed": "Instrucional SINAN NET; rodapé 17/07/2006",
+      "relationship_to_2024": "Documento histórico de preenchimento; relação com exportação 2024 não validada",
+      "byte_integrity": {
+        "verified": false,
+        "sha256": null,
+        "bytes": null,
+        "verified_at": null
+      },
+      "field_crosswalk_to_2024_data": "NOT_VERIFIED",
+      "independent_review": {
+        "reviewer_id": null,
+        "date": null,
+        "decision": "PENDING",
+        "evidence": null
+      },
+      "allow_full_text_storage": false
+    },
+    {
+      "id": "COMMON-NINDIV",
+      "agravo": "COMMON",
+      "kind": "dicionario_campos_comuns",
+      "source_url": "https://portalsinan.saude.gov.br/images/documentos/Agravos/NINDIV/DIC_DADOS_NET_Not_Individual_rev.pdf",
+      "source_landing": "https://portalsinan.saude.gov.br/zika",
+      "expected_pages_from_pdf_preview": 23,
+      "version_observed": "SINAN NET v5.0, revisado em novembro de 2018",
+      "relationship_to_2024": "Comparar sem pressupor igualdade de nomes DBF com dicionário ZIKA 2024",
+      "byte_integrity": {
+        "verified": false,
+        "sha256": null,
+        "bytes": null,
+        "verified_at": null
+      },
+      "field_crosswalk_to_2024_data": "NOT_VERIFIED",
+      "independent_review": {
+        "reviewer_id": null,
+        "date": null,
+        "decision": "PENDING",
+        "evidence": null
+      },
+      "allow_full_text_storage": false
+    },
+    {
+      "id": "TUBE-DIC",
+      "agravo": "TUBE",
+      "kind": "dicionario_especifico",
+      "source_url": "https://portalsinan.saude.gov.br/images/documentos/Agravos/Tuberculose/DICI_DADOS_NET_Tuberculose_23_07_2020.pdf",
+      "source_landing": "https://portalsinan.saude.gov.br/tuberculose",
+      "expected_pages_from_pdf_preview": 22,
+      "version_observed": "SINAN NET versão 5.0; URL contém 23_07_2020",
+      "relationship_to_2024": "Data do nome do PDF não comprova compatibilidade com exportação 2024",
+      "byte_integrity": {
+        "verified": false,
+        "sha256": null,
+        "bytes": null,
+        "verified_at": null
+      },
+      "field_crosswalk_to_2024_data": "NOT_VERIFIED",
+      "independent_review": {
+        "reviewer_id": null,
+        "date": null,
+        "decision": "PENDING",
+        "evidence": null
+      },
+      "allow_full_text_storage": false
+    },
+    {
+      "id": "TUBE-FICHA",
+      "agravo": "TUBE",
+      "kind": "ficha_notificacao_investigacao",
+      "source_url": "https://portalsinan.saude.gov.br/images/documentos/Agravos/Tuberculose/Tuberculose_v5.pdf",
+      "source_landing": "https://portalsinan.saude.gov.br/tuberculose",
+      "expected_pages_from_pdf_preview": 1,
+      "version_observed": "SINAN NET v5; rodapé 02/10/2014",
+      "relationship_to_2024": "Ficha histórico-institucional, não valida estado do ano 2024",
+      "byte_integrity": {
+        "verified": false,
+        "sha256": null,
+        "bytes": null,
+        "verified_at": null
+      },
+      "field_crosswalk_to_2024_data": "NOT_VERIFIED",
+      "independent_review": {
+        "reviewer_id": null,
+        "date": null,
+        "decision": "PENDING",
+        "evidence": null
+      },
+      "allow_full_text_storage": false
+    },
+    {
+      "id": "TUBE-ACOMP",
+      "agravo": "TUBE",
+      "kind": "ficha_acompanhamento",
+      "source_url": "https://portalsinan.saude.gov.br/images/documentos/Agravos/Tuberculose/Tuberculose_Acomp_v5.pdf",
+      "source_landing": "https://portalsinan.saude.gov.br/tuberculose",
+      "expected_pages_from_pdf_preview": 1,
+      "version_observed": "SINAN NET v5; rodapé 09/01/2014",
+      "relationship_to_2024": "Instrumento distinto da ficha de investigação; exige vinculação, temporalidade e versão",
+      "byte_integrity": {
+        "verified": false,
+        "sha256": null,
+        "bytes": null,
+        "verified_at": null
+      },
+      "field_crosswalk_to_2024_data": "NOT_VERIFIED",
+      "independent_review": {
+        "reviewer_id": null,
+        "date": null,
+        "decision": "PENDING",
+        "evidence": null
+      },
+      "allow_full_text_storage": false
+    }
+  ]
+}
