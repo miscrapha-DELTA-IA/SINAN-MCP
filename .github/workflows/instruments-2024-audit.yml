@@ -1,0 +1,69 @@
+name: Official Zika TB PDF evidence audit (NO case data)
+
+on:
+  pull_request:
+    paths:
+      - "docs/instruments-2024/**"
+      - "scripts/audit_instruments_2024.py"
+      - "tests/test_instruments_2024.py"
+      - ".github/workflows/instruments-2024-audit.yml"
+  push:
+    branches: [main]
+    paths:
+      - "docs/instruments-2024/**"
+      - "scripts/audit_instruments_2024.py"
+      - "tests/test_instruments_2024.py"
+      - ".github/workflows/instruments-2024-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: instruments-2024-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  documentary-only:
+    name: Verify 7 official PDF bytes and 57 field labels (zero patient records)
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Offline matrix and allowlist validation
+        run: python scripts/audit_instruments_2024.py --out dist/instruments-2024-offline-check.json
+      - name: Install pinned pure-Python PDF structural reader
+        run: python -m pip install --disable-pip-version-check --no-cache-dir pypdf==5.9.0
+      - name: Download fixed official PDFs only into temporary memory/directory, record hashes without source bytes
+        run: python scripts/audit_instruments_2024.py --fetch --out dist/instruments-2024-source-hashes.json
+      - name: Verify scientific release gate stays CLOSED
+        run: |
+          python - <<'PY'
+          import json
+          d=json.load(open("dist/instruments-2024-source-hashes.json",encoding="utf-8"))
+          assert d["all_sources_byte_verified"] is True
+          assert len(d["results"]) == 7
+          assert all(len(e["sha256"]) == 64 and e["pages"] > 0 for e in d["results"])
+          assert sum(e["matrix_fields_checked"] for e in d["results"]) == 57
+          assert sum(e["matrix_fields_found_on_recorded_page"] for e in d["results"]) == 57
+          assert all(e["matrix_fields_checked"] == e["matrix_fields_found_on_recorded_page"]
+                     for e in d["results"])
+          assert all(e["independent_reviewer_approved"] is False
+                     and e["validated_for_2024_data_layout"] is False for e in d["results"])
+          assert d["matrix"]["verified_against_2024_dataset"] is False
+          assert d["independent_review_completed"] is False
+          assert d["sensitive_records_accessed"] is False
+          print("PASS: 7 pinned PDFs verified; 57 field-code tokens on stated PDF pages; zero microdados; human review pending")
+          PY
+      - name: Upload *only* document hashes, dates and gate metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: instrument-2024-document-audit-metadata
+          path: |
+            dist/instruments-2024-offline-check.json
+            dist/instruments-2024-source-hashes.json
+          if-no-files-found: error
+          retention-days: 7
