@@ -25,7 +25,7 @@ For **each** tool below, `readOnlyHint=true`, `destructiveHint=false` and `openW
 | `listar_agravos` | Reads the code-bundled curated condition catalogue and adds a synthetic-only disclaimer; no network lookup or writes. |
 | `listar_fontes_oficiais` | Returns a fixed list of official-source navigation links as **text**; it does not contact these sites or ingest their data. |
 | `pesquisar_agravos` | Performs in-memory string matching over the bounded curated catalogue; does not search the web or change the index. |
-| `descrever_agravo` | Returns documentation for one in-code condition alias; official URLs are inert metadata, not live external queries. |
+| `descrever_agravo` | Returns only fixed metadata for a curated condition; ZIKA/TUBE include source-pinned PDF URLs, SHA-256, historic version observations and names/pages of document field codes. The MCP tool never fetches PDFs, patient records or a 2024 dataset; independent review and data-schema match remain false. |
 | `descrever_campos` | Returns predefined descriptions of synthetic field codes; does not open or update a patient record or dictionary file. |
 | `metodologia_abandono_tuberculose` | Returns static explanation and methodological limitations; no live epidemiological calculations or external access. |
 | `contar_notificacoes` | Counts only **120 deterministic fictional rows** in memory under hardcoded TUBE/2024/PI restrictions; arbitrary requests fail closed without data access. |
