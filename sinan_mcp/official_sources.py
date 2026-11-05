@@ -8,6 +8,9 @@ from __future__ import annotations
 
 import re
 import unicodedata
+from difflib import SequenceMatcher
+
+from .documentary import obter_evidencias, resumo_documental, termos_relacionados
 
 SCHEMA_VERSION = "sinan-sources-v1"
 NOTICE = (
@@ -74,6 +77,7 @@ def _normalize(s: str) -> str:
 
 
 def _condition_record(alias: str, name: str, stage: str) -> dict:
+    evidence = obter_evidencias(alias)
     return {
         "codigo_interno": alias,
         "nome": name,
@@ -82,7 +86,44 @@ def _condition_record(alias: str, name: str, stage: str) -> dict:
         "indicadores_reais_validados_no_mcp_publico": False,
         "codigo_oficial_de_download_confirmado": False,
         "fonte_referencia_id": "ms-sinan-agravos",
+        "fontes_documentais_especificas": evidence["referencias"],
+        "estado_da_evidencia": evidence["estado_de_evidencia"],
+        "dicionario_ano_versao_confrontado": evidence["dicionario_ano_versao_confrontado"],
+        "arquivo_real_importado": evidence["arquivos_reais_importados"],
+        "termos_relacionados_para_busca": evidence["termos_relacionados"],
     }
+
+
+def _rank(name: str, alias: str, search: str) -> int | None:
+    """Rank bounded in-memory document matches; never infer unknown cases."""
+    choices = (_normalize(name), _normalize(alias)) + tuple(
+        _normalize(v) for v in termos_relacionados(alias)
+    )
+    if search in choices:
+        return 0
+    if any(item.startswith(search) for item in choices):
+        return 1
+    if any(search in item for item in choices):
+        return 2
+    tokens = search.split()
+    if tokens and all(any(token in item for item in choices) for token in tokens):
+        return 3
+    return None
+
+
+def _spelling_suggestions(search: str) -> list[dict]:
+    """Typos yield suggestions, NOT fabricated matches or medical assertions."""
+    suggestions = []
+    for alias, name, _stage in CONDITIONS:
+        choices = [name, alias, *termos_relacionados(alias)]
+        ratio = max(SequenceMatcher(None, search, _normalize(c)).ratio() for c in choices)
+        if ratio >= 0.61:
+            suggestions.append((ratio, alias, name))
+    suggestions.sort(key=lambda item: (-item[0], item[2]))
+    return [
+        {"codigo_interno": code, "nome": name, "tipo": "sugestao_nao_resultado"}
+        for _score, code, name in suggestions[:3]
+    ]
 
 
 def listar_fontes_oficiais() -> dict:
@@ -91,6 +132,7 @@ def listar_fontes_oficiais() -> dict:
         "schema_version": SCHEMA_VERSION,
         "fontes": [dict(x) for x in OFFICIAL_SOURCES],
         "natureza": "somente_metadados_de_navegacao",
+        "auditoria_documental": resumo_documental(),
         "aviso": NOTICE,
     }
 
@@ -102,20 +144,22 @@ def pesquisar_agravos(termo: str = "", limite: int = 20) -> dict:
     if type(limite) is not int or not 1 <= limite <= 20:
         raise ValueError("Limite deve estar entre 1 e 20")
     cleaned = _normalize(termo.strip())
-    if not cleaned:
-        matches = CONDITIONS
-    else:
-        matches = tuple(
-            cond for cond in CONDITIONS
-            if cleaned in _normalize(cond[0]) or cleaned in _normalize(cond[1])
-        )
+    ranked = []
+    for index, cond in enumerate(CONDITIONS):
+        rank = 0 if not cleaned else _rank(cond[1], cond[0], cleaned)
+        if rank is not None:
+            ranked.append((rank, index, cond))
+    ranked.sort(key=lambda item: (item[0], item[1]))
+    matches = [record for _rank_value, _order, record in ranked]
     return {
         "schema_version": SCHEMA_VERSION,
         "termo": termo.strip(),
         "resultados": [_condition_record(*c) for c in matches[:limite]],
         "total_no_indice_curado": len(matches),
+        "sugestoes_de_grafia": _spelling_suggestions(cleaned) if cleaned and not matches else [],
         "indice_exemplificativo_nao_exaustivo": True,
         "codigo_de_agravo": "alias_interno_nao_codificacao_oficial",
+        "auditoria_documental": resumo_documental(),
         "aviso": NOTICE,
     }
 
@@ -132,9 +176,20 @@ def descrever_agravo(codigo_interno: str) -> dict:
                 "agravo": _condition_record(code, name, stage),
                 "fonte_de_consulta": dict(OFFICIAL_SOURCES[0]),
                 "tabulacao_oficial": dict(OFFICIAL_SOURCES[1]),
+                "evidencia_por_agravo": obter_evidencias(code),
+                "auditoria_documental": resumo_documental(),
+                "checklist_pesquisa_antes_de_calcular": [
+                    {"etapa": "Identificar página oficial", "realizado": True,
+                     "alcance": "Título e escopo de página institucional, não arquivo individual"},
+                    {"etapa": "Conferir dicionário, ficha, ano e versão", "realizado": False},
+                    {"etapa": "Validar origem, acesso e integridade do arquivo", "realizado": False},
+                    {"etapa": "Confirmar definições de caso e temporalidade", "realizado": False},
+                    {"etapa": "Revisão estatística, privacidade e homologação", "realizado": False},
+                ],
                 "proxima_etapa": (
-                    "Confirmar código real de download, ano, dicionário e fonte; "
-                    "validar versão, agregados e política de publicação."
+                    "Abrir as páginas institucionais identificadas, selecionar o artefato "
+                    "pertinente e confirmar código de download, ano e versão do dicionário; "
+                    "somente depois confrontar arquivos e submeter agregados à revisão."
                 ),
                 "aviso": NOTICE,
             }
