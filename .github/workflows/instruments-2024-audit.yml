@@ -47,10 +47,16 @@ jobs:
           assert d["all_sources_byte_verified"] is True
           assert len(d["results"]) == 7
           assert all(len(e["sha256"]) == 64 and e["pages"] > 0 for e in d["results"])
+          assert sum(e["matrix_fields_checked"] for e in d["results"]) == 57
+          assert sum(e["matrix_fields_found_on_recorded_page"] for e in d["results"]) == 57
+          assert all(e["matrix_fields_checked"] == e["matrix_fields_found_on_recorded_page"]
+                     for e in d["results"])
+          assert all(e["independent_reviewer_approved"] is False
+                     and e["validated_for_2024_data_layout"] is False for e in d["results"])
           assert d["matrix"]["verified_against_2024_dataset"] is False
           assert d["independent_review_completed"] is False
           assert d["sensitive_records_accessed"] is False
-          print("PASS: 7 official PDFs received and parsed, 57 document fields, zero microdados, human review pending")
+          print("PASS: 7 pinned PDFs verified; 57 field-code tokens on stated PDF pages; zero microdados; human review pending")
           PY
       - name: Upload *only* document hashes, dates and gate metadata
         uses: actions/upload-artifact@v4
