@@ -96,6 +96,36 @@ def main():
         assert "<script" not in html.lower()
     print("PASS HTTPS privacy policy: 2 public routes, LGPD owner/contact and restrictive headers")
 
+    # These pages are the four HTTPS metadata fields in the future directory.
+    # Test actual Render routes with read-only requests, without echoing response data.
+    listing_pages = {
+        "/sobre": "Catálogo documental e simulações epidemiológicas",
+        "/about": "Catálogo documental e simulações epidemiológicas",
+        "/suporte": "Suporte e contato",
+        "/support": "Suporte e contato",
+        "/termos": "Termos de Uso",
+        "/terms": "Termos de Uso",
+    }
+    for path, heading in listing_pages.items():
+        req = Request(BASE + path, headers={"Accept": "text/html"}, method="GET")
+        with urlopen(req, timeout=30) as response:
+            assert response.status == 200, ("Listing page HTTP error", path)
+            assert response.headers.get("Content-Type", "").startswith("text/html"), path
+            assert response.headers.get("X-Content-Type-Options") == "nosniff", path
+            assert response.headers.get("Cache-Control") == "no-store", path
+            assert "default-src 'none'" in response.headers.get("Content-Security-Policy", ""), path
+            page = response.read(100_000).decode("utf-8")
+        assert '<html lang="pt-BR">' in page, path
+        assert heading in page, path
+        assert "Raphael Múcio Teixeira Cabral de Pina Bulhões Di Giorgio" in page, path
+        assert "miscrapha@gmail.com" in page, path
+        for link in ("/sobre", "/suporte", "/privacidade", "/termos"):
+            assert BASE + link in page, (path, link)
+        assert "<script" not in page.lower(), path
+        assert "<form" not in page.lower(), path
+        assert "[PENDENTE" not in page, path
+    print("PASS HTTPS listing pages: 6 product/support/terms routes, owner and security headers")
+
     init = rpc("initialize", {
         "protocolVersion": "2025-11-25",
         "capabilities": {},
