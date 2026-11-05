@@ -14,7 +14,7 @@
   <a href="https://modelcontextprotocol.io/"><img alt="Protocol: MCP" src="https://img.shields.io/badge/Protocol-MCP-334155" /></a>
 </p>
 
-<p><a href="#get-started">Get started</a> · <a href="#architecture">Explore the architecture</a> · <a href="#public-synthetic-preview">Public demo</a> · <a href="#documentation">Documentation</a> · <a href="docs/pt-BR.md">Read in Portuguese</a></p>
+<p><a href="#overview-for-reviewers">For reviewers</a> · <a href="#get-started">Local setup</a> · <a href="#public-synthetic-preview">Public demo</a> · <a href="docs/README.md">Documentation</a> · <a href="docs/pt-BR.md">Português</a></p>
 
 </div>
 
@@ -27,13 +27,19 @@
 
 Brazil's *Sistema de Informação de Agravos de Notificação* (SINAN) is a crucial source for public-health research. Working responsibly with surveillance information requires more than downloading a dataset: the source, notification system, data dictionary, reporting year, case definition and disclosure risks all matter.
 
-**SINAN MCP** explores how the **Model Context Protocol (MCP)** can support better-documented workflows around that complexity.
-
-The goal is not to hide scientific uncertainty behind a chatbot. It is to **make uncertainty, provenance and access boundaries explicit** while building reusable open-source tooling for researchers.
+**SINAN MCP** is an independent open-source project using the **Model Context Protocol (MCP)** to make official references and scientific limitations easier to inspect. It keeps documentary evidence, fictional software demonstrations, and restricted research workflows explicitly separate.
 
 | **Discover** | **Prototype** | **Investigate** |
 |:---|:---|:---|
 | Find curated references to notifiable conditions, official portals and supporting documentation. | Explore a read-only MCP demonstration with deliberately fictional tuberculosis records. | Use separate local tools for imports, diagnostics and experimental methods, subject to human review. |
+
+## Overview for reviewers
+
+**What the project does:** it catalogues selected official SINAN reference pages and runs a read-only public MCP demonstration with fictitious TB records. For Zika and tuberculosis, a documentary matrix records 57 field identifiers from seven official PDF instruments.
+
+**What is being requested:** independent readers can evaluate clarity, documentary field transcriptions, methodology, or privacy controls. The [external review guide](docs/instruments-2024/EXTERNAL_REVIEW.md) explains what to check and how to submit attributable findings. The [technical evidence protocol](docs/instruments-2024/REVIEW_PROTOCOL.md) contains source URLs, fixed hashes, page counts and open scientific questions.
+
+**What is not established:** the 2024 dataset layouts have not been matched to the documents; epidemiological semantics and independent human reviews remain pending. Passing CI does not authorize research with actual patient records.
 
 ## What is available
 
@@ -165,7 +171,7 @@ This is a **research prototype**, not a completed epidemiological data service.
 | General-purpose disease coverage | **Not established** |
 | Clinical or government use | **Out of scope** |
 
-**Active research track: Zika dictionary curation.** A candidate transcription of **37 fields from an eight-page public PDF** and **seven documented ambiguities** is under review in [PRs #25–#28](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/pull/28). Those changes are **draft work, not part of the default branch**, and they do **not** validate the ZIKA/2024 annual data export. Independent documentary review remains pending.
+**Zika/TB documentary scope:** seven source-locked official PDFs and 57 field-code occurrences are now documented on the default branch. The 37 Zika fields, 15 selected TB fields and five common notification fields are **not** a verified 2024 export schema. Independent semantic, version-concordance and privacy reviews are still required. See the [review protocol](docs/instruments-2024/REVIEW_PROTOCOL.md).
 
 Read the [epidemiological interpretation guide](docs/EPIDEMIOLOGY.md) before using any aggregate or exploratory measure in research.
 
@@ -185,7 +191,10 @@ Security concerns should be reported privately to maintainers, without including
 
 | Start here | What you will find |
 |---|---|
-| [Complete Portuguese README](docs/pt-BR.md) | Full project overview in Portuguese |
+| [Documentation hub](docs/README.md) | Scope, status, evidence, safety and technical navigation |
+| [External review guide](docs/instruments-2024/EXTERNAL_REVIEW.md) | How to inspect sources and return a verifiable review |
+| [Zika/TB evidence protocol](docs/instruments-2024/REVIEW_PROTOCOL.md) | Seven official PDFs, locked hashes, 57 field tokens and pending approvals |
+| [Complete Portuguese README](docs/pt-BR.md) | Project overview in Portuguese |
 | [Condition catalogue](docs/MULTI_AGRAVO_CATALOG.md) | Scope, sources and internal aliases |
 | [Epidemiological interpretation](docs/EPIDEMIOLOGY.md) | Definitions, denominators and limitations |
 | [Public preview and disclosure](docs/PUBLIC_DISCLOSURE.md) | Synthetic-data boundary and service notice |
@@ -218,6 +227,10 @@ Contributions are especially welcome in documentation, reproducible tests, epide
 
 If the project is useful for your work, **star the repository**, share it with collaborators and help improve its scientific rigor. Stars support discovery; they are not evidence of scientific validity.
 
+## Public-preview security operations
+
+Security hardening is deployed in the **synthetic-only** public Render preview (2026-11-04, commit `3ac1db9`). Protections include per-process admission limits, cross-platform dependency audits and a hash-pinned runtime build. HTTPS smoke checks passed after deployment. A read-only [scheduled public smoke workflow](.github/workflows/public-live-smoke.yml) monitors the fictional MCP contract; scheduling is best effort and does not imply immediate alerts or clinical-data approval. Read [operational safeguards](docs/SECURITY_OPERATIONS.md), [branch protection](docs/BRANCH_PROTECTION.md) and [Render verification checklist](docs/RENDER_SECURITY_VERIFICATION.md).
+
 ## License and attribution
 
 Original project code is licensed under the [MIT License](LICENSE). Optional third-party dependencies may carry separate licensing obligations.
@@ -227,7 +240,3 @@ Original project code is licensed under the [MIT License](LICENSE). Optional thi
 <div align="center">
   <sub>Built for reproducibility, transparency and responsible epidemiological research.</sub>
 </div>
-
-### Public preview security operations
-
-Security hardening is deployed in the **synthetic-only** public Render preview (2026-11-04, commit `3ac1db9`). Protections include per-process admission limits, cross-platform dependency audits and a hash-pinned runtime build. HTTPS smoke checks passed after deployment. A read-only [scheduled public smoke workflow](.github/workflows/public-live-smoke.yml) monitors the fictional MCP contract; scheduling is best effort and does not imply immediate alerts or clinical-data approval. Read [operational safeguards](docs/SECURITY_OPERATIONS.md), [branch protection](docs/BRANCH_PROTECTION.md) and [Render verification checklist](docs/RENDER_SECURITY_VERIFICATION.md).
