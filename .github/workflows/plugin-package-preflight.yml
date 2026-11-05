@@ -1,0 +1,59 @@
+name: Agent Plugin ZIP preflight (synthetic only)
+
+on:
+  pull_request:
+    paths:
+      - "plugin-package/**"
+      - "scripts/build_public_plugin_zip.py"
+      - "tests/test_public_plugin_package.py"
+      - "docs/public-mcp-contract-v1.json"
+      - ".github/workflows/plugin-package-preflight.yml"
+  push:
+    branches: [main]
+    paths:
+      - "plugin-package/**"
+      - "scripts/build_public_plugin_zip.py"
+      - "tests/test_public_plugin_package.py"
+      - "docs/public-mcp-contract-v1.json"
+      - ".github/workflows/plugin-package-preflight.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: public-plugin-preflight-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-static-draft:
+    name: Offline portable ZIP lint + draft artifact
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate portable manifests and public synthetic boundary
+        run: python scripts/build_public_plugin_zip.py --check
+      - name: Build reproducible ZIP with no credentials, databases, or runtime code
+        run: python scripts/build_public_plugin_zip.py --out dist/sinan-reference-lab-preflight-0.1.0.zip
+      - name: Verify ZIP contents without executing any plugin code
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          p = Path("dist/sinan-reference-lab-preflight-0.1.0.zip")
+          with ZipFile(p) as a:
+              assert a.namelist() == ["plugin.json", "mcp.json", "assets/icon.svg"]
+              assert a.testzip() is None
+          print("PASS: static three-file package, no data or secrets")
+          PY
+      - name: Archive preflight draft for authorized manual review only
+        uses: actions/upload-artifact@v4
+        with:
+          name: sinan-reference-lab-preflight
+          path: dist/sinan-reference-lab-preflight-0.1.0.zip
+          if-no-files-found: error
+          retention-days: 7

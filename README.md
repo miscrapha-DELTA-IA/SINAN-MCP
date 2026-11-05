@@ -135,6 +135,7 @@ This command starts the **local stdio MCP server**. Configure your chosen MCP cl
 | **Privacy policy (`privacyPolicyURL`)** | [Política LGPD](https://sinan-mcp-public-preview.onrender.com/privacidade) · [conformidade em acompanhamento](docs/PRIVACY_RELEASE_GATE.md) |
 | **Service terms (`termsOfServiceURL`)** | [Termos de Uso](https://sinan-mcp-public-preview.onrender.com/termos) |
 | **Listing review preparation** | [URLs e requisitos ainda pendentes](docs/PUBLIC_LISTING_URLS.md) |
+| **Portable plugin package (preflight only)** | [Manifestos, ZIP e portões de revisão](docs/PUBLIC_PLUGIN_PACKAGE_PREFLIGHT.md) |
 
 The preview is hosted separately, with **synthetic records only**, and may take time to respond after inactivity on free hosting. Endpoint availability can change; a link is not an uptime guarantee.
 

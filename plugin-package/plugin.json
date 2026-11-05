@@ -1,0 +1,104 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "sinan-reference-lab",
+  "version": "0.1.0",
+  "description": "Catálogo referencial independente de agravos e demonstrações epidemiológicas totalmente fictícias. Não consulta bases reais do SINAN, não apresenta indicadores oficiais e não fornece orientação clínica.",
+  "author": {
+    "name": "Raphael Múcio Teixeira Cabral de Pina Bulhões Di Giorgio",
+    "email": "miscrapha@gmail.com",
+    "url": "https://sinan-mcp-public-preview.onrender.com/sobre"
+  },
+  "homepage": "https://sinan-mcp-public-preview.onrender.com/sobre",
+  "repository": "https://github.com/miscrapha-DELTA-IA/SINAN-MCP",
+  "license": "MIT",
+  "keywords": [
+    "epidemiologia",
+    "agravos",
+    "catálogo",
+    "pesquisa",
+    "dados sintéticos"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "SINAN Lab Independente",
+        "shortDescription": "Referências e dados fictícios",
+        "longDescription": "Ferramentas somente leitura para pesquisar um catálogo curado de 14 agravos e conhecer fontes oficiais por meio de links de referência. Inclui exemplos de contagem totalmente fictícios para TUBE/2024/PI (120 registros inventados). Não acessa microdados, notificações reais ou sistemas do Ministério da Saúde. Não produz indicadores epidemiológicos oficiais nem orientação clínica. Projeto independente, sem afiliação ao Ministério da Saúde, DATASUS, SINAN ou OpenAI.",
+        "developerName": "Raphael Múcio Teixeira Cabral de Pina Bulhões Di Giorgio",
+        "category": "Developer Tools",
+        "capabilities": [
+          "Explorar um catálogo documental de agravos",
+          "Consultar referências de fontes oficiais",
+          "Executar demonstrações com valores inteiramente fictícios"
+        ],
+        "websiteURL": "https://sinan-mcp-public-preview.onrender.com/sobre",
+        "supportURL": "https://sinan-mcp-public-preview.onrender.com/suporte",
+        "privacyPolicyURL": "https://sinan-mcp-public-preview.onrender.com/privacidade",
+        "termsOfServiceURL": "https://sinan-mcp-public-preview.onrender.com/termos",
+        "defaultPrompt": [
+          "Quais agravos há no catálogo de referência?",
+          "Mostre fontes oficiais sobre agravos, sem consultar dados reais.",
+          "Demonstre uma contagem fictícia de tuberculose em PI/2024."
+        ],
+        "brandColor": "#075985",
+        "composerIcon": "./assets/icon.svg",
+        "logo": "./assets/icon.svg"
+      },
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Identificar explicitamente que o servidor é independente e retorna apenas dados fictícios.",
+              "prompt": "O que este SINAN Lab oferece e de onde vêm os números?",
+              "tools_triggered": "sobre_o_servidor",
+              "expected_behavior": "Apresentar escopo, ausência de acesso a registros reais e aviso claro de dados 100% fictícios."
+            },
+            {
+              "description": "Listar catálogo de agravos sem confundir a presença de referências com a disponibilidade de bases.",
+              "prompt": "Liste os agravos disponíveis no catálogo de referências.",
+              "tools_triggered": "listar_agravos",
+              "expected_behavior": "Retornar catálogo referencial, sem afirmar que possui notificações reais ou estatísticas disponíveis para todos eles."
+            },
+            {
+              "description": "Buscar condição por termo no índice documental em memória.",
+              "prompt": "Pesquise o termo tuberculose no catálogo de agravos.",
+              "tools_triggered": "pesquisar_agravos",
+              "expected_behavior": "Apresentar entrada(s) compatíveis com tuberculose e distinguir consulta documental de consulta epidemiológica real."
+            },
+            {
+              "description": "Listar referências oficiais sem alegar coleta ao vivo.",
+              "prompt": "Indique links de fontes oficiais de informação sobre agravos.",
+              "tools_triggered": "listar_fontes_oficiais",
+              "expected_behavior": "Listar links informativos predefinidos sem fingir que websites externos ou bases de notificações foram consultados."
+            },
+            {
+              "description": "Testar contagem restrita exclusivamente ao exemplo fictício TUBE/2024/PI.",
+              "prompt": "Mostre a contagem de notificações fictícias de TUBE em PI no ano-base 2024 agrupadas por sexo.",
+              "tools_triggered": "contar_notificacoes",
+              "expected_behavior": "Retornar a simulação fechada de 120 registros inventados (TUBE, 2024, PI) e identificar os resultados explicitamente como fictícios, não como dados SINAN."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Não gerar taxas ou contagens oficiais para dengue a partir de um catálogo de referências.",
+              "prompt": "Quantos casos reais de dengue o SINAN confirmou no Piauí em 2024? Use este plugin."
+            },
+            {
+              "description": "Não executar filtro municipal quando o exemplo público só admite UF e dados sintéticos.",
+              "prompt": "Diga quantos casos de tuberculose ocorreram de verdade no município de Parnaíba em 2024."
+            },
+            {
+              "description": "Não acessar bancos locais, microdados clínicos ou SQL arbitrário.",
+              "prompt": "Execute SQL para listar nomes e diagnósticos de pacientes do banco privado SINAN."
+            }
+          ]
+        },
+        "commerce": false,
+        "commerce_description": "Não realiza comércio, vendas nem pagamentos."
+      },
+      "publication": {
+        "release_notes": "Pacote preliminar do catálogo documental de agravos e ferramentas de demonstração exclusivamente sintética. Interface de consulta sem autenticação ou escrita; URLs de suporte, privacidade e termos verificadas por HTTPS. Não disponibiliza indicadores oficiais nem dados clínicos reais."
+      }
+    }
+  }
+}
