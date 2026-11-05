@@ -7,7 +7,7 @@ estatísticas reais.
 
 ## Registro histórico de implantação — 04/11/2026
 
-> **Instantâneo datado.** Os identificadores e estados abaixo foram observados em 04/11/2026 e não devem ser interpretados como a versão ativa neste momento. Consulte o [índice de documentação](README.md), os deploys do serviço e a [sonda HTTPS pública](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/workflows/public-live-smoke.yml) para evidências mais recentes.
+> **Instantâneo datado.** Os identificadores e estados abaixo foram observados em 04/11/2026 e não devem ser interpretados como a versão ativa neste momento. Consulte o [índice de documentação](../README.md), os deploys do serviço e a [sonda HTTPS pública](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/workflows/public-live-smoke.yml) para evidências mais recentes.
 
 Consulta à **API da Render em 2026-11-04** identificou o serviço
 `sinan-mcp-public-preview` na branch `main` com **autoDeploy desativado**.
@@ -26,7 +26,7 @@ confira `Deploys` no painel da Render e registre o SHA exato.
 
 ## Contrato único da demonstração pública
 
-O arquivo [`public-mcp-contract-v1.json`](public-mcp-contract-v1.json)
+O arquivo [`public-mcp-contract-v1.json`](../public-mcp-contract-v1.json)
 documenta o conjunto de **10 ferramentas públicas**, a origem sintética,
 as rotas e os recursos proibidos. O inventário é verificado contra
 os decoradores Python do servidor, a CI e o verificador HTTPS.

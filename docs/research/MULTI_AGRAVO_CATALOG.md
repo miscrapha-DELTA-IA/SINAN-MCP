@@ -1,8 +1,8 @@
-# SINAN MCP — catálogo de fontes e agravos (v0.4.0a4)
+# Catálogo multiagravo | Escopo e fontes documentais
 
 ## Visão do projeto
 
-O produto é **multiagravo**. Tuberculose (TUBE) é o caso de teste mais avançado e dengue (DENG) é o segundo piloto. O objetivo não é limitar a integração a duas doenças, mas chegar gradualmente a qualquer **agravo com fonte oficialmente publicada no escopo do SINAN**, respeitando ano, qualidade, dicionário, regras de divulgação e a existência de outros sistemas assistenciais e de vigilância.
+O catálogo é **multiagravo**. O único conjunto numérico presente na demonstração pública é o exemplo inteiramente fictício TUBE/2024/PI. O objetivo não é limitar a integração a duas doenças, mas chegar gradualmente a qualquer **agravo com fonte oficialmente publicada no escopo do SINAN**, respeitando ano, qualidade, dicionário, regras de divulgação e a existência de outros sistemas assistenciais e de vigilância.
 
 Nenhuma ferramenta deve supor que existe uma base disponível apenas porque a notificação consta de uma lista. O exemplo sintético TUBE 2024/PI permanece o único conjunto numérico do MCP público.
 
@@ -40,7 +40,7 @@ Não inferir que todos possuem a mesma ficha, dicionário, regime de atualizaç�
 
 A página de índice não é uma tabela de dados. Para que valores oficiais sejam usados no MCP será necessário identificar a tabulação exata, data de extração, dimensões, filtros, versão, definição do indicador e referência reproduzível. Em seguida, verificar diferenças e reidentificação em relação a publicações anteriores.
 
-## Roteiro de validação por agravo
+## Critérios metodológicos para validação por agravo
 
 1. Confirmar se o agravo é registrado e publicável no SINAN, a fonte histórica e qual sistema contém o dado desejado.
 2. Comprovar o identificador correto do arquivo no DATASUS/PySUS e o dicionário aplicável ao ano.
@@ -52,15 +52,11 @@ A página de índice não é uma tabela de dados. Para que valores oficiais seja
 
 **Limiar de contagem mínima não equivale a anonimização formal.**
 
-## Próximo trabalho
-
-Preparar um importador independente de **tabelas oficiais pré-agregadas** com manifesto de proveniência por agravo, ano e filtro, conferência manual dos valores e controle de interações entre releases. Nenhum indicador real foi adicionado ao servidor neste marco.
-
 ## Recepção local de tabelas oficiais pré-agregadas — sem publicação
 
 A rotina `preparar-tabela-oficial` é distinta do importador PySUS de microdados. Exige um JSON criado localmente a partir de uma **tabulação obtida pelo responsável**, contendo `source.url`, `titulo_tabela`, `extracao_utc` em UTC, `sha256_arquivo_origem` (do arquivo original), `filtros_tabulacao`, `estado_consolidacao`; um `scope` com nome/código interno, UF, anos, **tipo de ano**, `registros_tabnet`, dimensão; e uma lista de células.
 
-Exemplo inteiramente fictício, **não extraído do DATASUS**: [`examples/tabnet_artificial.example.json`](../examples/tabnet_artificial.example.json). A URL é apenas um índice oficial; o checksum foi inventado. Nunca usar o exemplo como evidência real.
+Exemplo inteiramente fictício, **não extraído do DATASUS**: [`examples/tabnet_artificial.example.json`](../../examples/tabnet_artificial.example.json). A URL é apenas um índice oficial; o checksum foi inventado. Nunca usar o exemplo como evidência real.
 
 ```powershell
 cd "$HOME\Downloads\SINAN-MCP-GitHub"

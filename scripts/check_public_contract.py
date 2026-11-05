@@ -18,7 +18,7 @@ ADMISSION = ROOT / "sinan_mcp" / "public_admission.py"
 PUBLIC_LOCK = ROOT / "requirements-public.lock"
 PYTHON_VERSION = ROOT / ".python-version"
 DEPLOYMENT = ROOT / "render.yaml"
-DOC = ROOT / "docs" / "PUBLIC_LAUNCH.md"
+DOC = ROOT / "docs" / "operations" / "PUBLIC_LAUNCH.md"
 
 
 def check() -> list[str]:

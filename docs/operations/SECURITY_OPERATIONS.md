@@ -43,7 +43,7 @@ O manifesto proposto fixa Python 3.11.17 para ser compatível com os lockfiles r
 
 ## 6. Verificação contínua, separada de deploy
 
-- A action [Public HTTPS MCP smoke](../.github/workflows/public-live-smoke.yml) executa a sonda somente leitura `scripts/probe_public_https.py` **duas vezes por dia**, aproximadamente às 06h17 e 18h17 no horário de Fortaleza (UTC-3), além de aceitar execução manual. Agendamentos do GitHub são sujeitos a atraso ou ausência de execução.
+- A action [Public HTTPS MCP smoke](../../.github/workflows/public-live-smoke.yml) executa a sonda somente leitura `scripts/probe_public_https.py` **duas vezes por dia**, aproximadamente às 06h17 e 18h17 no horário de Fortaleza (UTC-3), além de aceitar execução manual. Agendamentos do GitHub são sujeitos a atraso ou ausência de execução.
 - A sonda usa o host público explicitamente fixado no workflow. Verifica `/health`, initialize, inventário exato de 10 ferramentas, dados 100% sintéticos, contagem fictícia 120 e rejeição de operações proibidas/Origin estranho. Nenhum download de microdados, token ou acesso ao servidor privado.
 - O workflow usa apenas `contents: read`, sem segredos ou deploy, com concorrência limitada para não sobrepor execuções. Um resultado **vermelho** indica investigação necessária; não aciona automaticamente reinicialização, escalonamento de recursos, publicação nem rollback.
 - Consulte [Actions](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/workflows/public-live-smoke.yml) e habilite notificações de falha do GitHub se desejar alertas. Um workflow agendado **não garante que uma notificação será entregue**. Considerar solução externa de monitoramento mais adiante se for necessário SLA ou alerta imediato.
@@ -60,7 +60,7 @@ O manifesto proposto fixa Python 3.11.17 para ser compatível com os lockfiles r
 
 ## 8. Registro de falhas da sonda sintética, sem automatizar a infraestrutura
 
-- O workflow [Record public MCP smoke failure incident](../.github/workflows/public-smoke-incident.yml) reage a um `workflow_run` com conclusão `failure` somente da sonda pública, em execução agendada ou manual, na branch `main`. Não dispara para um PR, fork, outro workflow nem conclusão de sucesso.
+- O workflow [Record public MCP smoke failure incident](../../.github/workflows/public-smoke-incident.yml) reage a um `workflow_run` com conclusão `failure` somente da sonda pública, em execução agendada ou manual, na branch `main`. Não dispara para um PR, fork, outro workflow nem conclusão de sucesso.
 - O workflow original da sonda permanece `contents: read`. Apenas o **job separado** de ocorrência pode usar `issues: write` para criar/comentar uma issue sanitizada no mesmo repositório. Utiliza apenas `GITHUB_TOKEN` efêmero, nunca uma chave Render.
 - O job baixa **apenas a `main` protegida**, não o commit/evento de uma execução falha. Não lê nem publica argumentos MCP, logs brutos, artefatos, credenciais, IPs ou dados reais. Issues abertas com o título fixo são atualizadas em falhas subsequentes, evitando duplicatas. Um problema de paginação da API bloqueia a criação.
 - A issue serve como **registro rastreável de um incidente**, não como comprovante de que alguém recebeu um e-mail. Para receber notificações automáticas, o mantenedor deve configurar GitHub → Settings → Notifications → System → Actions → Email → Only notify for failed workflows. Segundo a documentação do GitHub, a notificação de uma execução agendada é dirigida ao usuário que criou ou alterou o cron; o recebimento deve ser verificado separadamente.

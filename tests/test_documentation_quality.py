@@ -1,4 +1,4 @@
-"""Offline checks for user-facing repository documentation."""
+"""Repository documentation navigation and evidence-status regression checks."""
 
 from __future__ import annotations
 
@@ -7,64 +7,76 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
-PUBLIC_PAGES = [
-    ROOT / "README.md",
-    ROOT / "docs" / "README.md",
-    ROOT / "docs" / "pt-BR.md",
-    ROOT / "docs" / "LOCAL_SETUP.md",
-    ROOT / "docs" / "DOCUMENTARY_CATALOG_V1.md",
-    ROOT / "docs" / "instruments-2024" / "REVIEW_PROTOCOL.md",
-    ROOT / "docs" / "instruments-2024" / "EXTERNAL_REVIEW.md",
-]
+DOCS = ROOT / "docs"
 
-LINK = re.compile(r"(?<!!)\[[^\]]+\]\(([^)\s]+)(?:\s+[^)]*)?\)")
-BLOCK = re.compile(r"```[\s\S]*?```", re.MULTILINE)
+# External links are outside the scope of this offline test.
+MARKDOWN_LINK = re.compile(r"(?<!!)[\[][^\]]+[\]]\(([^)\s]+)(?:\s+[^)]*)?\)")
+HTML_LINK = re.compile(r'href=["\']([^"\']+)["\']')
+FENCED_BLOCK = re.compile(r"```[\s\S]*?```", re.MULTILINE)
+CHECKBOX = re.compile(r"^\s*[-*]\s+\[[ xX]\]", re.MULTILINE)
 
 
-def test_public_documentation_has_reproducible_local_links() -> None:
-    for page in PUBLIC_PAGES:
-        assert page.is_file(), page
-        text = BLOCK.sub("", page.read_text(encoding="utf-8"))
-        for target in LINK.findall(text):
-            parsed = urlsplit(target)
-            if parsed.scheme or target.startswith(("#", "/")):
+def published_pages() -> list[Path]:
+    return sorted(set((ROOT / "README.md", ROOT / "SECURITY.md", ROOT / "CONTRIBUTING.md"))
+                  | set(DOCS.rglob("*.md")))
+
+
+def test_all_public_markdown_references_have_a_local_destination() -> None:
+    for page in published_pages():
+        text = FENCED_BLOCK.sub("", page.read_text(encoding="utf-8"))
+        hrefs = MARKDOWN_LINK.findall(text) + HTML_LINK.findall(text)
+        for link in hrefs:
+            parts = urlsplit(link)
+            if parts.scheme or parts.netloc or link.startswith(("#", "/")):
                 continue
-            relative = unquote(parsed.path)
+            relative = unquote(parts.path)
             if not relative:
                 continue
-            resolved = (page.parent / relative).resolve()
-            assert resolved.is_relative_to(ROOT), (page, target)
-            assert resolved.exists(), f"{page.relative_to(ROOT)}: broken link {target}"
+            destination = (page.parent / relative).resolve()
+            assert destination.is_relative_to(ROOT), (page, link)
+            assert destination.exists(), f"{page.relative_to(ROOT)}: broken link {link}"
 
 
-def test_no_legacy_chat_handoff_in_public_paths() -> None:
-    for filename in ("IMPLEMENTATION_TASK.md", "START_HERE_WINDOWS.md"):
-        assert not (ROOT / filename).exists(), filename
-    assert not (ROOT / "docs" / "GITHUB_ABOUT.md").exists()
-
-    forbidden = [
-        "paste the following prompt",
-        "cole este prompt",
-        "resposta do chatgpt",
-        "como assistente de ia,",
-        "vou realizar agora",
-        "do not ask for input already available",
+def test_documentation_information_architecture() -> None:
+    for dirname in ("research", "operations", "compliance"):
+        assert (DOCS / dirname / "README.md").is_file()
+    for removed in (
+        ROOT / "CLAUDE.md",
+        ROOT / "IMPLEMENTATION_TASK.md",
+        ROOT / "START_HERE_WINDOWS.md",
+        DOCS / "GITHUB_ABOUT.md",
+        DOCS / "TECHNICAL_README_ARCHIVE.md",
+    ):
+        assert not removed.exists(), removed
+    assert sorted(x.name for x in DOCS.glob("*.md")) == [
+        "LOCAL_SETUP.md", "README.md", "pt-BR.md",
     ]
-    for page in PUBLIC_PAGES:
-        text = page.read_text(encoding="utf-8").casefold()
-        for phrase in forbidden:
-            assert phrase not in text, (page, phrase)
 
 
-def test_review_pages_distinguish_machine_evidence_from_human_approval() -> None:
-    protocol = (ROOT / "docs/instruments-2024/REVIEW_PROTOCOL.md").read_text(encoding="utf-8")
-    review = (ROOT / "docs/instruments-2024/EXTERNAL_REVIEW.md").read_text(encoding="utf-8")
+def test_scientific_documents_do_not_resemble_chat_tasks() -> None:
+    pages = [
+        ROOT / "README.md",
+        DOCS / "README.md",
+        DOCS / "pt-BR.md",
+        DOCS / "instruments-2024/REVIEW_PROTOCOL.md",
+    ]
+    for page in pages:
+        text = page.read_text(encoding="utf-8")
+        assert CHECKBOX.search(text) is None, page
+        assert "Cole este prompt" not in text
+        assert "Paste this into ChatGPT" not in text
+        assert "## Critérios objetivos para a etapa seguinte" not in text
+
+
+def test_scientific_gate_remains_closed() -> None:
+    protocol = (DOCS / "instruments-2024/REVIEW_PROTOCOL.md").read_text(encoding="utf-8")
+    review = (DOCS / "instruments-2024/EXTERNAL_REVIEW.md").read_text(encoding="utf-8")
     assert "57/57" in protocol and "7/7" in protocol
     assert "Não verificada" in protocol
     assert "Pendentes" in protocol
     assert "Não autorizado" in protocol
     assert "não substitui um parecer científico independente" in protocol
+    assert "issues/62" in protocol
     for term in ("cs_gestant", "SITUA_ENCE", "TRATAMENTO", "Modalidade", "conflitos"):
         assert term.casefold() in review.casefold()
     assert "dados fictícios" in review
-    assert "não" in review and "2024" in review
