@@ -21,6 +21,9 @@ sinan-mcp = "sinan_mcp.cli:main"
 [tool.setuptools.packages.find]
 include = ["sinan_mcp*"]
 
+[tool.setuptools.package-data]
+sinan_mcp = ["public_privacy.html"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_default_fixture_loop_scope = "function"
