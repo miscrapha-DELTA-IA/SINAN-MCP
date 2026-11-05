@@ -14,7 +14,7 @@
   <a href="https://modelcontextprotocol.io/"><img alt="Protocolo MCP" src="https://img.shields.io/badge/Protocol-MCP-334155" /></a>
 </p>
 
-<p><a href="#comece-aqui">Comece aqui</a> · <a href="#arquitetura">Arquitetura</a> · <a href="#demonstração-pública-sintética">Demonstração pública</a> · <a href="#documentação">Documentação</a> · <a href="../README.md">Versão em inglês</a></p>
+<p><a href="#para-quem-vai-revisar-o-projeto">Para revisores</a> · <a href="#comece-aqui">Instalação local</a> · <a href="#demonstração-pública-sintética">Demonstração</a> · <a href="README.md">Documentação</a> · <a href="../README.md">English</a></p>
 
 </div>
 
@@ -27,13 +27,19 @@
 
 O *Sistema de Informação de Agravos de Notificação* (SINAN) é uma fonte importante para a pesquisa em saúde pública no Brasil. O uso responsável de informações de vigilância exige mais do que obter um arquivo: é necessário compreender a origem dos dados, o sistema de notificação, o dicionário de variáveis, o ano de referência, as definições de caso e os riscos de divulgação.
 
-O **SINAN MCP** investiga como o **Model Context Protocol (MCP)** pode apoiar fluxos de pesquisa melhor documentados diante dessa complexidade.
-
-A proposta não é esconder as incertezas científicas atrás de um assistente de IA, mas **tornar explícitas a incerteza, a proveniência e as restrições de acesso**, enquanto se desenvolve uma infraestrutura aberta e reutilizável.
+O **SINAN MCP** é um projeto independente e de código aberto que utiliza o **Model Context Protocol (MCP)** para facilitar a consulta a referências e descrições relacionadas ao SINAN. A documentação científica, os exemplos fictícios de software e os ambientes de pesquisa restritos são mantidos separados.
 
 | **Descubra** | **Experimente** | **Investigue** |
 |:---|:---|:---|
 | Localize referências sobre agravos de notificação, portais oficiais e documentação técnica. | Utilize uma demonstração MCP somente de leitura com registros fictícios de tuberculose. | Use ferramentas locais separadas para importação, diagnóstico e métodos experimentais, sujeitos à revisão humana. |
+
+## Para quem vai revisar o projeto
+
+**O que já existe:** catálogo de referências oficiais, demonstração MCP pública com dados fictícios e um pacote documental de Zika e tuberculose com sete PDFs oficiais e 57 identificadores de campos.
+
+**O que estamos solicitando:** uma avaliação externa e objetiva da clareza, das transcrições documentais, da metodologia ou dos limites de privacidade. O [guia de revisão externa](instruments-2024/EXTERNAL_REVIEW.md) explica como participar, consultar fontes e registrar uma evidência verificável.
+
+**O que ainda não está aprovado:** a equivalência dos instrumentos com uma distribuição de dados do SINAN de 2024, a interpretação científica integral dos campos e os pareceres independentes. Uma verificação de integridade de PDF **não** autoriza o uso de dados de pacientes.
 
 ## O que está disponível
 
@@ -159,7 +165,7 @@ Este projeto é um **protótipo de pesquisa**, não um serviço epidemiológico 
 | Cobertura genérica de qualquer doença | **Não estabelecida** |
 | Uso clínico ou governamental | **Fora do escopo** |
 
-**Pesquisa em andamento: curadoria do dicionário de Zika.** Uma transcrição candidata de **37 campos de um PDF público de oito páginas** e **sete ressalvas documentais** está em revisão nos [PRs #25–#28](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/pull/28). Essas alterações permanecem **em rascunho, fora da branch principal**, e **não** validam a distribuição anual ZIKA/2024. A segunda revisão documental independente está pendente.
+**Escopo documental Zika/TB:** sete PDFs de origem oficial e 57 ocorrências de códigos de campo estão registrados na branch principal, incluindo 37 campos Zika, 15 campos selecionados de TB e cinco campos comuns. Isso **não** comprova a equivalência com a distribuição SINAN 2024. A revisão semântica independente, o confronto de versões e a avaliação de privacidade permanecem pendentes. Consulte o [protocolo documental](instruments-2024/REVIEW_PROTOCOL.md).
 
 Antes de interpretar qualquer agregado ou medida exploratória em pesquisa, consulte o [guia de interpretação epidemiológica](EPIDEMIOLOGY.md).
 
@@ -179,6 +185,9 @@ Vulnerabilidades devem ser comunicadas privadamente aos mantenedores, sem inclui
 
 | Comece por aqui | Conteúdo |
 |---|---|
+| [Centro de documentação](README.md) | Navegação por objetivo, evidências e limites do projeto |
+| [Guia de revisão externa](instruments-2024/EXTERNAL_REVIEW.md) | Instruções para conferência e registro de pareceres |
+| [Protocolo documental Zika/TB](instruments-2024/REVIEW_PROTOCOL.md) | Fontes oficiais, hashes, campos e revisões pendentes |
 | [Versão completa em inglês](../README.md) | Apresentação completa em inglês |
 | [Catálogo de agravos](MULTI_AGRAVO_CATALOG.md) | Escopo, fontes e identificadores internos |
 | [Interpretação epidemiológica](EPIDEMIOLOGY.md) | Definições, denominadores e limitações |
