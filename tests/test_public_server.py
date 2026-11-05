@@ -164,3 +164,18 @@ def test_public_mcp_tools_no_private_admin_routes():
             assert r2.structured_content["dados_reais_disponiveis"] is False
 
     asyncio.run(probe())
+
+
+@pytest.mark.parametrize("key,value", [
+    ("SINAN_PUBLIC_RATE_PER_MINUTE", "301"),
+    ("SINAN_PUBLIC_RATE_PER_MINUTE", "12000"),
+    ("SINAN_PUBLIC_MAX_IN_FLIGHT", "17"),
+    ("SINAN_PUBLIC_MAX_IN_FLIGHT", "128"),
+])
+def test_public_daemon_fails_closed_on_relaxed_env_caps(monkeypatch, key, value):
+    monkeypatch.setenv("SINAN_PUBLIC_HOST", "sinan-public.example.org")
+    monkeypatch.setenv("PORT", "10000")
+    monkeypatch.setenv(key, value)
+    # No network socket is opened. Reject before uvicorn.run.
+    with pytest.raises(ValueError, match="fora do intervalo seguro"):
+        public.start()

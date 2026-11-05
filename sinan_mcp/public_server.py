@@ -268,10 +268,10 @@ def start() -> None:
     app = PublicAdmissionGuard(
         mcp_app,
         requests_per_minute=bounded_int_env(
-            "SINAN_PUBLIC_RATE_PER_MINUTE", DEFAULT_RATE_PER_MINUTE, 12000
+            "SINAN_PUBLIC_RATE_PER_MINUTE", DEFAULT_RATE_PER_MINUTE, DEFAULT_RATE_PER_MINUTE
         ),
         max_in_flight=bounded_int_env(
-            "SINAN_PUBLIC_MAX_IN_FLIGHT", DEFAULT_MAX_IN_FLIGHT, 128
+            "SINAN_PUBLIC_MAX_IN_FLIGHT", DEFAULT_MAX_IN_FLIGHT, DEFAULT_MAX_IN_FLIGHT
         ),
     )
     # One worker keeps the in-memory guard globally consistent for this instance.

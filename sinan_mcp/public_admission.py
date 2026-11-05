@@ -47,10 +47,12 @@ class PublicAdmissionGuard:
         max_in_flight: int = DEFAULT_MAX_IN_FLIGHT,
         clock: Callable[[], float] = time.monotonic,
     ) -> None:
-        if not 1 <= requests_per_minute <= 12000:
-            raise ValueError("requests_per_minute deve estar entre 1 e 12000")
-        if not 1 <= max_in_flight <= 128:
-            raise ValueError("max_in_flight deve estar entre 1 e 128")
+        # Do not let a future environment/configuration change silently relax
+        # protective ceilings for the synthetic-only public deployment.
+        if not 1 <= requests_per_minute <= DEFAULT_RATE_PER_MINUTE:
+            raise ValueError(f"requests_per_minute deve estar entre 1 e {DEFAULT_RATE_PER_MINUTE}")
+        if not 1 <= max_in_flight <= DEFAULT_MAX_IN_FLIGHT:
+            raise ValueError(f"max_in_flight deve estar entre 1 e {DEFAULT_MAX_IN_FLIGHT}")
         self.app = app
         self.requests_per_minute = requests_per_minute
         self.max_in_flight = max_in_flight
