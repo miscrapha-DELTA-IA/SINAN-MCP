@@ -1,7 +1,7 @@
 # Documentação | SINAN MCP
 
 **Centro documental do projeto — 5 de novembro de 2026**  
-[Visão geral](../README.md) · [English overview](../README.md) · [Código-fonte](../sinan_mcp/) · [Segurança](../SECURITY.md)
+[Visão geral](../README.md) · [English overview](../README.md) · [Código-fonte](../sinan_mcp) · [Segurança](../SECURITY.md)
 
 O **SINAN MCP** é um projeto independente de código aberto que utiliza o *Model Context Protocol* para organizar a consulta a referências documentais e testar fluxos de pesquisa epidemiológica. **Não é um serviço do Ministério da Saúde, SINAN ou DATASUS.** A demonstração pública utiliza somente dados fictícios; não consulta registros reais de notificações.
 
@@ -17,7 +17,7 @@ O **SINAN MCP** é um projeto independente de código aberto que utiliza o *Mode
 | Consultar as evidências de Zika/TB | [Protocolo documental 2024](instruments-2024/REVIEW_PROTOCOL.md) | Versões, sete PDFs, hashes, 57 campos e limites |
 | Conferir os campos | [Matriz CSV](instruments-2024/field_matrix.csv) | Código, rótulo, página, origem e status de revisão |
 | Verificar os PDFs de origem | [Manifesto JSON](instruments-2024/source_manifest.json) | Fonte exata, páginas, hash e versionamento |
-| Entender o catálogo | [Catálogo documental](DOCUMENTARY_CATALOG_V1.md) | Referências institucionais para 14 temas |
+| Entender o catálogo | [Catálogo documental](research/DOCUMENTARY_CATALOG_V1.md) | Referências institucionais para 14 temas |
 | Testar o software | [Instalação local](LOCAL_SETUP.md) | Demonstração exclusivamente sintética |
 | Reportar um problema | [Contribuições](../CONTRIBUTING.md) | Fluxo de issue, PR e evidências reprodutíveis |
 
@@ -38,12 +38,12 @@ O [protocolo 2024](instruments-2024/REVIEW_PROTOCOL.md) diferencia as provas aut
 
 | Área | Conteúdo |
 | --- | --- |
-| [Catálogo multiagravo](MULTI_AGRAVO_CATALOG.md) | Cobertura prevista e identificação interna |
-| [Epidemiologia](EPIDEMIOLOGY.md) | Casos, indicadores, denominadores e inferências |
-| [Segurança operacional](SECURITY_OPERATIONS.md) | Controles técnicos e limitações da implantação |
-| [Privacidade e divulgação](PUBLIC_DISCLOSURE.md) | Aviso da demonstração pública e dados sintéticos |
-| [Publicação de agregados](AGGREGATE_PUBLICATION.md) | Bloqueios e avaliação para eventual uso futuro |
-| [Equidade em modelos](FAIRNESS_PROTOCOL.md) | Métodos experimentais, exclusivamente locais |
+| [Catálogo multiagravo](research/MULTI_AGRAVO_CATALOG.md) | Cobertura prevista e identificação interna |
+| [Epidemiologia](research/EPIDEMIOLOGY.md) | Casos, indicadores, denominadores e inferências |
+| [Segurança operacional](operations/SECURITY_OPERATIONS.md) | Controles técnicos e limitações da implantação |
+| [Privacidade e divulgação](compliance/PUBLIC_DISCLOSURE.md) | Aviso da demonstração pública e dados sintéticos |
+| [Publicação de agregados](research/AGGREGATE_PUBLICATION.md) | Bloqueios e avaliação para eventual uso futuro |
+| [Equidade em modelos](research/FAIRNESS_PROTOCOL.md) | Métodos experimentais, exclusivamente locais |
 | [Contrato MCP](public-mcp-contract-v1.json) | Interface versionada da demonstração |
 
 ## Registro de mudanças

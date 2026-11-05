@@ -30,7 +30,7 @@ Para iniciar o servidor MCP local com a base fictícia:
 .\.venv\Scripts\python.exe -m sinan_mcp --db ./data/sinan-demo.sqlite3 servir
 ```
 
-O modo local utiliza **stdio**: aguarda comunicação de um cliente MCP e não deve ser exposto à internet. Para configurar um túnel de desenvolvimento no Windows, consulte o [procedimento técnico específico](CHATGPT_TUNNEL_WINDOWS.md) e suas restrições de privacidade.
+O modo local utiliza **stdio**: aguarda comunicação de um cliente MCP e não deve ser exposto à internet. Para configurar um túnel de desenvolvimento no Windows, consulte o [procedimento técnico específico](operations/CHATGPT_TUNNEL_WINDOWS.md) e suas restrições de privacidade.
 
 ## macOS ou Linux
 

@@ -52,7 +52,7 @@ O **SINAN MCP** é um projeto independente e de código aberto que utiliza o **M
 | **Métodos de pesquisa** | Utilitários experimentais de equidade algorítmica e revisão de agregados | Nenhum modelo preditivo ou indicador oficial foi validado |
 | **Documentação e testes** | Suíte de testes Python, integração contínua, segurança e contribuições | Testes aprovados não equivalem a certificação científica, de privacidade ou segurança |
 
-A presença de um agravo no catálogo **não** significa que todos os seus arquivos históricos, dicionários ou indicadores sejam compatíveis. Consulte o [escopo do catálogo](MULTI_AGRAVO_CATALOG.md).
+A presença de um agravo no catálogo **não** significa que todos os seus arquivos históricos, dicionários ou indicadores sejam compatíveis. Consulte o [escopo do catálogo](research/MULTI_AGRAVO_CATALOG.md).
 
 ## Arquitetura
 
@@ -127,7 +127,7 @@ Após criar a base sintética:
 python -m sinan_mcp --db ./data/sinan-demo.sqlite3 servir
 ```
 
-Esse comando inicia o **servidor MCP local via entrada e saída padrão (stdio)**. Configure o cliente MCP escolhido para executar o comando usando caminhos absolutos para o Python e o banco de dados. **Não** exponha o servidor local à internet. Consulte o [guia do conector ChatGPT para Windows](CHATGPT_TUNNEL_WINDOWS.md) e a [política de segurança](../SECURITY.md).
+Esse comando inicia o **servidor MCP local via entrada e saída padrão (stdio)**. Configure o cliente MCP escolhido para executar o comando usando caminhos absolutos para o Python e o banco de dados. **Não** exponha o servidor local à internet. Consulte o [guia do conector ChatGPT para Windows](operations/CHATGPT_TUNNEL_WINDOWS.md) e a [política de segurança](../SECURITY.md).
 
 Os identificadores de comandos e ferramentas permanecem em português por compatibilidade com a interface já implementada. Eles não são textos de apresentação traduzíveis.
 
@@ -137,7 +137,7 @@ Os identificadores de comandos e ferramentas permanecem em português por compat
 |---|---|
 | **MCP via HTTP com transmissão** | [sinan-mcp-public-preview.onrender.com/mcp](https://sinan-mcp-public-preview.onrender.com/mcp) |
 | **Verificação de funcionamento** | [sinan-mcp-public-preview.onrender.com/health](https://sinan-mcp-public-preview.onrender.com/health) |
-| **Regras de divulgação** | [Aviso de demonstração e privacidade](PUBLIC_DISCLOSURE.md) |
+| **Regras de divulgação** | [Aviso de demonstração e privacidade](compliance/PUBLIC_DISCLOSURE.md) |
 
 A demonstração é hospedada separadamente, **somente com dados sintéticos**, e pode demorar a responder após períodos de inatividade na hospedagem gratuita. A disponibilidade do endereço pode mudar; um link publicado não garante funcionamento contínuo.
 
@@ -167,7 +167,7 @@ Este projeto é um **protótipo de pesquisa**, não um serviço epidemiológico 
 
 **Escopo documental Zika/TB:** sete PDFs de origem oficial e 57 ocorrências de códigos de campo estão registrados na branch principal, incluindo 37 campos Zika, 15 campos selecionados de TB e cinco campos comuns. Isso **não** comprova a equivalência com a distribuição SINAN 2024. A revisão semântica independente, o confronto de versões e a avaliação de privacidade permanecem pendentes. Consulte o [protocolo documental](instruments-2024/REVIEW_PROTOCOL.md).
 
-Antes de interpretar qualquer agregado ou medida exploratória em pesquisa, consulte o [guia de interpretação epidemiológica](EPIDEMIOLOGY.md).
+Antes de interpretar qualquer agregado ou medida exploratória em pesquisa, consulte o [guia de interpretação epidemiológica](research/EPIDEMIOLOGY.md).
 
 ## Segurança e ética em pesquisa
 
@@ -189,12 +189,12 @@ Vulnerabilidades devem ser comunicadas privadamente aos mantenedores, sem inclui
 | [Guia de revisão externa](instruments-2024/EXTERNAL_REVIEW.md) | Instruções para conferência e registro de pareceres |
 | [Protocolo documental Zika/TB](instruments-2024/REVIEW_PROTOCOL.md) | Fontes oficiais, hashes, campos e revisões pendentes |
 | [Versão completa em inglês](../README.md) | Apresentação completa em inglês |
-| [Catálogo de agravos](MULTI_AGRAVO_CATALOG.md) | Escopo, fontes e identificadores internos |
-| [Interpretação epidemiológica](EPIDEMIOLOGY.md) | Definições, denominadores e limitações |
-| [Demonstração pública e privacidade](PUBLIC_DISCLOSURE.md) | Limites dos dados sintéticos e aviso do serviço |
-| [Consolidação técnica e testes MCP](TECHNICAL_CONSOLIDATION_E2E.md) | Contrato público, testes e versão confirmada do Render |
-| [Pesquisa local e divulgação responsável](AGGREGATE_PUBLICATION.md) | Agregados candidatos e requisitos de revisão independente |
-| [Protocolo de equidade preditiva](FAIRNESS_PROTOCOL.md) | Auditoria exploratória local e limitações |
+| [Catálogo de agravos](research/MULTI_AGRAVO_CATALOG.md) | Escopo, fontes e identificadores internos |
+| [Interpretação epidemiológica](research/EPIDEMIOLOGY.md) | Definições, denominadores e limitações |
+| [Demonstração pública e privacidade](compliance/PUBLIC_DISCLOSURE.md) | Limites dos dados sintéticos e aviso do serviço |
+| [Consolidação técnica e testes MCP](operations/TECHNICAL_CONSOLIDATION_E2E.md) | Contrato público, testes e versão confirmada do Render |
+| [Pesquisa local e divulgação responsável](research/AGGREGATE_PUBLICATION.md) | Agregados candidatos e requisitos de revisão independente |
+| [Protocolo de equidade preditiva](research/FAIRNESS_PROTOCOL.md) | Auditoria exploratória local e limitações |
 | [Política de segurança](../SECURITY.md) | Tratamento de dados e segurança operacional |
 | [Como contribuir](../CONTRIBUTING.md) | Como propor alterações com evidências reprodutíveis |
 

@@ -52,7 +52,7 @@ Brazil's *Sistema de Informação de Agravos de Notificação* (SINAN) is a cruc
 | **Research methods** | Experimental local fairness and aggregate-review utilities | No officially validated predictive model or indicator is provided |
 | **Documentation and tests** | Python test suite, CI matrix, security guidance and contribution policy | Passing tests is not a scientific, privacy or security certification |
 
-A disease name appearing in the catalogue does **not** mean all its historical files, dictionaries or indicators are supported. See [catalogue scope](docs/MULTI_AGRAVO_CATALOG.md).
+A disease name appearing in the catalogue does **not** mean all its historical files, dictionaries or indicators are supported. See [catalogue scope](docs/research/MULTI_AGRAVO_CATALOG.md).
 
 ## Architecture
 
@@ -127,7 +127,7 @@ After creating the synthetic database:
 python -m sinan_mcp --db ./data/sinan-demo.sqlite3 servir
 ```
 
-This command starts the **local stdio MCP server**. Configure your chosen MCP client to launch it with the appropriate absolute Python and database paths. Do **not** expose the local server on a public network. See the [Windows ChatGPT connector guide](docs/CHATGPT_TUNNEL_WINDOWS.md) and [security policy](SECURITY.md).
+This command starts the **local stdio MCP server**. Configure your chosen MCP client to launch it with the appropriate absolute Python and database paths. Do **not** expose the local server on a public network. See the [Windows ChatGPT connector guide](docs/operations/CHATGPT_TUNNEL_WINDOWS.md) and [security policy](SECURITY.md).
 
 ## Public synthetic preview
 
@@ -135,13 +135,13 @@ This command starts the **local stdio MCP server**. Configure your chosen MCP cl
 |---|---|
 | **MCP Streamable HTTP** | [sinan-mcp-public-preview.onrender.com/mcp](https://sinan-mcp-public-preview.onrender.com/mcp) |
 | **Service health check** | [sinan-mcp-public-preview.onrender.com/health](https://sinan-mcp-public-preview.onrender.com/health) |
-| **Public-service rules** | [Launch and privacy disclosure](docs/PUBLIC_DISCLOSURE.md) |
+| **Public-service rules** | [Launch and privacy disclosure](docs/compliance/PUBLIC_DISCLOSURE.md) |
 | **Product information (`websiteURL`)** | [Sobre o projeto](https://sinan-mcp-public-preview.onrender.com/sobre) |
 | **User support (`supportURL`)** | [Suporte e contato](https://sinan-mcp-public-preview.onrender.com/suporte) |
-| **Privacy policy (`privacyPolicyURL`)** | [Política LGPD](https://sinan-mcp-public-preview.onrender.com/privacidade) · [conformidade em acompanhamento](docs/PRIVACY_RELEASE_GATE.md) |
+| **Privacy policy (`privacyPolicyURL`)** | [Política LGPD](https://sinan-mcp-public-preview.onrender.com/privacidade) · [conformidade em acompanhamento](docs/compliance/PRIVACY_RELEASE_GATE.md) |
 | **Service terms (`termsOfServiceURL`)** | [Termos de Uso](https://sinan-mcp-public-preview.onrender.com/termos) |
-| **Listing review preparation** | [URLs e requisitos ainda pendentes](docs/PUBLIC_LISTING_URLS.md) |
-| **Portable plugin package (preflight only)** | [Manifestos, ZIP e portões de revisão](docs/PUBLIC_PLUGIN_PACKAGE_PREFLIGHT.md) |
+| **Listing review preparation** | [URLs e requisitos ainda pendentes](docs/operations/PUBLIC_LISTING_URLS.md) |
+| **Portable plugin package (preflight only)** | [Manifestos, ZIP e portões de revisão](docs/operations/PUBLIC_PLUGIN_PACKAGE_PREFLIGHT.md) |
 
 The preview is hosted separately, with **synthetic records only**, and may take time to respond after inactivity on free hosting. Endpoint availability can change; a link is not an uptime guarantee.
 
@@ -154,7 +154,7 @@ listar_fontes_oficiais()
 listar_agravos()
 ```
 
-**Public documentary instrument references (`0.4.0a6`):** `descrever_agravo("ZIKA")` and `descrever_agravo("TUBE")` expose the immutable PDF source URLs, byte SHA-256 checks, observed versions and a **documentation-only** list of field names/cited pages. `pesquisar_agravos` adds a compact evidence summary. Neither route validates the 2024 data release, imports microdata, provides epidemiological statistics or represents an independent scientific approval.\n\n**Zika/TB 2024 documentary validation (pending independent review):** [7 official PDF source identities, 57 field metadata rows, byte-integrity audit and 3-person review protocol](docs/instruments-2024/REVIEW_PROTOCOL.md). This pack contains no data records, has no approved 2024 dataset concordance, and is not authorization to publish epidemiological indicators.\n\n**Evidence-tracked documentary catalogue (v1):** the 14 example condition entries now link to **17 individually identified institutional pages**, with source type, dated curation, limitations and a research checklist. Accent-tolerant search supports curated synonyms and typo suggestions; no clinical dictionary or real dataset has been verified or imported. See [documentary catalogue and provenance](docs/DOCUMENTARY_CATALOG_V1.md).
+**Public documentary instrument references (`0.4.0a6`):** `descrever_agravo("ZIKA")` and `descrever_agravo("TUBE")` expose the immutable PDF source URLs, byte SHA-256 checks, observed versions and a **documentation-only** list of field names/cited pages. `pesquisar_agravos` adds a compact evidence summary. Neither route validates the 2024 data release, imports microdata, provides epidemiological statistics or represents an independent scientific approval.\n\n**Zika/TB 2024 documentary validation (pending independent review):** [7 official PDF source identities, 57 field metadata rows, byte-integrity audit and 3-person review protocol](docs/instruments-2024/REVIEW_PROTOCOL.md). This pack contains no data records, has no approved 2024 dataset concordance, and is not authorization to publish epidemiological indicators.\n\n**Evidence-tracked documentary catalogue (v1):** the 14 example condition entries now link to **17 individually identified institutional pages**, with source type, dated curation, limitations and a research checklist. Accent-tolerant search supports curated synonyms and typo suggestions; no clinical dictionary or real dataset has been verified or imported. See [documentary catalogue and provenance](docs/research/DOCUMENTARY_CATALOG_V1.md).
 
 The public demonstration also includes narrow numeric examples for a **fictional** TUBE/2024/PI dataset. Any returned counts must be interpreted solely as software demonstration output, never as evidence about real populations.
 
@@ -173,7 +173,7 @@ This is a **research prototype**, not a completed epidemiological data service.
 
 **Zika/TB documentary scope:** seven source-locked official PDFs and 57 field-code occurrences are now documented on the default branch. The 37 Zika fields, 15 selected TB fields and five common notification fields are **not** a verified 2024 export schema. Independent semantic, version-concordance and privacy reviews are still required. See the [review protocol](docs/instruments-2024/REVIEW_PROTOCOL.md).
 
-Read the [epidemiological interpretation guide](docs/EPIDEMIOLOGY.md) before using any aggregate or exploratory measure in research.
+Read the [epidemiological interpretation guide](docs/research/EPIDEMIOLOGY.md) before using any aggregate or exploratory measure in research.
 
 ## Security and research ethics
 
@@ -195,12 +195,12 @@ Security concerns should be reported privately to maintainers, without including
 | [External review guide](docs/instruments-2024/EXTERNAL_REVIEW.md) | How to inspect sources and return a verifiable review |
 | [Zika/TB evidence protocol](docs/instruments-2024/REVIEW_PROTOCOL.md) | Seven official PDFs, locked hashes, 57 field tokens and pending approvals |
 | [Complete Portuguese README](docs/pt-BR.md) | Project overview in Portuguese |
-| [Condition catalogue](docs/MULTI_AGRAVO_CATALOG.md) | Scope, sources and internal aliases |
-| [Epidemiological interpretation](docs/EPIDEMIOLOGY.md) | Definitions, denominators and limitations |
-| [Public preview and disclosure](docs/PUBLIC_DISCLOSURE.md) | Synthetic-data boundary and service notice |
-| [Technical E2E and deployment baseline](docs/TECHNICAL_CONSOLIDATION_E2E.md) | Public MCP contract, tests and verified Render revision |
-| [Local research and release safeguards](docs/AGGREGATE_PUBLICATION.md) | Candidate aggregates and independent review requirements |
-| [Predictive fairness protocol](docs/FAIRNESS_PROTOCOL.md) | Exploratory offline assessment and limitations |
+| [Condition catalogue](docs/research/MULTI_AGRAVO_CATALOG.md) | Scope, sources and internal aliases |
+| [Epidemiological interpretation](docs/research/EPIDEMIOLOGY.md) | Definitions, denominators and limitations |
+| [Public preview and disclosure](docs/compliance/PUBLIC_DISCLOSURE.md) | Synthetic-data boundary and service notice |
+| [Technical E2E and deployment baseline](docs/operations/TECHNICAL_CONSOLIDATION_E2E.md) | Public MCP contract, tests and verified Render revision |
+| [Local research and release safeguards](docs/research/AGGREGATE_PUBLICATION.md) | Candidate aggregates and independent review requirements |
+| [Predictive fairness protocol](docs/research/FAIRNESS_PROTOCOL.md) | Exploratory offline assessment and limitations |
 | [Security policy](SECURITY.md) | Data handling, threat boundaries and deployment precautions |
 | [Contributing](CONTRIBUTING.md) | How to propose changes with reproducible evidence |
 
@@ -228,7 +228,7 @@ If the project is useful for your work, **star the repository**, share it with c
 
 ## Public-preview security operations
 
-Security hardening is deployed in the **synthetic-only** public Render preview (2026-11-04, commit `3ac1db9`). Protections include per-process admission limits, cross-platform dependency audits and a hash-pinned runtime build. HTTPS smoke checks passed after deployment. A read-only [scheduled public smoke workflow](.github/workflows/public-live-smoke.yml) monitors the fictional MCP contract; scheduling is best effort and does not imply immediate alerts or clinical-data approval. Read [operational safeguards](docs/SECURITY_OPERATIONS.md), [branch protection](docs/BRANCH_PROTECTION.md) and [Render verification checklist](docs/RENDER_SECURITY_VERIFICATION.md).
+Security hardening is deployed in the **synthetic-only** public Render preview (2026-11-04, commit `3ac1db9`). Protections include per-process admission limits, cross-platform dependency audits and a hash-pinned runtime build. HTTPS smoke checks passed after deployment. A read-only [scheduled public smoke workflow](.github/workflows/public-live-smoke.yml) monitors the fictional MCP contract; scheduling is best effort and does not imply immediate alerts or clinical-data approval. Read [operational safeguards](docs/operations/SECURITY_OPERATIONS.md), [branch protection](docs/operations/BRANCH_PROTECTION.md) and [Render verification checklist](docs/operations/RENDER_SECURITY_VERIFICATION.md).
 
 ## License and attribution
 
