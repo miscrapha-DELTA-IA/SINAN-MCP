@@ -15,8 +15,6 @@ import hashlib
 import json
 from pathlib import Path
 import re
-import shutil
-import subprocess
 import tempfile
 from urllib.parse import urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
@@ -112,16 +110,17 @@ def inspect_matrix() -> dict:
 
 
 def _pdfinfo_pages(path: Path) -> int:
-    binary = shutil.which("pdfinfo")
-    if not binary:
-        raise AuditError("pdfinfo/poppler-utils not installed in audit environment")
-    result = subprocess.run([binary, str(path)], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                            text=True, timeout=25, check=False)
-    require(result.returncode == 0, "PDF parser rejected downloaded document")
-    match = re.search(r"^Pages:\s*(\d+)\s*$", result.stdout, flags=re.MULTILINE)
-    require(bool(match), "PDF page count unavailable")
-    return int(match.group(1))
-
+    """Use pypdf==5.9.0, pinned by CI; no Poppler or executables."""
+    try:
+        from pypdf import PdfReader
+    except ImportError as exc:
+        raise AuditError("Install pinned pypdf==5.9.0 to verify PDF structure") from exc
+    try:
+        pages = len(PdfReader(str(path), strict=False).pages)
+    except Exception as exc:
+        raise AuditError("PDF parser rejected downloaded document") from exc
+    require(pages > 0, "PDF page count unavailable")
+    return pages
 
 def fetch_one(document: dict, opener) -> dict:
     url = document["source_url"]
