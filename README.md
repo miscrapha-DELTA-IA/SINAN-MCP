@@ -203,7 +203,6 @@ Security concerns should be reported privately to maintainers, without including
 | [Predictive fairness protocol](docs/FAIRNESS_PROTOCOL.md) | Exploratory offline assessment and limitations |
 | [Security policy](SECURITY.md) | Data handling, threat boundaries and deployment precautions |
 | [Contributing](CONTRIBUTING.md) | How to propose changes with reproducible evidence |
-| [Historical technical notes](docs/TECHNICAL_README_ARCHIVE.md) | Archived detailed implementation context; not current validation status |
 
 ## Roadmap
 
