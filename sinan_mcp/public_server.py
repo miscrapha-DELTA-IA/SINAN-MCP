@@ -12,13 +12,14 @@ from __future__ import annotations
 import os
 import re
 from collections import Counter
+from importlib.resources import files
 from typing import Any
 
 from mcp.server import MCPServer
 from mcp.types import ToolAnnotations
 from mcp.server.mcpserver.exceptions import ToolError
 from mcp.server.transport_security import TransportSecuritySettings
-from starlette.responses import JSONResponse
+from starlette.responses import HTMLResponse, JSONResponse
 
 from .catalogue import listar_agravos as _catalogue, metodologia_tuberculose as _method
 from .official_sources import (
@@ -223,6 +224,24 @@ def proporcao_abandono_tuberculose(ano_inicio: int | None = None,
         "proveniencia": _result_meta(),
         "aviso": WARNING,
     }
+
+
+@mcp.custom_route("/privacy", methods=["GET"])
+@mcp.custom_route("/privacidade", methods=["GET"])
+async def public_privacy(_request):
+    """Static, accessible LGPD notice; no request data or external fetches."""
+    html = files("sinan_mcp").joinpath("public_privacy.html").read_text(encoding="utf-8")
+    return HTMLResponse(
+        html,
+        headers={
+            "Cache-Control": "no-store",
+            "X-Content-Type-Options": "nosniff",
+            "Content-Security-Policy": (
+                "default-src 'none'; style-src 'unsafe-inline'; "
+                "base-uri 'none'; frame-ancestors 'none'; form-action 'none'"
+            ),
+        },
+    )
 
 
 @mcp.custom_route("/health", methods=["GET"])

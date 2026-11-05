@@ -25,6 +25,39 @@ def test_public_does_not_import_private_data_pipeline(monkeypatch, tmp_path):
         assert forbidden not in src
 
 
+def test_public_privacy_document_is_packaged_and_servable():
+    """The privacy notice is a static bundled asset, not a database or remote fetch."""
+    from importlib.resources import files
+
+    html = files("sinan_mcp").joinpath("public_privacy.html").read_text(encoding="utf-8")
+    assert '<html lang="pt-BR">' in html
+    assert "Política de Privacidade" in html
+    assert "SINAN" in html and "sintética" in html
+    assert "Render" in html and "7 dias" in html
+    assert "LGPD" in html and "ANPD" in html
+    assert "Raphael Múcio Teixeira Cabral de Pina Bulhões Di Giorgio" in html
+    assert "miscrapha@gmail.com" in html
+    assert "[PENDENTE" not in html
+    assert "Minuta em validação" not in html
+    assert "a confirmar após revisão" not in html
+    assert "dados técnicos" in html or "Metadados técnicos" in html
+    assert "direitos" in html.lower()
+    assert "transferência internacional" in html.lower()
+    assert "<script" not in html.lower()
+    assert "<form" not in html.lower()
+
+    async def read_policy():
+        response = await public.public_privacy(None)
+        assert response.status_code == 200
+        assert response.body.decode("utf-8") == html
+        assert response.headers["content-type"].startswith("text/html")
+        assert response.headers["cache-control"] == "no-store"
+        assert response.headers["x-content-type-options"] == "nosniff"
+        assert "default-src 'none'" in response.headers["content-security-policy"]
+
+    asyncio.run(read_policy())
+
+
 def test_public_values_are_labelled_fictional():
     base = public.listar_bases()
     assert base["dados_reais_disponiveis"] is False

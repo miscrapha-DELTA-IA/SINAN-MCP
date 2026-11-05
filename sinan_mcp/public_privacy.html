@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="index,follow">
+  <meta name="description" content="Política de privacidade da demonstração pública sintética do SINAN MCP.">
+  <title>Política de privacidade | SINAN MCP — demonstração sintética</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.62; color: #172333; background: #f4f8fb; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    main { width: min(900px, calc(100% - 2rem)); margin: 2.5rem auto 4rem; background: #fff; border: 1px solid #dce5eb; border-radius: 14px; padding: clamp(1.25rem,4vw,3rem); }
+    h1 { line-height: 1.18; font-size: clamp(1.9rem,4vw,2.7rem); margin: .2rem 0 .75rem; }
+    h2 { font-size: 1.3rem; margin: 2rem 0 .45rem; line-height: 1.3; }
+    p, li { max-width: 74ch; }
+    ul { padding-left: 1.5rem; }
+    a { color: #075985; overflow-wrap: anywhere; }
+    a:focus-visible { outline: 3px solid #0e7490; outline-offset: 3px; }
+    .eyebrow { color: #38576b; font-size: .86rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+    .notice { border-left: 4px solid #9a6700; padding: .6rem 1rem; background: #fff7e6; }
+    .summary { border-left: 4px solid #087b8b; padding: .5rem 1rem; background: #eaf5f7; }
+    footer { border-top: 1px solid #dce5eb; margin-top: 2.5rem; padding-top: 1rem; font-size: .9rem; }
+    code { background: #eff3f7; padding: .1rem .3rem; border-radius: 4px; }
+  </style>
+</head>
+<body>
+<main>
+<p class="eyebrow">SINAN MCP · Research Alpha · somente dados fictícios</p>
+<h1>Política de Privacidade</h1>
+<p><strong>Última atualização:</strong> 5 de novembro de 2026 · <strong>Vigência:</strong> a partir da publicação desta versão na página pública do serviço.</p>
+<p class="notice"><strong>Aviso de escopo:</strong> esta política descreve exclusivamente a demonstração pública sintética. Não constitui certificado de conformidade da ANPD, nem autorização para publicar dados reais do SINAN. A adequação dos mecanismos de transferência internacional e dos contratos de infraestrutura é objeto de revisão permanente, sem prejuízo dos direitos dos titulares.</p>
+<p class="summary">O SINAN MCP público é uma demonstração de software independente. Seus resultados numéricos provêm de <strong>120 registros inteiramente fictícios</strong> de tuberculose (TUBE/2024/PI). <strong>Não</strong> há consulta a pacientes, dados reais do SINAN, prontuários, bancos privados ou ferramentas de escrita. Mesmo assim, o acesso ao serviço pode gerar <strong>dados técnicos pessoais</strong>, tratados por sua infraestrutura e pelo cliente MCP utilizado.</p>
+
+<h2>1. Responsável e escopo</h2>
+<p><strong>Operação técnica:</strong> projeto independente SINAN MCP, repositório público <a href="https://github.com/miscrapha-DELTA-IA/SINAN-MCP">miscrapha-DELTA-IA/SINAN-MCP</a>. <strong>Controlador responsável:</strong> Raphael Múcio Teixeira Cabral de Pina Bulhões Di Giorgio (pessoa natural). <strong>Contato privado para direitos dos titulares e assuntos de proteção de dados:</strong> <a href="mailto:miscrapha@gmail.com?subject=Privacidade%20SINAN%20MCP">miscrapha@gmail.com</a>. Este é um canal de contato do controlador e não implica designação formal de encarregado (DPO). Não envie dados pessoais em issues públicas do GitHub.</p>
+<p>Esta política se aplica exclusivamente ao servidor público de demonstração <a href="https://sinan-mcp-public-preview.onrender.com/mcp">/mcp</a>, à consulta de estado <a href="https://sinan-mcp-public-preview.onrender.com/health">/health</a> e às páginas informativas deste mesmo serviço. <strong>Não</strong> se aplica ao servidor local/privado de pesquisa, ao uso de bases reais fora do servidor público nem às operações autônomas de clientes como ChatGPT.</p>
+<p>O projeto não é vinculado, operado ou aprovado pelo Ministério da Saúde, DATASUS, SINAN ou OpenAI. A demonstração não produz indicadores epidemiológicos oficiais nem presta assistência clínica.</p>
+
+<h2>2. Dados envolvidos</h2>
+<ul>
+  <li><strong>Entradas de ferramenta:</strong> termo pesquisado, código de agravo e filtros fechados fornecidos voluntariamente pelo cliente MCP. O servidor usa essas informações para gerar resposta durante a requisição; não mantém cadastro, histórico individual de pesquisas nem banco de usuários.</li>
+  <li><strong>Metadados técnicos:</strong> conforme o fluxo de hospedagem, o provedor e a rede podem tratar endereço IP, data e hora, cabeçalhos técnicos, identificadores de requisição, rota, código de resposta e eventos de segurança. IP e identificadores correlacionáveis podem ser dados pessoais segundo a legislação aplicável.</li>
+  <li><strong>Informações de contato:</strong> quando uma pessoa escrever para o e-mail indicado na seção 1, poderão ser tratados endereço de e-mail, conteúdo da mensagem e dados mínimos indispensáveis à validação proporcional da solicitação, resposta e documentação do atendimento, respeitados os prazos e limites legais.</li>
+  <li><strong>Exemplos científicos:</strong> catálogo documental estático e 120 linhas artificiais geradas pelo código. Nenhum dado de paciente é buscado ou armazenado pelo servidor público.</li>
+</ul>
+<p><strong>Não solicitamos</strong> nome completo, CPF, prontuário, diagnóstico pessoal, exames, senha, credenciais, informações financeiras ou arquivos clínicos. Não insira essas informações, inclusive em campos livres ou prompts do seu cliente. Caso seja enviado conteúdo indevido, não há compromisso de que camadas externas de infraestrutura ou o cliente MCP deixem de processá-lo.</p>
+
+<h2>3. Finalidades e hipóteses legais</h2>
+<ul>
+  <li><strong>Atender à consulta técnica:</strong> receber os parâmetros mínimos e retornar informações referenciais ou resultados simulados, sem associá-los a uma conta pessoal.</li>
+  <li><strong>Segurança e funcionamento:</strong> bloquear abuso, diagnosticar erros e manter a disponibilidade. Para dados pessoais comuns estritamente necessários a essas finalidades, o operador deverá documentar previamente a avaliação de <strong>legítimo interesse</strong> (art. 7º, IX, LGPD), com teste de necessidade e balanceamento; o interesse legítimo não autoriza tratar dados pessoais sensíveis.</li>
+  <li><strong>Obrigações legais e solicitações dos titulares:</strong> quando efetivamente aplicável, observar a hipótese de cumprimento de obrigação legal ou regulatória (art. 7º, II, LGPD) e os direitos do titular.</li>
+</ul>
+<p>O projeto não usa as consultas do servidor público para publicidade comportamental, venda de dados, criação de perfis individuais, decisões automatizadas sobre pessoas, treinamento de modelos ou monitoramento individual da navegação. A utilização dos dados pelo cliente MCP segue os termos e configurações do próprio cliente.</p>
+
+<h2>4. Hospedagem, compartilhamento e localização</h2>
+<p>O serviço utiliza a <a href="https://render.com/">Render Services, Inc.</a> para hospedagem e infraestrutura. A instância pública foi configurada na região <strong>Oregon, Estados Unidos</strong>; o provedor e seus suboperadores podem tratar dados técnicos necessários ao funcionamento e à segurança. A Render disponibiliza <a href="https://render.com/dpa">aditivo de tratamento de dados (DPA)</a>, incorporado aos seus <a href="https://render.com/terms">Termos de Serviço</a>. Os termos contratuais e as transferências concretas são avaliados pelo controlador para verificar sua adequação à LGPD brasileira.</p>
+<p>Clientes MCP, como ChatGPT, enviam solicitações ao endpoint e recebem respostas. O tratamento dessas solicitações, conversas e eventuais registros pelo cliente ou sua plataforma está sujeito às respectivas políticas, controles e relações contratuais; o servidor SINAN MCP não administra esse tratamento. O GitHub hospeda o código público e workflows de teste com dados fictícios; não deve ser usado para publicar pedidos individuais de privacidade ou material clínico. O contato de privacidade é recebido pelo <strong>Gmail (Google)</strong>, que trata os dados necessários à entrega e manutenção do e-mail conforme suas próprias condições e políticas. Consulte a <a href="https://policies.google.com/privacy?hl=pt-BR">Política de Privacidade do Google</a>. Não envie documentos de identidade, informações de saúde ou arquivos sensíveis no primeiro contato.</p>
+<p><strong>Tratamento fora do Brasil:</strong> pode ocorrer no uso da hospedagem e serviços relacionados. Quando houver transferência internacional juridicamente caracterizada, o controlador deverá empregar base legal e mecanismo de transferência admitido pela LGPD e pela Resolução CD/ANPD nº 19/2024 e manter documentação pertinente. Os serviços do provedor podem envolver suboperadores, cuja lista deve ser verificada na <a href="https://render.com/trust">página de confiança da Render</a>. A existência de um DPA ou a hospedagem nos EUA, por si sós, não comprovam cumprimento integral dos requisitos brasileiros.</p>
+
+<h2>5. Retenção e eliminação</h2>
+<p>O código da aplicação pública não mantém base persistente de usuários, pesquisas pessoais ou resultados individuais. O controle de taxa é agregado por processo, e o log de acesso individual do Uvicorn está desativado nesta configuração. Isso <strong>não elimina</strong> os possíveis registros do proxy, hospedagem, redes ou cliente MCP.</p>
+<p>O workspace Render <strong>Hobby</strong> tem retenção documental padrão de <strong>7 dias para logs de serviço acessíveis na Render</strong>, sujeita à política do provedor e às categorias efetivamente registradas. Esse prazo não deve ser interpretado como garantia universal para telemetria de infraestrutura, backups, registros de conta, evidências obrigatórias de incidentes ou dados mantidos por clientes MCP. Solicitações de direitos e incidentes podem exigir retenção distinta quando houver fundamento legal, limitada à finalidade necessária.</p>
+<p>Pedidos fundamentados de eliminação ou informação de retenção serão avaliados considerando responsabilidades, capacidade técnica de localização do dado e exceções legais. O operador não pode garantir exclusão direta de dados que estejam sob controle independente de outras plataformas.</p>
+
+<h2>6. Direitos dos titulares</h2>
+<p>Nos termos dos arts. 9º e 18 da LGPD, conforme aplicável ao tratamento concreto, o titular pode solicitar confirmação de tratamento, acesso, correção, informações sobre compartilhamento, anonimização/bloqueio/eliminação de dados excessivos ou irregulares, portabilidade quando cabível, oposição a tratamento irregular e informações sobre decisões automatizadas. Quando houver tratamento baseado em consentimento, também se aplicam os direitos correlatos de informação, revogação e eliminação nas hipóteses legais.</p>
+<p>Para solicitar seus direitos, envie e-mail a <a href="mailto:miscrapha@gmail.com?subject=Direitos%20LGPD%20-%20SINAN%20MCP">miscrapha@gmail.com</a>, com o assunto “Direitos LGPD — SINAN MCP” e uma descrição objetiva do pedido. O exercício dos direitos é gratuito, nos termos legais. Serão solicitadas apenas informações proporcionais para verificar a legitimidade de eventual pedido; <strong>não</strong> envie documentos pessoais sem solicitação justificada. Havendo insatisfação após contato com o controlador, o titular pode apresentar <a href="https://www.gov.br/anpd/pt-br/fluxo-da-peticao-do-titular">petição à ANPD</a>.</p>
+
+<h2>7. Segurança e incidentes</h2>
+<p>São utilizados HTTPS na hospedagem, separação entre o servidor público sintético e fluxos privados, validação de Host/Origin, limite de corpo de requisição e controle global conservador de solicitações MCP. Tais medidas não equivalem a auditoria de privacidade, criptografia ponta a ponta do cliente à aplicação ou garantia contra todo ataque. O serviço Free não oferece compromisso de disponibilidade ininterrupta.</p>
+<p>Incidentes com dados pessoais serão avaliados e documentados, com comunicações aos titulares e à ANPD quando exigidas. A Resolução CD/ANPD nº 15/2024 prevê, em regra, três dias úteis para a comunicação de incidentes sujeitos à notificação, consideradas as condições legais e eventuais regras aplicáveis ao controlador.</p>
+
+<h2>8. Cookies, menores e terceiros</h2>
+<p>O código próprio desta demonstração MCP não instala cookies analíticos, pixels de publicidade nem rastreadores de marketing. Não controlamos integralmente tecnologias técnicas necessárias utilizadas pelo provedor ou pelo cliente MCP. O serviço não foi concebido para coletar dados pessoais de crianças ou adolescentes, nem para consultas individuais de saúde.</p>
+<p>Links para portais oficiais são referências informativas: ao abri-los, o usuário sai do ambiente SINAN MCP e passa a estar sujeito às políticas dos respectivos destinos. As ferramentas MCP não acessam esses sites automaticamente.</p>
+
+<h2>9. Atualizações e fontes legais</h2>
+<p>Alterações relevantes serão divulgadas nesta página, com data de revisão. Uma política publicada não regulariza retroativamente práticas em desconformidade; o operador deve adequar os controles efetivos ao texto.</p>
+<ul>
+  <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm">Lei Geral de Proteção de Dados Pessoais — Lei nº 13.709/2018</a>.</li>
+  <li><a href="https://www.gov.br/anpd/pt-br/assuntos/titular-de-dados-1/direito-dos-titulares">ANPD — direitos dos titulares</a>.</li>
+  <li><a href="https://www.gov.br/anpd/pt-br/acesso-a-informacao/institucional/atos-normativos/regulamentacoes_anpd/resolucao-cd-anpd-no-19-de-23-de-agosto-de-2024">ANPD — Resolução nº 19/2024, transferência internacional</a>.</li>
+  <li><a href="https://www.gov.br/anpd/pt-br/canais_atendimento/agente-de-tratamento/comunicado-de-incidente-de-seguranca-cis">ANPD — comunicação de incidentes</a>.</li>
+  <li><a href="https://render.com/docs/logging">Render — retenção de logs por plano</a>.</li>
+  <li><a href="https://render.com/dpa">Render — aditivo de tratamento de dados (DPA)</a>.</li>
+</ul>
+<footer>Projeto independente SINAN MCP · demonstração de software, não serviço oficial de vigilância epidemiológica · <a href="https://github.com/miscrapha-DELTA-IA/SINAN-MCP">código e documentação</a>.</footer>
+</main>
+</body>
+</html>
