@@ -148,6 +148,8 @@ listar_fontes_oficiais()
 listar_agravos()
 ```
 
+**Evidence-tracked documentary catalogue (v1):** the 14 example condition entries now link to **17 individually identified institutional pages**, with source type, dated curation, limitations and a research checklist. Accent-tolerant search supports curated synonyms and typo suggestions; no clinical dictionary or real dataset has been verified or imported. See [documentary catalogue and provenance](docs/DOCUMENTARY_CATALOG_V1.md).
+
 The public demonstration also includes narrow numeric examples for a **fictional** TUBE/2024/PI dataset. Any returned counts must be interpreted solely as software demonstration output, never as evidence about real populations.
 
 ## Project status
