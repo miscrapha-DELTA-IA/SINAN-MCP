@@ -153,6 +153,13 @@ def test_public_mcp_tools_no_private_admin_routes():
             }
             assert all(not n.startswith(("importar", "diagnosticar",
                                         "auditar", "query_sql")) for n in names)
+            # The public plugin directory requires explicit safety hints on
+            # every advertised tool; default/omitted annotations are unsafe.
+            for t in tools:
+                assert t.annotations is not None, t.name
+                assert t.annotations.read_only_hint is True, t.name
+                assert t.annotations.destructive_hint is False, t.name
+                assert t.annotations.open_world_hint is False, t.name
             r = await client.call_tool("contar_notificacoes", {
                 "agravo": "TUBE", "ano_inicio": 2024, "ano_fim": 2024,
                 "uf": "PI", "por": "raca_cor",
