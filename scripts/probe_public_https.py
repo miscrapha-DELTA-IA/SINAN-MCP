@@ -226,6 +226,43 @@ def main():
                for x in typo["sugestoes_de_grafia"])
     print("PASS MCP documentary provenance: 14 themes, 17 official pages, no real data, dated links, typo suggestions")
 
+    pack = CONTRACT["documentary_catalog"]["instrument_validation_pack"]
+    assert pack["source_pdfs_with_verified_sha256"] == 7
+    assert pack["field_code_page_tokens_verified"] == 57
+    assert pack["human_review_approved"] is False
+    assert pack["data_2024_schema_concordance_approved"] is False
+    unique_pdfs = {}
+    for code, expected in (("ZIKA", 42), ("TUBE", 20)):
+        response = doc if code == "ZIKA" else tool(
+            "descrever_agravo", {"codigo_interno": code}
+        )
+        bundle = response["instrumentos_e_campos_documentais_2024"]
+        assert bundle["ano_alvo"] == 2024
+        assert bundle["total_documentos"] == 4
+        assert bundle["total_campos_documentais"] == expected
+        assert len(bundle["campos_documentais"]) == expected
+        assert bundle["revisao_independente_aprovada"] is False
+        assert bundle["correspondencia_arquivo_sinan_2024_validada"] is False
+        for source_doc in bundle["documentos"]:
+            assert source_doc["integridade_bytes_verificada"] is True
+            assert source_doc["correspondencia_com_arquivo_2024_validada"] is False
+            assert source_doc["parecer_independente_aprovado"] is False
+            assert source_doc["assinatura_digital_da_fonte_verificada"] is False
+            assert len(source_doc["sha256_pdf"]) == 64
+            unique_pdfs[source_doc["id"]] = source_doc["sha256_pdf"]
+        for field in bundle["campos_documentais"]:
+            assert field["correspondencia_arquivo_2024"] == "NAO_VERIFICADA"
+            assert field["revisao_humana"] == "PENDENTE"
+        search = tool("pesquisar_agravos", {"termo": code})
+        entry = next(v for v in search["resultados"] if v["codigo_interno"] == code)
+        assert entry["resumo_instrumentos_2024"]["parecer_independente_aprovado"] is False
+        assert entry["resumo_instrumentos_2024"]["codigos_de_campo_localizados_na_pagina"] == expected
+    assert len(unique_pdfs) == 7
+    dengue = tool("descrever_agravo", {"codigo_interno": "DENG"})
+    assert dengue["instrumentos_e_campos_documentais_2024"] is None
+    print("PASS MCP instrument evidence: 7 source-locked PDF hashes, 57 unique field codes, zero approved 2024 layouts")
+
+
     for invalid in [
         ("contar_notificacoes", {
             "agravo": "DENG", "ano_inicio": 2024, "ano_fim": 2024,
