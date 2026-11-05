@@ -15,6 +15,7 @@ from collections import Counter
 from typing import Any
 
 from mcp.server import MCPServer
+from mcp.types import ToolAnnotations
 from mcp.server.mcpserver.exceptions import ToolError
 from mcp.server.transport_security import TransportSecuritySettings
 from starlette.responses import JSONResponse
@@ -40,6 +41,16 @@ mcp = MCPServer(
         "os números como sintéticos e nunca os utilize para inferências epidemiológicas. "
         "Nunca afirme que dados do SINAN real foram consultados."
     ),
+)
+
+
+# Directory review: all 10 tools only read static in-process, fictional fixtures.
+# Returning links to official reference pages does not fetch those websites.
+# Hints are published in tools/list; they are not authorization controls.
+PUBLIC_TOOL_ANNOTATIONS = ToolAnnotations(
+    read_only_hint=True,
+    destructive_hint=False,
+    open_world_hint=False,
 )
 
 
@@ -81,7 +92,7 @@ def _result_meta():
     }
 
 
-@mcp.tool()
+@mcp.tool(annotations=PUBLIC_TOOL_ANNOTATIONS)
 def sobre_o_servidor() -> dict[str, Any]:
     """Identificação, licença, limitações e segurança da instância pública."""
     return {
@@ -97,7 +108,7 @@ def sobre_o_servidor() -> dict[str, Any]:
     }
 
 
-@mcp.tool()
+@mcp.tool(annotations=PUBLIC_TOOL_ANNOTATIONS)
 def listar_bases() -> dict[str, Any]:
     """Lista exclusivamente a base FICTÍCIA de demonstração; nenhuma base SINAN real."""
     return {
@@ -111,7 +122,7 @@ def listar_bases() -> dict[str, Any]:
     }
 
 
-@mcp.tool()
+@mcp.tool(annotations=PUBLIC_TOOL_ANNOTATIONS)
 def listar_agravos() -> dict[str, Any]:
     """Lista agravos documentados; não implica disponibilização de bases reais."""
     data = _catalogue()
@@ -123,25 +134,25 @@ def listar_agravos() -> dict[str, Any]:
     return data
 
 
-@mcp.tool()
+@mcp.tool(annotations=PUBLIC_TOOL_ANNOTATIONS)
 def listar_fontes_oficiais() -> dict[str, Any]:
     """Fontes oficiais de consulta: somente links e documentação, SEM números reais."""
     return _official_sources()
 
 
-@mcp.tool()
+@mcp.tool(annotations=PUBLIC_TOOL_ANNOTATIONS)
 def pesquisar_agravos(termo: str = "", limite: int = 20) -> dict[str, Any]:
     """Encontra agravos em índice EXEMPLIFICATIVO; sem download nem dados individuais."""
     return _search_conditions(termo, limite)
 
 
-@mcp.tool()
+@mcp.tool(annotations=PUBLIC_TOOL_ANNOTATIONS)
 def descrever_agravo(codigo_interno: str) -> dict[str, Any]:
     """Distingue código interno, documentação, validação e disponibilidade."""
     return _describe_condition(codigo_interno)
 
 
-@mcp.tool()
+@mcp.tool(annotations=PUBLIC_TOOL_ANNOTATIONS)
 def descrever_campos() -> dict[str, Any]:
     """Explica variáveis do protótipo e a necessidade de validação científica."""
     return {
@@ -155,7 +166,7 @@ def descrever_campos() -> dict[str, Any]:
     }
 
 
-@mcp.tool()
+@mcp.tool(annotations=PUBLIC_TOOL_ANNOTATIONS)
 def metodologia_abandono_tuberculose() -> dict[str, Any]:
     """Documenta uma proporção exploratória, NÃO o indicador oficial do MS."""
     data = _method()
@@ -163,7 +174,7 @@ def metodologia_abandono_tuberculose() -> dict[str, Any]:
     return data
 
 
-@mcp.tool()
+@mcp.tool(annotations=PUBLIC_TOOL_ANNOTATIONS)
 def contar_notificacoes(agravo: str, ano_inicio: int | None = None,
                         ano_fim: int | None = None, uf: str | None = None,
                         municipio: str | None = None, por: str = "raca_cor") -> dict[str, Any]:
@@ -187,7 +198,7 @@ def contar_notificacoes(agravo: str, ano_inicio: int | None = None,
     }
 
 
-@mcp.tool()
+@mcp.tool(annotations=PUBLIC_TOOL_ANNOTATIONS)
 def proporcao_abandono_tuberculose(ano_inicio: int | None = None,
                                  ano_fim: int | None = None,
                                  uf: str | None = None,
