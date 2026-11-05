@@ -16,6 +16,7 @@ import json
 from pathlib import Path
 import re
 import tempfile
+import unicodedata
 from urllib.parse import urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
@@ -122,6 +123,36 @@ def _pdfinfo_pages(path: Path) -> int:
     require(pages > 0, "PDF page count unavailable")
     return pages
 
+
+def _normalized_pdf_token(s: str) -> str:
+    """Conservative alphanumeric comparison; no inference from categories."""
+    normalized = unicodedata.normalize("NFKD", s.casefold())
+    return re.sub(r"[^a-z0-9]", "", normalized)
+
+
+def _matrix_field_page_matches(path: Path, doc_id: str) -> dict:
+    """Check that *printed field codes* occur on recorded PDF pages, not 2024 files."""
+    from pypdf import PdfReader
+
+    with MATRIX.open(encoding="utf-8", newline="") as source:
+        rows = [r for r in csv.DictReader(source) if r["fonte_id"] == doc_id]
+    if not rows:
+        return {"fields_checked": 0, "fields_found_on_recorded_page": 0}
+    reader = PdfReader(str(path), strict=False)
+    pages = {}
+    for row in rows:
+        page = int(row["pagina_pdf"])
+        require(1 <= page <= len(reader.pages), "Matrix references a nonexistent PDF page")
+        if page not in pages:
+            pages[page] = _normalized_pdf_token(reader.pages[page - 1].extract_text() or "")
+        token = _normalized_pdf_token(row["campo_documental"])
+        require(len(token) >= 4, "Suspicious field code in matrix")
+        require(token in pages[page],
+                f"Missing field token on declared PDF page: {doc_id}:{row['campo_documental']}:{page}")
+    return {"fields_checked": len(rows), "fields_found_on_recorded_page": len(rows)}
+
+
+
 def fetch_one(document: dict, opener) -> dict:
     url = document["source_url"]
     req = Request(url, headers={"Accept": "application/pdf", "User-Agent": "SINAN-MCP-Document-Audit/1.0"})
@@ -147,12 +178,15 @@ def fetch_one(document: dict, opener) -> dict:
         path = Path(tmp) / "official-document.pdf"
         path.write_bytes(raw)
         pages = _pdfinfo_pages(path)
+        matches = _matrix_field_page_matches(path, document["id"])
     require(pages == document["expected_pages_from_pdf_preview"], "Page count changed")
     return {
         "id": document["id"], "url": url, "source_mime": header, "bytes": len(raw),
         "sha256": computed_sha256, "pages": pages,
         "verified_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
-        "method": "official_https_byte_download+pdf_magic+eof+pdfinfo",
+        "method": "official_https_byte_download+pdf_magic+eof+pypdf+field_page_tokens",
+        "matrix_fields_checked": matches["fields_checked"],
+        "matrix_fields_found_on_recorded_page": matches["fields_found_on_recorded_page"],
         "independent_reviewer_approved": False,
         "validated_for_2024_data_layout": False,
     }
