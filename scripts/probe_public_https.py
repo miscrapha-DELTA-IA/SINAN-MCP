@@ -73,6 +73,29 @@ def main():
     else:
         raise AssertionError("Public endpoint did not become healthy: " + str(last))
 
+    # Verify the *deployed* privacy policy, not only the source repository.
+    # These are read-only GETs; never echo request bodies or log personal data.
+    for path in ("/privacidade", "/privacy"):
+        req = Request(BASE + path, headers={"Accept": "text/html"}, method="GET")
+        with urlopen(req, timeout=30) as response:
+            assert response.status == 200, "Public privacy route is not HTTP 200"
+            assert response.headers.get("Content-Type", "").startswith("text/html"), (
+                "Public privacy route lacks HTML content type"
+            )
+            assert response.headers.get("X-Content-Type-Options") == "nosniff"
+            assert response.headers.get("Cache-Control") == "no-store"
+            assert "default-src 'none'" in response.headers.get("Content-Security-Policy", "")
+            html = response.read(100_000).decode("utf-8")
+        assert '<html lang="pt-BR">' in html
+        assert "Raphael Múcio Teixeira Cabral de Pina Bulhões Di Giorgio" in html
+        assert "miscrapha@gmail.com" in html
+        assert "Política de Privacidade" in html
+        assert "7 dias" in html and "ANPD" in html
+        assert "[PENDENTE" not in html
+        assert "Minuta em validação" not in html
+        assert "<script" not in html.lower()
+    print("PASS HTTPS privacy policy: 2 public routes, LGPD owner/contact and restrictive headers")
+
     init = rpc("initialize", {
         "protocolVersion": "2025-11-25",
         "capabilities": {},
