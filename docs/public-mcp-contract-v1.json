@@ -33,5 +33,15 @@
     "query_sql",
     "executar_sql",
     "preparar"
-  ]
+  ],
+  "documentary_catalog": {
+    "registry_schema": "sinan-documentary-registry-v1",
+    "curated_date": "2026-11-05",
+    "institutional_pages_identified": 17,
+    "curated_condition_aliases": 14,
+    "annual_dictionaries_validated": 0,
+    "real_files_imported": 0,
+    "real_epidemiological_indicators_approved": 0,
+    "server_side_online_reference_fetching": false
+  }
 }

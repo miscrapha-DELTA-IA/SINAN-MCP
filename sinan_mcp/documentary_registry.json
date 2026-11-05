@@ -1,0 +1,389 @@
+{
+  "schema_version": "sinan-documentary-registry-v1",
+  "data_da_curadoria": "2026-11-05",
+  "metodo": "Identificação manual de título e escopo de páginas oficiais públicas; links fixados no código e sem consultas HTTP durante chamadas MCP.",
+  "limites": "Identificar uma página pública não verifica arquivo, ficha, versão, dicionário, completude, cobertura temporal ou valor epidemiológico. Mudanças externas posteriores à data exigem revisão.",
+  "tratamento_de_microdados": "nenhum_microdado_ou_resultado_real_importado",
+  "registros": [
+    {
+      "codigo_interno": "TUBE",
+      "termos_relacionados": [
+        "tb",
+        "tuberculose"
+      ],
+      "estado_de_evidencia": "pagina_oficial_localizada_sem_auditoria_de_arquivo",
+      "dicionario_ano_versao_confrontado": false,
+      "arquivos_reais_importados": false,
+      "indicadores_reais_homologados": false,
+      "referencias": [
+        {
+          "id": "tb-sinan-instrumentos",
+          "titulo": "SINAN — Tuberculose, instrumentos de registro",
+          "url": "https://portalsinan.saude.gov.br/tuberculose",
+          "tipo": "portal_documental_especifico",
+          "justificativa_curadoria": "Página do Portal SINAN lista ficha, instrucional e dicionário; arquivos associados não foram auditados.",
+          "verificacao": "pagina_publica_identificada_titulo_escopo",
+          "data_conferencia": "2026-11-05",
+          "arquivo_baixado_e_validado": false,
+          "conteudo_integral_auditado": false
+        },
+        {
+          "id": "tb-ms-vigilancia",
+          "titulo": "MS — Vigilância epidemiológica da tuberculose",
+          "url": "https://www.gov.br/aids/pt-br/assuntos/tuberculose/vigilancia-epidemiologica",
+          "tipo": "pagina_temática",
+          "justificativa_curadoria": "Página institucional reúne links de vigilância da tuberculose; não constitui descarga de dados.",
+          "verificacao": "pagina_publica_identificada_titulo_escopo",
+          "data_conferencia": "2026-11-05",
+          "arquivo_baixado_e_validado": false,
+          "conteudo_integral_auditado": false
+        }
+      ]
+    },
+    {
+      "codigo_interno": "DENG",
+      "termos_relacionados": [
+        "dengue",
+        "arbovirose dengue"
+      ],
+      "estado_de_evidencia": "pagina_oficial_localizada_sem_auditoria_de_arquivo",
+      "dicionario_ano_versao_confrontado": false,
+      "arquivos_reais_importados": false,
+      "indicadores_reais_homologados": false,
+      "referencias": [
+        {
+          "id": "dengue-ms",
+          "titulo": "MS — Dengue",
+          "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/d/dengue/dengue",
+          "tipo": "pagina_temática",
+          "justificativa_curadoria": "Página do MS sobre dengue; não substitui dicionário de notificações de um ano específico.",
+          "verificacao": "pagina_publica_identificada_titulo_escopo",
+          "data_conferencia": "2026-11-05",
+          "arquivo_baixado_e_validado": false,
+          "conteudo_integral_auditado": false
+        }
+      ]
+    },
+    {
+      "codigo_interno": "CHIK",
+      "termos_relacionados": [
+        "chikungunya",
+        "chikungunha"
+      ],
+      "estado_de_evidencia": "pagina_oficial_localizada_sem_auditoria_de_arquivo",
+      "dicionario_ano_versao_confrontado": false,
+      "arquivos_reais_importados": false,
+      "indicadores_reais_homologados": false,
+      "referencias": [
+        {
+          "id": "chik-ms",
+          "titulo": "MS — Chikungunya",
+          "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/c/chikungunya/chikungunya",
+          "tipo": "pagina_temática",
+          "justificativa_curadoria": "Página institucional da chikungunya; sem validação de dicionário de casos.",
+          "verificacao": "pagina_publica_identificada_titulo_escopo",
+          "data_conferencia": "2026-11-05",
+          "arquivo_baixado_e_validado": false,
+          "conteudo_integral_auditado": false
+        }
+      ]
+    },
+    {
+      "codigo_interno": "ZIKA",
+      "termos_relacionados": [
+        "zika",
+        "zika virus",
+        "zikv"
+      ],
+      "estado_de_evidencia": "pagina_oficial_localizada_sem_auditoria_de_arquivo",
+      "dicionario_ano_versao_confrontado": false,
+      "arquivos_reais_importados": false,
+      "indicadores_reais_homologados": false,
+      "referencias": [
+        {
+          "id": "zika-ms",
+          "titulo": "MS — Zika Vírus",
+          "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/z/zika-virus",
+          "tipo": "pagina_temática",
+          "justificativa_curadoria": "Página oficial sobre o vírus Zika; não equivale a fichas de notificação verificadas.",
+          "verificacao": "pagina_publica_identificada_titulo_escopo",
+          "data_conferencia": "2026-11-05",
+          "arquivo_baixado_e_validado": false,
+          "conteudo_integral_auditado": false
+        },
+        {
+          "id": "zika-dadosabertos",
+          "titulo": "SUS Dados Abertos — catálogo Zika",
+          "url": "https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus",
+          "tipo": "catalogo_de_recursos",
+          "justificativa_curadoria": "Página do catálogo oficial indica recursos e dicionário de Zika; nenhum arquivo foi baixado ou confrontado nesta release.",
+          "verificacao": "pagina_publica_identificada_titulo_escopo",
+          "data_conferencia": "2026-11-05",
+          "arquivo_baixado_e_validado": false,
+          "conteudo_integral_auditado": false
+        }
+      ]
+    },
+    {
+      "codigo_interno": "HANS",
+      "termos_relacionados": [
+        "hanseniase",
+        "hanseníase"
+      ],
+      "estado_de_evidencia": "pagina_oficial_localizada_sem_auditoria_de_arquivo",
+      "dicionario_ano_versao_confrontado": false,
+      "arquivos_reais_importados": false,
+      "indicadores_reais_homologados": false,
+      "referencias": [
+        {
+          "id": "hans-ms",
+          "titulo": "MS — Hanseníase",
+          "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/l/h/hanseniase",
+          "tipo": "pagina_temática",
+          "justificativa_curadoria": "Página institucional sobre hanseníase; sem homologação de layout SINAN.",
+          "verificacao": "pagina_publica_identificada_titulo_escopo",
+          "data_conferencia": "2026-11-05",
+          "arquivo_baixado_e_validado": false,
+          "conteudo_integral_auditado": false
+        }
+      ]
+    },
+    {
+      "codigo_interno": "SIFA",
+      "termos_relacionados": [
+        "sifilis adquirida",
+        "sífilis adquirida",
+        "sifilis"
+      ],
+      "estado_de_evidencia": "pagina_oficial_localizada_sem_auditoria_de_arquivo",
+      "dicionario_ano_versao_confrontado": false,
+      "arquivos_reais_importados": false,
+      "indicadores_reais_homologados": false,
+      "referencias": [
+        {
+          "id": "sifilis-ms",
+          "titulo": "MS — Sífilis (página geral)",
+          "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/s/sifilis",
+          "tipo": "pagina_geral_nao_especifica",
+          "justificativa_curadoria": "Página geral aborda sífilis adquirida e outros cenários; não é uma ficha específica de sífilis adquirida.",
+          "verificacao": "pagina_publica_identificada_titulo_escopo",
+          "data_conferencia": "2026-11-05",
+          "arquivo_baixado_e_validado": false,
+          "conteudo_integral_auditado": false
+        }
+      ]
+    },
+    {
+      "codigo_interno": "SIFC",
+      "termos_relacionados": [
+        "sifilis congenita",
+        "sífilis congênita",
+        "congenita"
+      ],
+      "estado_de_evidencia": "pagina_oficial_localizada_sem_auditoria_de_arquivo",
+      "dicionario_ano_versao_confrontado": false,
+      "arquivos_reais_importados": false,
+      "indicadores_reais_homologados": false,
+      "referencias": [
+        {
+          "id": "sifilis-congenita-ms",
+          "titulo": "MS — Sífilis congênita",
+          "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/s/sifilis/congenita",
+          "tipo": "pagina_temática",
+          "justificativa_curadoria": "Página de sífilis congênita do MS; dicionário SINAN não confrontado.",
+          "verificacao": "pagina_publica_identificada_titulo_escopo",
+          "data_conferencia": "2026-11-05",
+          "arquivo_baixado_e_validado": false,
+          "conteudo_integral_auditado": false
+        }
+      ]
+    },
+    {
+      "codigo_interno": "HEPA",
+      "termos_relacionados": [
+        "hepatites virais",
+        "hepatite",
+        "hepatites"
+      ],
+      "estado_de_evidencia": "pagina_oficial_localizada_sem_auditoria_de_arquivo",
+      "dicionario_ano_versao_confrontado": false,
+      "arquivos_reais_importados": false,
+      "indicadores_reais_homologados": false,
+      "referencias": [
+        {
+          "id": "hepatites-ms-publicacoes",
+          "titulo": "MS — Publicações sobre hepatites virais",
+          "url": "https://www.gov.br/saude/pt-br/centrais-de-conteudo/publicacoes/svsa/hepatites/hepatites-virais",
+          "tipo": "indice_de_publicacoes",
+          "justificativa_curadoria": "Índice de publicações sobre hepatites; não valida diagnóstico, tipo viral ou arquivo de notificação.",
+          "verificacao": "pagina_publica_identificada_titulo_escopo",
+          "data_conferencia": "2026-11-05",
+          "arquivo_baixado_e_validado": false,
+          "conteudo_integral_auditado": false
+        }
+      ]
+    },
+    {
+      "codigo_interno": "MENI",
+      "termos_relacionados": [
+        "meningite",
+        "meningites"
+      ],
+      "estado_de_evidencia": "pagina_oficial_localizada_sem_auditoria_de_arquivo",
+      "dicionario_ano_versao_confrontado": false,
+      "arquivos_reais_importados": false,
+      "indicadores_reais_homologados": false,
+      "referencias": [
+        {
+          "id": "meningite-ms",
+          "titulo": "MS — Meningite",
+          "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/m/meningite/",
+          "tipo": "pagina_temática",
+          "justificativa_curadoria": "Página geral de meningite; não valida código do agente etiológico nem a ficha SINAN.",
+          "verificacao": "pagina_publica_identificada_titulo_escopo",
+          "data_conferencia": "2026-11-05",
+          "arquivo_baixado_e_validado": false,
+          "conteudo_integral_auditado": false
+        }
+      ]
+    },
+    {
+      "codigo_interno": "VIOL",
+      "termos_relacionados": [
+        "violencia interpessoal",
+        "violencia autoprovocada",
+        "violências",
+        "violencia"
+      ],
+      "estado_de_evidencia": "pagina_oficial_localizada_sem_auditoria_de_arquivo",
+      "dicionario_ano_versao_confrontado": false,
+      "arquivos_reais_importados": false,
+      "indicadores_reais_homologados": false,
+      "referencias": [
+        {
+          "id": "violencia-ms",
+          "titulo": "MS — Violências e acidentes",
+          "url": "https://www.gov.br/saude/pt-br/composicao/svsa/cnie/violencias-e-acidentes",
+          "tipo": "pagina_temática_com_paineis",
+          "justificativa_curadoria": "Página institucional de painéis e referências; não afirma equivalência entre diferentes sistemas de informação.",
+          "verificacao": "pagina_publica_identificada_titulo_escopo",
+          "data_conferencia": "2026-11-05",
+          "arquivo_baixado_e_validado": false,
+          "conteudo_integral_auditado": false
+        }
+      ]
+    },
+    {
+      "codigo_interno": "LEIV",
+      "termos_relacionados": [
+        "leishmaniose visceral",
+        "calazar"
+      ],
+      "estado_de_evidencia": "pagina_oficial_localizada_sem_auditoria_de_arquivo",
+      "dicionario_ano_versao_confrontado": false,
+      "arquivos_reais_importados": false,
+      "indicadores_reais_homologados": false,
+      "referencias": [
+        {
+          "id": "leish-visceral-ms",
+          "titulo": "MS — Publicações sobre leishmaniose visceral",
+          "url": "https://www.gov.br/saude/pt-br/centrais-de-conteudo/publicacoes/svsa/leishmaniose-visceral",
+          "tipo": "indice_de_publicacoes",
+          "justificativa_curadoria": "Índice de manuais oficiais sobre leishmaniose visceral; arquivos específicos não inspecionados.",
+          "verificacao": "pagina_publica_identificada_titulo_escopo",
+          "data_conferencia": "2026-11-05",
+          "arquivo_baixado_e_validado": false,
+          "conteudo_integral_auditado": false
+        }
+      ]
+    },
+    {
+      "codigo_interno": "LTAN",
+      "termos_relacionados": [
+        "leishmaniose tegumentar",
+        "leishmaniose cutanea",
+        "leishmaniose tegumentar americana"
+      ],
+      "estado_de_evidencia": "pagina_oficial_localizada_sem_auditoria_de_arquivo",
+      "dicionario_ano_versao_confrontado": false,
+      "arquivos_reais_importados": false,
+      "indicadores_reais_homologados": false,
+      "referencias": [
+        {
+          "id": "leish-tegumentar-ms",
+          "titulo": "MS — Publicações sobre leishmaniose tegumentar",
+          "url": "https://www.gov.br/saude/pt-br/centrais-de-conteudo/publicacoes/svsa/leishmaniose-tegumentar/leishmaniose-tegumentar",
+          "tipo": "indice_de_publicacoes",
+          "justificativa_curadoria": "Índice de publicações da leishmaniose tegumentar; documentos associados não revisados individualmente.",
+          "verificacao": "pagina_publica_identificada_titulo_escopo",
+          "data_conferencia": "2026-11-05",
+          "arquivo_baixado_e_validado": false,
+          "conteudo_integral_auditado": false
+        }
+      ]
+    },
+    {
+      "codigo_interno": "ANIM",
+      "termos_relacionados": [
+        "animais peconhentos",
+        "animais peçonhentos",
+        "acidentes por animais",
+        "escorpiao",
+        "serpente"
+      ],
+      "estado_de_evidencia": "pagina_oficial_localizada_sem_auditoria_de_arquivo",
+      "dicionario_ano_versao_confrontado": false,
+      "arquivos_reais_importados": false,
+      "indicadores_reais_homologados": false,
+      "referencias": [
+        {
+          "id": "animais-ms",
+          "titulo": "MS — Acidentes por animais peçonhentos",
+          "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/a/animais-peconhentos",
+          "tipo": "pagina_temática",
+          "justificativa_curadoria": "Página específica de acidentes por animais peçonhentos; não define subtipos confirmados no banco.",
+          "verificacao": "pagina_publica_identificada_titulo_escopo",
+          "data_conferencia": "2026-11-05",
+          "arquivo_baixado_e_validado": false,
+          "conteudo_integral_auditado": false
+        },
+        {
+          "id": "animais-acesso",
+          "titulo": "MS — Como obter dados de animais peçonhentos",
+          "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/a/animais-peconhentos/como-obter-dados-epidemiologicos",
+          "tipo": "orientacao_de_acesso",
+          "justificativa_curadoria": "Orientação oficial de acesso a dados por recursos externos; o servidor não baixa nem processa esses arquivos.",
+          "verificacao": "pagina_publica_identificada_titulo_escopo",
+          "data_conferencia": "2026-11-05",
+          "arquivo_baixado_e_validado": false,
+          "conteudo_integral_auditado": false
+        }
+      ]
+    },
+    {
+      "codigo_interno": "COQU",
+      "termos_relacionados": [
+        "coqueluche",
+        "pertussis",
+        "tosse comprida"
+      ],
+      "estado_de_evidencia": "pagina_oficial_localizada_sem_auditoria_de_arquivo",
+      "dicionario_ano_versao_confrontado": false,
+      "arquivos_reais_importados": false,
+      "indicadores_reais_homologados": false,
+      "referencias": [
+        {
+          "id": "coqueluche-ms",
+          "titulo": "MS — Coqueluche",
+          "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/c/coqueluche",
+          "tipo": "pagina_temática",
+          "justificativa_curadoria": "Página do MS sobre coqueluche; não substitui fonte primária por período específico.",
+          "verificacao": "pagina_publica_identificada_titulo_escopo",
+          "data_conferencia": "2026-11-05",
+          "arquivo_baixado_e_validado": false,
+          "conteudo_integral_auditado": false
+        }
+      ]
+    }
+  ]
+}
