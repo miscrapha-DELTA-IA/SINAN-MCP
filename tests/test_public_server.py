@@ -160,6 +160,10 @@ def test_public_mcp_tools_no_private_admin_routes():
                 assert t.annotations.read_only_hint is True, t.name
                 assert t.annotations.destructive_hint is False, t.name
                 assert t.annotations.open_world_hint is False, t.name
+                serialized = t.annotations.model_dump(by_alias=True, exclude_none=True)
+                assert serialized["readOnlyHint"] is True, t.name
+                assert serialized["destructiveHint"] is False, t.name
+                assert serialized["openWorldHint"] is False, t.name
             r = await client.call_tool("contar_notificacoes", {
                 "agravo": "TUBE", "ano_inicio": 2024, "ano_fim": 2024,
                 "uf": "PI", "por": "raca_cor",
