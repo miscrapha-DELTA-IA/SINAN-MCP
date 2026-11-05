@@ -28,7 +28,7 @@ mcp.json
 assets/icon.svg
 ```
 
-Não contém bancos, pacientes, arquivos de pesquisa, segredos, dados locais, scripts executáveis, aplicações `.app.json`, `.mcp.json`, hooks ou skills. O script usa apenas Python padrão, não faz chamadas de rede e produz hashes SHA-256 e bytes reproduzíveis; `--check` não escreve nada. O workflow [Agent Plugin ZIP preflight](../.github/workflows/plugin-package-preflight.yml) executa a validação e disponibiliza o ZIP como **artefato temporário de CI, por sete dias**. Esse artefato é para análise humana, não publicação automática.
+Não contém bancos, pacientes, arquivos de pesquisa, segredos, dados locais, scripts executáveis, aplicações `.app.json`, `.mcp.json`, hooks ou skills. O script usa apenas Python padrão, não faz chamadas de rede e produz hashes SHA-256 e bytes reproduzíveis; `--check` não escreve nada. O workflow [Agent Plugin ZIP preflight](../../.github/workflows/plugin-package-preflight.yml) executa a validação e disponibiliza o ZIP como **artefato temporário de CI, por sete dias**. Esse artefato é para análise humana, não publicação automática.
 
 ## Portões obrigatórios que ainda faltam
 
@@ -51,4 +51,4 @@ Não contém bancos, pacientes, arquivos de pesquisa, segredos, dados locais, sc
 - [OpenAI — upload, manifestos, casos 5+3, vídeo e domínio](https://developers.openai.com/plugins/deploy/submission).
 - [OpenAI — regras de qualidade e rejeição de demonstrações](https://developers.openai.com/plugins/plugin-guidelines).
 - [OpenAI — erros do portal e limites do ZIP](https://developers.openai.com/plugins/deploy/submission-errors).
-- [Contrato de software](public-mcp-contract-v1.json) e [anotações de ferramentas](PUBLIC_TOOL_ANNOTATIONS.md).
+- [Contrato de software](../public-mcp-contract-v1.json) e [anotações de ferramentas](PUBLIC_TOOL_ANNOTATIONS.md).
