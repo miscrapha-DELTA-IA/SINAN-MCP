@@ -89,6 +89,24 @@ def main():
     )
     print("PASS MCP tools/list: 10 read-only reference/demo tools")
 
+    # Do not rely on SDK defaults: inspect actual JSON of the public HTTPS MCP.
+    # These are safety *hints*, not substitutes for code isolation or auth.
+    expected_annotations = {
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "openWorldHint": False,
+    }
+    for item in tools:
+        annotations = item.get("annotations")
+        assert isinstance(annotations, dict), (
+            "Missing public MCP safety annotations", item["name"]
+        )
+        for key, expected in expected_annotations.items():
+            assert annotations.get(key) is expected, (
+                "Incorrect public MCP safety annotation", item["name"], key
+            )
+    print("PASS MCP tools/list safety annotations: 10 explicit read-only, non-destructive, closed-world tools")
+
     server = tool("sobre_o_servidor", {})
     assert server["dados_reais_disponiveis"] is False
     assert server["acesso_microdados"] is False
