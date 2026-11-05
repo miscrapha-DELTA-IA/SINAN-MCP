@@ -33,6 +33,12 @@ Nenhum teste HTTP é feito durante chamadas MCP. Os endereços são **links iner
 
 A ligação `ZIKA` ao catálogo de dados abertos **não** significa que seus recursos foram baixados ou inspecionados. A referência de `SIFA` é **geral**, não uma ficha específica de sífilis adquirida. Índices de publicações são rotas para exploração manual, não comprovação do conteúdo integral de cada PDF. Os textos de várias páginas institucionais podem mudar após esta curadoria; ausência de rechecagem não deve ser apresentada como atualização em tempo real.
 
+## Instrumentos e dicionários Zika/TB (expansão documental v1.1)
+
+A partir de `0.4.0a6`, as ferramentas existentes `pesquisar_agravos` e `descrever_agravo` também indicam a existência de um **pacote documental apenas para `ZIKA` e `TUBE`**, formado por **7 PDFs oficiais únicos**, páginas e SHA-256 obtidos em auditoria e campos de instrumentos sem valores de pacientes. O retorno completo inclui **37 códigos Zika + 5 códigos comuns** para Zika, **15 códigos TB + 5 comuns** para TB. Os cinco campos comuns são repetidos de forma documental, não correspondem a 62 linhas independentes.
+
+A prova automatizada de ocorrência dos códigos em suas páginas resultou em **57/57 tokens localizados** no [registro de auditoria e revisão independente pendente](instruments-2024/REVIEW_PROTOCOL.md). Não foi validada a interpretação semântica, tipagem de exportação, coerência de períodos e dados SINAN 2024; nenhuma revisão humana assinou parecer. O pacote é gerado a partir de `docs/instruments-2024/field_matrix.csv` e `source_manifest.json`, preservando testes cruzados com o JSON distribuído `sinan_mcp/public_instruments_2024.json`. O servidor MCP não faz download dos arquivos quando consultado.
+
 ## Como o usuário pode pesquisar e verificar
 
 1. Use `pesquisar_agravos(termo="hanseniase", limite=5)` ou sinônimos como `escorpiao`, `zikv`, `sifilis congenita`. A busca classifica alias/nome exato antes de prefixos, trechos e todas as palavras; não consulta a internet.
