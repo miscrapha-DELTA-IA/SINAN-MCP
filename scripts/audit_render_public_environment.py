@@ -27,6 +27,7 @@ EXPECTED_START = "python -m sinan_mcp.public_server"
 APPROVED_KEYS = frozenset({
     "PYTHON_VERSION", "SINAN_PUBLIC_REAL_DATA", "SINAN_PUBLIC_HOST",
     "SINAN_PUBLIC_RATE_PER_MINUTE", "SINAN_PUBLIC_MAX_IN_FLIGHT", "PORT",
+    "PYTHONUNBUFFERED",  # benign Python stdout/stderr buffering switch
 })
 
 
@@ -140,6 +141,13 @@ def assessment(service: dict, vars_list: list, secret_files: list, env_groups: l
         env[name] = item["value"]
     put("direct environment API response", "PASS" if valid_structure else "FAIL")
     put("direct environment key allowlist", "PASS" if set(env).issubset(APPROVED_KEYS) else "FAIL")
+    # Python processes commonly set this to 1 for immediate log delivery.
+    # An unusual value warrants review, not an assertion of data exposure.
+    if "PYTHONUNBUFFERED" in env:
+        put(
+            "Python unbuffered logging option",
+            "PASS" if env["PYTHONUNBUFFERED"] == "1" else "REVIEW",
+        )
     put(
         "explicit Python 3.11.17 runtime pin",
         "PASS" if env.get("PYTHON_VERSION") == "3.11.17"
@@ -187,7 +195,16 @@ def assessment(service: dict, vars_list: list, secret_files: list, env_groups: l
         for link in group["serviceLinks"]:
             if isinstance(link, dict) and link.get("id") == SERVICE_ID:
                 links += 1
-    put("no linked environment groups", "PASS" if not invalid_groups and links == 0 else "FAIL")
+    put(
+        "environment group membership metadata",
+        "REVIEW" if invalid_groups else "PASS",
+    )
+    # Actual membership is a blocker. Unexpected metadata must not be
+    # interpreted as proof of membership or proof of its absence.
+    put(
+        "no linked environment groups",
+        "FAIL" if links else "REVIEW" if invalid_groups else "PASS",
+    )
 
     # Source and runtime code isolation, Render email delivery, workspace log
     # retention and edge rate limiting require separate verification.
