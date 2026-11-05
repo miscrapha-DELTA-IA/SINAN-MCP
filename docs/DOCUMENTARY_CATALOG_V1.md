@@ -55,7 +55,7 @@ A prova automatizada de ocorrência dos códigos em suas páginas resultou em **
 - **Lista de hospedagem estrita**: referências devem ser HTTPS e estar em `www.gov.br`, `portalsinan.saude.gov.br` ou `dadosabertos.saude.gov.br`. Links que não respeitem essa lista falham fechados antes de serem servidos; URLs não vêm de prompts do usuário.
 - **Rastreabilidade**: aliases, 17 IDs de referência únicos, data, justificativa e tipo de página em fonte textual versionada; alterações passam por PR, testes e nova sonda externa após deploy manual.
 - **Escopo do teste**: os testes validam links institucionais **registrados e identificados na revisão manual** e a integridade da estrutura; não provam disponibilidade HTTP futura nem exatidão do conteúdo de PDF. Use auditoria de acesso externa documentada para renovar a data, sem rotular como revisão de dados clínicos.
-- **Próxima expansão científica**: extrair e confrontar dicionários e instrumentos anuais em processo de curadoria separado, com revisão independente e sem publicação de microdados. Só então promover estados de validação individual de documentos.
+- **Próxima etapa científica:** concluir a inspeção humana dos documentos já auditados e confrontar versões e layouts anuais específicos, com revisão independente e sem publicação de microdados. Alterar estados de validação somente após evidência verificável.
 
 **Nota de integridade:** as 120 linhas TUBE/2024/PI são inteiramente fictícias. Nenhum total nacional, estadual ou municipal de SINAN é produzido por este catálogo.
 
