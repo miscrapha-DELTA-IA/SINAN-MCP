@@ -194,6 +194,38 @@ def main():
                for f in sources["fontes"])
     print("PASS MCP source links: official navigation metadata only")
 
+    # Verify the deployed, versioned curation contract without visiting remote
+    # sources, fetching documents or looking up any real SINAN records.
+    doc_contract = CONTRACT["documentary_catalog"]
+    audit = sources["auditoria_documental"]
+    assert audit["schema_version"] == doc_contract["registry_schema"]
+    assert audit["data_da_curadoria"] == doc_contract["curated_date"]
+    assert audit["agravos_com_pagina_institucional"] == 14
+    assert audit["referencias_de_paginas_institucionais"] == 17
+    assert audit["dicionarios_anuais_confrontados"] == 0
+    assert audit["arquivos_de_microdados_importados"] == 0
+    assert audit["indicadores_epidemiologicos_homologados"] == 0
+    assert audit["verificacao_ao_vivo_em_requisicoes_mcp"] is False
+
+    doc = tool("descrever_agravo", {"codigo_interno": "ZIKA"})
+    refs = doc["evidencia_por_agravo"]["referencias"]
+    assert len(refs) == 2
+    assert any(x["url"] == "https://dadosabertos.saude.gov.br/dataset/arboviroses-zika-virus"
+               for x in refs)
+    assert all(x["arquivo_baixado_e_validado"] is False for x in refs)
+    assert all(x["conteudo_integral_auditado"] is False for x in refs)
+    assert [step["realizado"] for step in doc["checklist_pesquisa_antes_de_calcular"]] == [
+        True, False, False, False, False,
+    ]
+    synonym = tool("pesquisar_agravos", {"termo": "escorpiao"})
+    assert synonym["resultados"][0]["codigo_interno"] == "ANIM"
+    assert synonym["resultados"][0]["arquivo_real_importado"] is False
+    typo = tool("pesquisar_agravos", {"termo": "tuberculoze"})
+    assert typo["resultados"] == []
+    assert any(x["codigo_interno"] == "TUBE" and x["tipo"] == "sugestao_nao_resultado"
+               for x in typo["sugestoes_de_grafia"])
+    print("PASS MCP documentary provenance: 14 themes, 17 official pages, no real data, dated links, typo suggestions")
+
     for invalid in [
         ("contar_notificacoes", {
             "agravo": "DENG", "ano_inicio": 2024, "ano_fim": 2024,
