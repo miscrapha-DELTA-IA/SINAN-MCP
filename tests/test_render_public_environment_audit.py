@@ -47,6 +47,7 @@ def test_synthetic_service_config_passes_technical_gates_but_not_unverified_cont
     status = result_map()
     assert status["specific synthetic service identity"] == "PASS"
     assert status["direct environment key allowlist"] == "PASS"
+    assert status["environment group membership metadata"] == "PASS"
     assert status["no direct secret files"] == "PASS"
     assert status["no linked environment groups"] == "PASS"
     assert status["logs retention and delivery verified"] == "REVIEW"
@@ -82,7 +83,8 @@ def test_secret_files_and_linked_groups_are_blockers_without_reading_content():
 def test_unlinked_groups_do_not_fail_the_service_but_link_shape_is_checked():
     result = result_map(groups=[{"serviceLinks": [{"id": "srv-other"}]}])
     assert result["no linked environment groups"] == "PASS"
-    assert result_map(groups=[{}])["no linked environment groups"] == "FAIL"
+    assert result_map(groups=[{}])["environment group membership metadata"] == "REVIEW"
+    assert result_map(groups=[{}])["no linked environment groups"] == "REVIEW"
 
 
 def test_rate_concurrency_and_public_host_fail_on_invalid_values():
@@ -105,3 +107,25 @@ def test_pagination_fail_closed_when_cursor_missing(monkeypatch):
         assert "pagination" in str(exc)
     else:
         raise AssertionError("Missing cursor should not silently pass")
+
+
+def test_pythonunbuffered_is_a_known_benign_logging_option():
+    status = result_map(variables=direct_env(PYTHONUNBUFFERED="1"))
+    assert status["direct environment key allowlist"] == "PASS"
+    assert status["Python unbuffered logging option"] == "PASS"
+    assert status["no linked environment groups"] == "PASS"
+
+
+def test_nonstandard_pythonunbuffered_value_needs_review_not_secret_logging(capsys):
+    status = result_map(variables=direct_env(PYTHONUNBUFFERED="PRIVATE_VALUE_NOT_TO_ECHO"))
+    print(status)
+    assert status["direct environment key allowlist"] == "PASS"
+    assert status["Python unbuffered logging option"] == "REVIEW"
+    assert "PRIVATE_VALUE_NOT_TO_ECHO" not in capsys.readouterr().out
+
+
+def test_genuine_linked_group_is_fail_not_ambiguous_review():
+    linked = [{"serviceLinks": [{"id": audit.SERVICE_ID}], "name": "never-print"}]
+    status = result_map(groups=linked)
+    assert status["environment group membership metadata"] == "PASS"
+    assert status["no linked environment groups"] == "FAIL"
