@@ -30,7 +30,7 @@ Consulte [escopo e fontes do catálogo](docs/MULTI_AGRAVO_CATALOG.md).
 | **Public HTTPS preview** | `python -m sinan_mcp.public_server` | Referências para múltiplos agravos; **120 registros TB fictícios apenas como demonstração**; sem SQLite ou SINAN real | Descoberta de fontes, educação e demonstração do protocolo |
 | **Private/local research** | `python -m sinan_mcp --db ./data/sinan-demo.sqlite3 servir` | User-selected local SQLite; real data only under safeguards | Private protocol integration and research |
 
-**The public deployment is not a live SINAN statistics source.** Any actual real-data output requires a separately validated, pre-aggregated dataset and independent privacy/security review. The 113,012 real TB 2024 records imported into the user's Windows were **not** copied to the public server.
+**The public deployment is not a live SINAN statistics source.** Any actual real-data output requires a separately validated, pre-aggregated dataset and independent privacy/security review. Any local research import conducted outside the public service remains isolated; no patient-level research data are part of the public preview.
 
 ## Instância pública em operação (somente dados sintéticos)
 
@@ -40,7 +40,7 @@ Consulte [escopo e fontes do catálogo](docs/MULTI_AGRAVO_CATALOG.md).
 - **Validação externa:** [Public HTTPS MCP smoke — GitHub Actions](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/workflows/public-live-smoke.yml)
 - **Estado dos dados:** EXCLUSIVAMENTE 120 registros demonstrativos fictícios TUBE/2024/PI. **Não é uma API de estatísticas oficiais.**
 
-No ChatGPT, crie um conector/servidor MCP personalizado por **URL HTTPS** (não por túnel), use o endereço `/mcp` acima e escolha sem autenticação apenas para esta instância de demonstração sem dados privados. A instalação local de pesquisa permanece separada. A publicação no Plugin Directory depende de revisão e aceite próprios da plataforma.
+Clientes MCP compatíveis podem apontar para o endpoint público HTTPS `/mcp`, exclusivamente para demonstração com dados fictícios. A operação local permanece separada e a eventual distribuição em diretórios de aplicativos requer avaliação própria.
 
 A instância gratuita pode suspender após inatividade, causando latência na primeira chamada. O operador deve considerar monitoramento e custo/cotas antes da divulgação ampla.
 

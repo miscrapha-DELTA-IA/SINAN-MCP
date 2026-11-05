@@ -5,12 +5,14 @@ base artificial e protocolo MCP. **Não** é auditoria epidemiológica independe
 certificação de segurança, integração com dados ZIKABR24 ou liberação de
 estatísticas reais.
 
-## Estado confirmado da implantação
+## Registro histórico de implantação — 04/11/2026
+
+> **Instantâneo datado.** Os identificadores e estados abaixo foram observados em 04/11/2026 e não devem ser interpretados como a versão ativa neste momento. Consulte o [índice de documentação](README.md), os deploys do serviço e a [sonda HTTPS pública](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/workflows/public-live-smoke.yml) para evidências mais recentes.
 
 Consulta à **API da Render em 2026-11-04** identificou o serviço
 `sinan-mcp-public-preview` na branch `main` com **autoDeploy desativado**.
 
-- **Commit atualmente informado pela Render:** `678e15523bb13ec2f36778ffe879c479dff2b3bf`
+- **Commit informado naquela consulta:** `678e15523bb13ec2f36778ffe879c479dff2b3bf`
 - **Implantação concluída:** 2026-11-02 22:08:27 UTC
 - **Origem:** atualização via API, status `live`
 - **Serviço:** `https://sinan-mcp-public-preview.onrender.com`

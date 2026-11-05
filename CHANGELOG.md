@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.4.0-alpha.6 (2026-11-05): evidence-locked Zika/TB documentary instruments
+
+- Indexed seven official source PDFs with source-specific URLs, page counts, byte sizes and locked SHA-256 hashes.
+- Located 57 field-code occurrences on the cited PDF pages (37 Zika, 15 selected TB and five common fields). These are text-presence tests, **not scientific validation of labels or a 2024 data export**.
+- Published the public, read-only documentary snapshot through existing ZIKA/TUBE description tools, without patient records or new numerical endpoints.
+- Kept independent epidemiology, information-system, privacy, release concordance and legal gates **pending**. Public service uses only fictional numerical fixtures.
+
+## Documentation maintenance (2026-11-05)
+
+- Added a reader-first documentation index, external-review guide and neutral local setup instructions.
+- Removed obsolete agent-handoff briefs and non-operational GitHub About advice from publicly browsable root/documentation paths.
+- Aligned public overviews and catalogue status with the verified evidence and the pending review gate.
+- Documentation restructuring does not alter MCP runtime behavior, data permissions or scientific approvals.
+
+## 0.4.0-alpha.5 (2026-11-05): source-aware catalogue
+
+- Added curated institutional-source references across 14 condition themes with 17 distinct institutional page URLs.
+- Added explicit provenance, dated curation, scope disclaimers and typo suggestions without remote fetching inside MCP calls.
+- No automatic acceptance of reference pages as epidemiological datasets.
+
+
 ## 0.4.0-alpha.4 (2026-11-02): multi-agravo reference and official-source catalogue
 
 - Created a static catalogue of **14 internal disease/notification aliases** and four curated official navigation sources for SINAN/DATASUS, clearly differentiated from valid datasets or statistics.

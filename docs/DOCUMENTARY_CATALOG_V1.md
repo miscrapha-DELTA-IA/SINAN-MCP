@@ -1,6 +1,8 @@
-# Catálogo documental com proveniência — v1 (SINAN MCP externo)
+# Catálogo documental com proveniência — v1.1
 
-**Data de curadoria manual:** 05/11/2026 · **Versão do pacote:** `0.4.0a5` · **Fonte canônica estruturada:** [`sinan_mcp/documentary_registry.json`](../sinan_mcp/documentary_registry.json) · **Situação:** 14 temas curados / 17 URLs de páginas oficiais institucionais identificadas. **Dados reais carregados: zero.**
+[Centro de documentação](README.md) · [Revisão externa](instruments-2024/EXTERNAL_REVIEW.md) · [Evidências Zika/TB](instruments-2024/REVIEW_PROTOCOL.md)
+
+**Data-base da curadoria:** 05/11/2026 · **Versão pública do software:** `0.4.0a6` · **Fonte canônica estruturada:** [`sinan_mcp/documentary_registry.json`](../sinan_mcp/documentary_registry.json) · **Situação:** 14 temas curados / 17 URLs de páginas oficiais institucionais identificadas. **Dados reais carregados: zero.**
 
 ## O que é e o que não é uma evidência
 
@@ -31,7 +33,7 @@ Nenhum teste HTTP é feito durante chamadas MCP. Os endereços são **links iner
 | `ANIM` | Acidentes por animais peçonhentos | [Página temática do MS](https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/a/animais-peconhentos) · [Orientação oficial de acesso a dados](https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/a/animais-peconhentos/como-obter-dados-epidemiologicos) |
 | `COQU` | Coqueluche | [Página temática do MS](https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/c/coqueluche) |
 
-A ligação `ZIKA` ao catálogo de dados abertos **não** significa que seus recursos foram baixados ou inspecionados. A referência de `SIFA` é **geral**, não uma ficha específica de sífilis adquirida. Índices de publicações são rotas para exploração manual, não comprovação do conteúdo integral de cada PDF. Os textos de várias páginas institucionais podem mudar após esta curadoria; ausência de rechecagem não deve ser apresentada como atualização em tempo real.
+A ligação `ZIKA` ao catálogo de dados abertos, **isoladamente**, não comprova download ou inspeção dos conjuntos de dados. Em um processo documental separado, o **PDF do dicionário de Zika** foi de fato baixado e submetido à verificação de integridade; **nenhum arquivo de microdados ZIKA/2024 foi baixado por essa auditoria**. A referência de `SIFA` é **geral**, não uma ficha específica de sífilis adquirida. Índices de publicações são rotas para exploração manual, não comprovação do conteúdo integral de cada PDF. Os textos de várias páginas institucionais podem mudar após esta curadoria; ausência de rechecagem não deve ser apresentada como atualização em tempo real.
 
 ## Instrumentos e dicionários Zika/TB (expansão documental v1.1)
 
@@ -39,7 +41,7 @@ A partir de `0.4.0a6`, as ferramentas existentes `pesquisar_agravos` e `descreve
 
 A prova automatizada de ocorrência dos códigos em suas páginas resultou em **57/57 tokens localizados** no [registro de auditoria e revisão independente pendente](instruments-2024/REVIEW_PROTOCOL.md). Não foi validada a interpretação semântica, tipagem de exportação, coerência de períodos e dados SINAN 2024; nenhuma revisão humana assinou parecer. O pacote é gerado a partir de `docs/instruments-2024/field_matrix.csv` e `source_manifest.json`, preservando testes cruzados com o JSON distribuído `sinan_mcp/public_instruments_2024.json`. O servidor MCP não faz download dos arquivos quando consultado.
 
-## Como o usuário pode pesquisar e verificar
+## Consultar e verificar uma referência
 
 1. Use `pesquisar_agravos(termo="hanseniase", limite=5)` ou sinônimos como `escorpiao`, `zikv`, `sifilis congenita`. A busca classifica alias/nome exato antes de prefixos, trechos e todas as palavras; não consulta a internet.
 2. Erros de digitação como `tuberculoze` retornam `sugestoes_de_grafia`, **não** resultados presumidos.
@@ -53,9 +55,9 @@ A prova automatizada de ocorrência dos códigos em suas páginas resultou em **
 - **Lista de hospedagem estrita**: referências devem ser HTTPS e estar em `www.gov.br`, `portalsinan.saude.gov.br` ou `dadosabertos.saude.gov.br`. Links que não respeitem essa lista falham fechados antes de serem servidos; URLs não vêm de prompts do usuário.
 - **Rastreabilidade**: aliases, 17 IDs de referência únicos, data, justificativa e tipo de página em fonte textual versionada; alterações passam por PR, testes e nova sonda externa após deploy manual.
 - **Escopo do teste**: os testes validam links institucionais **registrados e identificados na revisão manual** e a integridade da estrutura; não provam disponibilidade HTTP futura nem exatidão do conteúdo de PDF. Use auditoria de acesso externa documentada para renovar a data, sem rotular como revisão de dados clínicos.
-- **Próxima expansão científica**: extrair e confrontar dicionários e instrumentos anuais em processo de curadoria separado, com revisão independente e sem publicação de microdados. Só então promover estados de validação individual de documentos.
+- **Próxima etapa científica:** concluir a inspeção humana dos documentos já auditados e confrontar versões e layouts anuais específicos, com revisão independente e sem publicação de microdados. Alterar estados de validação somente após evidência verificável.
 
-**Nota de integridade:** manter o aviso explícito de que as 120 linhas TUBE/2024/PI são inteiramente fictícias. Nenhum total nacional, estadual ou municipal de SINAN é produzido por este catálogo.
+**Nota de integridade:** as 120 linhas TUBE/2024/PI são inteiramente fictícias. Nenhum total nacional, estadual ou municipal de SINAN é produzido por este catálogo.
 
 ## Portais transversais
 
