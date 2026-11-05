@@ -50,6 +50,20 @@ Exemplos de alto risco:
 
 O workflow [`instruments-2024-audit.yml`](../../.github/workflows/instruments-2024-audit.yml) cria **artefato JSON de metadata** com retenção por sete dias. Nenhum PDF ou microdado é enviado como artifact. Falha fechada se fonte ou paginação divergirem.
 
+## Hashes fixados a partir da checagem dos bytes oficiais
+
+| Documento | SHA-256 | Bytes | Páginas |
+| --- | --- | ---: | ---: |
+| ZIKA-DIC | `80b50522c67f550ee2c96aad315dddd524bf38b1c7fa1c40b2ee341cc41cdf0d` | 333.298 | 8 |
+| ZIKA-FICHA | `b87ebfd414502c21eb0e7e269b2329eaa66fd6fe1086913b9b46dbfb7f9a93e1` | 15.666 | 1 |
+| ZIKA-INSTR | `635578b83d7a5d3be21234ffabbe8a94e40deed21109dd157a5333b22f100997` | 84.434 | 3 |
+| COMMON-NINDIV | `db365c9632690ade275eb609badeada8033b042165605a734c5c242048ede221` | 608.286 | 23 |
+| TUBE-DIC | `0e0aac57f975343917552225cfd920c88f096f99cba46968c5bca6f46c291b08` | 328.708 | 22 |
+| TUBE-FICHA | `77b19f9d41d458bac7c749d25a0b5b6b90c542b0fd7377e371b401abf019ed23` | 26.671 | 1 |
+| TUBE-ACOMP | `b0e9d0ef283bb9525b5192eeca76ad611947d315929f383005a27769bec1867b` | 11.927 | 1 |
+
+**Proveniência da evidência:** [GitHub Actions — Official Zika TB PDF evidence audit, execução 41994351476](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/41994351476). O evento de download de 5 de novembro de 2026 confirmou cabeçalho HTTP 200, PDF e paginação. Essa medição da integridade de bytes recebidos é um *lock* de release reprodutível, não certificação do órgão produtor, nem substitui a confrontação com o arquivo de distribuição 2024.
+
 ## Revisão independente — protocolo de homologação
 
 Preencher [`independent_review_template.json`](independent_review_template.json) **somente após** as avaliações humanas efetivas. É proibido atribuir nomes, assinaturas, conflito de interesse ou aprovação fictícios. Três pareceres distintos e verificáveis:
@@ -66,7 +80,7 @@ Para cada pessoa: identificação e afiliação verdadeiras, declaração de con
 
 - [x] URLs e versões aparentes dos sete instrumentos/dicionários oficiais localizados.
 - [x] Matriz de metadados de 57 linhas, sem valores de pacientes.
-- [ ] SHA-256 e páginas **verificados pelos bytes oficiais** em um relatório de CI reproduzível.
+- [x] SHA-256, tamanho e páginas **verificados sobre bytes recebidos de sete URLs oficiais**, fixados no manifesto pelo [workflow GitHub Actions 41994351476](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/41994351476). Isso **não** comprova assinatura digital do emissor, versão oficial aplicável a 2024 ou revisão humana.
 - [ ] Confronto independente **de todas** as linhas da matriz com PDFs com hash bloqueado.
 - [ ] Divergências entre dicionário comum, específico e arquivo 2024 resolvidas em instrumento apropriado.
 - [ ] Três pareceres humanos independentes, incluindo privacidade.
