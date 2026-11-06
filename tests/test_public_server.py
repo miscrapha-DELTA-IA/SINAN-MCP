@@ -105,7 +105,7 @@ def test_public_values_are_labelled_fictional():
     )
     assert sum(g["notificacoes_ficticias"] for g in r["resultado"]["dados"]) == 120
     assert "SINTÉTICO" in r["aviso"]
-    assert r["proveniencia"]["fonte"] == "synthetic-in-code/v1"
+    assert r["proveniencia"]["fonte"] == "synthetic-in-code/v2"
     loss = public.proporcao_abandono_tuberculose(
         2024, 2024, "PI", None, "sexo"
     )
@@ -240,7 +240,7 @@ def test_public_mcp_tools_no_private_admin_routes():
                 "uf": "PI", "por": "raca_cor",
             })
             assert not r.is_error
-            assert r.structured_content["proveniencia"]["fonte"] == "synthetic-in-code/v1"
+            assert r.structured_content["proveniencia"]["fonte"] == "synthetic-in-code/v2"
             r2 = await client.call_tool("listar_bases", {})
             assert not r2.is_error
             assert r2.structured_content["dados_reais_disponiveis"] is False
