@@ -114,7 +114,7 @@ def test_public_tool_inventory_remains_unchanged_and_all_data_is_synthetic():
     assert public_server.listar_bases()["dados_reais_disponiveis"] is False
     assert public_server.PUBLIC_VERSION == "0.4.0a6"
     assert public_server.contar_notificacoes("TUBE", 2024, 2024, "PI")[
-        "proveniencia"]["fonte"] == "synthetic-in-code/v1"
+        "proveniencia"]["fonte"] == "synthetic-in-code/v2"
 
 
 def test_registry_rejects_non_official_domains_fail_closed(monkeypatch, tmp_path):
@@ -202,3 +202,21 @@ def test_public_instruments_are_independent_read_only_copies():
     first["documentos"][0]["sha256_pdf"] = "0" * 64
     second = documentary.obter_instrumentos_2024("ZIKA")
     assert second["documentos"][0]["sha256_pdf"] != "0" * 64
+
+
+def test_public_synthetic_fixture_is_demographically_balanced_and_fictional():
+    from collections import Counter
+    rows = list(public_server._fake_rows())
+    assert len(rows) == 120
+    for pos in (0, 1):
+        categories = {row[pos] for row in rows}
+        assert len(categories) == 2
+        group_counts = Counter(row[pos] for row in rows)
+        group_loss = Counter(row[pos] for row in rows if row[2] == "2")
+        assert sorted(group_counts.values()) == [60, 60]
+        assert sorted(group_loss.values()) == [12, 12]
+    reported = public_server.proporcao_abandono_tuberculose(2024, 2024, "PI")
+    assert all(row["proporcao_ficticia_percentual"] == 20.0
+               for row in reported["resultado"]["dados"])
+    assert reported["proveniencia"]["fonte"] == "synthetic-in-code/v2"
+    assert "SINTÉTICO" in reported["aviso"]
