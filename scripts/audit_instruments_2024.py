@@ -92,7 +92,12 @@ def inspect_matrix() -> dict:
     with MATRIX.open(encoding="utf-8", newline="") as handle:
         rows = list(csv.DictReader(handle))
     require(len(rows) == 57, "Field matrix must contain the 57 curated documentary records")
-    require(all(row["ano_alvo"] == "2024" for row in rows), "Unexpected target year")
+    require(all(row["ano_alvo"] == "2024" and row["ano_alvo_pretendido"] == "2024"
+                for row in rows), "Unexpected intended reference year")
+    require(all(row["ano_documento_observado"] in {
+                "nao_identificado", "2018_revisao_descrita",
+                "2020_indicado_na_url_nao_versao_2024"}
+                for row in rows), "Undocumented source date label")
     require(all(row["status_concordancia_extracao_2024"] == "NOT_VERIFIED"
                 and row["status_revisao_independente"] == "PENDING"
                 for row in rows), "Field-level concordance/review was asserted prematurely")
