@@ -137,7 +137,7 @@ def _field_code_present(page_text: str, code: str) -> bool:
     parts = re.findall(r"[a-z0-9]+", code.casefold())
     require(bool(parts) and sum(map(len, parts)) >= 4,
             "Suspicious field code in matrix")
-    needle = r"[\\s_\\-]*".join(map(re.escape, parts))
+    needle = r"[\s_-]*".join(map(re.escape, parts))
     return re.search(rf"(?<![a-z0-9]){needle}(?![a-z0-9])", normalized) is not None
 
 
