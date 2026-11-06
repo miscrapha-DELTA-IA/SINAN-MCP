@@ -7,11 +7,11 @@
   ],
   "verification_run": "https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/41995297093",
   "curated_at": "2026-11-05",
-  "year_2024_means": "ANO_ALVO_DA_PESQUISA_NAO_VERSAO_DOS_DOCUMENTOS",
+  "year_2024_means": "Ano-alvo pretendido para confronto futuro (não ano do documento, não release validada de dados SINAN 2024).",
   "actual_2024_dataset_schema_validated": false,
   "independent_scientific_review_approved": false,
   "real_data_access": false,
-  "description": "Os 7 PDFs oficiais tiveram bytes SHA-256 e paginas verificados; 57 codigos de campo foram localizados nas paginas dos PDFs. Sem confronto do layout 2024, sem revisao humana independente ou dados epidemiologicos.",
+  "description": "Os 7 PDFs oficiais tiveram bytes SHA-256 e paginas verificados; 57 codigos de campo foram localizados nas paginas dos PDFs. Sem confronto do layout 2024, sem revisao humana independente ou dados epidemiologicos. Contagens: 57 registros documentais (37 Zika, 15 TB, 5 comuns); 42 no pacote Zika e 20 no pacote TB porque as cinco entradas comuns aparecem em ambos. Nenhum dado real de 2024 foi confrontado.",
   "diseases": {
     "ZIKA": {
       "status": "PDFS_E_CODIGOS_LOCALIZADOS_SEM_HOMOLOGACAO_DO_ANO_2024",
@@ -589,7 +589,7 @@
           "rotulo_documental": "Tipo de entrada",
           "pagina_pdf": 1,
           "tipo_resumido": "categorico",
-          "observacoes": "1 novo,2 recidiva,3 reingresso,4 não sabe,5 transferência,6 pós-óbito",
+          "observacoes": "1 caso novo; 2 recidiva; 3 reingresso após abandono; 4 não sabe; 5 transferência; 6 pós-óbito; dicionário v5.0; equivalência 2024 não verificada",
           "documento_id": "TUBE-DIC",
           "correspondencia_arquivo_2024": "NAO_VERIFICADA",
           "revisao_humana": "PENDENTE"
@@ -659,7 +659,7 @@
           "rotulo_documental": "Teste molecular rápido TB",
           "pagina_pdf": 8,
           "tipo_resumido": "categorico",
-          "observacoes": "status de detecção e rifampicina",
+          "observacoes": "1 detectável sensível à rifampicina; 2 detectável resistente à rifampicina; 3 não detectável; 4 inconclusivo; 5 não realizado; dicionário v5.0; equivalência 2024 não verificada",
           "documento_id": "TUBE-DIC",
           "correspondencia_arquivo_2024": "NAO_VERIFICADA",
           "revisao_humana": "PENDENTE"
@@ -709,7 +709,7 @@
           "rotulo_documental": "Situação de encerramento",
           "pagina_pdf": 19,
           "tipo_resumido": "categorico",
-          "observacoes": "1 cura,2 abandono,10 abandono primário; outras categorias; coorte a validar",
+          "observacoes": "1 cura; 2 abandono; 3 óbito por TB; 4 óbito por outras causas; 5 transferência; 6 mudança de diagnóstico; 7 TB-DR; 8 mudança de esquema; 9 falência; 10 abandono primário; coorte a validar",
           "documento_id": "TUBE-DIC",
           "correspondencia_arquivo_2024": "NAO_VERIFICADA",
           "revisao_humana": "PENDENTE"
