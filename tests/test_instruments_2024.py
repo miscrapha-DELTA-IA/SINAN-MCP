@@ -115,3 +115,30 @@ def test_pdf_field_identifier_match_has_boundaries(text, code, present):
 def test_pdf_field_identifier_match_never_claims_2024_schema():
     assert audit._field_code_present("SITUA_ENCE", "SITUA_ENCE")
     assert audit.inspect_matrix()["verified_against_2024_dataset"] is False
+
+
+def test_matrix_separates_intended_target_year_from_document_date():
+    with audit.MATRIX.open(encoding="utf-8", newline="") as handle:
+        rows = list(__import__("csv").DictReader(handle))
+    assert len(rows) == 57
+    assert all(row["ano_alvo"] == row["ano_alvo_pretendido"] == "2024" for row in rows)
+    assert {row["ano_documento_observado"] for row in rows} == {
+        "nao_identificado", "2018_revisao_descrita",
+        "2020_indicado_na_url_nao_versao_2024"
+    }
+    assert all(row["status_concordancia_extracao_2024"] == "NOT_VERIFIED"
+               for row in rows)
+    assert all("completo_37_linhas" not in row["escopo"] for row in rows)
+
+
+def test_tb_documentary_categories_are_complete_but_not_2024_validated():
+    with audit.MATRIX.open(encoding="utf-8", newline="") as handle:
+        rows = list(__import__("csv").DictReader(handle))
+    tb = {row["campo_documental"]: row for row in rows if row["agravo"] == "TUBE"}
+    assert "3 reingresso após abandono" in tb["TRATAMENTO"]["observacao_ou_codificacao"]
+    assert all(f"{n} " in tb["TESTE_MOLEC"]["observacao_ou_codificacao"]
+               for n in range(1, 6))
+    assert all(f"{n} " in tb["SITUA_ENCE"]["observacao_ou_codificacao"]
+               for n in range(1, 11))
+    assert all(row["status_revisao_independente"] == "PENDING"
+               for row in tb.values())
