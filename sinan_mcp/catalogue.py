@@ -26,7 +26,8 @@ def listar_agravos() -> dict:
 
 def metodologia_tuberculose() -> dict:
     return {"codigo": "TB_ABANDONO_EXPLORATORIO",
-            "situacao": "RASCUNHO_METODOLOGICO_BLOQUEADO",
+            "situacao": "NAO_OFICIAL",
+            "estado_formulacao": "RASCUNHO_METODOLOGICO_BLOQUEADO",
             "validado_cientificamente": False,
             "utilizavel_em_dados_reais": False,
             "numerador": "NÃO DEFINIDO: códigos SITUA_ENCE 2/10 exigem coorte e regras oficiais",
