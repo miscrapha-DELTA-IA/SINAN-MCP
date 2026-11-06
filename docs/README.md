@@ -30,7 +30,7 @@ A demonstração pública utiliza **somente dados fictícios** e não disponibil
 | Resultado | Alcance real |
 | --- | --- |
 | Sete PDFs verificados por SHA-256 e paginação | Integridade dos bytes recebidos |
-| 57 registros de códigos localizados historicamente nas páginas indicadas | Checagem por substring anterior; novo teste delimitado ainda requer CI; não é validação semântica |
+| 57 registros de códigos localizados historicamente nas páginas indicadas | Checagem antiga por substring e [novo teste delimitado aprovado na CI 42144137431](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/42144137431); não é validação semântica |
 | Concordância com exportação SINAN 2024 | **Não verificada** |
 | Pareceres científicos e privacidade independentes | **Pendentes** |
 | Uso de dados reais no servidor público | **Não autorizado** |
