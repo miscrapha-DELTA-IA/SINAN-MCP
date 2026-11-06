@@ -20,7 +20,7 @@
 | Component | Available today | Boundary |
 | --- | --- | --- |
 | **Reference catalogue** | 14 internal condition aliases and 17 curated institutional reference pages | A reference link does not establish access to a usable dataset |
-| **Zika/TB documentary evidence** | Seven official PDFs with locked SHA-256; 57 matrix records from 3 dictionaries, reused as 42 Zika + 20 TB bundle entries | Historical 57/57 substring checks must be re-run under stricter identifier boundaries; neither semantics nor the 2024 export layout is validated |
+| **Zika/TB documentary evidence** | Seven official PDFs with locked SHA-256; 57 matrix records from 3 dictionaries, reused as 42 Zika + 20 TB bundle entries | All 57/57 code occurrences were rechecked under stricter identifier boundaries in [CI 42144137431](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/42144137431); neither semantics nor the 2024 export layout is validated |
 | **Public MCP preview** | 10 read-only tools, including 120 deterministic fictional TB demonstration records | No actual SINAN notifications, real indicators, SQLite or external data import |
 | **Local research tools** | Experimental ingestion, diagnostics and methodological utilities | Not part of the public service; real-data work requires separate authorization and controls |
 
@@ -43,7 +43,7 @@ The public service has **no path to the private research database**. Passing sof
 
 The [Zika and tuberculosis evidence dossier](docs/instruments-2024/REVIEW_PROTOCOL.md) details document identity, apparent versions, byte-integrity checks and page-level field references.
 
-- **Established historically:** 7/7 PDF byte-integrity checks and 57/57 text occurrences under the previous verifier. The tightened identifier test requires a new CI run; occurrence is never semantic validation.
+- **Established historically:** 7/7 PDF byte-integrity checks and 57/57 text occurrences under the previous verifier. The tightened identifier test passed [CI 42144137431](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/42144137431); occurrence is never semantic validation.
 - **Pending:** independent human review of interpretations, 2024 dataset-layout concordance and privacy aspects.
 - **Not authorized:** publication of real SINAN counts, individual-level access or medical decisions.
 
