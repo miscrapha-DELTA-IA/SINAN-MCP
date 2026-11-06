@@ -27,7 +27,7 @@ Os nomes de agravos no catálogo não representam automaticamente a disponibilid
 
 ## Validação documental
 
-Os sete PDFs de Zika e tuberculose tiveram **hash SHA-256, tamanho e páginas** conferidos nos bytes recebidos. A CI histórica localizou 57 códigos por correspondência textual normalizada. O verificador está sendo reforçado para exigir identificadores delimitados; o novo resultado dependerá de uma execução própria da CI.
+Os sete PDFs de Zika e tuberculose tiveram **hash SHA-256, tamanho e páginas** conferidos nos bytes recebidos. A CI histórica localizou 57 códigos por correspondência textual normalizada. O verificador exige agora identificadores delimitados, e a [CI 42144137431](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/42144137431) concluiu essa checagem com sucesso. Isso não demonstra concordância com dados reais de 2024.
 
 Isso **não confirma** a semântica integral dos campos, a equivalência com arquivos SINAN de 2024 ou a aprovação independente do estudo. Essas atividades seguem pendentes de revisão epidemiológica, de sistemas de informação e de privacidade.
 
