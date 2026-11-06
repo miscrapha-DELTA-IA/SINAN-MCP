@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use SINAN MCP software or its documentary protocol, cite the repository and the exact version consulted. Do not interpret this citation as scientific validation of SINAN 2024 data."
+title: "SINAN MCP: documentary source discovery and fictional demonstration"
+authors:
+  - name: "SINAN MCP contributors"
+type: software
+repository-code: "https://github.com/miscrapha-DELTA-IA/SINAN-MCP"
+url: "https://github.com/miscrapha-DELTA-IA/SINAN-MCP"
+license: MIT
+version: "0.4.0a6"
+keywords:
+  - SINAN
+  - model context protocol
+  - documentary provenance
+  - synthetic demonstration
