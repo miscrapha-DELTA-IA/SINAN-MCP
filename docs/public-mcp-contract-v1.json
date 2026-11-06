@@ -12,7 +12,9 @@
     "file_year": 2024,
     "uf": "PI",
     "rows": 120,
-    "provenance": "synthetic-in-code/v1"
+    "provenance": "synthetic-in-code/v2",
+    "balanced_demonstration": true,
+    "note": "Valores e territorialidade fictícios; sem disparidade gerada por raça/cor ou sexo, sem valor epidemiológico."
   },
   "public_tools": [
     "sobre_o_servidor",

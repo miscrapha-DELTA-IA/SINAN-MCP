@@ -25,13 +25,17 @@ def listar_agravos() -> dict:
 
 
 def metodologia_tuberculose() -> dict:
-    return {"codigo": "TB_ABANDONO_EXPLORATORIO", "situacao": "NAO_OFICIAL",
-            "numerador": "SITUA_ENCE em 2 ou 10",
-            "denominador": "SITUA_ENCE em 1, 2 ou 10",
-            "tempo": "Ano do arquivo importado, NÃO ano de diagnóstico",
+    return {"codigo": "TB_ABANDONO_EXPLORATORIO",
+            "situacao": "NAO_OFICIAL",
+            "estado_formulacao": "RASCUNHO_METODOLOGICO_BLOQUEADO",
+            "validado_cientificamente": False,
+            "utilizavel_em_dados_reais": False,
+            "numerador": "NÃO DEFINIDO: códigos SITUA_ENCE 2/10 exigem coorte e regras oficiais",
+            "denominador": "NÃO DEFINIDO: não usar somente códigos 1/2/10 como população elegível",
+            "tempo": "NÃO DEFINIDO: ano do arquivo não equivale a ano do diagnóstico",
             "faltam": ["Coorte definida por tipo de entrada e data de diagnóstico",
                        "Critérios oficiais da modalidade de TB e registro de desfechos",
                        "Vinculação e desduplicação dos registros",
                        "Verificação de dicionário específico de ano/versão"],
             "fonte_oficial": "https://www.gov.br/saude/pt-br/centrais-de-conteudo/publicacoes/svsa/tuberculose/caderno-de-indicadores-da-tuberculose",
-            "aviso": "Não comparar esta medida com metas oficiais, nem utilizá-la em decisões clínicas."}
+            "aviso": "Definição epidemiológica não operacional. Não calcular a partir de dados reais, comparar com metas oficiais ou usar em decisões clínicas."}

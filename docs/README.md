@@ -9,6 +9,7 @@ A demonstração pública utiliza **somente dados fictícios** e não disponibil
 | Interesse | Documento |
 | --- | --- |
 | Entender o projeto | [Apresentação em português](pt-BR.md) |
+| Começar sem programação | [Guia rápido e glossário](QUICKSTART_PUBLICO.md) |
 | Realizar uma avaliação externa | [Guia de revisão](instruments-2024/EXTERNAL_REVIEW.md) |
 | Consultar a auditoria Zika/TB | [Dossiê documental](instruments-2024/REVIEW_PROTOCOL.md) |
 | Executar a demonstração local | [Instalação](LOCAL_SETUP.md) |
@@ -29,7 +30,7 @@ A demonstração pública utiliza **somente dados fictícios** e não disponibil
 | Resultado | Alcance real |
 | --- | --- |
 | Sete PDFs verificados por SHA-256 e paginação | Integridade dos bytes recebidos |
-| 57 códigos localizados nas páginas indicadas | Ocorrência textual, não validação semântica |
+| 57 registros de códigos localizados historicamente nas páginas indicadas | Checagem antiga por substring e [novo teste delimitado aprovado na CI 42144137431](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/42144137431); não é validação semântica |
 | Concordância com exportação SINAN 2024 | **Não verificada** |
 | Pareceres científicos e privacidade independentes | **Pendentes** |
 | Uso de dados reais no servidor público | **Não autorizado** |

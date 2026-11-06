@@ -49,7 +49,7 @@ def test_documentation_information_architecture() -> None:
     ):
         assert not removed.exists(), removed
     assert sorted(x.name for x in DOCS.glob("*.md")) == [
-        "LOCAL_SETUP.md", "README.md", "pt-BR.md",
+        "LOCAL_SETUP.md", "QUICKSTART_PUBLICO.md", "README.md", "pt-BR.md",
     ]
 
 

@@ -13,7 +13,7 @@ O **SINAN MCP** é um projeto independente, de código aberto, que utiliza o *Mo
 
 ## 2. O que está sendo solicitado?
 
-Uma avaliação **externa, objetiva e documentada** sobre o que foi realmente examinado. Existem três tipos diferentes de contribuição. **Escolha apenas o que se enquadra na sua experiência.**
+Uma avaliação **externa, objetiva e documentada** sobre o que foi realmente examinado. A auditoria documental não exige acesso a bases clínicas; o pacote tem 57 registros (37 Zika, 15 TB e 5 comuns), apresentados em 42 entradas no bundle Zika e 20 no bundle TB devido ao reuso dos 5 campos comuns. Existem três tipos diferentes de contribuição. **Escolha apenas o que se enquadra na sua experiência.**
 
 | Modalidade | Perfil | Tempo indicativo | Evidência solicitada |
 | --- | --- | --- | --- |
@@ -25,7 +25,7 @@ A modalidade A documenta **usabilidade**, não a validade científica. As modali
 
 ## 3. Onde consultar os documentos?
 
-1. Abra o [repositório SINAN-MCP](https://github.com/miscrapha-DELTA-IA/SINAN-MCP). Consulte a seção **O que é o projeto** no README.
+1. Abra o [repositório SINAN-MCP](https://github.com/miscrapha-DELTA-IA/SINAN-MCP). Consulte a seção **O que é** na [apresentação em português](../pt-BR.md).
 2. Abra o [protocolo de Zika e tuberculose](REVIEW_PROTOCOL.md), que explica o estado das evidências.
 3. Abra a [matriz CSV](field_matrix.csv). Na visualização do GitHub, procure uma linha pelo campo usando `Ctrl+F` (Windows) ou a busca da página.
 4. Confira, quando pertinente, o PDF listado no [manifesto JSON](source_manifest.json). As fontes diretas e respectivas páginas estão também na tabela do [protocolo](REVIEW_PROTOCOL.md).
@@ -40,7 +40,7 @@ Execute os três testes e registre **SIM, NÃO ou NÃO CONSEGUI TESTAR**.
 | --- | --- | --- |
 | 1. Entender o projeto | Leia a primeira seção do [README em português](../pt-BR.md). | Ficou claro que os dados numéricos públicos são fictícios? |
 | 2. Encontrar uma evidência | Na [matriz](field_matrix.csv), localize `cs_gestant` (Zika, página 3 de `ZIKA-DIC`) e `SITUA_ENCE` (TB, página 19 de `TUBE-DIC`). | Conseguiu encontrar ambos e identificar a origem? |
-| 3. Entender o limite científico | Leia o [protocolo](REVIEW_PROTOCOL.md), especialmente **Revisão independente**. | Ficou claro que a revisão e a equivalência com dados 2024 estão pendentes? |
+| 3. Entender o limite científico | Leia o [protocolo](REVIEW_PROTOCOL.md), especialmente **Avaliação científica independente**. | Ficou claro que a revisão e a equivalência com dados 2024 estão pendentes? |
 
 Se algum documento não abrir, registre o **link, dispositivo e mensagem de erro**. Não é necessário enviar capturas com dados pessoais ou arquivos clínicos.
 
@@ -84,7 +84,9 @@ Um parecer pode indicar **adequado dentro do escopo**, **correções necessária
 
 ## 5. Como formalizar a evidência de revisão
 
-Enviar relatório ou resposta por escrito, com os campos abaixo:
+**Canal privado sugerido para devolutiva:** envie o relatório por e-mail para **miscrapha@gmail.com**, com o assunto `SINAN MCP — revisão documental externa`. A [issue #62](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/issues/62) é pública: não a use para registrar e-mail pessoal, assinatura, dados clínicos ou declarações de conflito. Não há obrigação de aprovar o projeto.
+
+Envie o relatório ou resposta por escrito, com os campos abaixo:
 
 | Campo | Informação necessária |
 | --- | --- |
@@ -96,6 +98,8 @@ Enviar relatório ou resposta por escrito, com os campos abaixo:
 | Decisão | Adequado no escopo / Correções necessárias / Inconclusivo / Rejeitado |
 | Registro | Data e identificação do autor; assinatura eletrônica ou e-mail autenticável se aplicável |
 
-**A conferência automática de 7 PDFs e 57 tokens não substitui a revisão independente humana.** A validação institucional, privacidade e eventual autorização de uso de dados reais seguem controles próprios. Revisores não devem receber nem encaminhar registros de pacientes.
+**Consentimento e atribuição:** a identificação do revisor é solicitada para autenticar a devolutiva privada. Nome, afiliação, parecer integral e trechos identificáveis só serão publicados mediante autorização expressa; sem autorização, apenas achados técnicos anonimizados poderão ser resumidos. Evite dados pessoais desnecessários.
+
+**A conferência automática de 7 PDFs e 57 ocorrências textuais não substitui a revisão independente humana.** A validação institucional, privacidade e eventual autorização de uso de dados reais seguem controles próprios. Revisores não devem receber nem encaminhar registros de pacientes.
 
 O andamento e as pendências constam da [issue científica #62](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/issues/62). Respostas recebidas podem ser incorporadas ao histórico técnico **somente com registro fiel do conteúdo e da atribuição autorizada pelo autor**.

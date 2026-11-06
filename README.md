@@ -4,7 +4,7 @@
 
 **Open-source reference discovery and reproducible research workflows for Brazilian notifiable diseases**
 
-[Documentação em português](docs/README.md) · [Scientific evidence](docs/instruments-2024/REVIEW_PROTOCOL.md) · [External review](docs/instruments-2024/EXTERNAL_REVIEW.md) · [Security](SECURITY.md)
+[Documentação em português](docs/README.md) · [Guia rápido](docs/QUICKSTART_PUBLICO.md) · [Scientific evidence](docs/instruments-2024/REVIEW_PROTOCOL.md) · [External review](docs/instruments-2024/EXTERNAL_REVIEW.md) · [Security](SECURITY.md)
 
 [![CI](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/workflows/ci.yml) · [MIT License](LICENSE) · Python 3.11+
 
@@ -20,7 +20,7 @@
 | Component | Available today | Boundary |
 | --- | --- | --- |
 | **Reference catalogue** | 14 internal condition aliases and 17 curated institutional reference pages | A reference link does not establish access to a usable dataset |
-| **Zika/TB documentary evidence** | Seven official PDFs with locked SHA-256; 57 field identifiers located on the cited pages | Neither field semantics nor the 2024 export layout has been independently validated |
+| **Zika/TB documentary evidence** | Seven official PDFs with locked SHA-256; 57 matrix records from 3 dictionaries, reused as 42 Zika + 20 TB bundle entries | All 57/57 code occurrences were rechecked under stricter identifier boundaries in [CI 42144137431](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/42144137431); neither semantics nor the 2024 export layout is validated |
 | **Public MCP preview** | 10 read-only tools, including 120 deterministic fictional TB demonstration records | No actual SINAN notifications, real indicators, SQLite or external data import |
 | **Local research tools** | Experimental ingestion, diagnostics and methodological utilities | Not part of the public service; real-data work requires separate authorization and controls |
 
@@ -43,7 +43,7 @@ The public service has **no path to the private research database**. Passing sof
 
 The [Zika and tuberculosis evidence dossier](docs/instruments-2024/REVIEW_PROTOCOL.md) details document identity, apparent versions, byte-integrity checks and page-level field references.
 
-- **Established:** 7/7 PDF byte-integrity checks and 57/57 field-code occurrences on the documented pages.
+- **Established historically:** 7/7 PDF byte-integrity checks and 57/57 text occurrences under the previous verifier. The tightened identifier test passed [CI 42144137431](https://github.com/miscrapha-DELTA-IA/SINAN-MCP/actions/runs/42144137431); occurrence is never semantic validation.
 - **Pending:** independent human review of interpretations, 2024 dataset-layout concordance and privacy aspects.
 - **Not authorized:** publication of real SINAN counts, individual-level access or medical decisions.
 
@@ -80,6 +80,7 @@ See [installation instructions for other platforms](docs/LOCAL_SETUP.md) and the
 | Read | Purpose |
 | --- | --- |
 | [Documentation centre](docs/README.md) | Concise navigation in Portuguese |
+| [Public quickstart](docs/QUICKSTART_PUBLICO.md) | Glossary, remote MCP connection and fictional example prompts |
 | [Research reference library](docs/research/README.md) | Disease coverage, source provenance and methods |
 | [Zika/TB evidence dossier](docs/instruments-2024/REVIEW_PROTOCOL.md) | Primary documents and scientific limitations |
 | [Privacy and governance](docs/compliance/README.md) | Data handling and unresolved legal questions |
