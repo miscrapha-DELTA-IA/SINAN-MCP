@@ -95,3 +95,23 @@ def test_pdf_fetch_rejects_truncated_and_non_pdf(monkeypatch):
         audit.fetch_one(document, Opener(b"not pdf bytes" * 20))
     with pytest.raises(audit.AuditError, match="EOF marker"):
         audit.fetch_one(document, Opener(b"%PDF-1.7\n" + b"zeros" * 30))
+
+
+@pytest.mark.parametrize("text,code,present", [
+    ("A coluna FORMA fica na página", "FORMA", True),
+    ("INFORMAÇÃO e FORMATO não são o código FORMA", "FORMA", False),
+    ("Código TESTE_MOLEC e descrição", "TESTE_MOLEC", True),
+    ("Código TESTE_ MOLEC e descrição", "TESTE_MOLEC", True),
+    ("Código TESTEMOLEC e descrição", "TESTE_MOLEC", True),
+    ("Código TESTE_MOLECULAR e descrição", "TESTE_MOLEC", False),
+    ("O campo SITUA_ENCE é categórico", "SITUA_ENCE", True),
+    ("Campo CS_RACA no dicionário", "CS_RACA", True),
+    ("Campo XCS_RACA no dicionário", "CS_RACA", False),
+])
+def test_pdf_field_identifier_match_has_boundaries(text, code, present):
+    assert audit._field_code_present(text, code) is present
+
+
+def test_pdf_field_identifier_match_never_claims_2024_schema():
+    assert audit._field_code_present("SITUA_ENCE", "SITUA_ENCE")
+    assert audit.inspect_matrix()["verified_against_2024_dataset"] is False
