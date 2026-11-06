@@ -124,10 +124,21 @@ def _pdfinfo_pages(path: Path) -> int:
     return pages
 
 
-def _normalized_pdf_token(s: str) -> str:
-    """Conservative alphanumeric comparison; no inference from categories."""
-    normalized = unicodedata.normalize("NFKD", s.casefold())
-    return re.sub(r"[^a-z0-9]", "", normalized)
+def _field_code_present(page_text: str, code: str) -> bool:
+    """Match a whole field identifier, not a substring of an unrelated word.
+
+    PDF extraction can introduce spaces around underscores or hyphens. Match
+    separators flexibly while requiring non-alphanumeric boundaries. This
+    remains a *text occurrence check*, not a semantic or 2024-layout review.
+    """
+    normalized = unicodedata.normalize("NFKD", page_text.casefold())
+    normalized = "".join(char for char in normalized
+                         if not unicodedata.combining(char))
+    parts = re.findall(r"[a-z0-9]+", code.casefold())
+    require(bool(parts) and sum(map(len, parts)) >= 4,
+            "Suspicious field code in matrix")
+    needle = r"[\\s_\\-]*".join(map(re.escape, parts))
+    return re.search(rf"(?<![a-z0-9]){needle}(?![a-z0-9])", normalized) is not None
 
 
 def _matrix_field_page_matches(path: Path, doc_id: str) -> dict:
@@ -144,10 +155,8 @@ def _matrix_field_page_matches(path: Path, doc_id: str) -> dict:
         page = int(row["pagina_pdf"])
         require(1 <= page <= len(reader.pages), "Matrix references a nonexistent PDF page")
         if page not in pages:
-            pages[page] = _normalized_pdf_token(reader.pages[page - 1].extract_text() or "")
-        token = _normalized_pdf_token(row["campo_documental"])
-        require(len(token) >= 4, "Suspicious field code in matrix")
-        require(token in pages[page],
+            pages[page] = reader.pages[page - 1].extract_text() or ""
+        require(_field_code_present(pages[page], row["campo_documental"]),
                 f"Missing field token on declared PDF page: {doc_id}:{row['campo_documental']}:{page}")
     return {"fields_checked": len(rows), "fields_found_on_recorded_page": len(rows)}
 
@@ -184,7 +193,7 @@ def fetch_one(document: dict, opener) -> dict:
         "id": document["id"], "url": url, "source_mime": header, "bytes": len(raw),
         "sha256": computed_sha256, "pages": pages,
         "verified_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
-        "method": "official_https_byte_download+pdf_magic+eof+pypdf+field_page_tokens",
+        "method": "official_https_byte_download+pdf_magic+eof+pypdf+bounded_field_identifier_occurrences",
         "matrix_fields_checked": matches["fields_checked"],
         "matrix_fields_found_on_recorded_page": matches["fields_found_on_recorded_page"],
         "independent_reviewer_approved": False,
