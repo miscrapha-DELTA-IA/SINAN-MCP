@@ -99,7 +99,7 @@ def test_pdf_fetch_rejects_truncated_and_non_pdf(monkeypatch):
 
 @pytest.mark.parametrize("text,code,present", [
     ("A coluna FORMA fica na página", "FORMA", True),
-    ("INFORMAÇÃO e FORMATO não são o código FORMA", "FORMA", False),
+    ("INFORMAÇÃO e FORMATO não bastam", "FORMA", False),
     ("Código TESTE_MOLEC e descrição", "TESTE_MOLEC", True),
     ("Código TESTE_ MOLEC e descrição", "TESTE_MOLEC", True),
     ("Código TESTEMOLEC e descrição", "TESTE_MOLEC", True),
