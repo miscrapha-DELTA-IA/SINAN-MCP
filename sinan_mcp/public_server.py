@@ -31,7 +31,8 @@ from .official_sources import (
 PUBLIC_VERSION = "0.4.0a6"
 WARNING = (
     "EXEMPLO INTEGRALMENTE SINTÉTICO. Os números NÃO são do SINAN real, "
-    "não representam pacientes, notificações oficiais, incidência ou risco."
+    "não representam pacientes, notificações oficiais, incidência ou risco. "
+    "O território e as categorias são rótulos de teste, não retratam grupos reais."
 )
 mcp = MCPServer(
     "SINAN MCP — public demonstration",
@@ -58,10 +59,12 @@ PUBLIC_TOOL_ANNOTATIONS = ToolAnnotations(
 def _fake_rows():
     """Stable, fixed fictional fixture (120 made-up records, never from SINAN)."""
     for i in range(120):
-        race = "4" if i < 70 else "1"
+        # Deterministic, balanced teaching fixture: 60 records per illustrated
+        # race category, 60 per sex, and 20% fictional outcome in each group.
+        # No association, fairness estimate or inference about real patients.
+        race = "4" if i < 60 else "1"
         sex = "F" if i % 2 else "M"
-        loss = ((i < 70 and i % 3 == 0) or
-                (i >= 70 and i % 4 == 0))
+        loss = i % 10 in (0, 1)
         yield race, sex, "2" if loss else "1"
 
 
@@ -83,12 +86,13 @@ def _check(agravo: str, ano_inicio: int | None, ano_fim: int | None,
 
 def _result_meta():
     return {
-        "fonte": "synthetic-in-code/v1",
+        "fonte": "synthetic-in-code/v2",
         "natureza": "100% sintético",
         "agravo": "TUBE",
         "ano_do_arquivo_ficticio": 2024,
         "territorio_ficticio": "PI",
         "status": "nao_se_aplica",
+        "fixture_balanceada_para_demonstracao": True,
         "aviso": WARNING,
     }
 
