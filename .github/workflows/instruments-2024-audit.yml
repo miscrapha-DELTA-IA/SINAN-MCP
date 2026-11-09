@@ -59,7 +59,7 @@ jobs:
           print("PASS: 7 pinned PDFs verified; 57 field-code tokens on stated PDF pages; zero microdados; human review pending")
           PY
       - name: Upload *only* document hashes, dates and gate metadata
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: instrument-2024-document-audit-metadata
           path: |
