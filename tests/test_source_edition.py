@@ -75,3 +75,21 @@ def test_discrepant_directories_not_final():
 def test_invalid_years_rejected(bad):
     with pytest.raises(ValueError):
         inspect_tb_edition(bad, ftp_factory=factory({}))
+
+def test_documented_module_entrypoint_has_help_without_network():
+    """Catch sys.path errors when invoked from a fresh checkout."""
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    repository_root = Path(__file__).resolve().parents[1]
+    cp = subprocess.run(
+        [sys.executable, "-m", "scripts.auditar_edicao_tb", "--help"],
+        cwd=repository_root,
+        capture_output=True,
+        text=True,
+        timeout=15,
+        check=False,
+    )
+    assert cp.returncode == 0, cp.stderr
+    assert "--anos" in cp.stdout
