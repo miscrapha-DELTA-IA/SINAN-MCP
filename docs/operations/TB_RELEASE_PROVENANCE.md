@@ -18,6 +18,30 @@ Na raiz do repositório, em ambiente local:
 
 O script consulta somente nomes, tamanhos e datas de modificação do FTP oficial. Não baixa microdados, não cria SQLite e não altera a configuração MCP. Sem resposta, marca desconhecido; se o mesmo nome aparecer nas duas pastas, marca duplicidade. A descoberta nunca marca status_final_homologado nem publicacao_autorizada como verdadeiros.
 
+### Resultado de observação direta do FTP (2026-11-18)
+
+Na execução local Windows (PowerShell 5.1), `python -m scripts.auditar_edicao_tb --anos 2019 2024` retornou:
+
+| Arquivo | Diretório observado | SIZE (bytes) | MDTM reportado pelo FTP |
+| --- | --- | ---: | --- |
+| `TUBEBR19.dbc` | `FINAIS` | 5.289.464 | `20251015195757` |
+| `TUBEBR24.dbc` | `PRELIM` | 6.118.830 | `20260507190800` |
+
+Nenhuma das consultas retornou erros. Estes valores provêm da saída de terminal do operador; são **metadados observados**, não um checksum oficial, validação do conteúdo, ou endosso de publicação.
+
+### Etapa 1B — captura local restrita do DBC de 2019
+
+Após atualizar a branch de auditoria, execute **na raiz do repositório**:
+
+```powershell
+git pull --ff-only
+py -3.11 -m scripts.capturar_tb2019
+```
+
+O comando acessa somente `TUBEBR19.dbc` em `FINAIS`. Exige que **diretório, tamanho e MDTM** coincidam com a observação acima. A transferência binária é limitada a 20 MiB; se incompleta, é descartada. O destino é `data/private/tb2019/TUBEBR19.dbc`, ignorado pelo Git, e o manifesto de proveniência fica em `data/private/tb2019/TUBEBR19.manifest.json`. **Não envie o DBC nem o manifesto para o GitHub, ChatGPT, Drive ou hospedagem pública.** Caso execute novamente, o comando não sobrescreve a cópia existente.
+
+**Limite de autenticidade:** o FTP oficial usa conexão sem TLS; o SHA-256 calculado localmente fixa os bytes recebidos, mas não comprova criptograficamente a identidade da origem ou a veracidade clínica. Ainda será necessário localizar a evidência documental independente, comparar o conteúdo convertido com o Parquet PySUS e obter revisão externa. O script **nunca** habilita `--status final`, edição da base pública ou publicação MCP.
+
 ## Etapa 2 — equivalência reprodutível, exclusivamente local
 
 1. Transferir o DBC do endereço oficial exato, registrar data/hora UTC, tamanho, hash SHA-256 calculado sobre bytes recebidos, origem e versão. Manter arquivo fora do Git e do servidor público.
