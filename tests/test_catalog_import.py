@@ -101,7 +101,6 @@ def test_catalog_only_fallback_import_and_cleanup(tmp_path, monkeypatch):
 
 
 def test_network_reader_requires_real_checksum(tmp_path, monkeypatch):
-    pytest.importorskip("pysus")
     import io
     from urllib import request
 
@@ -117,10 +116,10 @@ def test_network_reader_requires_real_checksum(tmp_path, monkeypatch):
 
     monkeypatch.setattr(request, "urlopen", lambda req, timeout: Reply(payload))
     output = tmp_path / "test.parquet"
-    assert ci._download(e, output) == (digest, len(payload))
+    assert ci.download_mirror_entry(e, output) == (digest, len(payload))
     assert output.read_bytes() == payload
     with pytest.raises(ValueError, match="SHA256"):
-        ci._download({**e, "sha256": "0" * 64}, tmp_path / "bad.parquet")
+        ci.download_mirror_entry({**e, "sha256": "0" * 64}, tmp_path / "bad.parquet")
 
 
 def test_no_implicit_remote_download_on_discovery(tmp_path, monkeypatch):

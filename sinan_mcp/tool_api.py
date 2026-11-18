@@ -13,6 +13,7 @@ from typing import Any
 
 from .core import abandono_tb, catalogo, contar, dicionario, db_connect_readonly
 from .catalogue import CATALOGUE
+from .tb_pilot import SOURCE_TYPE, SOURCE_URL
 
 ALLOWED_GROUPS = frozenset({"sexo", "raca_cor"})
 POLICY_VERSION = "public-v2-restricted-partition"
@@ -45,13 +46,21 @@ def _source(db: str | Path, agravo: str, ano: int) -> dict[str, Any]:
             "deve revisar a privacidade e definir SINAN_PUBLIC_REAL_DATA=1 "
             "explicitamente no processo do servidor."
         )
+    source_type = row["tipo_fonte"]
+    reference = None
+    fingerprint_type = None
+    if source_type == SOURCE_TYPE:
+        reference = SOURCE_URL
+        fingerprint_type = "sha256_arquivo"
+    elif source_type.startswith("pysus"):
+        reference = "https://pysus.readthedocs.io/en/stable/quickstart.html"
+        fingerprint_type = "manifesto_hash_por_arquivo"
+    elif source_type == "csv-local":
+        fingerprint_type = "sha256_arquivo"
     return {"agravo": row["agravo"], "ano_do_arquivo": row["ano"],
             "tipo_de_fonte": row["tipo_fonte"], "status": row["status"],
             "fingerprint_sha256": row["sha256"], "importado_em_utc": row["atualizado_em"],
-            "origem_referencia": "https://pysus.readthedocs.io/en/stable/quickstart.html"
-                                 if row["tipo_fonte"].startswith("pysus") else None,
-            "fingerprint_tipo": "manifesto_hash_por_arquivo" if row["tipo_fonte"].startswith("pysus")
-                                else "sha256_arquivo" if row["tipo_fonte"] == "csv-local" else None,
+            "origem_referencia": reference, "fingerprint_tipo": fingerprint_type,
             "observacao": "Ano do arquivo, não necessariamente ano de notificação."}
 
 

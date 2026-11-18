@@ -49,6 +49,20 @@ Servidor MCP local:
 .venv/bin/python -m sinan_mcp --db ./data/sinan-demo.sqlite3 servir
 ```
 
+## Piloto local com o arquivo real de tuberculose de 2024
+
+O comando abaixo baixa uma versão específica de `TUBEBR24.parquet` do espelho público do PySUS. A importação confere o tamanho e o SHA-256 observado nessa versão antes de abrir o Parquet. Ela lê apenas município de residência, sexo, raça/cor e situação de encerramento, grava a projeção em SQLite e remove o Parquet temporário. A consolidação epidemiológica do arquivo permanece desconhecida.
+
+Na raiz do repositório, com o ambiente virtual ativo, execute:
+
+```powershell
+python -m pip install -e . "pyarrow>=17,<25"
+python -m sinan_mcp --db ./data/piloto-tb-2024.sqlite3 importar-piloto-tb-2024
+python scripts/verificar_piloto_tb.py --db ./data/piloto-tb-2024.sqlite3
+```
+
+Use um banco dedicado. Uma nova importação substitui a carga anterior de TUBE/2024 nesse banco dentro de uma transação. O verificador inicia o servidor privado por stdio, confere a origem no catálogo e consulta a partição PI por sexo. A opção de leitura real vale apenas para o processo filho. Uma resposta suprimida confirma que a consulta passou pela política de divulgação. O teste relata o estado sem imprimir as células. Nenhum túnel é necessário.
+
 ## Demonstração pública
 
 A instância externa está em [`/mcp`](https://sinan-mcp-public-preview.onrender.com/mcp); seu estado pode ser consultado em [`/health`](https://sinan-mcp-public-preview.onrender.com/health). O primeiro endereço é uma interface **MCP/HTTP para aplicativos compatíveis**, não um site de navegação.
