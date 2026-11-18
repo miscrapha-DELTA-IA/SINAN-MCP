@@ -100,6 +100,12 @@ def _download(entry: dict, destination: Path) -> tuple[str, int]:
     host = str(types.S3_ENDPOINT)
     if host != "nbg1.your-objectstorage.com" or str(types.S3_BUCKET) != "pysus":
         raise RuntimeError("Endpoint PySUS inesperado; download bloqueado")
+    return download_mirror_entry(entry, destination)
+
+
+def download_mirror_entry(entry: dict, destination: Path) -> tuple[str, int]:
+    """Download one catalog or pinned manifest entry from the PySUS mirror."""
+    host = "nbg1.your-objectstorage.com"
     url = "https://" + host + "/pysus/" + urllib.parse.quote(entry["key"], safe="/")
     request = urllib.request.Request(
         url, headers={"User-Agent": "SINAN-MCP/0.3 (local public data importer)"}

@@ -23,6 +23,7 @@ def main() -> None:
     py.add_argument("--ano", required=True, type=int)
     py.add_argument("--source", choices=["catalog", "origin"], default="catalog")
     py.add_argument("--status", choices=["final", "preliminar", "desconhecido"], default="desconhecido")
+    cmd.add_parser("importar-piloto-tb-2024", help="Importar o snapshot fixado TUBEBR24 do espelho PySUS")
     preview = cmd.add_parser("planejar-pysus", help="Prévia de download: metadados, tamanho e checksum, sem microdados")
     preview.add_argument("--agravo", required=True)
     preview.add_argument("--ano", type=int, required=True)
@@ -74,6 +75,9 @@ def main() -> None:
         r = ingest_csv(args.db, args.arquivo, agravo=args.agravo, ano=args.ano,
                        status=args.status, encoding=args.encoding, delimiter=args.delimiter)
         print(r)
+    elif args.comando == "importar-piloto-tb-2024":
+        from .tb_pilot import import_snapshot
+        print(import_snapshot(args.db))
     elif args.comando == "importar-pysus":
         r = ingest_pysus(args.db, agravo=args.agravo, ano=args.ano,
                          status=args.status, source=args.source)
