@@ -14,7 +14,7 @@ O piloto TUBE/2024 da PR #71 fixa o SHA-256 de um Parquet do espelho PySUS. O ha
 
 Na raiz do repositório, em ambiente local:
 
-    python scripts/auditar_edicao_tb.py --anos 2019 2024
+    python -m scripts.auditar_edicao_tb --anos 2019 2024
 
 O script consulta somente nomes, tamanhos e datas de modificação do FTP oficial. Não baixa microdados, não cria SQLite e não altera a configuração MCP. Sem resposta, marca desconhecido; se o mesmo nome aparecer nas duas pastas, marca duplicidade. A descoberta nunca marca status_final_homologado nem publicacao_autorizada como verdadeiros.
 
