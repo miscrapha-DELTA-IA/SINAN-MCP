@@ -51,6 +51,37 @@ O comando acessa somente `TUBEBR19.dbc` em `FINAIS`. Exige que **diretório, tam
 
 Se o DBC oficial estiver inacessível ou qualquer etapa falhar, manter versão **desconhecida** e recusar a homologação. Nunca usar --status final para contornar a ausência de evidências.
 
+### Etapa 2A — descobrir versão PySUS de 2019, sem baixar registros
+
+O arquivo DBC local capturado em 2026-11-18 apresentou SHA-256
+`7a00e29a5a309b794e21f1a650d3b04b9d3cb05fcc6ef8c9feefab3a961c9144`,
+tamanho `5289464` bytes e manifesto local registrado. O hash é calculado pelo operador a partir dos bytes FTP recebidos e **não** constitui checksum oficial autenticado.
+
+Na raiz do repositório Windows, use o Python isolado:
+
+```powershell
+git pull --ff-only
+if (!(Test-Path .venv\Scripts\python.exe)) { py -3.11 -m venv .venv }
+.\.venv\Scripts\python.exe -m pip install -e ".[ingest]" "pyreaddbc==2.0.4"
+.\.venv\Scripts\python.exe -m scripts.avaliar_equivalencia_tb2019 --etapa planejar
+```
+
+A consulta de planejamento só obtém metadados do catálogo PySUS, sem baixar Parquet ou enviar dados do DBC. Exige exatamente uma entrada `TUBEBR19.parquet` em `TUBE/2019` e SHA-256 de catálogo disponível. Se o catálogo estiver indisponível, a etapa falha conservadoramente e o status continua desconhecido.
+
+### Etapa 2B — comparação local das quatro colunas do piloto
+
+Execute somente após conferir o planejamento anterior:
+
+```powershell
+.\.venv\Scripts\python.exe -m scripts.avaliar_equivalencia_tb2019 --etapa comparar
+```
+
+O procedimento valida novamente o hash fixado do DBC e o manifesto. Baixa **somente** o Parquet listado no catálogo para um diretório temporário privado, exige SHA-256 e tamanho exatos, extrai do DBC as quatro colunas do piloto usando `pyreaddbc` em subprocesso isolado e compara, sem divulgar categorias, o multiconjunto das tuplas `(ID_MN_RESI, CS_SEXO, CS_RACA, SITUA_ENCE)` com todas as multiplicidades. Os artefatos temporários (Parquet, projeção DBC, tabela de comparação SQLite) são apagados ao término.
+
+Se o campo `multiconjunto_4_campos_igual` resultar `true`, isso prova **apenas a concordância da projeção de quatro campos sob a normalização descrita no código**, não equivalência integral do arquivo, completude, legitimidade epidemiológica, nem autorização de divulgação. Se resultar `false`, nenhuma fonte é homologada e será necessária auditoria privada de layout, codificação e versões.
+
+Mesmo quando a comparação for bem-sucedida, os campos `equivalencia_integral_verificada`, `status_final_homologado` e `publicacao_autorizada` permanecerão `false`. O código do servidor MCP público e o túnel são preservados.
+
 ## Etapa 3 — gate de publicação
 
 - Parecer científico independente sobre método, coorte, dicionário, contagem e versão.
