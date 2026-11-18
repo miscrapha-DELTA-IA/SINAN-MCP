@@ -1,6 +1,6 @@
 """Inspect official DATASUS FTP file metadata without downloading health data.
 
-Usage: python scripts/auditar_edicao_tb.py --anos 2019 2024
+Usage (from the repository root): python -m scripts.auditar_edicao_tb --anos 2019 2024
 """
 from __future__ import annotations
 
