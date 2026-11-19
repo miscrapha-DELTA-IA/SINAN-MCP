@@ -151,21 +151,44 @@ def compare_local_2019(root: Path | str = ROOT) -> dict:
     root = source.parent
     with TemporaryDirectory(prefix="concordancia-", dir=str(root)) as tmp:
         temp = Path(tmp)
+        projection = temp / "TUBEBR19-dbc-projecao.parquet"
+        # Validate/convert DBC locally *before* downloading the remote
+        # Parquet, to avoid repeating network traffic on converter errors.
+        try:
+            process = subprocess.run(
+                [sys.executable, "-m", "scripts._projetar_dbc_tb2019",
+                 "--source", str(source), "--target", str(projection)],
+                cwd=Path(__file__).resolve().parents[1],
+                capture_output=True, text=True, timeout=240, check=False,
+            )
+        except subprocess.TimeoutExpired as exc:
+            raise RuntimeError("Conversao DBC excedeu limite de execucao; "
+                               "nenhuma equivalencia inferida.") from None
+        if process.returncode != 0 or not projection.is_file():
+            # The child prints only a bounded, structured error descriptor.
+            # Never surface raw stderr, which might include personal records.
+            stage, code = "PROCESS", "EXIT_" + str(process.returncode)
+            for line in reversed(process.stderr.splitlines()):
+                try:
+                    detail = json.loads(line)
+                except (ValueError, TypeError):
+                    continue
+                if not isinstance(detail, dict) or detail.get("status") != "error":
+                    continue
+                candidate_stage, candidate_code = detail.get("stage"), detail.get("code")
+                import re
+                if all(isinstance(v, str) and re.fullmatch(r"[A-Za-z0-9_]{1,64}", v)
+                       for v in (candidate_stage, candidate_code)):
+                    stage, code = candidate_stage, candidate_code
+                    break
+            raise RuntimeError(
+                f"Conversao DBC local falhou: etapa={stage}, codigo={code}; "
+                "nenhuma equivalencia inferida."
+            )
         parquet = temp / "TUBEBR19-pysus.parquet"
         observed_sha, _ = download_mirror_entry(entry, parquet)
         if observed_sha != entry["sha256"]:
             raise ValueError("SHA-256 Parquet divergente")
-        projection = temp / "TUBEBR19-dbc-projecao.parquet"
-        process = subprocess.run(
-            [sys.executable, "-m", "scripts._projetar_dbc_tb2019",
-             "--source", str(source), "--target", str(projection)],
-            cwd=Path(__file__).resolve().parents[1],
-            capture_output=True, text=True, timeout=180, check=False,
-        )
-        if process.returncode != 0 or not projection.is_file():
-            raise RuntimeError("Conversao DBC local falhou em subprocesso; "
-                               "confira instalacao de pyreaddbc e memoria. "
-                               "Codigo: " + str(process.returncode))
         equal = compare_projected_parquets(projection, parquet,
                                            temp / "comparacao.sqlite3")
         return {
