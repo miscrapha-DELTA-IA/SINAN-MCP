@@ -16,6 +16,7 @@ from sinan_mcp.core import ingest_csv
 from sinan_mcp.release_pipeline import prepare_candidate, write_private_candidate
 from sinan_mcp.aggregate_contract import (
     candidate_digest, validate_candidate, load_approved_release,
+    _inspect_legacy_release_shape,
 )
 
 
@@ -114,20 +115,22 @@ def test_approved_static_package_is_pinned_and_reviewer_attested(tmp_path):
     candidate = prepare_candidate(fake_db(tmp_path), agravo="TUBE", ano=2024,
                                   uf="PI", por="raca_cor")
     path, digest = save_package(tmp_path, package(candidate))
-    loaded = load_approved_release(path, digest)
+    loaded = _inspect_legacy_release_shape(path, digest)
+    with pytest.raises(ValueError, match='Publicacao real bloqueada'):
+        load_approved_release(path, digest)
     assert loaded["candidate"]["cells"] == candidate["cells"]
     with pytest.raises(ValueError, match="Checksum"):
-        load_approved_release(path, "a" * 64)
+        _inspect_legacy_release_shape(path, "a" * 64)
     changed = package(candidate)
     changed["candidate"]["cells"][0]["registros"] += 1
     tamper_path, tamper_digest = save_package(tmp_path, changed)
     with pytest.raises(ValueError, match="modificado"):
-        load_approved_release(tamper_path, tamper_digest)
+        _inspect_legacy_release_shape(tamper_path, tamper_digest)
     wrong = package(candidate)
     wrong["review"]["cross_release_comparison_reviewed"] = False
     path, digest = save_package(tmp_path, wrong)
     with pytest.raises(ValueError, match="aprovação"):
-        load_approved_release(path, digest)
+        _inspect_legacy_release_shape(path, digest)
 
 
 def test_preliminary_source_must_not_be_approved(tmp_path):
@@ -135,6 +138,8 @@ def test_preliminary_source_must_not_be_approved(tmp_path):
     candidate = prepare_candidate(db, agravo="TUBE", ano=2024, uf="PI", por="sexo")
     path, digest = save_package(tmp_path, package(candidate))
     with pytest.raises(ValueError, match="status final"):
+        _inspect_legacy_release_shape(path, digest)
+    with pytest.raises(ValueError, match="Publicacao real bloqueada"):
         load_approved_release(path, digest)
 
 
@@ -166,7 +171,8 @@ def test_public_approved_server_fails_closed_without_explicit_package(monkeypatc
         assert forbidden not in src
 
 
-def test_approved_server_returns_only_exact_approved_aggregation(tmp_path, monkeypatch):
+def test_approved_server_rejects_legacy_self_attested_real_package(tmp_path, monkeypatch):
+    """Even correctly shaped, forged review text and env vars cannot open it."""
     from sinan_mcp import approved_server
     candidate = prepare_candidate(fake_db(tmp_path), agravo="TUBE",
                                   ano=2024, uf="PI", por="sexo")
@@ -177,35 +183,26 @@ def test_approved_server_returns_only_exact_approved_aggregation(tmp_path, monke
     monkeypatch.setenv("SINAN_PUBLIC_REAL_DATA", "1")
     approved_server._release.cache_clear()
     try:
-        out = approved_server.consultar_agregado("TUBE", 2024, "PI", "sexo")
-        assert out["escopo"]["ano_nao_e_diagnostico"]
-        assert out["tipo"] == "contagem_registros_ano_do_arquivo_nao_oficial"
-        assert len(out["categorias"]) == 2
-        assert "FICTICIO_PRIVADO" not in json.dumps(out)
+        with pytest.raises(ValueError, match="Publicacao real bloqueada"):
+            approved_server.sobre_o_servidor()
+        with pytest.raises(ValueError, match="Publicacao real bloqueada"):
+            approved_server.consultar_agregado("TUBE", 2024, "PI", "sexo")
         assert not (tmp_path / "nonexistent-patient.db").exists()
-        for args in [
-            ("TUBE", 2024, "PI", "raca_cor"),
-            ("TUBE", 2023, "PI", "sexo"),
-            ("DENG", 2024, "PI", "sexo"),
-            ("TUBE", 2024, "RJ", "sexo"),
-        ]:
-            with pytest.raises(ValueError, match="não aprovada"):
-                approved_server.consultar_agregado(*args)
-
-        from mcp import Client
-        async def probe():
-            async with Client(approved_server.mcp, raise_exceptions=True) as client:
-                names = {t.name for t in (await client.list_tools()).tools}
-                assert names == {"sobre_o_servidor", "listar_agregados", "consultar_agregado"}
-                response = await client.call_tool("consultar_agregado", {
-                    "agravo": "TUBE", "ano_do_arquivo": 2024,
-                    "uf": "PI", "por": "sexo",
-                })
-                assert not response.is_error
-                assert response.structured_content["escopo"]["uf"] == "PI"
-        asyncio.run(probe())
     finally:
         approved_server._release.cache_clear()
+
+
+def test_public_release_rejected_even_when_legacy_fields_look_authorized(tmp_path):
+    candidate = prepare_candidate(fake_db(tmp_path), agravo="TUBE",
+                                  ano=2024, uf="PI", por="raca_cor")
+    forged = package(candidate)
+    forged["review"]["privacy_reviewer"] = "Fake Privacy Reviewer"
+    forged["review"]["scientific_reviewer"] = "Fake Science Reviewer"
+    forged["review"]["publication_authorized"] = True
+    path, digest = save_package(tmp_path, forged)
+    assert _inspect_legacy_release_shape(path, digest)["stage"] == "APPROVED_PUBLIC_AGGREGATE"
+    with pytest.raises(ValueError, match="Publicacao real bloqueada"):
+        load_approved_release(path, digest)
 
 
 def test_cli_does_not_send_or_publish_private_rows(tmp_path):
