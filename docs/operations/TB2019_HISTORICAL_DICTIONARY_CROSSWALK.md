@@ -38,6 +38,33 @@ O utilitário reconfirma o hash do DBC local fixado, converte-o para um DBF temp
 - A cópia TB/2020 é posterior; a ocorrência de código 10 em duas versões documentais torna a questão de largura um item de engenharia verificável, ainda pendente.
 - O dataset de quatro campos não contém datas de diagnóstico, tipo de entrada e identificadores longitudinais para cálculo reprodutível de incidência, cura ou abandono oficial.
 
+## Resultado da inspeção física do DBF 2019 (relatado pelo operador)
+
+O operador executou `scripts.inspecionar_cabecalho_tb2019` no DBC de 2019 previamente fixado e informou:
+
+| Campo | Tipo DBF | Largura física (bytes) |
+| --- | --- | ---: |
+| `ID_MN_RESI` | `C` | 6 |
+| `CS_SEXO` | `C` | 1 |
+| `CS_RACA` | `C` | 1 |
+| `SITUA_ENCE` | `C` | **2** |
+
+A saída registrou `campo_situacao_10_cabe_em_largura=true`, `linhas_lidas=false`, `microdados_exibidos=false`, `compatibilidade_temporal_do_dicionario_verificada=false` e `publicacao_autorizada=false`.
+
+**Interpretação estritamente técnica:** o layout **físico** da edição capturada admite armazenar a sequência de dois caracteres `10` em `SITUA_ENCE`. Portanto, o campo não é fisicamente limitado a um caractere neste arquivo. A divergência aparente em relação ao tipo `Varchar2(1)` no dicionário v5.0 pode envolver texto documental ou diferenças de implementação. Nenhum código clínico foi lido no teste de cabeçalho e **não** se pode afirmar que `10` ocorre na base, nem que a versão de 2020 se aplique integralmente a 2019.
+
+### Próximo confronto: códigos originais versus valores preservados no SQLite
+
+Foi criado um auditor privado, sem rede, `scripts.auditar_codigos_originais_tb2019` que percorre exclusivamente no computador do operador o DBC validado, verifica os códigos dos quatro campos **antes da projeção** e compara o multiconjunto da projeção gerada pelo mesmo algoritmo com o SQLite 2019 já importado. O terminal informa apenas três resultados gerais `true/false` (domínios, ausência de perdas por transformação e igualdade do multiconjunto); detalhes booleanos por campo permanecem no relatório local e não são compartilhados. Nenhum valor, categoria, contagem, coorte ou distribuição é emitido.
+
+```powershell
+cd $HOME\SINAN-MCP
+git pull --ff-only
+.\.venv\Scripts\python.exe -m scripts.auditar_codigos_originais_tb2019
+```
+
+O domínio `SITUA_ENCE=1..10` é **hipótese fundamentada nos dicionários disponíveis**, não confirmação de compatibilidade histórica do arquivo 2019. Um resultado positivo nesse auditor significa somente ausência de alertas para esses domínios candidatos, não homologação clínica. **Não enviar** DBF, DBC, SQLite ou relatórios privados.
+
 ## Critério para parecer independente
 
 O revisor deve registrar se os quatro códigos se mantiveram no arquivo de 2019; justificar eventuais transformações; distinguir registro de episódio/pessoa; considerar a perda de dados potencialmente causada pelo `project_record`; e indicar **exatamente** que análises descritivas podem ser feitas. Nenhuma publicação pode usar o nome de indicador oficial sem replicar seu método, denominador e critério de coorte.
