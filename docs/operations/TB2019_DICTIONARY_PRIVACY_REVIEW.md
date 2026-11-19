@@ -48,6 +48,14 @@ A **rota pública de agregados reais V1 permanece explicitamente bloqueada na br
 
 **Critério de aceite científico para o piloto atual:** a alegação publicável, se futuramente permitida, deve se limitar à contagem de registros por categoria e ano do **arquivo** após documentação de proveniência, completude, validade das codificações históricas e auditoria de privacidade. Indicadores de **incidência, cura, abandono por coorte e casos únicos** ficam explicitamente fora do escopo atual.
 
+## Evidência do cabeçalho e controle de transformação (19/11/2026)
+
+A inspeção local e **sem leitura de linhas** do DBF TUBEBR19 convertido registrou: `ID_MN_RESI C(6)`, `CS_SEXO C(1)`, `CS_RACA C(1)`, `SITUA_ENCE C(2)`. A largura física do último campo é suficiente para armazenar a representação textual `10` (dois caracteres), mas não comprova ocorrência nem validade de qualquer código. O dicionário segue pendente de validação temporal e científica por um revisor.
+
+Para evitar que a auditoria de qualidade do SQLite já projetado oculte perdas anteriores, foi adicionado `scripts.auditar_codigos_originais_tb2019`, que lê apenas localmente os quatro códigos da origem, verifica domínios documentais candidatos e compara o multiconjunto de `project_record` com os registros do SQLite. Não imprime microdados, categorias ou contagens; retorna somente flags globais.
+
+O resultado dessa etapa **ainda não foi executado/revisado na base real**. Em caso de qualquer alerta, manter o bloqueio de divulgação e revisar exclusivamente no ambiente privado. O código e os testes artificiais não substituem execução independente com a edição real.
+
 ## Unidade de análise e denominadores — impacto do Caderno de Análise 2019
 
 O caderno oficial diferencia duplicidades verdadeiras, **duplos registros por transferência** e **tratamentos distintos** (recidiva ou reingresso após abandono), exigindo revisão de vínculo e contexto clínico. Nosso SQLite guarda quatro variáveis, sem nome, datas, tipo de entrada, identificador longitudinal nem unidade notificadora; portanto **não é possível identificar pessoas únicas, episódios únicos, coorte de casos novos ou os procedimentos de vinculação** a partir dele.
