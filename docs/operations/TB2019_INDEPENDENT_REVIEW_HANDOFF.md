@@ -2,6 +2,8 @@
 
 **Status:** pacote documental preparado para solicitação de parecer; **nenhum parecer recebido e nenhuma publicação autorizada**. Edição: 19/11/2026.
 
+> **Está recebendo um primeiro convite?** Comece pelo [resumo de uma página e três perguntas para cada especialidade](TB2019_REVIEW_QUICKSTART.md). **Este dossiê é complementar e opcional para a resposta preliminar**. Não é preciso executar código, ter conta no GitHub ou analisar microdados para dar uma primeira orientação.
+
 ## Objetivo da revisão
 
 Determinar se a extração e a interpretação de **quatro campos** do arquivo TUBE/2019 são metodologicamente adequadas para **descrições de registros do ano do arquivo**, e se algum agregado hipotético pode futuramente ser analisado sob governança de privacidade apropriada. Não solicitar aprovação genérica dos microdados nem interpretar as quatro colunas como base suficiente para indicadores epidemiológicos oficiais.
