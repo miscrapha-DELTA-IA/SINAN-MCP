@@ -65,6 +65,31 @@ git pull --ff-only
 
 O domínio `SITUA_ENCE=1..10` é **hipótese fundamentada nos dicionários disponíveis**, não confirmação de compatibilidade histórica do arquivo 2019. Um resultado positivo nesse auditor significa somente ausência de alertas para esses domínios candidatos, não homologação clínica. **Não enviar** DBF, DBC, SQLite ou relatórios privados.
 
+## Resultado do confronto entre códigos originais e SQLite (19/11/2026)
+
+O operador executou `scripts.auditar_codigos_originais_tb2019` no Windows com o DBC e o SQLite **privados**. O JSON resumido informou:
+
+```json
+{
+  "stage": "TUBE2019_SOURCE_CODES_PRIVATE_AUDIT_NOT_HOMOLOGATED",
+  "dominios_brutos_sem_alertas": true,
+  "projecao_sem_perda_de_codigos_preenchidos": true,
+  "multiconjunto_original_projetado_igual_sqlite": true,
+  "relatorio_privado_criado": true,
+  "quantidades_categorias_e_registros_exibidos": false,
+  "compatibilidade_temporal_dicionario_2019_verificada": false,
+  "revisao_cientifica_independente": false,
+  "revisao_privacidade_independente": false,
+  "publicacao_autorizada": false
+}
+```
+
+**Interpretação técnica restrita:** segundo o resultado relatado, os códigos preenchidos nas quatro colunas não escaparam aos domínios candidatos nem foram descartados pelo algoritmo `project_record`, **após** normalização de branco, ausentes e certas representações numéricas. O comparador também confirmou igualdade das projeções com multiplicidades. Não houve exposição de categorias, frequências ou linhas. O relatório é local.
+
+**Limites importantes:** a auditoria aplica `_norm` também à observação de origem, portanto não prova ausência de toda alteração textual/representacional no DBF; a igualdade SQLite foi testada para o recorte de quatro campos, não para os demais atributos; as regras de domínio foram extraídas de dicionários disponíveis, mas a **compatibilidade histórica com a edição de 2019 não foi assinada por revisor científico independente**. A condição `SITUA_ENCE=C(2)` demonstra capacidade física para `10`, não sua ocorrência.
+
+O material agora pode ser usado como **evidência técnica preliminar para revisão externa**, sem anexar microdados ou relatório interno. Consultar [pacote de encaminhamento ao revisor](TB2019_INDEPENDENT_REVIEW_HANDOFF.md).
+
 ## Critério para parecer independente
 
 O revisor deve registrar se os quatro códigos se mantiveram no arquivo de 2019; justificar eventuais transformações; distinguir registro de episódio/pessoa; considerar a perda de dados potencialmente causada pelo `project_record`; e indicar **exatamente** que análises descritivas podem ser feitas. Nenhuma publicação pode usar o nome de indicador oficial sem replicar seu método, denominador e critério de coorte.
