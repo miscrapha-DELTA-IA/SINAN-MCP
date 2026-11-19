@@ -8,7 +8,8 @@
 2. **Parquet espelho 2019:** `TUBEBR19.parquet`; hash verificado `7c599143671bb8bd895e2dbd39a325682b12d9fd5a024fcec101bb76ed0fc277`.
 3. **Concordância relatada:** multiconjunto de registros projetados em `ID_MN_RESI, CS_SEXO, CS_RACA, SITUA_ENCE` com suas multiplicidades igual após normalização; outras variáveis não comparadas.
 4. **Importação privada:** `PRIVATE_RESEARCH_IMPORT_NOT_HOMOLOGATED`, `status_da_fonte_no_sqlite=desconhecido`, `publicacao_autorizada=false`.
-5. **Preflight local:** `verificacao_tecnica=concluida`, `relatorio_privado_criado=true`. **O resumo do terminal não comprova que cada `verificacoes.*` seja verdadeiro nem fornece as bandas de completude.**
+5. **Preflight local:** `verificacao_tecnica=concluida`, `relatorio_privado_criado=true`, sem alteração do SQLite.
+6. **Resumo de flags sem dados:** o operador executou `scripts.resumir_qualidade_tb2019` e reportou `sqlite_integridade=true`, `uma_unica_fonte=true`, `somente_escopo_tube_2019=true`, `quantidade_compativel_com_metadados=true`, `codigos_projetados_no_dominio=true`, `uf_municipio_projetados_consistentes=true`, `checagens_tecnicas_sem_alertas=true`. Não foram divulgadas contagens, microdados ou bandas de completude. **As verificações tratam da projeção SQLite, não da semântica do arquivo bruto nem da compatibilidade histórica do dicionário.**
 
 ## Documentos oficiais identificados
 
@@ -28,6 +29,14 @@
 | `SITUA_ENCE` | Dicionário específico SINAN-TB v5.0, campo 62 | Mesmo código normalizado e multiplicidades nos dois arquivos | V5.0 lista 1 Cura, 2 Abandono, 3 Óbito por TB, 4 Óbito outras causas, 5 Transferência, 6 Mudança de diagnóstico, 7 TB-DR, 8 Mudança de esquema, 9 Falência, 10 Abandono primário. **Confirmar correspondência exata de 2019** e regras de seguimento; não inferir desfecho individual sem validação. |
 
 **Limites essenciais:** `SITUA_ENCE` contém códigos 1–10 no dicionário v5.0, enquanto o tipo textual exibido como `Varchar2(1)` exige revisão de como o código 10 é representado na extração DBF. O comparador aceita códigos de até 3 dígitos, mas a constatação de equivalência sob normalização **não** garante que todos os códigos foram semanticamente interpretados corretamente. O relatório de qualidade audita o resultado *após* transformação; valores inválidos no original podem já ter sido convertidos em `NULL` pelo código.
+
+## Evidência documental adicional (verificada em 19/11/2026)
+
+- O [dicionário SINAN NET — Tuberculose, versão 5.0](https://portalsinan.saude.gov.br/images/documentos/Agravos/Tuberculose/DICI_DADOS_NET_Tuberculose_23_07_2020.pdf), página 19 (numeração física, índice 18), identifica `SITUA_ENCE` como campo 62, apresenta códigos 1 a 8 e continua na página seguinte com **9 Falência** e **10 Abandono primário**. O tipo lógico mostrado na tabela é `Varchar2(1)`, apesar da categoria 10: **essa aparente inconsistência deve ser resolvida com a definição do DBF ou layout efetivo do arquivo de 2019**, sem inferir truncamento a partir do PDF.
+- O [Caderno de Análise 2019](https://portalsinan.saude.gov.br/images/documentos/Agravos/Tuberculose/Caderno_de_Analise_2019.pdf) orienta a selecionar **tipo de entrada**, **ano de diagnóstico**, **situação de encerramento** e **residência** para cálculo de incidência. Uma projeção somente de quatro campos não dispõe das dimensões temporais e de coorte para replicar esse indicador.
+- O [Caderno de Indicadores da Tuberculose, Ministério da Saúde, 2024](https://www.gov.br/aids/pt-br/central-de-conteudo/publicacoes/2024/caderno-de-indicadores-da-tuberculose-tuberculose-sensivel-tuberculose-drogarresistente-e-tratamento-preventivo.pdf) orienta seleção específica de tipos de entrada e exclusões de situações de encerramento para diversos indicadores. Esse documento **não demonstra retroativamente a compatibilidade da ficha 2024 com o snapshot 2019**, mas reforça a dependência metodológica de variáveis ausentes da projeção atual.
+
+**Critério de aceite científico para o piloto atual:** a alegação publicável, se futuramente permitida, deve se limitar à contagem de registros por categoria e ano do **arquivo** após documentação de proveniência, completude, validade das codificações históricas e auditoria de privacidade. Indicadores de **incidência, cura, abandono por coorte e casos únicos** ficam explicitamente fora do escopo atual.
 
 ## Unidade de análise e denominadores — impacto do Caderno de Análise 2019
 
