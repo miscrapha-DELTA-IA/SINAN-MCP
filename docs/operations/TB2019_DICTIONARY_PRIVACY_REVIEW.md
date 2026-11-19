@@ -56,6 +56,18 @@ Para evitar que a auditoria de qualidade do SQLite já projetado oculte perdas a
 
 O resultado dessa etapa **ainda não foi executado/revisado na base real**. Em caso de qualquer alerta, manter o bloqueio de divulgação e revisar exclusivamente no ambiente privado. O código e os testes artificiais não substituem execução independente com a edição real.
 
+## Resultado do auditor de códigos originais (19/11/2026)
+
+O operador concluiu `scripts.auditar_codigos_originais_tb2019` e forneceu a saída resumida com **três flags positivos**:
+
+- `dominios_brutos_sem_alertas=true`
+- `projecao_sem_perda_de_codigos_preenchidos=true`
+- `multiconjunto_original_projetado_igual_sqlite=true`
+
+O confronto foi feito **antes e depois** do `project_record`, sobre as quatro variáveis, e indica preservação dos códigos preenchidos nos domínios **candidatos** e igualdade das combinações com multiplicidades. O auditor usa a normalização definida em `_norm`, portanto não é prova de equivalência byte a byte, de ausência de perda nos demais campos nem de competência histórica dos dicionários. A execução foi relatada pelo operador, **sem reprodução independente**. Nenhum valor, contagem, distribuição ou registro foi disponibilizado.
+
+**Próxima etapa:** entregar [pacote documental de revisão externa](TB2019_INDEPENDENT_REVIEW_HANDOFF.md) a revisores técnicos, de vigilância TB e privacidade, para julgar semântica, coortes, proveniência e divulgação. O status `publicacao_autorizada=false` é mantido.
+
 ## Unidade de análise e denominadores — impacto do Caderno de Análise 2019
 
 O caderno oficial diferencia duplicidades verdadeiras, **duplos registros por transferência** e **tratamentos distintos** (recidiva ou reingresso após abandono), exigindo revisão de vínculo e contexto clínico. Nosso SQLite guarda quatro variáveis, sem nome, datas, tipo de entrada, identificador longitudinal nem unidade notificadora; portanto **não é possível identificar pessoas únicas, episódios únicos, coorte de casos novos ou os procedimentos de vinculação** a partir dele.
