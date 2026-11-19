@@ -103,6 +103,28 @@ git pull --ff-only
 
 A conversão privada acontece **antes** de baixar o Parquet. Se falhar, informe apenas o trecho `etapa=..., codigo=...`. Não envie microdados, DBC, DBF nem arquivos Parquet. A comparação, mesmo se retornar `multiconjunto_4_campos_igual: true`, **não** equivale a homologação ou permissão para divulgação.
 
+### Etapa 2C — resultado positivo de concordância, 19/11/2026
+
+O operador concluiu a comparação privada com:
+`multiconjunto_4_campos_igual: true` para `ID_MN_RESI`, `CS_SEXO`, `CS_RACA` e `SITUA_ENCE`, incluindo multiplicidades. O Parquet passou no SHA-256 do catálogo e o DBC passou no hash previamente fixado.
+
+Consulte o [registro de evidência de concordância TUBE 2019](TB2019_FOUR_COLUMN_CONCORDANCE.md). É uma evidência de execução **relatada pelo operador**; não houve acesso externo aos microdados, verificação independente de execução nem revisão epidemiológica. O resultado não libera agregados reais.
+
+### Etapa 2D — preparar um SQLite de pesquisa privado (opcional)
+
+Depois de atualizar a branch, em PowerShell:
+
+```powershell
+git pull --ff-only
+.\.venv\Scripts\python.exe -m scripts.importar_piloto_tb2019
+```
+
+O comando **refaz localmente a concordância de quatro campos** e verifica os hashes fixados do DBC e do Parquet antes de importar somente os quatro campos para `data/private/tb2019/piloto-tb2019.sqlite3`. Para impedir publicação acidental, o catálogo do SQLite é gravado com `status: desconhecido`, independentemente de o DBC estar no diretório `FINAIS`. Essa base contém informação de nível de registro projetada e permanece sujeita a proteção; **não deve ser enviada ao GitHub, ao ChatGPT, ao Drive ou ao servidor público**. A importação pode substituir transacionalmente uma versão anterior de TUBE/2019 nesse banco dedicado.
+
+O relatório ao terminal confirma apenas proveniência, concordância e bloqueio de publicação: nenhuma contagem ou tabela local é impressa. O serviço MCP público e seu túnel não são alterados.
+
+**Próximo marco:** auditoria local de qualidade (sem exportar números) e revisão independente de definições de variáveis, coorte, status da fonte, governança e risco por célula antes de formar um pacote candidato de agregação. Não use `--status final` para contornar estas etapas.
+
 ## Etapa 3 — gate de publicação
 
 - Parecer científico independente sobre método, coorte, dicionário, contagem e versão.
