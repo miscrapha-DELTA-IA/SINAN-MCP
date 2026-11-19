@@ -82,6 +82,27 @@ Se o campo `multiconjunto_4_campos_igual` resultar `true`, isso prova **apenas a
 
 Mesmo quando a comparação for bem-sucedida, os campos `equivalencia_integral_verificada`, `status_final_homologado` e `publicacao_autorizada` permanecerão `false`. O código do servidor MCP público e o túnel são preservados.
 
+
+### Diagnóstico do subprocesso DBC (2026-11-19)
+
+O planejamento PySUS 2019 localizou uma única entrada:
+
+- `public/data/ftp/sinan/TUBE/2019/_/BR/TUBEBR19.parquet`
+- tamanho no catálogo `3603114` bytes
+- SHA-256 informado pelo catálogo: `7c599143671bb8bd895e2dbd39a325682b12d9fd5a024fcec101bb76ed0fc277`
+
+Na primeira tentativa de comparação, o subprocesso de conversão DBC terminou com código 1, mas o código antigo ocultou o detalhe do erro. **Nenhuma discordância foi demonstrada.** A versão nova abandona a dependência de `read_dbc` que carrega uma tabela em memória; usa `pyreaddbc.dbc2dbf` e `dbfread.DBF` para gerar lotes Parquet e contém códigos diagnósticos sem mostrar microdados.
+
+No PowerShell, a partir da branch de auditoria, execute:
+
+```powershell
+git pull --ff-only
+.\.venv\Scripts\python.exe -m pip install "pyreaddbc==2.0.4" "dbfread==2.0.7"
+.\.venv\Scripts\python.exe -m scripts.avaliar_equivalencia_tb2019 --etapa comparar
+```
+
+A conversão privada acontece **antes** de baixar o Parquet. Se falhar, informe apenas o trecho `etapa=..., codigo=...`. Não envie microdados, DBC, DBF nem arquivos Parquet. A comparação, mesmo se retornar `multiconjunto_4_campos_igual: true`, **não** equivale a homologação ou permissão para divulgação.
+
 ## Etapa 3 — gate de publicação
 
 - Parecer científico independente sobre método, coorte, dicionário, contagem e versão.
