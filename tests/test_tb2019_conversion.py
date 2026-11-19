@@ -39,6 +39,7 @@ def test_synthetic_dbf_to_projected_parquet(tmp_path, monkeypatch):
 
 
 def test_converter_failure_contains_only_safe_code(tmp_path, monkeypatch):
+    pytest.importorskip("pyarrow")
     source = tmp_path / parity.NAME
     source.write_bytes(b"ARTIFICIAL_DBC_TEST_NOT_PATIENT_DATA")
     output_dir = tmp_path / "tmp-private"
