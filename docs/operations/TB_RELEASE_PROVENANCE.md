@@ -163,11 +163,24 @@ git pull --ff-only
 
 O comando lê somente o último `TUBE2019-quality-*.json` da pasta privada, compara o escopo e hashes com o snapshot fixado e mostra apenas `true/false` nas verificações técnicas. **Não imprime o relatório bruto, categorias, percentuais ou dados pessoais.** `checagens_tecnicas_sem_alertas=true` não significa homologação epidemiológica, completude ideal, anonimização ou publicação autorizada.
 
+### Etapa 2G — confronto documental histórico e cabeçalho DBF
+
+Foi localizada a versão de [Notificação Individual v5 revisada em julho de 2010](https://portalsinan.saude.gov.br/images/documentos/Agravos/NINDIV/DIC_DADOS_Notificacao_Individual_v5.pdf), que documenta as três variáveis demográficas comuns; e uma [cópia do dicionário TB v5.0](https://portalsinan.saude.gov.br/images/documentos/Agravos/Tuberculose/DICI_DADOS_Tuberculose.pdf), além da cópia de 2020. A localização das versões **não substitui** atestado de compatibilidade do layout com o arquivo DBC 2019.
+
+A discrepância documental `SITUA_ENCE` `Varchar2(1)` versus a opção `10` (abandono primário) será investigada mediante **inspeção exclusiva do cabeçalho DBF**, sem ler valores dos registros:
+
+```powershell
+git pull --ff-only
+.\.venv\Scripts\python.exe -m scripts.inspecionar_cabecalho_tb2019
+```
+
+A ferramenta verifica hash do DBC, usa arquivo DBF temporário dentro de `data/private/tb2019`, registra somente tipo/largura das quatro variáveis e apaga o temporário. A existência de largura >=2 indica apenas capacidade física para dois caracteres, não prova ocorrência nem semântica do código 10. Ver [matriz histórica de dicionários](TB2019_HISTORICAL_DICTIONARY_CROSSWALK.md).
+
 ## Etapa 3 — gate de publicação
 
 - Parecer científico independente sobre método, coorte, dicionário, contagem e versão.
 - Parecer de privacidade sobre células pequenas, inferência por diferenças, versões e cruzamentos entre tabelas.
 - Parecer institucional/jurídico aplicável e autorização específica de divulgação.
-- Pacote aprovado, pré-agregado e com hashes fixados, **sem qualquer acesso do MCP público aos registros reais**. Antes disso, endurecer aggregate_contract.py para exigir evidência verificável de origem além de status_informado.
+- Pacote aprovado, pré-agregado e com hashes fixados, **sem qualquer acesso do MCP público aos registros reais**. A rota legada V1 foi **bloqueada na branch da PR #72**: `load_approved_release` sempre recusa pacotes reais, independentemente de `status_informado`. Um protocolo V2 com atestações autenticadas e revisão independente deve ser implementado e revisado antes de considerar desbloqueio. Ver [modelo de ameaças e critérios V2](REAL_RELEASE_V2_THREAT_MODEL.md).
 
 **O Render público e a demonstração ChatGPT permanecem 100% sintéticos; todos os arquivos reais e seus candidatos ficam locais.**
