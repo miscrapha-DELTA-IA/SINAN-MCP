@@ -105,11 +105,12 @@ def validate_candidate(candidate: Any) -> None:
         raise ValueError("Pacote excessivamente grande")
 
 
-def load_approved_release(path: str | Path, sha256: str) -> dict:
-    """Validate independent manual approval and immutable checksum.
+def _inspect_legacy_release_shape(path: str | Path, sha256: str) -> dict:
+    """Legacy structural checks only. NEVER authorizes public data.
 
-    Approval records document a review; the program cannot verify identities
-    or guarantee anonymity. A public deployment needs another security review.
+    This is retained for regression tests of package shape, checksum and the
+    old reviewer text fields. Those fields were forgeable, so no caller may
+    treat a successful check as a legal, scientific or privacy authorization.
     """
     if not isinstance(sha256, str) or not HEX64.fullmatch(sha256):
         raise ValueError("SHA-256 explícito obrigatório para pacote publicado")
@@ -150,3 +151,22 @@ def load_approved_release(path: str | Path, sha256: str) -> dict:
     if len(_canonical(obj)) > MAX_RELEASE_BYTES:
         raise ValueError("Pacote aprovado excessivamente grande")
     return obj
+
+
+# Interim fail-closed public release policy: the legacy V1 contract does not
+# cryptographically bind provenance, reviewer identity or authorization.
+# This cannot be overridden by an environment variable or --status final.
+# Release requires a separately reviewed V2 protocol with independent signed
+# attestations, a pinned source manifest and authorization per exact package.
+def load_approved_release(path: str | Path, sha256: str) -> dict:
+    """Never load a real aggregate with the legacy self-attested V1 policy.
+
+    The legacy parser remains private for format regression testing only.
+    The production server uses this function and therefore always fails closed
+    until an authenticated, independently reviewed V2 is implemented.
+    """
+    raise ValueError(
+        "Publicacao real bloqueada: contrato V1 nao autentica proveniencia "
+        "nem revisores. status_informado=final e nomes preenchidos nao "
+        "constituem aprovacao. Exigir protocolo V2 independente."
+    )
