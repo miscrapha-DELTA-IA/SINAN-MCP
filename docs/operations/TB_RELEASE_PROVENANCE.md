@@ -176,6 +176,20 @@ git pull --ff-only
 
 A ferramenta verifica hash do DBC, usa arquivo DBF temporário dentro de `data/private/tb2019`, registra somente tipo/largura das quatro variáveis e apaga o temporário. A existência de largura >=2 indica apenas capacidade física para dois caracteres, não prova ocorrência nem semântica do código 10. Ver [matriz histórica de dicionários](TB2019_HISTORICAL_DICTIONARY_CROSSWALK.md).
 
+### Etapa 2H — auditoria de códigos originais positiva e handoff (19/11/2026)
+
+O operador executou o confronto privado entre o DBC, as regras de `project_record` e o SQLite TUBE/2019; as três verificações retornaram **true**:
+
+```text
+dominios_brutos_sem_alertas = true
+projecao_sem_perda_de_codigos_preenchidos = true
+multiconjunto_original_projetado_igual_sqlite = true
+```
+
+O procedimento não transmitiu linhas, valores, contagens ou categorias e informou `publicacao_autorizada=false`. A ausência de alertas está condicionada aos **quatro campos**, aos **domínios documentais candidatos** e à normalização implementada; **não** constitui homologação epidemiológica, compatibilidade temporal do dicionário, equivalência de todas as colunas ou garantia de anonimização. As evidências foram relatadas pelo operador e ainda não reproduzidas por terceiros.
+
+O próximo passo é **revisão externa**, não mais reimportação dos microdados. Veja o [pacote de encaminhamento independente](TB2019_INDEPENDENT_REVIEW_HANDOFF.md), preparado somente com identificadores de versão, código, evidências de execução e perguntas científicas. Não compartilhar DBC, DBF, Parquet, SQLite ou relatórios privados pela PR.
+
 ## Etapa 3 — gate de publicação
 
 - Parecer científico independente sobre método, coorte, dicionário, contagem e versão.
