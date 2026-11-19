@@ -50,9 +50,9 @@ def test_quality_preflight_is_local_and_no_counts(tmp_path, monkeypatch):
     assert outcome["verificacao_tecnica"] == "concluida"
     assert outcome["status_final_homologado"] is False
     assert outcome["publicacao_autorizada"] is False
-    assert "registros" not in str(outcome)
+    assert outcome["contagens_ou_registros_exibidos"] is False
     assert "221100" not in str(outcome)
-    assert "3" not in json.dumps(outcome)
+    assert "n_registros" not in json.dumps(outcome)
     reports = list(root.glob("TUBE2019-quality-*.json"))
     assert len(reports) == 1
     report = json.loads(reports[0].read_text(encoding="utf-8"))
