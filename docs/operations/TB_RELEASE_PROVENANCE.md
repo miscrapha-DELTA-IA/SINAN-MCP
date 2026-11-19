@@ -148,6 +148,21 @@ Esse script abre o SQLite em modo somente leitura, confere a identidade da fonte
 
 O relatório também registra limitações: códigos inválidos podem ter virado `NULL` na projeção, e a comparação de quatro campos não valida coorte clínica, ano de diagnóstico, casos únicos ou dicionário SINAN-TB. O comando **não aprova publicação**. Compartilhe apenas o JSON resumido impresso pelo comando, nunca o relatório privado ou o SQLite.
 
+### Etapa 2F — revisão documental e resumo seguro do relatório
+
+O operador informou que a auditoria foi concluída, com `relatorio_privado_criado: true`, `atualizacao_do_sqlite: false`, `contagens_ou_registros_exibidos: false` e `publicacao_autorizada: false`. **Esse retorno não mostra os cinco resultados booleanos internos nem as bandas de completude; logo não é legítimo afirmar que todos os testes de qualidade passaram.**
+
+Criado [protocolo de dicionário e privacidade TUBE 2019](TB2019_DICTIONARY_PRIVACY_REVIEW.md), com referências ao dicionário oficial SINAN-TB v5.0 e ao Caderno de Análise 2019. A semântica dos campos comuns ainda precisa ser confrontada com a versão do dicionário de Notificação Individual correspondente ao ano. O caderno exige cuidado com coortes, transferências e duplicidade; a projeção de quatro campos **não permite calcular indicador oficial** de incidência, cura ou abandono.
+
+Para obter um resumo seguro dos *flags* internos do relatório privado, sem reexecutar a auditoria nem mostrar taxas ou contagens:
+
+```powershell
+git pull --ff-only
+.\.venv\Scripts\python.exe -m scripts.resumir_qualidade_tb2019
+```
+
+O comando lê somente o último `TUBE2019-quality-*.json` da pasta privada, compara o escopo e hashes com o snapshot fixado e mostra apenas `true/false` nas verificações técnicas. **Não imprime o relatório bruto, categorias, percentuais ou dados pessoais.** `checagens_tecnicas_sem_alertas=true` não significa homologação epidemiológica, completude ideal, anonimização ou publicação autorizada.
+
 ## Etapa 3 — gate de publicação
 
 - Parecer científico independente sobre método, coorte, dicionário, contagem e versão.
