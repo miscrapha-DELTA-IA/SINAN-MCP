@@ -19,6 +19,16 @@
 - Ministério da Saúde, [Dados sobre agravos de notificações](https://www.gov.br/saude/pt-br/acesso-a-informacao/sic/dados-em-transparencia-ativa/svsa/agravos-de-notificacoes/agravos-de-notificacoes), para o contexto de versão, atualização e documentação aberta.
 - Ministério da Saúde, [Notificação Individual — Portal SINAN](https://portalsinan.saude.gov.br/notificacoes), para variáveis comuns a agravos. **É necessário localizar e versionar o dicionário específico da notificação individual aplicável ao período; não presumir que os códigos comuns foram auditados apenas com o dicionário de TB.**
 
+### Complemento documental — materiais anteriores e posteriores a 2019
+
+O [Dicionário de Notificação Individual v5](https://portalsinan.saude.gov.br/images/documentos/Agravos/NINDIV/DIC_DADOS_Notificacao_Individual_v5.pdf) contém o rodapé **Revisado em Julho/2010**. Os campos 11, 13 e 18 correspondem a `CS_SEXO`, `CS_RACA` e `ID_MN_RESI`, respectivamente. O documento apresenta os códigos cadastrais de sexo M/F/I, raça/cor 1–5 e 9 ignorado e município de residência com seis caracteres. Isso estabelece uma fonte **anterior** a 2019 para esses nomes e significados, não prova ausência de modificações até a edição DBC/2019.
+
+Também está disponível uma [cópia do dicionário SINAN-TB v5.0](https://portalsinan.saude.gov.br/images/documentos/Agravos/Tuberculose/DICI_DADOS_Tuberculose.pdf) com campo 62 `SITUA_ENCE`; sua data de revisão **não foi firmemente estabelecida** no presente protocolo. A cópia de 2020 indica igualmente o código 10 (abandono primário). Ambas mencionam o tipo lógico `Varchar2(1)`, incompatibilidade aparente que exige leitura do **cabeçalho** do DBF 2019 antes de inferir truncamento.
+
+Foi incorporada uma ferramenta offline de inspeção dos quatro descritores DBF: `python -m scripts.inspecionar_cabecalho_tb2019`. Ela não itera sobre registros e apaga o DBF intermediário. A matriz detalhada e o roteiro constam em [TB2019_HISTORICAL_DICTIONARY_CROSSWALK.md](TB2019_HISTORICAL_DICTIONARY_CROSSWALK.md).
+
+A **rota pública de agregados reais V1 permanece explicitamente bloqueada na branch**; ver [modelo de ameaças de release V2](REAL_RELEASE_V2_THREAT_MODEL.md). Esse bloqueio temporário elimina a possibilidade de `status_informado=final` e simples nomes de revisores promoverem um pacote V1, mas não conclui a governança e as revisões necessárias para uma futura versão.
+
 ## Matriz semântica das quatro colunas
 
 | Campo no DBC/Parquet | Origem documental a revisar | O que a comparação de bytes projetados permite afirmar | Bloqueio semântico pendente |
