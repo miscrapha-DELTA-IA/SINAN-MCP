@@ -125,6 +125,29 @@ O relatório ao terminal confirma apenas proveniência, concordância e bloqueio
 
 **Próximo marco:** auditoria local de qualidade (sem exportar números) e revisão independente de definições de variáveis, coorte, status da fonte, governança e risco por célula antes de formar um pacote candidato de agregação. Não use `--status final` para contornar estas etapas.
 
+### Etapa 2E — SQLite privado importado e auditoria de qualidade sem contagens
+
+O operador reportou sucesso em `scripts.importar_piloto_tb2019`, com:
+
+- `stage: PRIVATE_RESEARCH_IMPORT_NOT_HOMOLOGATED`
+- `projecao_4_campos_concordante: true`
+- `status_da_fonte_no_sqlite: desconhecido`
+- `equivalencia_integral_verificada: false`
+- `publicacao_autorizada: false`
+
+A execução foi local e seu resultado é **declaração do operador**, ainda não reprodução independente. O arquivo `data/private/tb2019/piloto-tb2019.sqlite3` foi criado sem disponibilizar registros nesta documentação.
+
+Para prosseguir **sem reimportar nem repetir downloads**, execute na raiz do repositório:
+
+```powershell
+git pull --ff-only
+.\.venv\Scripts\python.exe -m scripts.auditar_qualidade_tb2019
+```
+
+Esse script abre o SQLite em modo somente leitura, confere a identidade da fonte e o hash local do DBC, examina integridade e escopo, checa os domínios projetados e compatibilidade dos códigos UF/município. A completude (ausentes/ignorados) é apresentada **apenas em bandas largas** no relatório privado `data/private/tb2019/TUBE2019-quality-*.json`. Não imprime valores individuais, categorias estratificadas ou contagens, não muda status, nem transmite nada ao MCP. O arquivo de auditoria é exclusivo e não sobrescreve versões anteriores.
+
+O relatório também registra limitações: códigos inválidos podem ter virado `NULL` na projeção, e a comparação de quatro campos não valida coorte clínica, ano de diagnóstico, casos únicos ou dicionário SINAN-TB. O comando **não aprova publicação**. Compartilhe apenas o JSON resumido impresso pelo comando, nunca o relatório privado ou o SQLite.
+
 ## Etapa 3 — gate de publicação
 
 - Parecer científico independente sobre método, coorte, dicionário, contagem e versão.
